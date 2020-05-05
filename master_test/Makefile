@@ -10,13 +10,13 @@ INCLUDES_DIR = /usr/local/include/
 SINCLUDES_DIR= /usr/include/
 
 LIBS_DIR = /usr/local/lib/
-SLIBS_DIR = /usr/lib64/
+SLIBS_DIR = /usr/local/lib64/
 
 INCLUDES_BUILD = -Iinclude/
 INCLUDES = -I$(INCLUDES_DIR) -I$(SINCLUDES_DIR)
-LIBS = -L$(LIBS_DIR) -L$(SLIBS_DIR) -Wl,-rpath,$(LIBS_DIR) -lcjson -lfims -lopendnp3 -lopenpal -lasiodnp3 -lpthread
+LIBS = -L$(LIBS_DIR) -L$(SLIBS_DIR) -Wl,-rpath,$(LIBS_DIR) -lstdc++ -lcjson -lfims -lopendnp3 -lopenpal -lasiodnp3 -lpthread
 
-CPPFLAGS += -std=c++11
+CPPFLAGS += -std=c++11 
 CPPFLAGS += -Wall -pedantic -Werror
 
 # BUILD_MODE = debug
