@@ -1,0 +1,325 @@
+{
+	"system":
+	{
+		"id": "flexgen_ess",
+		"ip_address": "10.8.20.153",
+		"port": 502,
+		"frequency": 500,
+		"byte_swap": false
+	},
+	"registers":
+	[
+		{
+			"type": "Input Registers",
+			"starting_offset": 30010,
+			"number_of_registers": 35,
+			"map":
+			[
+				{
+					"id": "ac_voltage_l1",
+					"offset": 30010,
+					"scale": 10
+				},
+				{
+					"id": "ac_voltage_l2",
+					"offset": 30011,
+					"scale": 10
+				},
+				{
+					"id": "ac_voltage_l3",
+					"offset": 30012,
+					"scale": 10
+				},
+				{
+					"id": "ac_current_l1",
+					"offset": 30013,
+					"scale": 10
+				},
+				{
+					"id": "ac_current_l2",
+					"offset": 30014,
+					"scale": 10
+				},
+				{
+					"id": "ac_current_l3",
+					"offset": 30015,
+					"scale": 10
+				},
+				{
+					"id": "active_power",
+					"offset": 30016,
+					"scale": 10
+				},
+				{
+					"id": "reactive_power",
+					"offset": 30017,
+					"scale": 10
+				},
+				{
+					"id": "frequency",
+					"offset": 30018,
+					"scale": 10
+				},
+				{
+					"id": "vdc_high",
+					"offset": 30019,
+					"scale": 10
+				},
+				{
+					"id": "vdc_low",
+					"offset": 30020,
+					"scale": 10
+				},
+				{
+					"id": "ambient_temp",
+					"offset": 30025,
+					"scale": 10
+				},
+				{
+					"id": "igbt_temp",
+					"offset": 30026,
+					"scale": 10
+				},
+				{
+					"id": "esm_temp_1",
+					"offset": 30027,
+					"scale": 10
+				},
+				{
+					"id": "esm_temp_2",
+					"offset": 30028,
+					"scale": 10
+				},
+				{
+					"id": "soc",
+					"offset": 30031,
+					"scale": 10
+				},
+				{
+					"id": "dc_current_l1",
+					"offset": 30032,
+					"scale": 10
+				},
+				{
+					"id": "dc_current_l2",
+					"offset": 30033,
+					"scale": 10
+				},
+				{
+					"id": "dc_current_l3",
+					"offset": 30034,
+					"scale": 10
+				}
+			]
+		},
+		{
+			"type": "Input Registers",
+			"starting_offset": 30110,
+			"number_of_registers": 4,
+			"map":
+			[
+				{
+					"id": "alarms",
+					"offset": 30110,
+					"size": 4,
+					"bit_field": true,
+					"bit_strings":
+					[
+						"DC Voltage High Over Voltage Slow",
+						"DC Voltage Low Over Voltage",
+						"DC Voltage Low Under Voltage",
+						"AC Voltage Over Voltage",
+						"AC Voltage Under Voltage",
+						"AC Voltage Over Frequency",
+						"AC Voltage Under Frequency",
+						"24V Under Voltage",
+						"ESM Over Voltage 1",
+						"ESM Over Voltage 2",
+						"Reserved", "Reserved",
+						"Generator Regulation",
+						"Reserved", "Reserved", "Reserved",
+						"Reserved", "Reserved", "Reserved", "Reserved",
+						"Reserved", "Reserved", "Reserved", "Reserved",
+						"Hardware Current Limit L1",
+						"Hardware Current Limit L2",
+						"Hardware Current Limit L3",
+						"Hardware Current Limit L4",
+						"Hardware Current Limit L5",
+						"Hardware Current Limit L6",
+						"Reserved", "Reserved",
+						"Overload Level 2 L6",
+						"Overload Level 3 L6",
+						"Ambient Temp",
+						"IGBT Temp L1",
+						"IGBT Temp L2",
+						"IGBT Temp L3",
+						"IGBT Temp L4",
+						"IGBT Temp L5",
+						"IGBT Temp L6",
+						"ESM Temp 1",
+						"ESM Temp 2",
+						"Reserved", "Reserved", "Reserved",
+						"Overload (All)",
+						"Harmonics",
+						"Overload Level 1 L1",
+						"Overload Level 2 L1",
+						"Overload Level 3 L1",
+						"Overload Level 1 L2",
+						"Overload Level 2 L2",
+						"Overload Level 3 L2",
+						"Overload Level 1 L3",
+						"Overload Level 2 L3",
+						"Overload Level 3 L3",
+						"Overload Level 1 L4",
+						"Overload Level 2 L4",
+						"Overload Level 3 L4",
+						"Overload Level 1 L5",
+						"Overload Level 2 L5",
+						"Overload Level 3 L5",
+						"Overload Level 1 L6"
+					]
+				}
+			]
+		},
+		{
+			"type": "Input Registers",
+			"starting_offset": 30120,
+			"number_of_registers": 4,
+			"map":
+			[
+				{
+					"id": "faults",
+					"offset": 30120,
+					"size": 4,
+					"bit_field": true,
+					"bit_strings":
+					[
+						"DC Voltage High Over Voltage Slow",
+						"DC Voltage Low Over Voltage",
+						"DC Voltage Low Under Voltage",
+						"AC Voltage Over Voltage",
+						"AC Voltage Under Voltage",
+						"AC Voltage Over Frequency",
+						"AC Voltage Under Frequency",
+						"24V Under Voltage",
+						"ESM Over Voltage 1",
+						"ESM Over Voltage 2",
+						"Reserved", "Reserved",
+						"Ground Current",
+						"Gen Stability",
+						"Precharge Error",
+						"Reverse Rotation",
+						"Gate Error L1",
+						"Gate Error L2",
+						"Gate Error L3",
+						"Gate Error L4",
+						"Gate Error L5",
+						"Gate Error L6",
+						"Real-Time Watchdog",
+						"Emergency Stop",
+						"Hardware Current Limit L1",
+						"Hardware Current Limit L2",
+						"Hardware Current Limit L3",
+						"Hardware Current Limit L4",
+						"Hardware Current Limit L5",
+						"Hardware Current Limit L6",
+						"Vdc High Over Voltage Fast",
+						"Vdc High Under Voltage Slow",
+						"Overload Level 2 L6",
+						"Overload Level 3 L6",
+						"IGBT Temp L1",
+						"IGBT Temp L2",
+						"IGBT Temp L3",
+						"IGBT Temp L4",
+						"IGBT Temp L5",
+						"IGBT Temp L6",
+						"Ambient Temp",
+						"ESM Temp 1",
+						"ESM Temp 2",
+						"Reserved", "Reserved", "Reserved",
+						"Overload (All)",
+						"Harmonics",
+						"Overload Level 1 L1",
+						"Overload Level 2 L1",
+						"Overload Level 3 L1",
+						"Overload Level 1 L2",
+						"Overload Level 2 L2",
+						"Overload Level 3 L2",
+						"Overload Level 1 L3",
+						"Overload Level 2 L3",
+						"Overload Level 3 L3",
+						"Overload Level 1 L4",
+						"Overload Level 2 L4",
+						"Overload Level 3 L4",
+						"Overload Level 1 L5",
+						"Overload Level 2 L5",
+						"Overload Level 3 L5",
+						"Overload Level 1 L6"
+						]
+				}
+			]
+		},
+		{
+			"type": "Input Registers",
+			"starting_offset": 30200,
+			"number_of_registers": 25,
+			"map":
+			[
+				{
+					"id": "status",
+					"offset": 30200,
+					"comment":
+					[
+						"0 = Faulted",
+						"1 = Shutdown",
+						"2 = Ready",
+						"3 = Startup",
+						"4 = Running",
+						"5 = Discharging",
+						"6 = Idle"
+					]
+				},
+				{
+					"id": "virtual_inertia",
+					"offset": 30201
+				},
+				{
+					"id": "charge_control",
+					"offset": 30202
+				},
+				{
+					"id": "discharge",
+					"offset": 30205
+				},
+				{
+					"id": "esm_1_status",
+					"offset": 30214
+				},
+				{
+					"id": "esm_2_status",
+					"offset": 30215
+				},
+				{
+					"id": "esm_1_contactor",
+					"offset": 30218
+				},
+				{
+					"id": "esm_2_contactor",
+					"offset": 30219
+				},
+				{
+					"id": "main_contactor",
+					"offset": 30222
+				},
+				{
+					"id": "ssg_contactor",
+					"offset": 30223
+				},
+				{
+					"id": "emergency_stop",
+					"offset": 30224
+				}
+			]
+		}
+	]
+}
