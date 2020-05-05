@@ -30,6 +30,16 @@
 #include <arpa/inet.h>
 #include <cjson/cJSON.h>
 #include <fims/libfims.h>
+
+#include <iostream>
+#include <asiopal/UTCTimeSource.h> 
+#include <opendnp3/LogLevels.h> 
+#include <asiodnp3/ConsoleLogger.h> 
+#include <asiodnp3/DNP3Manager.h> 
+#include <asiodnp3/DefaultMasterApplication.h> 
+#include <asiodnp3/PrintingChannelListener.h> 
+#include <asiodnp3/PrintingCommandCallback.h> 
+#include "MySOEHandler.h"
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
 
@@ -267,6 +277,8 @@ bool initialize_map(server_data* server_map)
     }
     return true;
 }
+
+
 
 
 int main(int argc, char *argv[])
