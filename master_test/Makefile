@@ -39,7 +39,7 @@ all:	build $(LIST)
 $(BUILD_DIR)dnp3_outstation: $(OBJ_DIR)dnp3_outstation.o
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
-$(BUILD_DIR)dnp3_master: $(OBJ_DIR)dnp3_master.o $(OBJ_DIR)dnp3_utils.o
+$(BUILD_DIR)dnp3_master: $(OBJ_DIR)dnp3_master.o $(OBJ_DIR)dnp3_utils.o $(OBJ_DIR)MySOEHandler.o
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
 $(OBJ_DIR)%.o: $(PROJECT_ROOT)src/%.cpp
