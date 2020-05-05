@@ -14,7 +14,7 @@ SLIBS_DIR = /usr/local/lib64/
 
 INCLUDES_BUILD = -Iinclude/
 INCLUDES = -I$(INCLUDES_DIR) -I$(SINCLUDES_DIR)
-LIBS = -L$(LIBS_DIR) -L$(SLIBS_DIR) -Wl,-rpath,$(LIBS_DIR) -lstdc++ -lcjson -lfims -lopendnp3 -lopenpal -lasiodnp3 -lpthread
+LIBS = -L$(LIBS_DIR) -L$(SLIBS_DIR) -Wl,-rpath,$(LIBS_DIR) -lstdc++ -lcjson -lfims -lopendnp3 -lopenpal -lasiopal -lasiodnp3 -lpthread
 
 CPPFLAGS += -std=c++11 
 CPPFLAGS += -Wall -pedantic -Werror
@@ -39,7 +39,7 @@ all:	build $(LIST)
 $(BUILD_DIR)dnp3_outstation: $(OBJ_DIR)dnp3_outstation.o
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
-$(BUILD_DIR)dnp3_master: $(OBJ_DIR)dnp3_master.o $(OBJ_DIR)dnp3_utils.o $(OBJ_DIR)MySOEHandler.o
+$(BUILD_DIR)dnp3_master: $(OBJ_DIR)dnp3_master.o $(OBJ_DIR)dnp3_utils.o $(OBJ_DIR)newSOEHandler.o
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
 
 $(OBJ_DIR)%.o: $(PROJECT_ROOT)src/%.cpp

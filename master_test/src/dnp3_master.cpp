@@ -39,10 +39,16 @@
 #include <asiodnp3/DefaultMasterApplication.h> 
 #include <asiodnp3/PrintingChannelListener.h> 
 #include <asiodnp3/PrintingCommandCallback.h> 
-#include "MySOEHandler.h"
+#include <asiopal/ChannelRetry.h>
+
+#include "newSOEHandler.h"
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
-
+using namespace std; 
+using namespace openpal; 
+using namespace asiopal; 
+using namespace asiodnp3; 
+using namespace opendnp3; 
 #define MICROSECOND_TO_MILLISECOND 1000
 #define NANOSECOND_TO_MILLISECOND  1000000
 
@@ -277,7 +283,7 @@ bool initialize_map(server_data* server_map)
     }
     return true;
 }
-#if 0
+#if 1
 void setupDNP3(void)
 {
      // Specify what log levels to use. NORMAL is warning and above
@@ -304,7 +310,7 @@ void setupDNP3(void)
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
     auto master = channel->AddMaster("master", // id for logging
-                                     MySOEHandler::Create(/*ourdb*/), // callback for data processing
+                                     newSOEHandler::Create(/*ourdb*/), // callback for data processing
                                      asiodnp3::DefaultMasterApplication::Create(), // master application instance
                                      stackConfig // stack configuration
     );

@@ -23,8 +23,8 @@
 #include <iostream> 
 #include <memory> 
 #include <sstream>
-//namespace asiodnp3 
-//{ 
+namespace asiodnp3 
+{ 
 
 /**
  *	ISOEHandler singleton that prints to the console.
@@ -104,5 +104,5 @@ public:
         return opendnp3::DoubleBitToString(meas.value);
     }
 };
-//} // namespace asiodnp3
+} // namespace asiodnp3
 #endif
