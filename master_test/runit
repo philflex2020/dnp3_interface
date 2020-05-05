@@ -1,0 +1,2 @@
+export LD_LIBRARY_PATH=/home/vagrant/work/flexgen-power/dnp3_interface/master_test/build/release_obj:/usr/local/lib64
+build/release/dnp3_master  config/sample.json 
