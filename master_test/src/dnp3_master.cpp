@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
     void * ourDB = NULL;
-    IMaster* master1 = channel->AddMaster("master1", // id for logging
+    IMaster master1 = channel->AddMaster("master1", // id for logging
                                      newSOEHandler::Create(ourDB), // callback for data processing
                                      asiodnp3::DefaultMasterApplication::Create(), // master application instance
                                      *stackConfig // stack configuration
