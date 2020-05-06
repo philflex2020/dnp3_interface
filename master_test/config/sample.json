@@ -3,7 +3,7 @@
 	{
 		"id": "flexgen_ess",
 		"ip_address2": "192.168.1.148",
-		"ip_address": "127.0.0.0",
+		"ip_address": "127.0.0.1",
 		"port": 20001,
 		"frequency": 500,
 		"byte_swap": false
