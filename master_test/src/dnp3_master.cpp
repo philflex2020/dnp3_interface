@@ -397,41 +397,39 @@ int main(int argc, char *argv[])
                                         "0.0.0.0", PrintingChannelListener::Create());
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
-    MasterStackConfig stackConfig;
+    MasterStackConfig *stackConfig = NEW MasterStackConfig();
     // you can override application layer settings for the master here
     // in this example, we've change the application layer timeout to 2 seconds
-    stackConfig.master.responseTimeout = TimeDuration::Seconds(2);
-    stackConfig.master.disableUnsolOnStartup = true;
+    stackConfig->master.responseTimeout = TimeDuration::Seconds(2);
+    stackConfig->master.disableUnsolOnStartup = true;
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
-    stackConfig.link.LocalAddr = 1;
-    stackConfig.link.RemoteAddr = 10;
+    stackConfig->link.LocalAddr = 1;
+    stackConfig->link.RemoteAddr = 10;
     // Create a new master on a previously declared port, with a
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
     void * ourDB = NULL;
-    //auto newSOE = newSOEHandler::Create(ourDB);
-    //newSOE.setDB(ourDB);
-    auto master = channel->AddMaster("master", // id for logging
+    auto master1 = channel->AddMaster("master1", // id for logging
                                      newSOEHandler::Create(ourDB), // callback for data processing
                                      asiodnp3::DefaultMasterApplication::Create(), // master application instance
-                                     stackConfig // stack configuration
-    );
+                                     *stackConfig // stack configuration
+                                    );
     // do an integrity poll (Class 3/2/1/0) once per minute
-    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
+    auto integrityScan = master1->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
     // do a Class 1 exception poll every 5 seconds
-    auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
-    auto objscan = master->AddAllObjectsScan(GroupVariationID(30,1),
+    auto exceptionScan = master1->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
+    auto objscan = master1->AddAllObjectsScan(GroupVariationID(30,1),
                                                                    TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
-    master->Enable();
+    master1->Enable();
     bool channelCommsLoggingEnabled = true;
     bool masterCommsLoggingEnabled = true;
     {
      auto xlevels = channelCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
      channel->SetLogFilters(xlevels);
       xlevels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
-      master->SetLogFilters(xlevels);
+      master1->SetLogFilters(xlevels);
     }
     //setupDNP3();
     fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
