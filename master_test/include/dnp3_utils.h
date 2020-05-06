@@ -34,7 +34,7 @@ typedef struct _dnp3_mapping_t {
 } dnp3_mapping_t;
 
 enum Type_of_Register {
-    Coil, Discrete_Input, Input_Register, Holding_Register, Num_Register_Types
+    Coil, Discrete_Input, Input_Register, Holding_Register, AnalogIP, AnalogOP, BinaryIP, BinaryOP, Num_Register_Types
 };
 
 typedef struct {
@@ -56,6 +56,7 @@ typedef struct {
     void *mb;
 } system_config;
 
+// one of these for each register ??
 typedef struct maps_t{
     unsigned int    reg_off;
     unsigned int    num_regs;
@@ -108,8 +109,23 @@ typedef struct {
     maps *register_map;
 } datalog;
 
-
-
+// an inividual mapping register
+typedef struct smapr {
+    bool bvalue;
+    float avalue;
+    usigned int ivalue
+    int type;
+    smapr(int _type) {
+        avalue = 0.0;
+        bvalue = false;
+        ivalue = 0;
+        type = _type;
+    }
+    ~smapr(){};
+    
+} mapr;
+// the server data type is given to the dnp3 process
+// the dnp3 will load  data items by value type and index and then trigger a send
 typedef struct sdata
 {
     uri_map uri_to_register;
@@ -129,6 +145,34 @@ typedef struct sdata
         base_uri = NULL;
         num_uris = 0;
     }
+    int setValue(int idx, float value, int send) 
+    {
+        map* mp = regs_to_map[AnalogIP];
+        if (idx < mp->num_regs)
+        {
+            mapr * mr = mp->regs[idx];
+            mapr->avalue = value;
+            if(send)datasendAdd(mr);
+        }
+        return 0
+    }
+
+    int setValue(int idx, bool value, int send) 
+    {
+        map* mp = regs_to_map[BinaryIP];
+        if (idx < mp->num_regs)
+        {
+            mapr * mr = mp->regs[idx];
+            mapr->bvalue = value;
+            if(send)datasendAdd(mr);
+        }
+        return 0;
+    }
+    int datasendAdd( mapr * mr)
+    {
+        return 0;
+    }
+
 } server_data;
 
 bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);

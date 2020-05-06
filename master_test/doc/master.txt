@@ -218,7 +218,24 @@ The Master can set up to sca the outstation at regular intervals.
                 {WithIndex(ao, idx)}), PrintingCommandCallback::Get());
          }
 
+Note that PrintingCommandCallback looks like this just for reference
 
+opendnp3::CommandCallbackT PrintingCommandCallback::Get()
+{
+    return [](const ICommandTaskResult& result) -> void {
+        std::cout << "Received command result w/ summary: " << TaskCompletionToString(result.summary) << std::endl;
+        auto print = [](const CommandPointResult& res) {
+            std::cout << "Header: " << res.headerIndex << " Index: " << res.index
+                      << " State: " << CommandPointStateToString(res.state)
+                      << " Status: " << CommandStatusToString(res.status);
+        };
+        result.ForeachItem(print);
+    };
+}
+
+
+
+Outstation
 
 The outstation is given the number of data points fro each data type.                                                                        );
 OutstationStackConfig stack(
