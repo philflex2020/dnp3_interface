@@ -37,7 +37,7 @@ LIBS = -L$(OBJ_DIR) -L$(LIBS_DIR) -L$(SLIBS_DIR) -Wl,-rpath,$(LIBS_DIR) -lstdc++
 
 all:	build $(LIST)
 
-$(BUILD_DIR)libdmap.so:	$(OBJ_DIR)libdmap.o 
+$(OBJ_DIR)libdmap.so:	$(OBJ_DIR)libdmap.o 
 	$(CXX) -shared -o $@ $^ $(INCLUDES) $(LIBS)
 
 $(OBJ_DIR)libdmap.o:	$(PROJECT_ROOT)src/dnp3_utils.cpp $(PROJECT_ROOT)include/dnp3_utils.h
