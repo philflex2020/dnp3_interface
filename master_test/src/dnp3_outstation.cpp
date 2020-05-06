@@ -69,8 +69,8 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager &ma
 
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
-    config.link.LocalAddr = 1;
-    config.link.RemoteAddr = 10;
+    config.link.LocalAddr = 10;
+    config.link.RemoteAddr = 1;
 
     config.link.KeepAliveTimeout = openpal::TimeDuration::Max();
 
