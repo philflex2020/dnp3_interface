@@ -32,10 +32,10 @@ namespace asiodnp3
 class newSOEHandler final : public opendnp3::ISOEHandler 
 { 
 public:
-    newSOEHandler() { cfgdb = NULL;};
-    static std::shared_ptr<ISOEHandler> Create()
+    newSOEHandler(void * db) { cfgdb = db;};
+    static std::shared_ptr<ISOEHandler> Create(void * db)
     {
-        return std::make_shared<newSOEHandler>();
+        return std::make_shared<newSOEHandler>(db);
     }
     void setDB(void * db){cfgdb = db;};
     virtual void Process(const opendnp3::HeaderInfo& info,
