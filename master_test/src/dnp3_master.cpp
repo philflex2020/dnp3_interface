@@ -407,17 +407,24 @@ int main(int argc, char *argv[])
         printf("fooey 1\n");
     }
     //std::shared_ptr<IChannel> 
-    auto channel = setupDNP3channel(manager, "tcpclient", "127.0.0.1", 20001);
+    auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
     if (!channel){
         printf("fooey 2\n");
     }
+        //std::shared_ptr<IChannel> 
+    auto channel2 = setupDNP3channel(manager, "tcpclient2", "127.0.0.1", 20002);
+    if (!channel2){
+        printf("fooey 2.1\n");
+    }
+
     void * ourDB = NULL;
     //std::shared_ptr<IMaster> 
     auto master = setupDNP3master (channel, "master1", ourDB , 1 /*localAddr*/ , 10 /*RemoteAddr*/);
     if (!master){
         printf("fooey 3\n");
     }
-    master = setupDNP3master (channel, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
+    //we cant do this
+    //master = setupDNP3master (channel, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
     if (!master){
         printf("fooey 4\n");
     }
