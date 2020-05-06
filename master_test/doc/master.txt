@@ -1,0 +1,80 @@
+Notes on the dnp3 master interface.
+
+The master station acts as a connection to an outstation.
+
+A master can connect to one or more outstations.
+
+The master can send control data to the outstations on an adhoc basis.
+The master can receive data from the outstation either periodically or on an event basis.
+The master will send one or more fims messages when it receives data from an outstation.
+A master can be configured to scan the data from an outstation.
+
+A connection between a master and an outstation is defined by a configuratoin file.
+A fims message can be sent to the master to initiate a connection to an outstation. 
+That message will contain the json configuration (or the configuration file name).
+
+The configuration file will contain:
+     the version number of the config file ( to allow rejection of incompatible versions)
+    the ip address/port of the outstation
+    the station number ,
+    a description of the outstation.
+    the frequency of class 0 scans (all data points)
+    (a list of data types )
+        A dataset for each data type
+
+         each data type will have a list of tags initial values etc.
+
+The config file dataset must be shared with the outstation.
+
+DNP3 handles data items ordered by type and point index.
+The point index is inferred by the position in the data set of the data type.
+Hence the same data set must be shared between a master station and an outstation.
+Note a method to ensure dataset integrity should be condisdered. 
+Need to make sure that the master and outstation understand thedata set layout.
+
+The data sets for each  DNP3 connection is managed by a data stack the datamapping is applied to the Outstation.
+This needs to know the number of items for each data type.
+
+The config map , is parsed , and the size of each data set (Binary, Analog) is used to set up the data maps for the DNP stack
+
+
+
+OutstationStackConfig stack(
+		DatabaseSizes(
+			config.bininputs.size(),  // binary input
+			0,                     // double binary input
+			0,                     // analog  input
+			0,                     // counter input
+			0,                     // frozen counter
+			config.binoutputs.size(), // binary output status
+			0,                     // analog output
+			0,                     // time and intervat
+			0                      // octet string
+		)
+	);
+
+    The master station has no knowledge of the data set available from each outstation.
+    When data arrives at the master station it only knows the datatype and the point index of the data item.
+
+However the config file IS important to translate the data items arriving from the outstation into the system tags required for 
+the HybridOS components.
+
+When setting up a masterstation line the transport  channel is first established.
+
+// Connect via a TCPClient socket to a outstation
+std::shared_ptr<IChannel> AddTCPClient(const std::string& id,
+                                           int32_t levels,
+                                           const asiopal::ChannelRetry& retry,
+                                           const std::string& host,
+                                           const std::string& local,
+                                           uint16_t port,
+                                           std::shared_ptr<IChannelListener> listener);
+    Example
+                                           
+    auto channel = manager.AddTCPClient("tcpclient"
+                                    , FILTERS
+                                    , ChannelRetry::Default()
+                                    , {IPEndpoint("127.0.0.1", 20001)}
+                                    , "0.0.0.0"
+                                    , PrintingChannelListener::Create()
+                                                                        );
