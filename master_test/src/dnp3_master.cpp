@@ -309,8 +309,9 @@ void setupDNP3(void)
     // Create a new master on a previously declared port, with a
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
+    void * ourdb = NULL;
     auto master = channel->AddMaster("master", // id for logging
-                                     newSOEHandler::Create(/*ourdb*/), // callback for data processing
+                                     newSOEHandler::Create(ourdb), // callback for data processing
                                      asiodnp3::DefaultMasterApplication::Create(), // master application instance
                                      stackConfig // stack configuration
     );

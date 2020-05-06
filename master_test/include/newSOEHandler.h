@@ -32,10 +32,10 @@ namespace asiodnp3
 class newSOEHandler final : public opendnp3::ISOEHandler 
 { 
 public:
-    newSOEHandler() {}
-    static std::shared_ptr<ISOEHandler> Create()
+    newSOEHandler( void * _cfgdb) { cfgdb =  _cfgdb;}
+    static std::shared_ptr<ISOEHandler> Create( void * cfg)
     {
-        return std::make_shared<newSOEHandler>();
+        return std::make_shared<newSOEHandler>(cfg);
     }
     virtual void Process(const opendnp3::HeaderInfo& info,
                          const opendnp3::ICollection<opendnp3::Indexed<opendnp3::Binary>>& values) override;
@@ -103,6 +103,7 @@ public:
     {
         return opendnp3::DoubleBitToString(meas.value);
     }
+    void *cfgdb;
 };
 } // namespace asiodnp3
 #endif
