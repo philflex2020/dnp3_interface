@@ -354,6 +354,9 @@ server_data* create_register_map(cJSON* registers, datalog* data)
                 cJSON* cur_off = cJSON_GetObjectItem(cur_reg, "offset");
                 cJSON* cur_uri = cJSON_GetObjectItem(cur_reg, "uri");
                 cJSON* cur_id  = cJSON_GetObjectItem(cur_reg, "id");
+                // hack for now
+                if(cur_uri == NULL) cur_uri = cur_id;
+
                 if(cur_off == NULL || cur_off->type != cJSON_Number ||
                    cur_uri == NULL || cur_uri->type != cJSON_String ||
                    cur_id  == NULL || cur_id->type  != cJSON_String  )
