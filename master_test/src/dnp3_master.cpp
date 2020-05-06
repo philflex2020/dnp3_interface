@@ -285,9 +285,9 @@ bool initialize_map(server_data* server_map)
 }
 
 #if 1
-DNP3Manager *setupDNP3Manager(void)
+std::shared_ptr<asiodnp3::IMaster> setupDNP3Manager(void)
 {
-    DNP3Manager *manager = new DNP3Manager(1, ConsoleLogger::Create());
+    auto manager = new DNP3Manager(1, ConsoleLogger::Create());
      // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
@@ -389,7 +389,7 @@ int main(int argc, char *argv[])
     server_map = create_register_map(registers, data);
     cJSON_Delete(config);
     //setupDNP3();
-    DNP3Manager *manager = setupDNP3Manager();
+    auto manager = setupDNP3Manager();
     if (!manager){
         printf("fooey\n");
     }
