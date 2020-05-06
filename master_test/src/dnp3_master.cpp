@@ -285,12 +285,12 @@ bool initialize_map(server_data* server_map)
 }
 
 #if 1
-std::shared_ptr<asiodnp3::IMaster> setupDNP3Manager(void)
+std::shared_ptr<asiodnp3::IManager> setupDNP3Manager(void)
 {
     auto manager = new DNP3Manager(1, ConsoleLogger::Create());
     return manager;
 }
-std::shared_ptr<IChannel> setupDNP3channel(std::shared_ptr<asiodnp3::IMaster>manager, const char* cname, const char* addr, int port)
+std::shared_ptr<IChannel> setupDNP3channel(std::shared_ptr<asiodnp3::IManager>manager, const char* cname, const char* addr, int port)
 {
 
 
