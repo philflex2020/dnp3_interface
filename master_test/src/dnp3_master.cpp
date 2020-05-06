@@ -291,6 +291,9 @@ std::shared_ptr<asiodnp3::IMaster> setupDNP3Manager(void)
     return manager;
 }
 std::shared_ptr<IChannel> setupDNP3channel(std::shared_ptr<asiodnp3::IMaster>manager, const char* cname, const char* addr, int port)
+{
+
+
      // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
