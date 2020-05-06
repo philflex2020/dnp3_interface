@@ -37,7 +37,7 @@ public:
     {
         return std::make_shared<newSOEHandler>();
     }
-    setDB(void * db){cfgdb = db;};
+    void setDB(void * db){cfgdb = db;};
     virtual void Process(const opendnp3::HeaderInfo& info,
                          const opendnp3::ICollection<opendnp3::Indexed<opendnp3::Binary>>& values) override;
     virtual void Process(const opendnp3::HeaderInfo& info,
