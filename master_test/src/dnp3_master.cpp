@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
                                         "0.0.0.0", PrintingChannelListener::Create());
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
-    MasterStackConfig *stackConfig = NEW MasterStackConfig();
+    MasterStackConfig *stackConfig = new MasterStackConfig();
     // you can override application layer settings for the master here
     // in this example, we've change the application layer timeout to 2 seconds
     stackConfig->master.responseTimeout = TimeDuration::Seconds(2);
