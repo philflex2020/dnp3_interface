@@ -506,8 +506,9 @@ int main(int argc, char *argv[])
     }
 
     fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
-
-    fprintf(stderr, "Setup complete: Entering main loop.\n");
+    fprintf(stderr, "Fims Setup complete: now for DNP3\n");
+    setupDNP3();
+    fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
     while(running)
     {
         connections_with_data = all_connections;
