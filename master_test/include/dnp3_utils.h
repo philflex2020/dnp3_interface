@@ -6,6 +6,12 @@
  */
 #include <map>
 #include <cstring>
+#include <string>
+
+#ifndef FPS_ERROR_PRINT 
+#define FPS_ERROR_PRINT printf
+#define FPS_DEBUG_PRINT printf
+#endif
 
 
 struct char_cmp {
@@ -189,16 +195,17 @@ typedef struct sdata
 
 typedef struct _sysCfg {
     public:
-    string protocol;
-    int version;
-    string id;
-    string ip_address;
-    int port;
-    int local_address;
-    int remote_address;
+      char* protocol;
+      int version;
+      char* id;
+      char* ip_address;
+      int port;
+      int local_address;
+      int remote_address;
 
-    map<int,string>binaryNames;
-    map<int,string>analogNames;
+      std::map<int,char*>binaryNames;
+      std::map<int,char*>analogNames;
+
 } sysCfg;
 
 bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);

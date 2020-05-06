@@ -24,7 +24,9 @@
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
 #include <map>
-
+#include <string>
+#include <cstring>
+using namespace std;
 
 int establish_connection(system_config* config)
 {
@@ -239,12 +241,12 @@ bool getCJint (cJSON *cj, const char *name, int& val)
     return ok;
 }
 
-bool getCJstr (cJSON *cj, const char *name, string& val)
+bool getCJstr (cJSON *cj, const char *name, char *& val)
 {
     bool ok = false;
     cJSON *cji = cJSON_GetObjectItem(cj, name);
     if (cji) {
-        val= cji->valuestring;
+        val = strdup(cji->valuestring);
         ok = true;
     }
     return ok;
@@ -266,7 +268,7 @@ bool parse_system(cJSON* cji, sysCfg* sys)
     if(ret) ret = getCJint(cj,"local_address",sys->local_address);
     if(ret) ret = getCJint(cj,"remote_address",sys->remote_address);
     if(ret) ret = getCJstr(cj,"id",sys->id);
-    if(ret) ret = getCJstr(cj,"protocol",sys->ptotocol);
+    if(ret) ret = getCJstr(cj,"protocol",sys->protocol);
     if(ret) ret = getCJstr(cj,"ip_address",sys->ip_address);
 
     // config file has "objects" with children groups "binary" and "analog"
