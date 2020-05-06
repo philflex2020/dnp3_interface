@@ -310,10 +310,10 @@ void setupDNP3(void)
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
     void * ourDB = NULL;
-    auto newSOE = newSOEHandler::Create(ourDB);
+    //auto newSOE = newSOEHandler::Create(ourDB);
     //newSOE.setDB(ourDB);
     auto master = channel->AddMaster("master", // id for logging
-                                     newSOE, // callback for data processing
+                                     newSOEHandler::Create(ourDB), // callback for data processing
                                      asiodnp3::DefaultMasterApplication::Create(), // master application instance
                                      stackConfig // stack configuration
     );
