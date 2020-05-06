@@ -52,7 +52,7 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager &ma
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_COMMS;
 
     // Create a TCP server (listener)
-    auto channel = manager.AddTCPServer("server", FILTERS, ServerAcceptMode::CloseExisting, "192.168.1.50", 20000,
+    auto channel = manager.AddTCPServer("server", FILTERS, ServerAcceptMode::CloseExisting, "127.0.0.1", 20001,
                                         PrintingChannelListener::Create());
 
     // The main object for a outstation. The defaults are useable,
