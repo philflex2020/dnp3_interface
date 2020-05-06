@@ -390,10 +390,10 @@ int main(int argc, char *argv[])
     // You can add all the comms logging by uncommenting below
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
     // This is the main point of interaction with the stack
-    DNP3Manager manager(1, ConsoleLogger::Create());
+    DNP3Manager *manager = new DNP3Manager(1, ConsoleLogger::Create());
     // Connect via a TCPClient socket to a outstation
     // repeat for each outstation
-    auto channel = manager.AddTCPClient("tcpclient", FILTERS, ChannelRetry::Default(), {IPEndpoint("127.0.0.1", 20001)},
+    auto channel1 = manager->AddTCPClient("tcpclient1", FILTERS, ChannelRetry::Default(), {IPEndpoint("127.0.0.1", 20001)},
                                         "0.0.0.0", PrintingChannelListener::Create());
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
     void * ourDB = NULL;
-    auto master1 = channel->AddMaster("master1", // id for logging
+    auto master1 = channel1->AddMaster("master1", // id for logging
                                      newSOEHandler::Create(ourDB), // callback for data processing
                                      asiodnp3::DefaultMasterApplication::Create(), // master application instance
                                      *stackConfig // stack configuration
@@ -427,7 +427,7 @@ int main(int argc, char *argv[])
     bool masterCommsLoggingEnabled = true;
     {
      auto xlevels = channelCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
-     channel->SetLogFilters(xlevels);
+     channel1->SetLogFilters(xlevels);
       xlevels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
       master1->SetLogFilters(xlevels);
     }
