@@ -327,6 +327,10 @@ void setupDNP3(void)
     master->Enable();
     bool channelCommsLoggingEnabled = true;
     bool masterCommsLoggingEnabled = true;
+     auto levels = channelCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
+    channel->SetLogFilters(levels);
+    levels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
+    master->SetLogFilters(levels);
 }
 #endif
 
