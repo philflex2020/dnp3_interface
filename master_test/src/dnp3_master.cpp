@@ -424,8 +424,8 @@ int main(int argc, char *argv[])
         printf("fooey 3\n");
     }
     //we cant do this
-    //master = setupDNP3master (channel, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
-    if (!master){
+    auto master2 = setupDNP3master (channel2, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
+    if (!master2){
         printf("fooey 4\n");
     }
 
