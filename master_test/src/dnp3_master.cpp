@@ -413,9 +413,13 @@ int main(int argc, char *argv[])
     }
     void * ourDB = NULL;
     //std::shared_ptr<IMaster> 
-    auto master = setupDNP3master (channel, "master", ourDB , 1 /*localAddr*/ , 10 /*RemoteAddr*/);
+    auto master = setupDNP3master (channel, "master1", ourDB , 1 /*localAddr*/ , 10 /*RemoteAddr*/);
     if (!master){
         printf("fooey 3\n");
+    }
+    master = setupDNP3master (channel, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
+    if (!master){
+        printf("fooey 4\n");
     }
 
 
