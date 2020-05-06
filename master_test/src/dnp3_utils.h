@@ -1,6 +1,9 @@
 #ifndef DNP3_UTILS_H
 #define DNP3_UTILS_H
-
+/*
+ * mapping shared library
+ *      pwilshire      5/5/2020
+ */
 #include <map>
 
 struct char_cmp {
