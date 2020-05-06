@@ -325,8 +325,8 @@ void setupDNP3(void)
                                                                    TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
     master->Enable();
-    //bool channelCommsLoggingEnabled = true;
-    //bool masterCommsLoggingEnabled = true;
+    bool channelCommsLoggingEnabled = true;
+    bool masterCommsLoggingEnabled = true;
 }
 #endif
 
