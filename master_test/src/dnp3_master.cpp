@@ -288,6 +288,9 @@ bool initialize_map(server_data* server_map)
 std::shared_ptr<asiodnp3::IMaster> setupDNP3Manager(void)
 {
     auto manager = new DNP3Manager(1, ConsoleLogger::Create());
+    return manager;
+}
+std::shared_ptr<IChannel> setupDNP3channel(std::shared_ptr<asiodnp3::IMaster>manager, const char* cname, const char* addr, int port)
      // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
@@ -295,7 +298,7 @@ std::shared_ptr<asiodnp3::IMaster> setupDNP3Manager(void)
     //DNP3Manager manager(1, ConsoleLogger::Create());
     // Connect via a TCPClient socket to a outstation
     // repeat for each outstation
-    auto channel = manager->AddTCPClient("tcpclient", FILTERS, ChannelRetry::Default(), {IPEndpoint("127.0.0.1", 20001)},
+    std::shared_ptr<IChannel> channel = manager->AddTCPClient(cname, FILTERS, ChannelRetry::Default(), {IPEndpoint(addr, port)},
                                         "0.0.0.0", PrintingChannelListener::Create());
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
@@ -333,8 +336,9 @@ std::shared_ptr<asiodnp3::IMaster> setupDNP3Manager(void)
     channel->SetLogFilters(levels);
     levels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
     master->SetLogFilters(levels);
-    return master;
+    return channel;
 }
+
 #endif
 
 int main(int argc, char *argv[])
@@ -391,8 +395,13 @@ int main(int argc, char *argv[])
     //setupDNP3();
     auto manager = setupDNP3Manager();
     if (!manager){
-        printf("fooey\n");
+        printf("fooey 1\n");
     }
+    std::shared_ptr<IChannel> channel = setupDNP3channel(manager, "tcpclient", "127.0.0.1", 20001);
+    if (!channel){
+        printf("fooey 2\n");
+    }
+
     #if 0
 // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
