@@ -22,8 +22,7 @@ using namespace std;
 using namespace opendnp3; 
 namespace asiodnp3 { 
 
-void newSOEHandler::Process(const HeaderInfo& info, const 
-ICollection<Indexed<Binary>>& values) {
+void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
     std::cout << "******************************Bin: " <<std::endl;
     return PrintAll(info, values);
 }
