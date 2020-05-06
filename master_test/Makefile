@@ -14,7 +14,7 @@ SLIBS_DIR = /usr/local/lib64/
 
 INCLUDES_BUILD = -Iinclude/
 INCLUDES = -I$(INCLUDES_DIR) -I$(SINCLUDES_DIR)
-LIBS = -L$(BUILD_DIR) -L$(LIBS_DIR) -L$(SLIBS_DIR) -Wl,-rpath,$(LIBS_DIR) -lstdc++ -lcjson -lfims -lopendnp3 -lopenpal -lasiopal -lasiodnp3 -lpthread
+LIBS = -L$(BUILD_DIR)_obj -L$(LIBS_DIR) -L$(SLIBS_DIR) -Wl,-rpath,$(LIBS_DIR) -lstdc++ -lcjson -lfims -lopendnp3 -lopenpal -lasiopal -lasiodnp3 -lpthread
 
 CPPFLAGS += -std=c++11 
 CPPFLAGS += -Wall -pedantic -Werror
