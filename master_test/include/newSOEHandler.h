@@ -33,7 +33,7 @@ class newSOEHandler final : public opendnp3::ISOEHandler
 { 
 public:
     newSOEHandler( void * _cfgdb) { cfgdb =  _cfgdb;}
-    static std::shared_ptr<ISOEHandler> Create( void * cfg)
+    static std::shared_ptr<ISOEHandler> Create()
     {
         return std::make_shared<newSOEHandler>(cfg);
     }
