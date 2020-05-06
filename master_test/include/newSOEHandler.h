@@ -32,7 +32,7 @@ namespace asiodnp3
 class newSOEHandler final : public opendnp3::ISOEHandler 
 { 
 public:
-    newSOEHandler() { cfgdb = NULL;}
+    newSOEHandler() { cfgdb = NULL;};
     static std::shared_ptr<ISOEHandler> Create()
     {
         return std::make_shared<newSOEHandler>();
@@ -75,6 +75,17 @@ public:
     template<class T> static void Print(const opendnp3::HeaderInfo& info, const T& value, uint16_t index)
     {
         std::cout << "[" << index << "] : " << ValueToString(value) << " : " << static_cast<int>(value.flags.value)
+                  << " : " << value.time << std::endl;
+    }
+    template<class T>
+    static void myPrintAll(const opendnp3::HeaderInfo& info, const opendnp3::ICollection<opendnp3::Indexed<T>>& values)
+    {
+        auto print = [&](const opendnp3::Indexed<T>& pair) { myPrint<T>(info, pair.value, pair.index); };
+        values.ForeachItem(print);
+    }
+    template<class T> static void myPrint(const opendnp3::HeaderInfo& info, const T& value, uint16_t index)
+    {
+        std::cout << "mystuff [" << index << "] : " << ValueToString(value) << " : " << static_cast<int>(value.flags.value)
                   << " : " << value.time << std::endl;
     }
     template<class T> static std::string ValueToString(const T& meas)
