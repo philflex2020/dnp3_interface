@@ -284,17 +284,18 @@ bool initialize_map(server_data* server_map)
     return true;
 }
 
-#if 0
-void setupDNP3(void)
+#if 1
+DNP3Manager *setupDNP3Manager(void)
 {
+    DNP3Manager *manager = new DNP3Manager(1, ConsoleLogger::Create());
      // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
     // This is the main point of interaction with the stack
-    DNP3Manager manager(1, ConsoleLogger::Create());
+    //DNP3Manager manager(1, ConsoleLogger::Create());
     // Connect via a TCPClient socket to a outstation
     // repeat for each outstation
-    auto channel = manager.AddTCPClient("tcpclient", FILTERS, ChannelRetry::Default(), {IPEndpoint("127.0.0.1", 20001)},
+    auto channel = manager->AddTCPClient("tcpclient", FILTERS, ChannelRetry::Default(), {IPEndpoint("127.0.0.1", 20001)},
                                         "0.0.0.0", PrintingChannelListener::Create());
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
@@ -332,6 +333,7 @@ void setupDNP3(void)
     channel->SetLogFilters(levels);
     levels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
     master->SetLogFilters(levels);
+    return master;
 }
 #endif
 
@@ -386,6 +388,9 @@ int main(int argc, char *argv[])
     fprintf(stderr, "System config complete: Setup register map.\n");
     server_map = create_register_map(registers, data);
     cJSON_Delete(config);
+    //setupDNP3();
+    DNP3Manager *manager = setupDNP3Manager();
+    #if 0
 // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
@@ -431,7 +436,8 @@ int main(int argc, char *argv[])
       xlevels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
       master1->SetLogFilters(xlevels);
     }
-    //setupDNP3();
+    #endif
+    
     fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
 
     if (server_map == NULL)
