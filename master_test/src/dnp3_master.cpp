@@ -283,7 +283,7 @@ bool initialize_map(server_data* server_map)
     }
     return true;
 }
-#if 1
+#if 0
 void setupDNP3(void)
 {
      // Specify what log levels to use. NORMAL is warning and above
@@ -511,7 +511,53 @@ int main(int argc, char *argv[])
 
     fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
     fprintf(stderr, "Fims Setup complete: now for DNP3\n");
-    setupDNP3();
+
+     // Specify what log levels to use. NORMAL is warning and above
+    // You can add all the comms logging by uncommenting below
+    const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
+    // This is the main point of interaction with the stack
+    DNP3Manager manager(1, ConsoleLogger::Create());
+    // Connect via a TCPClient socket to a outstation
+    // repeat for each outstation
+    auto channel = manager.AddTCPClient("tcpclient", FILTERS, ChannelRetry::Default(), {IPEndpoint("127.0.0.1", 20001)},
+                                        "0.0.0.0", PrintingChannelListener::Create());
+    // The master config object for a master. The default are
+    // useable, but understanding the options are important.
+    MasterStackConfig stackConfig;
+    // you can override application layer settings for the master here
+    // in this example, we've change the application layer timeout to 2 seconds
+    stackConfig.master.responseTimeout = TimeDuration::Seconds(2);
+    stackConfig.master.disableUnsolOnStartup = true;
+    // You can override the default link layer settings here
+    // in this example we've changed the default link layer addressing
+    stackConfig.link.LocalAddr = 1;
+    stackConfig.link.RemoteAddr = 10;
+    // Create a new master on a previously declared port, with a
+    // name, log level, command acceptor, and config info. This
+    // returns a thread-safe interface used for sending commands.
+    void * ourDB = NULL;
+    //auto newSOE = newSOEHandler::Create(ourDB);
+    //newSOE.setDB(ourDB);
+    auto master = channel->AddMaster("master", // id for logging
+                                     newSOEHandler::Create(ourDB), // callback for data processing
+                                     asiodnp3::DefaultMasterApplication::Create(), // master application instance
+                                     stackConfig // stack configuration
+    );
+    // do an integrity poll (Class 3/2/1/0) once per minute
+    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
+    // do a Class 1 exception poll every 5 seconds
+    auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
+    auto objscan = master->AddAllObjectsScan(GroupVariationID(30,1),
+                                                                   TimeDuration::Seconds(10));
+    // Enable the master. This will start communications.
+    master->Enable();
+    bool channelCommsLoggingEnabled = true;
+    bool masterCommsLoggingEnabled = true;
+     auto levels = channelCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
+    channel->SetLogFilters(levels);
+    levels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
+    master->SetLogFilters(levels);
+    //setupDNP3();
     fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
     while(running)
     {
