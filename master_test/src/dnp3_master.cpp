@@ -390,6 +390,9 @@ int main(int argc, char *argv[])
     cJSON_Delete(config);
     //setupDNP3();
     DNP3Manager *manager = setupDNP3Manager();
+    if (!manager){
+        printf("fooey\n");
+    }
     #if 0
 // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
