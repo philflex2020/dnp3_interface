@@ -290,9 +290,9 @@ DNP3Manager* setupDNP3Manager(void)
     auto manager = new DNP3Manager(1, ConsoleLogger::Create());
     return manager;
 }
+// I think we can have several channels under one manager
 std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, const char* addr, int port)
 {
-
 
      // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
@@ -305,6 +305,12 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
                                         "0.0.0.0", PrintingChannelListener::Create());
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
+    return channel;
+}
+
+std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, void * ourDB , int localAddr , int RemoteAddr)
+{
+
     MasterStackConfig stackConfig;
     // you can override application layer settings for the master here
     // in this example, we've change the application layer timeout to 2 seconds
@@ -317,7 +323,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     // Create a new master on a previously declared port, with a
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
-    void * ourDB = NULL;
+    ///void * ourDB = NULL;
     //auto newSOE = newSOEHandler::Create(ourDB);
     //newSOE.setDB(ourDB);
     auto master = channel->AddMaster("master", // id for logging
@@ -339,7 +345,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     channel->SetLogFilters(levels);
     levels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
     master->SetLogFilters(levels);
-    return channel;
+    return master;
 }
 
 #endif
@@ -400,10 +406,17 @@ int main(int argc, char *argv[])
     if (!manager){
         printf("fooey 1\n");
     }
-    std::shared_ptr<IChannel> channel = setupDNP3channel(manager, "tcpclient", "127.0.0.1", 20001);
+    //std::shared_ptr<IChannel> 
+    auto channel = setupDNP3channel(manager, "tcpclient", "127.0.0.1", 20001);
     if (!channel){
         printf("fooey 2\n");
     }
+    //std::shared_ptr<IMaster> 
+    auto master = setupDNP3master (channel, "master", ourDB , 1 /*localAddr*/ , 10 /*RemoteAddr*/);
+    if (!master){
+        printf("fooey 3\n");
+    }
+
 
     #if 0
 // Specify what log levels to use. NORMAL is warning and above
