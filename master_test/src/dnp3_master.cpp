@@ -411,6 +411,7 @@ int main(int argc, char *argv[])
     if (!channel){
         printf("fooey 2\n");
     }
+    void * ourDB = NULL;
     //std::shared_ptr<IMaster> 
     auto master = setupDNP3master (channel, "master", ourDB , 1 /*localAddr*/ , 10 /*RemoteAddr*/);
     if (!master){
