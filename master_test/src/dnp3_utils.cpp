@@ -19,7 +19,7 @@
 #include <netinet/in.h>
 #include <net/if.h>
 #include <signal.h>
-
+#include <arpa/inet.h>
 #include <fims/libfims.h>
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
