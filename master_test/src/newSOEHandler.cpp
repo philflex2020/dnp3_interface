@@ -31,18 +31,25 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Do
     return PrintAll(info, values);
     
 }
-void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Analog>>& values) {
+void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<BinaryCommandEvent>>& values) {
+    auto print = [](const Indexed<BinaryCommandEvent>& pair) {
+        std::cout << "BinaryCommandEvent: "
+                  << "[" << pair.index << "] : " << pair.value.time << " : " << pair.value.value << " : "
+                  << CommandStatusToString(pair.value.status) << std::endl;
+    };
+    values.ForeachItem(print);
+}
+void newSOEHandler::Process(const HeaderInfo& /* info*/, const ICollection<Indexed<Analog>>& values) {
     std::cout << "******************************An: >>>" <<std::endl;
     std::cout << " Values size:" << values.Count() << std::endl;
     auto print = [](const Indexed<Analog>& pair) {
         std::cout << "Analog "
-            << " index [" << pair.index <<"]"<< std::endl;
-        //              << " [" << pair.index << "] : Value : " << ValueToString(pair.value) << std::endl;
-                  //cfgdb->addVal(Analog, pair.index, pair.value);
+                  << " index [" << pair.index <<"]"
+                  << std::endl;
     };
+    values.ForeachItem(print);
 
     //cfgdb->lock(Analog);
-    values.ForeachItem(print);
     //cfgdb->triggerSend();
     //cfgdb->unlock(Analog);
     //myPrintAll(info, values);
@@ -80,14 +87,7 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
     };
     values.ForeachItem(print);
 }
-void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<BinaryCommandEvent>>& values) {
-    auto print = [](const Indexed<BinaryCommandEvent>& pair) {
-        std::cout << "BinaryCommandEvent: "
-                  << "[" << pair.index << "] : " << pair.value.time << " : " << pair.value.value << " : "
-                  << CommandStatusToString(pair.value.status) << std::endl;
-    };
-    values.ForeachItem(print);
-}
+
 void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<AnalogCommandEvent>>& values) {
     auto print = [](const Indexed<AnalogCommandEvent>& pair) {
         std::cout << "AnalogCommandEvent: "
