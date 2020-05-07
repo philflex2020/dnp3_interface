@@ -160,13 +160,13 @@ And for the Analog data.
 
 void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<Analog>>& values)
 {
+    cfgdb->lock(Analog);
+
     auto print = [](const Indexed<Analog>& pair) {
         std::cout << "Analog "
-                  << " [" << pair.index << "] : Value : " << pair.value << std::endl;
-                  cfgdb->addVal(Analog, pair.index, pair.value);
+                  << " [" << pair.index << "] : Value : " << pair.value.value << std::endl;
+                  cfgdb->addVal(Analog, pair.index, pair.value.value);
     };
-
-    cfgdb->lock(Analog);
     values.ForeachItem(print);
     cfgdb->triggerSend();
     cfgdb->unlock(Analog);
@@ -236,18 +236,75 @@ opendnp3::CommandCallbackT PrintingCommandCallback::Get()
 
 
 Outstation
+Unlike the Master,  the Outstation stack has a data storage area for data values.
 
-The outstation is given the number of data points fro each data type.                                                                        );
+The outstation reads the same config file and extracts the number of data points for each data type.                                                                        );
+
 OutstationStackConfig stack(
-		DatabaseSizes(
-			config.bininputs.size(),  // binary input
-			0,                     // double binary input
-			0,                     // analog  input
-			0,                     // counter input
-			0,                     // frozen counter
-			config.binoutputs.size(), // binary output status
-			0,                     // analog output
-			0,                     // time and intervat
-			0                      // octet string
+	DatabaseSizes(
+		cfgdb.bininputs.size(),  // binary input
+		0,                     // double binary input
+		0,                     // analog  input
+		0,                     // counter input
+		0,                     // frozen counter
+		cfgdb.binoutputs.size(), // binary output status
+		0,                     // analog output
+		0,                     // time and intervat
+		0                      // octet string
 		)
-	);
+);
+
+IN addition, options for each item in the datatype arrays can be modified.
+This will change the function and classification of the object to allow it to be included in specified scans etc.
+The data type of the object cannot be changed.
+(Note perhaps we can add a tag here I dont know yet)
+
+void ConfigureDatabase(DatabaseConfig& config)
+{
+    // example of configuring analog index 0 for Class2 with floating point variations by default
+    config.analog[0].clazz = PointClass::Class2;
+    config.analog[0].svariation = StaticAnalogVariation::Group30Var5;
+    config.analog[0].evariation = EventAnalogVariation::Group32Var7;
+}
+
+The outstation creates a listner.  
+// Create a TCP server (listener)
+    auto channel = manager.AddTCPServer("server", FILTERS, ServerAcceptMode::CloseExisting, "0.0.0.0", 20001,
+                                        PrintingChannelListener::Create());
+
+The channel then attaches outstations each with their own data (stack) config and command handler.
+The outstations are identified by the local address ( 10 ) in this case.
+
+
+// The main object for a outstation. The defaults are useable,
+    // but understanding the options are important.
+    // fixed sizes here the sample above shows how to provide custom sizes.
+    OutstationStackConfig config(DatabaseSizes::AllTypes(10));
+
+    // Specify the maximum size of the event buffers
+    config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
+
+    // you can override an default outstation parameters here
+    // in this example, we've enabled the oustation to use unsolicted reporting
+    // if the master enables it
+    config.outstation.params.allowUnsolicited = true;
+
+    // You can override the default link layer settings here
+    // in this example we've changed the default link layer addressing
+    config.link.LocalAddr = 10;
+    config.link.RemoteAddr = 1;
+
+    config.link.KeepAliveTimeout = openpal::TimeDuration::Max();
+
+    // You can optionally change the default reporting variations or class assignment prior to enabling the outstation
+    ConfigureDatabase(config.dbConfig);
+
+    // Create a new outstation with a log level, command handler, and
+    // config info this	returns a thread-safe interface used for
+    // updating the outstation's database.
+    //auto outstation = channel->AddOutstation("outstation", SuccessCommandHandler::Create(),
+    //                                         DefaultOutstationApplication::Create(), config);
+
+    auto outstation = channel->AddOutstation("outstation", commandHandler,
+                                             DefaultOutstationApplication::Create(), config);
+The command handler os used to handle the interface from DNP3 to the real world.
