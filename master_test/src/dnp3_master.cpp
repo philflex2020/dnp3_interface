@@ -61,81 +61,6 @@ void signal_handler (int sig)
     signal(sig, SIG_DFL);
 }
 
-int establish_connection(system_config* config)
-{
-    struct ifreq ifr;
-    struct sockaddr_in addr;
-    int sock, yes;
-    // modbus listen only accepts on INADDR_ANY so need to make own socket and hand it over
-    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (sock == -1)
-    {
-        fprintf(stderr, "Failed to create socket: %s.\n", strerror(errno));
-        return -1;
-    }
-
-    yes = 1;
-    if (-1 == setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &yes, sizeof(yes)))
-    {
-        fprintf(stderr, "Failed to set socket option reuse address: %s.\n", strerror(errno));
-        close(sock);
-        return -1;
-    }
-
-    memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    //read port out of config
-    addr.sin_port = htons(config->port);
-
-    if(config->eth_dev != NULL)
-    {
-        ifr.ifr_addr.sa_family = AF_INET;
-        //read interface out of config file
-        strncpy(ifr.ifr_name, config->eth_dev, IFNAMSIZ - 1);
-        if(-1 == ioctl(sock, SIOCGIFADDR, &ifr))
-        {
-            fprintf(stderr, "Failed to get ip address for interface %s: %s.\n", ifr.ifr_name, strerror(errno));
-            close(sock);
-            return -1;
-        }
-        addr.sin_addr.s_addr = ((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr.s_addr;
-    }
-    else if(config->ip_address != NULL)
-        addr.sin_addr.s_addr = inet_addr(config->ip_address);
-    else
-        addr.sin_addr.s_addr = INADDR_ANY;
-
-    if (-1 == bind(sock, (struct sockaddr *)&addr, sizeof(addr)))
-    {
-        fprintf(stderr, "Failed to bind socket: %s.\nIf trying to use a port less than 1024 run programs as sudo.\n", strerror(errno));
-        close(sock);
-        return -1;
-    }
-
-    if (-1 == listen(sock, 1))
-    {
-        fprintf(stderr, "Failed to listen on socket: %s.\n", strerror(errno));
-        close(sock);
-        return -1;
-    }
-
-    // Values passed to modbus_new_tcp are ignored since we are listening on our own socket
-    //config->mb = modbus_new_tcp("127.0.0.1", MODBUS_TCP_DEFAULT_PORT);
-    //if(config->mb == NULL)
-    //{
-    //    fprintf(stderr, "Failed to allocate context.\n");
-    //    close(sock);
-    //    return -1;
-    //}
-    //if(config->device_id != -1 && -1 == modbus_set_slave(config->mb, config->device_id))
-    //{
-    //    fprintf(stderr, "Valid Unit identifiers (Device_Id) are between 1-247.\n");
-    //    modbus_free(config->mb);
-    //    config->mb = NULL;
-    //    return -1;
-    //}
-    return sock;
-}
 
 
 bool process_fims_message(fims_message* msg, server_data* server_map)
@@ -284,7 +209,7 @@ bool initialize_map(server_data* server_map)
     return true;
 }
 
-#if 1
+
 DNP3Manager* setupDNP3Manager(void)
 {
     auto manager = new DNP3Manager(1, ConsoleLogger::Create());
@@ -348,7 +273,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     return master;
 }
 
-#endif
+
 
 int main(int argc, char *argv[])
 {
@@ -383,7 +308,12 @@ int main(int argc, char *argv[])
         cJSON_Delete(config);
         return 1;
     }
-
+    // Read connection information from json and establish modbus connection
+    if(-1 == parse_system(system_obj, &sys_cfg))
+    {
+        cJSON_Delete(config);
+        return 1;
+    }
     cJSON *registers = cJSON_GetObjectItem(config, "registers");
     if (registers == NULL)
     {
@@ -392,12 +322,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Read connection information from json and establish modbus connection
-    if(-1 == parse_system(system_obj, &sys_cfg))
-    {
-        cJSON_Delete(config);
-        return 1;
-    }
+    
+    // sys_cfg.name, ip_address, port
     fprintf(stderr, "System config complete: Setup register map.\n");
     server_map = create_register_map(registers, data);
     cJSON_Delete(config);
@@ -412,25 +338,25 @@ int main(int argc, char *argv[])
         printf("fooey 2\n");
     }
         //std::shared_ptr<IChannel> 
-    auto channel2 = setupDNP3channel(manager, "tcpclient2", "192.168.1.148", 20001);
-    if (!channel2){
-        printf("fooey 2.1\n");
-    }
+    //auto channel2 = setupDNP3channel(manager, "tcpclient2", "192.168.1.148", 20001);
+    //if (!channel2){
+    //    printf("fooey 2.1\n");
+    //}
 
-    void * ourDB = NULL;
+    //void * ourDB = NULL;
     //std::shared_ptr<IMaster> 
-    auto master = setupDNP3master (channel, "master1", ourDB , 1 /*localAddr*/ , 10 /*RemoteAddr*/);
+    auto master = setupDNP3master (channel, "master1", server_map , 1 /*localAddr*/ , 10 /*RemoteAddr*/);
     if (!master){
         printf("fooey 3\n");
     }
     //we cant do this
-    auto master2 = setupDNP3master (channel2, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
-    if (!master2){
-        printf("fooey 4\n");
-    }
+    //auto master2 = setupDNP3master (channel2, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
+    //if (!master2){
+    //    printf("fooey 4\n");
+    //}
 
 
-    #if 0
+#if 0
 // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
