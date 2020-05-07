@@ -9,6 +9,7 @@
 		"byte_swap": false
 	},
 	"registers":
+	{ "input_registers":
 	[
 		{
 			"type": "Input Registers",
@@ -323,4 +324,5 @@
 			]
 		}
 	]
+}
 }
