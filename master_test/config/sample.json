@@ -2,8 +2,9 @@
 	"system":
 	{
 		"id": "flexgen_ess",
-		"ip_address": "10.8.20.153",
-		"port": 502,
+		"ip_address2": "192.168.1.148",
+		"ip_address": "127.0.0.0",
+		"port": 20001,
 		"frequency": 500,
 		"byte_swap": false
 	},
