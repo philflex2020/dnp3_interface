@@ -23,7 +23,7 @@
 #include <iostream> 
 #include <memory> 
 #include <sstream>
-#include "dnp_utils.h"
+#include "dnp3_utils.h"
 
 namespace asiodnp3 
 { 
