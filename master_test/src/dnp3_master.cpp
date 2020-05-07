@@ -412,7 +412,7 @@ int main(int argc, char *argv[])
         printf("fooey 2\n");
     }
         //std::shared_ptr<IChannel> 
-    auto channel2 = setupDNP3channel(manager, "tcpclient2", "127.0.0.1", 20002);
+    auto channel2 = setupDNP3channel(manager, "tcpclient2", "192.168.1.148", 20001);
     if (!channel2){
         printf("fooey 2.1\n");
     }
