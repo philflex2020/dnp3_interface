@@ -39,7 +39,7 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<An
             << " index [" << pair.index <<"]"<< std::endl;
         //              << " [" << pair.index << "] : Value : " << ValueToString(pair.value) << std::endl;
                   //cfgdb->addVal(Analog, pair.index, pair.value);
-    //};
+    };
 
     //cfgdb->lock(Analog);
     values.ForeachItem(print);
