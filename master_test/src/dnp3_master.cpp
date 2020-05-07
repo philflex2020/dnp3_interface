@@ -233,7 +233,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
-std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, server_map* ourDB , int localAddr , int RemoteAddr)
+std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, server_data* ourDB , int localAddr , int RemoteAddr)
 {
 
     MasterStackConfig stackConfig;
