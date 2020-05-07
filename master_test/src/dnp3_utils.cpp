@@ -16,6 +16,82 @@
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
 
+int establish_connection(system_config* config)
+{
+    struct ifreq ifr;
+    struct sockaddr_in addr;
+    int sock, yes;
+    // modbus listen only accepts on INADDR_ANY so need to make own socket and hand it over
+    sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (sock == -1)
+    {
+        fprintf(stderr, "Failed to create socket: %s.\n", strerror(errno));
+        return -1;
+    }
+
+    yes = 1;
+    if (-1 == setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &yes, sizeof(yes)))
+    {
+        fprintf(stderr, "Failed to set socket option reuse address: %s.\n", strerror(errno));
+        close(sock);
+        return -1;
+    }
+
+    memset(&addr, 0, sizeof(addr));
+    addr.sin_family = AF_INET;
+    //read port out of config
+    addr.sin_port = htons(config->port);
+
+    if(config->eth_dev != NULL)
+    {
+        ifr.ifr_addr.sa_family = AF_INET;
+        //read interface out of config file
+        strncpy(ifr.ifr_name, config->eth_dev, IFNAMSIZ - 1);
+        if(-1 == ioctl(sock, SIOCGIFADDR, &ifr))
+        {
+            fprintf(stderr, "Failed to get ip address for interface %s: %s.\n", ifr.ifr_name, strerror(errno));
+            close(sock);
+            return -1;
+        }
+        addr.sin_addr.s_addr = ((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr.s_addr;
+    }
+    else if(config->ip_address != NULL)
+        addr.sin_addr.s_addr = inet_addr(config->ip_address);
+    else
+        addr.sin_addr.s_addr = INADDR_ANY;
+
+    if (-1 == bind(sock, (struct sockaddr *)&addr, sizeof(addr)))
+    {
+        fprintf(stderr, "Failed to bind socket: %s.\nIf trying to use a port less than 1024 run programs as sudo.\n", strerror(errno));
+        close(sock);
+        return -1;
+    }
+
+    if (-1 == listen(sock, 1))
+    {
+        fprintf(stderr, "Failed to listen on socket: %s.\n", strerror(errno));
+        close(sock);
+        return -1;
+    }
+
+    // Values passed to modbus_new_tcp are ignored since we are listening on our own socket
+    //config->mb = modbus_new_tcp("127.0.0.1", MODBUS_TCP_DEFAULT_PORT);
+    //if(config->mb == NULL)
+    //{
+    //    fprintf(stderr, "Failed to allocate context.\n");
+    //    close(sock);
+    //    return -1;
+    //}
+    //if(config->device_id != -1 && -1 == modbus_set_slave(config->mb, config->device_id))
+    //{
+    //    fprintf(stderr, "Valid Unit identifiers (Device_Id) are between 1-247.\n");
+    //    modbus_free(config->mb);
+    //    config->mb = NULL;
+    //    return -1;
+    //}
+    return sock;
+}
+
 void emit_event(fims* pFims, const char* source, const char* message, int severity)
 {
     cJSON* body_object;
