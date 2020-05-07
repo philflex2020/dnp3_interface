@@ -154,7 +154,7 @@ typedef struct sdata
      //       mapr->avalue = value;
      //       if(send)datasendAdd(mr);
      //   }
-        return 0
+        return 0;
     }
 
     int setValue(int idx, bool value, int send) 
