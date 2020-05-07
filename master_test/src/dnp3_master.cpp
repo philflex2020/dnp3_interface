@@ -51,6 +51,7 @@ using namespace asiodnp3;
 using namespace opendnp3; 
 #define MICROSECOND_TO_MILLISECOND 1000
 #define NANOSECOND_TO_MILLISECOND  1000000
+#define MAX_FIMS_CONNECT 5
 
 volatile bool running = true;
 
@@ -332,6 +333,7 @@ int main(int argc, char *argv[])
     if (!manager){
         printf("fooey 1\n");
     }
+    // now we use data from the config file
     //std::shared_ptr<IChannel> 
     //auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
     auto channel = setupDNP3channel(manager, sys_cfg.name, sys_cfg.ip_address, sys_cfg.port);
@@ -357,54 +359,6 @@ int main(int argc, char *argv[])
     //}
 
 
-#if 0
-// Specify what log levels to use. NORMAL is warning and above
-    // You can add all the comms logging by uncommenting below
-    const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
-    // This is the main point of interaction with the stack
-    DNP3Manager *manager = new DNP3Manager(1, ConsoleLogger::Create());
-    // Connect via a TCPClient socket to a outstation
-    // repeat for each outstation
-    auto channel1 = manager->AddTCPClient("tcpclient1", FILTERS, ChannelRetry::Default(), {IPEndpoint("127.0.0.1", 20001)},
-                                        "0.0.0.0", PrintingChannelListener::Create());
-    // The master config object for a master. The default are
-    // useable, but understanding the options are important.
-    MasterStackConfig *stackConfig = new MasterStackConfig();
-    // you can override application layer settings for the master here
-    // in this example, we've change the application layer timeout to 2 seconds
-    stackConfig->master.responseTimeout = TimeDuration::Seconds(2);
-    stackConfig->master.disableUnsolOnStartup = true;
-    // You can override the default link layer settings here
-    // in this example we've changed the default link layer addressing
-    stackConfig->link.LocalAddr = 1;
-    stackConfig->link.RemoteAddr = 10;
-    // Create a new master on a previously declared port, with a
-    // name, log level, command acceptor, and config info. This
-    // returns a thread-safe interface used for sending commands.
-    void * ourDB = NULL;
-    auto master1 = channel1->AddMaster("master1", // id for logging
-                                     newSOEHandler::Create(ourDB), // callback for data processing
-                                     asiodnp3::DefaultMasterApplication::Create(), // master application instance
-                                     *stackConfig // stack configuration
-                                    );
-    // do an integrity poll (Class 3/2/1/0) once per minute
-    auto integrityScan = master1->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
-    // do a Class 1 exception poll every 5 seconds
-    auto exceptionScan = master1->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
-    auto objscan = master1->AddAllObjectsScan(GroupVariationID(30,1),
-                                                                   TimeDuration::Seconds(10));
-    // Enable the master. This will start communications.
-    master1->Enable();
-    bool channelCommsLoggingEnabled = true;
-    bool masterCommsLoggingEnabled = true;
-    {
-     auto xlevels = channelCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
-     channel1->SetLogFilters(xlevels);
-      xlevels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
-      master1->SetLogFilters(xlevels);
-    }
-    #endif
-    
     fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
 
     if (server_map == NULL)
@@ -422,12 +376,12 @@ int main(int argc, char *argv[])
         goto cleanup;
     }
     // could alternatively fims connect using a stored name for the server
-    while(fims_connect < 5 && server_map->p_fims->Connect(sys_cfg.name) == false)
+    while(fims_connect < MAX_FIMS_CONNECT && server_map->p_fims->Connect(sys_cfg.name) == false)
     {
         fims_connect++;
         sleep(1);
     }
-    if(fims_connect >= 5)
+    if(fims_connect >= MAX_FIMS_CONNECT)
     {
         fprintf(stderr,"Failed to establish connection to FIMS server.\n");
         rc = 1;

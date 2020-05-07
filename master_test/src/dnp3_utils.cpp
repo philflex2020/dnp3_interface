@@ -324,7 +324,8 @@ server_data* create_register_map(cJSON* registers, datalog* data)
         return NULL;
     }
     for(i = 0; i < Num_Register_Types; i++)
-    {
+    { 
+        fprintf(stdout, "Seeking registers included in %s config object.\n", reg_types[i]);
         cJSON* reg_set = cJSON_GetObjectItem(registers, reg_types[i]);
         if(reg_set != NULL)
         {
