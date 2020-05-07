@@ -159,7 +159,7 @@ typedef struct sdata
 
     int setValue(int idx, bool value, int send) 
     {
-        map* mp = regs_to_map[BinaryIP];
+        maps* mp = regs_to_map[BinaryIP];
         if (idx < mp->num_regs)
         {
             mapr * mr = mp->regs[idx];
