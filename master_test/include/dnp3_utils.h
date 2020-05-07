@@ -147,10 +147,10 @@ typedef struct sdata
     }
     int setValue(int idx, float value, int send) 
     {
-        map* mp = regs_to_map[AnalogIP];
+        maps* mp = regs_to_map[AnalogIP];
         if (idx < mp->num_regs)
         {
-            mapr * mr = mp->regs[idx];
+            mapr* mr = mp->regs[idx];
             mapr->avalue = value;
             if(send)datasendAdd(mr);
         }
