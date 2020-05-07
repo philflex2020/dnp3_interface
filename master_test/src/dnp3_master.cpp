@@ -333,7 +333,8 @@ int main(int argc, char *argv[])
         printf("fooey 1\n");
     }
     //std::shared_ptr<IChannel> 
-    auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
+    //auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
+    auto channel = setupDNP3channel(manager, sys_cfg.name, sys_cfg.ip_address, sys_cfg.port);
     if (!channel){
         printf("fooey 2\n");
     }
