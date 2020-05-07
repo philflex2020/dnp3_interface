@@ -350,6 +350,8 @@ server_data* create_register_map(cJSON* registers, datalog* data)
                     fprintf(stderr, "Error: Failed to read or in invalid format: %s register entry %d.\n", reg_types[i], i);
                     goto cleanup;
                 }
+                char* spreg = cJSON_Print(cur_reg);
+                fprintf(stderr, "Working with %s array item %d.\n", spreg, j);
 
                 cJSON* cur_off = cJSON_GetObjectItem(cur_reg, "offset");
                 cJSON* cur_uri = cJSON_GetObjectItem(cur_reg, "uri");
@@ -361,7 +363,7 @@ server_data* create_register_map(cJSON* registers, datalog* data)
                    cur_uri == NULL || cur_uri->type != cJSON_String ||
                    cur_id  == NULL || cur_id->type  != cJSON_String  )
                 {
-                    fprintf(stderr, "Error: Missing required field for %s register entry %d.\n", reg_types[i], i);
+                    fprintf(stderr, "Error: Missing required field for %s register j %d entry %d.\n", reg_types[i], j, i);
                     goto cleanup;
                 }
 
