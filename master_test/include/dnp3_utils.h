@@ -211,7 +211,7 @@ typedef struct sysCfg_t {
     public:
         char* getAnalog(int idx) 
         {
-            if(idx < (int)analogNames.size() ) 
+            if(analogNames.find(idx) != analogNames.end())
             {
                 return analogNames[idx];
             }
@@ -222,7 +222,7 @@ typedef struct sysCfg_t {
         }
         char* getBinary(int idx) 
         {
-            if(idx < (int)binaryNames.size() ) 
+            if(binaryNames.find(idx) != binaryNames.end())
             {
                 return binaryNames[idx];
             }
@@ -231,6 +231,29 @@ typedef struct sysCfg_t {
                 return (char *) "Unknown";
             }
         }
+        int  getAnalogIdx(char *name) 
+        {
+            if(analogIdx.find(name) != analogIdx.end())
+            {
+                return analogIdx[name];
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        int  getBinaryIdx(char *name) 
+        {
+            if(binaryIdx.find(name) != binaryIdx.end())
+            {
+                return binaryIdx[name];
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
         char* name;
         char* protocol;
         int version;
@@ -242,6 +265,9 @@ typedef struct sysCfg_t {
 
         std::map<int,char*>binaryNames;
         std::map<int,char*>analogNames;
+        std::map<char*,int>binaryIdx;
+        std::map<char*,int>analogIdx;
+
         fims* p_fims;
 
 } sysCfg;

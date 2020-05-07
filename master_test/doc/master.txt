@@ -140,52 +140,88 @@ void PrintingSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<I
 }
 
 In our case we want to trigger a fims message once we have collected all the data items.
+we have to get the sysCfg records into the inner loop
+this is done using a static variable;
+We also have to create the object inside the loop, use the first flag to trigger that.
+then we create the pub message as we process the values.
 
-void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<Binary>>& values)
-{
-    cfgdb->lock(Binary);  // stop any changes to the binary object
-    auto sQue = cfgdb->getsQue(Binary);  // creates a new queue for Binary items
+
+void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
+    //std::cout << "******************************Bin: " <<std::endl;
+    static sysCfg *static_cfgdb = cfgdb;
+    static cJSON *cj; 
+    static int first = 1;
     auto print = [](const Indexed<Binary>& pair) {
-        std::cout << "Binary "
-                  << " [" << pair.index << "] : Value : " << pair.value.value << std::endl;
-                  sQue->addVal(pair.index, pair.value.value); //adds data to the queue
+        if(first == 1)
+        {
+            cj = cJSON_CreateObject();
+            first = 0;
+        }
+        char* vname = static_cfgdb->getBinary(pair.index);
+        if(strcmp(vname,"Unknown")!= 0) 
+        {
+            cJSON_AddNumberToObject(cj, vname, pair.value.value);
+        }
     };
     values.ForeachItem(print);
-    cfgdb->triggerSend(sQue); // triggers the dispatch of the queue 
-    cfgdb->unlock(Binary);
+    first = 1;
+    //Code for adding timestamp
+    if(cj)
+    {
+        addCjTimestamp(cj, "Timestamp");
+        char *out = cJSON_PrintUnformatted(cj);
+        cJSON_Delete(cj);
+        cj = NULL;
+        // todo create the pub uri
+        cfgdb->p_fims->Send("pub", "/mypub/message", NULL, out);
+        free(out);
+    }
+    //std::cout << "******************************Bin: <<" <<std::endl;
 }
-
 
 And for the Analog data.
 
-void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<Analog>>& values)
-{
-    cfgdb->lock(Analog);
-
+void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Analog>>& values) {
+    //std::cout << "******************************Bin: " <<std::endl;
+    static sysCfg *static_cfgdb = cfgdb;
+    static cJSON *cj; 
+    static int first = 1;
     auto print = [](const Indexed<Analog>& pair) {
-        std::cout << "Analog "
-                  << " [" << pair.index << "] : Value : " << pair.value.value << std::endl;
-                  cfgdb->addVal(Analog, pair.index, pair.value.value);
+        if(first == 1)
+        {
+            cj = cJSON_CreateObject();
+            first = 0;
+        }
+        char* vname = static_cfgdb->getAnalog(pair.index);
+        if(strcmp(vname,"Unknown")!= 0) 
+        {
+            cJSON_AddNumberToObject(cj, vname, pair.value.value);
+        }
     };
     values.ForeachItem(print);
-    cfgdb->triggerSend();
-    cfgdb->unlock(Analog);
+    first = 1;
+    //Code for adding timestamp
+    if(cj)
+    {
+        addCjTimestamp(cj, "Timestamp");
+        char *out = cJSON_PrintUnformatted(cj);
+        cJSON_Delete(cj);
+        cj = NULL;
+        // todo create the pub uri
+        cfgdb->p_fims->Send("pub", "/mypub/message", NULL, out);
+        free(out);
+    }
+    //std::cout << "******************************An: <<" <<std::endl;
 }
 
 
 
 The cfgdb is the structure that was created from the  configuration parser.
 
-The addVal() function will add a reference to the type, index, value combination. to the list of values to be sent via FIMS.
-the triggerSend() function will create a "send" event for the structure.
-the lock() / unlock() functions will provide exclusive access to the cfgdb while the DNP3 package is updating it.
-
 At this time the cfgdb structure is owned by he DNP3 process. allowing the system to update values in a thread safe manner.
 
-The master main process will set up the channels ad links to the outstations and then wait for sendtrigger events or fims messages.
-If a sendtrigger is received then the cfgdb is scanned for all updated values and a json object created. This is sent as the "fims pub" for this outstation.
 
-The Master can set up to sca the outstation at regular intervals.
+The Master can set up to scan the outstation at regular intervals.
 
     // do an integrity poll (Class 3/2/1/0) once per minute
     auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
@@ -193,7 +229,7 @@ The Master can set up to sca the outstation at regular intervals.
     // do a Class 1 exception poll every 5 seconds
     auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
 
-    // do an Analog (group 3,1 ) scan every 10 seconds
+    // do an Analog (group 30,1 ) scan every 10 seconds
     auto objscan = master->AddAllObjectsScan(GroupVariationID(30,1),
                                                                    TimeDuration::Seconds(10));
 
@@ -211,7 +247,7 @@ The Master can set up to sca the outstation at regular intervals.
       cfgdb->setVal(Type, Name, Value);
 
       the code to do this would be something like this:
-         int idx = cfgdb->getIndex(Type,Name)
+         int idx = cfgdb->getAnalogIndex(Name)
          if (Type == AnalogOP){
             AnalogOutputInt16 ao(Value);
             master->DirectOperate(CommandSet(
@@ -254,7 +290,7 @@ The json config file will probably look like this.
         "ip_address": "192.168.1.50",
         "port": 502,
         "local_address": 1,
-		"remote_address": 0
+		"remote_address": 10
     },
     "objects": {
         "binary": [
