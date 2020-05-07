@@ -9,7 +9,7 @@
 		"byte_swap": false
 	},
 	"registers":
-	{ "input_registers":
+	{ "input_registers_off":
 	[
 		{
 			"type": "Input Registers",
