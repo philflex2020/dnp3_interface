@@ -113,7 +113,7 @@ typedef struct {
 typedef struct smapr {
     bool bvalue;
     float avalue;
-    usigned int ivalue
+    unsigned int ivalue;
     int type;
     smapr(int _type) {
         avalue = 0.0;
