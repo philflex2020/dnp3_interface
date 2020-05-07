@@ -20,6 +20,7 @@
 #ifndef ASIODNP3_NEWSOEHANDLER_H 
 #define ASIODNP3_NEWSOEHANDLER_H 
 #include <cjson/cJSON.h>
+#include <fims/libfims.h>
 #include <opendnp3/master/ISOEHandler.h> 
 #include <iostream> 
 #include <memory> 
