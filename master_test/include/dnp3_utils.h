@@ -5,6 +5,8 @@
  *      pwilshire      5/5/2020
  */
 #include <map>
+#include <cstring>
+
 
 struct char_cmp {
     bool operator () (const char *a,const char *b) const
