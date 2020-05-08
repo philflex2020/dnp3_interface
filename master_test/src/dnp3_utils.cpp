@@ -270,6 +270,7 @@ bool parse_system(cJSON* cji, sysCfg* sys)
     if(ret) ret = getCJstr(cj,"id",sys->id);
     if(ret) ret = getCJstr(cj,"protocol",sys->protocol);
     if(ret) ret = getCJstr(cj,"ip_address",sys->ip_address);
+    if(ret) ret = getCJstr(cj,"name",sys->name);
 
     // config file has "objects" with children groups "binary" and "analog"
     return ret;
@@ -311,7 +312,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         }
         //binary_names[i] = id->valuestring;
         //binary_indices[i] = &(offset->valueint);
-        sys->binaryNames[offset->valueint] = id->valuestring;   // assume this tkes a copy
+        sys->binaryNames[offset->valueint] = strdup(id->valuestring);   // assume this tkes a copy
     }
 
     cJSON *JSON_analog = cJSON_GetObjectItem(JSON_objects, "analog");
@@ -338,8 +339,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         }
         //analog_names[i] = id->valuestring;
         //analog_indices[i] = &(offset->valueint);
-        sys->analogNames[offset->valueint] = id->valuestring;   // assume this tkes a copy
-
+        sys->analogNames[offset->valueint] = strdup(id->valuestring);   // assume this tkes a copy
     }
     return true;
 }

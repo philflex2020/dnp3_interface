@@ -195,6 +195,7 @@ typedef struct sdata
 
 typedef struct _sysCfg {
     public:
+      char* name;
       char* protocol;
       int version;
       char* id;

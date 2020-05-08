@@ -234,7 +234,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
-std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, server_data* ourDB , int localAddr , int RemoteAddr)
+std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB , int localAddr , int RemoteAddr)
 {
 
     MasterStackConfig stackConfig;
@@ -291,8 +291,8 @@ int main(int argc, char *argv[])
     int fims_connect = 0;
     fd_set all_connections;
     FD_ZERO(&all_connections);
-    system_config sys_cfg;
-    memset(&sys_cfg, 0, sizeof(system_config));
+    sysCfg sys_cfg;
+    memset(&sys_cfg, 0, sizeof(sysCfg));
     datalog data[Num_Register_Types];
     memset(data, 0, sizeof(datalog) * Num_Register_Types);
 
@@ -300,33 +300,20 @@ int main(int argc, char *argv[])
     cJSON* config = get_config_json(argc, argv);
     if(config == NULL)
         return 1;
-
-    // Getting the object "System Name" from the object  "System' //
-    cJSON *system_obj = cJSON_GetObjectItem(config, "system");
-    if (system_obj == NULL)
+    if(!parse_system(config, &sys_cfg)) 
     {
-        fprintf(stderr, "Failed to get System object in config file.\n");
+        fprintf(stderr, "Error reading config file system.\n");
         cJSON_Delete(config);
         return 1;
     }
-    // Read connection information from json and establish modbus connection
-    if(-1 == parse_system(system_obj, &sys_cfg))
+    if(!parse_variables(config, &sys_cfg)) 
     {
-        cJSON_Delete(config);
-        return 1;
-    }
-    cJSON *registers = cJSON_GetObjectItem(config, "registers");
-    if (registers == NULL)
-    {
-        fprintf(stderr, "Failed to get object item 'register' in JSON.\n");
+        fprintf(stderr, "Error reading config file variables.\n");
         cJSON_Delete(config);
         return 1;
     }
 
-    
     // sys_cfg.name, ip_address, port
-    fprintf(stderr, "System config complete: Setup register map.\n");
-    server_map = create_register_map(registers, data);
     cJSON_Delete(config);
     //setupDNP3();
     auto manager = setupDNP3Manager();
@@ -348,7 +335,7 @@ int main(int argc, char *argv[])
 
     //void * ourDB = NULL;
     //std::shared_ptr<IMaster> 
-    auto master = setupDNP3master (channel, "master1", server_map , 1 /*localAddr*/ , 10 /*RemoteAddr*/);
+    auto master = setupDNP3master (channel, "master1", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
     if (!master){
         printf("fooey 3\n");
     }
@@ -368,15 +355,15 @@ int main(int argc, char *argv[])
         goto cleanup;
     }
 
-    server_map->p_fims = new fims();
-    if (server_map->p_fims == NULL)
+    sys_cfg.p_fims = new fims();
+    if (sys_cfg.p_fims == NULL)
     {
         fprintf(stderr,"Failed to allocate connection to FIMS server.\n");
         rc = 1;
         goto cleanup;
     }
     // could alternatively fims connect using a stored name for the server
-    while(fims_connect < MAX_FIMS_CONNECT && server_map->p_fims->Connect(sys_cfg.name) == false)
+    while(fims_connect < MAX_FIMS_CONNECT && sys_cfg.p_fims->Connect(sys_cfg.name) == false)
     {
         fims_connect++;
         sleep(1);
@@ -390,91 +377,11 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Map configured: Initializing data.\n");
     //todo this should be defined to a better length
-    char uri[100];
-    sprintf(uri,"/interfaces/%s", sys_cfg.name);
-    server_map->base_uri = server_map->uris[0] = uri;
-    if(false == initialize_map(server_map))
-    {
-        fprintf(stderr, "Failed to get data for defined URI.\n");
-        rc = 1;
-        goto cleanup;
-    }
-    fprintf(stderr, "Data initialized: setting up dnp3 connection.\n");
-#if 0
-    if(sys_cfg.serial_device == NULL)
-    {
-        server_socket = establish_connection(&sys_cfg);
-        if(server_socket == -1)
-        {
-            char message[1024];
-            snprintf(message, 1024, "Modbus Server %s failed to establish open TCP port to listen for incoming connections.\n", sys_cfg.name);
-            fprintf(stderr, "%s\n", message);
-            emit_event(server_map->p_fims, "Modbus Server", message, 1);
-            rc = 1;
-            goto cleanup;
-        }
-        char message[1024];
-        snprintf(message, 1024, "Modbus Server %s, listening for connections on %s port %d.\n", sys_cfg.name, sys_cfg.ip_address, sys_cfg.port);
-        fprintf(stderr, "%s\n", message);
-        emit_event(server_map->p_fims, "Modbus Server", message, 1);
-                    
-    }
-    else
-    {
-        //read from configure
-        sys_cfg.mb = modbus_new_rtu(sys_cfg.serial_device, sys_cfg.baud, sys_cfg.parity, sys_cfg.data, sys_cfg.stop);
-        if(sys_cfg.mb == NULL)
-        {
-            fprintf(stderr, "Failed to allocate new modbus context.\n");
-            rc = 1;
-            goto cleanup;
-        }
-        // set device id from config
-        if(-1 == modbus_set_slave(sys_cfg.mb, sys_cfg.device_id))
-        {
-            fprintf(stderr, "Serial devices need a valid Device_Id between 1-247.\n");
-            rc = 1;
-            goto cleanup;
-        }
-        if(-1 == modbus_connect(sys_cfg.mb))
-        {
-            char message[1024];
-            snprintf(message, 1024, "Modbus Server %s failed to connect on interface %s: %s.\n", sys_cfg.name, sys_cfg.serial_device, modbus_strerror(errno));
-            fprintf(stderr, "%s\n", message);
-            emit_event(server_map->p_fims, "Modbus Server", message, 1);
-            rc = 1;
-            goto cleanup;
-        }
-        char message[1024];
-        snprintf(message, 1024, "Modbus Server %s, serial connection established on interface %s.\n", sys_cfg.name, sys_cfg.serial_device);
-        fprintf(stderr, "%s\n", message);
-        emit_event(server_map->p_fims, "Modbus Server", message, 1);
-                    
-    }
-#endif
+    //char uri[100];
+    //sprintf(uri,"/interfaces/%s", sys_cfg.name);
 
     fd_set connections_with_data;
-    fims_socket = server_map->p_fims->get_socket();
-    //serial_fd = -1;
-    //header_length = modbus_get_header_length(sys_cfg.mb);
-
-    //if(server_socket != -1)
-    //{
-    //    FD_SET(server_socket, &all_connections);
-    //    fd_max = server_socket;
-    //}
-    //else
-    //{
-    //    serial_fd = modbus_get_socket(sys_cfg.mb);
-    //    if(serial_fd == -1)
-    //    {
-    //        fprintf(stderr, "Failed to get serial file descriptor.\n");
-    //        rc = 1;
-    //        goto cleanup;
-    //    }
-    //    FD_SET(serial_fd, &all_connections);
-    //    fd_max = serial_fd;
-    //}
+    fims_socket = sys_cfg.p_fims->get_socket();
 
     if(fims_socket != -1)
         FD_SET(fims_socket, &all_connections);
@@ -488,8 +395,6 @@ int main(int argc, char *argv[])
     fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
     fprintf(stderr, "Fims Setup complete: now for DNP3\n");
 
-
-    
     while(running)
     {
         connections_with_data = all_connections;
@@ -505,35 +410,6 @@ int main(int argc, char *argv[])
             // if no data on this file descriptor skip to the next one
             if(!FD_ISSET(current_fd, &connections_with_data))
                 continue;
-#if 0
-            if(current_fd == server_socket)
-            {
-                // A new client is connecting to us
-                socklen_t address_length;
-                struct sockaddr_in client_address;
-                int new_fd;
-
-                address_length = sizeof(client_address);
-                memset(&client_address, 0, sizeof(address_length));
-                new_fd = accept(server_socket, (struct sockaddr *)&client_address, &address_length);
-                if(new_fd == -1)
-                {
-                    fprintf(stderr, "Error accepting new connections: %s\n", strerror(errno));
-                    break;
-                }
-                else
-                {
-                    char message[1024];
-                    FD_SET(new_fd, &all_connections);
-                    fd_max = (new_fd > fd_max) ? new_fd : fd_max;
-                    snprintf(message, 1024, "New connection from %s:%d on interface %s",
-                       inet_ntoa(client_address.sin_addr), client_address.sin_port, sys_cfg.name);
-                    fprintf(stderr, "%s\n", message);
-                    emit_event(server_map->p_fims, "Modbus Server", message, 1);
-                }
-            }
-            else
-#endif
             if(current_fd == fims_socket)
             {
                 // Fims message received
@@ -556,61 +432,6 @@ int main(int argc, char *argv[])
                     server_map->p_fims->free_message(msg);
                 }
             }
-#if 0
-            else if(current_fd == serial_fd)
-            {
-                // incoming serial modbus communication
-                uint8_t query[MODBUS_RTU_MAX_ADU_LENGTH];
-
-                rc = modbus_receive(sys_cfg.mb, query);
-                if (rc > 0)
-                {
-                    process_modbus_message(rc, header_length, data, &sys_cfg, server_map, true, query);
-                    modbus_reply(sys_cfg.mb, query, rc, server_map->mb_mapping);
-                }
-                else if (rc  == -1)
-                {
-                    // Connection closed by the client or error, log error
-                    char message[1024];
-                    snprintf(message, 1024, "Modbus Server %s, communication error. Closing serial connection to recover. Error: %s\n", sys_cfg.name, modbus_strerror(errno));
-                    fprintf(stderr, "%s\n", message);
-                    emit_event(server_map->p_fims, "Modbus Server", message, 1);
-                    modbus_close(sys_cfg.mb);
-                    // likely redundant close
-                    close(serial_fd);
-                    FD_CLR(current_fd, &all_connections);
-                    if(current_fd == fd_max)
-                        fd_max--;
-                    running = false;
-                    break;
-                }
-            }
-            else
-            {
-                // incoming tcp modbus communication
-                modbus_set_socket(sys_cfg.mb, current_fd);
-                uint8_t query[MODBUS_TCP_MAX_ADU_LENGTH];
-
-                rc = modbus_receive(sys_cfg.mb, query);
-                if (rc > 0)
-                {
-                    process_modbus_message(rc, header_length, data, &sys_cfg, server_map, false, query);
-                    modbus_reply(sys_cfg.mb, query, rc, server_map->mb_mapping);
-                }
-                else if (rc  == -1)
-                {
-                    // Connection closed by the client or error
-                    char message[1024];
-                    snprintf(message, 1024, "Modbus Server %s detected a TCP client disconnect.\n", sys_cfg.name);
-                    fprintf(stderr, "%s\n", message);
-                    emit_event(server_map->p_fims, "Modbus Server", message, 1);
-                    close(current_fd);
-                    FD_CLR(current_fd, &all_connections);
-                    if(current_fd == fd_max)
-                        fd_max--;
-                }
-            }
-#endif
         }
     }
 
@@ -618,44 +439,11 @@ int main(int argc, char *argv[])
 
     cleanup:
 
-    if(sys_cfg.eth_dev       != NULL) free(sys_cfg.eth_dev);
+    //if(sys_cfg.eth_dev       != NULL) free(sys_cfg.eth_dev);
     if(sys_cfg.ip_address    != NULL) free(sys_cfg.ip_address);
     if(sys_cfg.name          != NULL) free(sys_cfg.name);
-    if(sys_cfg.serial_device != NULL) free(sys_cfg.serial_device);
+    //if(sys_cfg.serial_device != NULL) free(sys_cfg.serial_device);
     //if(sys_cfg.mb != NULL)             modbus_free(sys_cfg.mb);
-    if(server_map != NULL)
-    {
-        //for (uri_map::iterator it = server_map->uri_to_register.begin(); it != server_map->uri_to_register.end(); ++it)
-        //{
-         //   for (body_map::iterator body_it = it->second->begin(); body_it != it->second->end(); ++body_it)
-         //   {
-         //       delete []body_it->second.first;
-         //       delete []body_it->second.second;
-          //  }
-         //   it->second->clear();
-         //   delete(it->second);
-        //}
-        //server_map->uri_to_register.clear();
-        for (int i = 0; i < Num_Register_Types; i++)
-        {
-            if(data[i].register_map != NULL)
-                delete []data[i].register_map;
-            if(server_map->regs_to_map[i] != NULL) delete [] server_map->regs_to_map[i];
-        }
-        if (server_map->uris != NULL) delete []server_map->uris;
-        if(server_map->p_fims != NULL)
-        {
-            if(server_map->p_fims->Connected() == true)
-            {
-                FD_CLR(server_map->p_fims->get_socket(), &all_connections);
-                server_map->p_fims->Close();
-            }
-            delete server_map->p_fims;
-        }
-//        if(server_map->mb_mapping != NULL)
-//            modbus_mapping_free(server_map->mb_mapping);
-        delete server_map;
-    }
     for(int fd = 0; fd < fd_max; fd++)
         if(FD_ISSET(fd, &all_connections))
             close(fd);
