@@ -49,7 +49,7 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     // magic static
     static sysCfg *ycfgdb = cfgdb;
-    static cJSON *cj = cJSON_CreateObject();
+    static cJSON *cj; // = cJSON_CreateObject();
     //cJSON_AddNumberToObject(body_object, "severity", severity);
     static std::stringstream myss;
     static int first = 1;
@@ -66,6 +66,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
 
         if(first == 1)
         {
+            cj = cJSON_CreateObject();
             first = 0;
         }
         else 
@@ -73,15 +74,18 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
             myss << ",";    
         }
         myss<< "\"" << ycfgdb->getAnalog(pair.index) << "\":" << pair.value.value;
+        cJSON_AddNumberToObject(cj, ycfgdb->getAnalog(pair.index), pair.value.value);
+
     };
     values.ForeachItem(print);
     myss <<"]\n";
     std::cout << myss.str();
     myss.str("");
-    //char *tmp = cJSON_Print(cj);
-    //std::cout << tmp <<"\n";
+    first = 1;
+    char *tmp = cJSON_Print(cj);
+    std::cout << tmp <<"\n";
     cJSON_Delete(cj);
-    //free(tmp);
+    free(tmp);
 
     //cfgdb->lock(Analog);
     //cfgdb->triggerSend();
