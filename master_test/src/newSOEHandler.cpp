@@ -18,8 +18,13 @@
  * limitations under the License.
  */
 #include "newSOEHandler.h"
+#include "dnp3_utils.h"
+
+// dont like this
+extern sysCfg * xcfgdb;
 using namespace std; 
 using namespace opendnp3; 
+
 namespace asiodnp3 { 
 
 void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
@@ -45,7 +50,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     auto print = [](const Indexed<Analog>& pair) {
         std::cout << "Analog "
                   << " index [" << pair.index <<"]"
-                  << " id ["<< cfgdb->getAnalog(pair.index) << "]" 
+                  << " id ["<< xcfgdb->getAnalog(pair.index) << "]" 
                   << " value [" << pair.value.value <<"]"
                   << std::endl;
     };

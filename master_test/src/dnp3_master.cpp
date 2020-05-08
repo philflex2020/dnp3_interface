@@ -274,6 +274,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     return master;
 }
 
+sysCfg * xcfgdb;
 
 
 int main(int argc, char *argv[])
@@ -292,6 +293,8 @@ int main(int argc, char *argv[])
     fd_set all_connections;
     FD_ZERO(&all_connections);
     sysCfg sys_cfg;
+    xcfgdb = &sys_cfg;
+    
     //memset(&sys_cfg, 0, sizeof(sysCfg));
     datalog data[Num_Register_Types];
     memset(data, 0, sizeof(datalog) * Num_Register_Types);
