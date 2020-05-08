@@ -323,8 +323,6 @@ bool parse_variables(cJSON* object, sysCfg* sys)
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             return false;
         }
-        //binary_names[i] = id->valuestring;
-        //binary_indices[i] = &(offset->valueint);
         sys->binaryNames[offset->valueint] = strdup(id->valuestring);   // assume this tkes a copy
     }
 
@@ -350,8 +348,6 @@ bool parse_variables(cJSON* object, sysCfg* sys)
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             return false;
         }
-        //analog_names[i] = id->valuestring;
-        //analog_indices[i] = &(offset->valueint);
         sys->analogNames[offset->valueint] = strdup(id->valuestring);   // assume this tkes a copy
     }
     return true;

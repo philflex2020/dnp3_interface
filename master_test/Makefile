@@ -3,7 +3,7 @@ PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 $(info PROJECT_ROOT="$(PROJECT_ROOT)")
 $(info MAKEFILE_LIST="$(MAKEFILE_LIST)")
 
-BINS = dnp3_outstation dnp3_master
+BINS = dnp3_outstation dnp3_master dnp_outstation_pw
 
 BIN_DIR = /usr/local/bin/
 INCLUDES_DIR = /usr/local/include/
@@ -45,6 +45,9 @@ $(OBJ_DIR)libdmap.o:	$(PROJECT_ROOT)src/dnp3_utils.cpp $(PROJECT_ROOT)include/dn
 
 $(BUILD_DIR)dnp3_outstation: $(OBJ_DIR)dnp3_outstation.o
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS)
+
+$(BUILD_DIR)dnp3_outstation_pw: $(OBJ_DIR)dnp3_outstation_pw.o $(OBJ_DIR)libdmap.so
+	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS) -ldmap
 
 $(BUILD_DIR)dnp3_master: $(OBJ_DIR)dnp3_master.o $(OBJ_DIR)newSOEHandler.o $(OBJ_DIR)libdmap.so
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS) -ldmap
