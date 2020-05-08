@@ -194,7 +194,7 @@ int main(int argc, char* argv[])
 
             if (body_JSON != NULL)
             {
-               cJSON_Delete(body_JSON)
+               cJSON_Delete(body_JSON);
             }
             // TODO delete fims message
         }
