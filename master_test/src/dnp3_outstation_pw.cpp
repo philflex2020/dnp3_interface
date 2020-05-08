@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    builder.Update(Binary((body_value->valueint != 0), offset->valueint);
+                    builder.Update(Binary(body_value->valueint != 0), offset->valueint);
                     
                 }
                 
