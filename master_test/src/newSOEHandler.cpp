@@ -42,7 +42,7 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     std::cout << "******************************An: >>>" <<std::endl;
     std::cout << " Values size:" << values.Count() << std::endl;
-    auto print = [](const Indexed<Analog>& pair, cfgdb) {
+    auto print = [](const Indexed<Analog>& pair) {
         std::cout << "Analog "
                   << " index [" << pair.index <<"]"
                   << " id ["<< cfgdb->getAnalog(pair.index) << "]" 

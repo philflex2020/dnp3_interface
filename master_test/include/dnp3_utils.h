@@ -210,7 +210,7 @@ typedef struct sysCfg_t {
     }
     public:
       char* getAnalog(int idx) {
-         if(idx < analogNames.size() ) 
+         if(idx < (int)analogNames.size() ) 
          {
             return analogNames[idx];
          }

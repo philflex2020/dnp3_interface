@@ -119,7 +119,7 @@ public:
     {
         return opendnp3::DoubleBitToString(meas.value);
     }
-    sysCfg* cfgdb;
+    static sysCfg* cfgdb;
 };
 } // namespace asiodnp3
 #endif
