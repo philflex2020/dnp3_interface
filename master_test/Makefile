@@ -3,7 +3,7 @@ PROJECT_ROOT = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 $(info PROJECT_ROOT="$(PROJECT_ROOT)")
 $(info MAKEFILE_LIST="$(MAKEFILE_LIST)")
 
-BINS = dnp3_outstation dnp3_master dnp_outstation_pw
+BINS = dnp3_outstation dnp3_master dnp3_outstation_pw
 
 BIN_DIR = /usr/local/bin/
 INCLUDES_DIR = /usr/local/include/
