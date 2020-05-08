@@ -117,6 +117,18 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
     cJSON_Delete(body_object);
 }
 
+void addCjTimestamp(cJSON *cj, const char * ts)
+{
+    char buffer[64],time_str[64];
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    struct tm local_tm;
+    tzset();
+    strftime(buffer,64,"%m-%d-%Y %T.", localtime_r(static_cast<time_t*>(&tv.tv_sec), &local_tm));
+    snprintf(time_str, sizeof time_str,"%s%ld",buffer,tv.tv_usec);
+    cJSON_AddStringToObject(cj, ts, time_str);
+}
+
 cJSON* get_config_json(int argc, char* argv[])
 {
     FILE *fp = NULL;

@@ -246,5 +246,6 @@ int parse_system(cJSON *system, system_config *config);
 bool parse_system(cJSON* object, sysCfg* sys);
 bool parse_variables(cJSON* object, sysCfg* sys);
 cJSON *parseJSONConfig(char *file_path);
+void addCjTimestamp(cJSON *cj, const char * ts);
 
 #endif

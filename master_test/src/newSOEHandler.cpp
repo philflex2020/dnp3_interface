@@ -73,20 +73,28 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         {
             myss << ",";    
         }
-        myss<< "\"" << ycfgdb->getAnalog(pair.index) << "\":" << pair.value.value;
-        cJSON_AddNumberToObject(cj, ycfgdb->getAnalog(pair.index), pair.value.value);
-
+        char * vname = ycfgdb->getAnalog(pair.index);
+        myss<< "\"" <<  vname << "\":" << pair.value.value;
+        if(strcmp(vname,"Unknown")!= 0) 
+        {
+            cJSON_AddNumberToObject(cj, vname, pair.value.value);
+        }
     };
     values.ForeachItem(print);
     myss <<"]\n";
     std::cout << myss.str();
     myss.str("");
     first = 1;
-    char *tmp = cJSON_Print(cj);
-    std::cout << tmp <<"\n";
-    cJSON_Delete(cj);
-    free(tmp);
+    //Code for adding timestamp
+    addCjTimestamp(cj, "Timestamp");
+    
 
+    char *out = cJSON_PrintUnformatted(cj);
+    std::cout << out <<"\n";
+    cJSON_Delete(cj);
+    //free(tmp);
+    ycfgdb->p_fims->Send("pub", "/mypub/message", NULL, out);
+    free(out);
     //cfgdb->lock(Analog);
     //cfgdb->triggerSend();
     //cfgdb->unlock(Analog);
