@@ -62,7 +62,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
                   << " id ["<< ycfgdb->getAnalog(pair.index) << "]" 
                   << " value [" << pair.value.value <<"]"
                   << std::endl;
-        cJSON_AddNumberToObject(cj, ycfgdb->getAnalog(pair.index), pair.value.value);
+        //cJSON_AddNumberToObject(cj, ycfgdb->getAnalog(pair.index), pair.value.value);
 
         if(first == 1)
         {
@@ -78,10 +78,10 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     myss <<"]\n";
     std::cout << myss.str();
     myss.str("");
-    char *tmp = cJSON_Print(cj);
-    std::cout << tmp <<"\n";
+    //char *tmp = cJSON_Print(cj);
+    //std::cout << tmp <<"\n";
     cJSON_Delete(cj);
-    free(tmp);
+    //free(tmp);
 
     //cfgdb->lock(Analog);
     //cfgdb->triggerSend();
