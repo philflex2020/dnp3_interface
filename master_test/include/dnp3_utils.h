@@ -206,6 +206,7 @@ typedef struct _sysCfg {
 
       std::map<int,char*>binaryNames;
       std::map<int,char*>analogNames;
+      fims* p_fims;
 
 } sysCfg;
 
