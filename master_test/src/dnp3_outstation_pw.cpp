@@ -134,6 +134,10 @@ int main(int argc, char* argv[])
         {
             bool ok = true;
             cJSON* body_JSON = cJSON_Parse(msg->body);
+            cJSON* itype = NULL;
+            cJSON* offset = NULL;
+            cJSON* body_value = NULL;
+            
             if (body_JSON == NULL)
             {
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
@@ -141,7 +145,7 @@ int main(int argc, char* argv[])
             }
             if (ok) 
             {
-                cJSON* body_value = cJSON_GetObjectItem(body_JSON, "value");
+                body_value = cJSON_GetObjectItem(body_JSON, "value");
                 if (body_value == NULL)
                 {
                     FPS_ERROR_PRINT("fims message body value key not found \n");
@@ -151,24 +155,25 @@ int main(int argc, char* argv[])
             if (ok) 
             {
 
-                cJSON* offset = cJSON_GetObjectItem(body_JSON, "offset");
+                offset = cJSON_GetObjectItem(body_JSON, "offset");
                 if (offset == NULL)
                 {
                     FPS_ERROR_PRINT("fims message body offset key not found \n");
                 ok = false;
                 }
             }
+
             if(ok) 
             {
 
-                cJSON* itype = cJSON_GetObjectItem(body_JSON, "type");
+                itype = cJSON_GetObjectItem(body_JSON, "type");
                 if (itype == NULL)
                 {
                     FPS_ERROR_PRINT("fims message body type key not found \n");
                     ok = false;
                 }
             }
-            
+
             if(ok) 
             {
                 UpdateBuilder builder;
