@@ -3,7 +3,15 @@
 #include <iostream>
 
 using namespace std;
+class Binary {
+  Binary():isSet(false){};
+  Binary(bool val):isSet(true),value(val){};
+  bool getValue(){return value;};
+  public:
+   bool value;
+   bool isSet;
 
+};
 template <class T, int N>
 class mysequence {
     T memblock [N];

@@ -143,15 +143,15 @@ In our case we want to trigger a fims message once we have collected all the dat
 
 void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<Binary>>& values)
 {
+    cfgdb->lock(Binary);  // stop any changes to the binary object
+    auto sQue = cfgdb->getsQue(Binary);  // creates a new queue for Binary items
     auto print = [](const Indexed<Binary>& pair) {
         std::cout << "Binary "
-                  << " [" << pair.index << "] : Value : " << pair.value << std::endl;
-                  cfgdb->addVal(Binary, pair.index, pair.value);
+                  << " [" << pair.index << "] : Value : " << pair.value.value << std::endl;
+                  sQue->addVal(pair.index, pair.value.value); //adds data to the queue
     };
-
-    cfgdb->lock(Binary);
     values.ForeachItem(print);
-    cfgdb->triggerSend();
+    cfgdb->triggerSend(sQue); // triggers the dispatch of the queue 
     cfgdb->unlock(Binary);
 }
 
