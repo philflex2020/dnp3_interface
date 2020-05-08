@@ -193,8 +193,23 @@ typedef struct sdata
 //		"remote_address": 0
 //    },
 
-typedef struct _sysCfg {
+typedef struct sysCfg_t {
+
+    sysCfg_t() :name(NULL), protocol(NULL),id(NULL),ip_address(NULL),p_fims(NULL)
+    {
+
+
+    }
+    ~sysCfg_t()
+    {
+       if(name)free(name);
+       if(protocol)free(protocol);
+       if(id)free(id);
+       if(ip_address)free(ip_address);
+       // TODO maps and fims
+    }
     public:
+
       char* name;
       char* protocol;
       int version;
