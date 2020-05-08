@@ -17,11 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <sstream>
 #include "newSOEHandler.h"
 #include "dnp3_utils.h"
 
-// dont like this
-extern sysCfg *xcfgdb;
+// dont like this so dont do it
+//extern sysCfg *xcfgdb;
 using namespace std; 
 using namespace opendnp3; 
 
@@ -45,7 +46,10 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
     values.ForeachItem(print);
 }
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
+    // magic static
     static sysCfg *ycfgdb = cfgdb;
+    static std::stringstream myss;
+    myss << "[";
     std::cout << "******************************An: >>>" <<std::endl;
     std::cout << " Values size:" << values.Count() << std::endl;
     auto print = [](const Indexed<Analog>& pair) {
@@ -54,9 +58,11 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
                   << " id ["<< ycfgdb->getAnalog(pair.index) << "]" 
                   << " value [" << pair.value.value <<"]"
                   << std::endl;
+        myss<< "\"" << ycfgdb->getAnalog(pair.index) << "\":" << pair.value.value <<",";
     };
     values.ForeachItem(print);
-
+    myss <<"]\n";
+    std::cout << myss;
     //cfgdb->lock(Analog);
     //cfgdb->triggerSend();
     //cfgdb->unlock(Analog);
