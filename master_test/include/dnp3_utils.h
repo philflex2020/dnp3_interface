@@ -209,7 +209,17 @@ typedef struct sysCfg_t {
        // TODO maps and fims
     }
     public:
-
+      char* getAnalog(int idx) {
+         if(idx < analogNames.size() ) 
+         {
+            return analogNames[idx];
+         }
+         else
+         {
+            return (char *) "Unknown";
+         }
+          
+      }
       char* name;
       char* protocol;
       int version;

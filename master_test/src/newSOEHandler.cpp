@@ -45,6 +45,7 @@ void newSOEHandler::Process(const HeaderInfo& /* info*/, const ICollection<Index
     auto print = [](const Indexed<Analog>& pair) {
         std::cout << "Analog "
                   << " index [" << pair.index <<"]"
+                  << " id ["<< cfgdb->getAnalog(pair.index) << "]" 
                   << " value [" << pair.value.value <<"]"
                   << std::endl;
     };
