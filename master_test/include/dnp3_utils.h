@@ -220,11 +220,11 @@ typedef struct sysCfg_t {
                 return (char *) "Unknown";
             }
         }
-        char* getAnalog(int idx) 
+        char* getBinary(int idx) 
         {
-            if(idx < (int)analogNames.size() ) 
+            if(idx < (int)binaryNames.size() ) 
             {
-                return analogNames[idx];
+                return binaryNames[idx];
             }
             else
             {
