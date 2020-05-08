@@ -31,7 +31,34 @@ namespace asiodnp3 {
 
 void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
     std::cout << "******************************Bin: " <<std::endl;
-    return PrintAll(info, values);
+    static sysCfg *static_cfgdb = cfgdb;
+    static cJSON *cj; 
+    static int first = 1;
+    auto print = [](const Indexed<Binary>& pair) {
+        if(first == 1)
+        {
+            cj = cJSON_CreateObject();
+            first = 0;
+        }
+        char* vname = static_cfgdb->getBinary(pair.index);
+        if(strcmp(vname,"Unknown")!= 0) 
+        {
+            cJSON_AddNumberToObject(cj, vname, pair.value.value);
+        }
+    };
+    values.ForeachItem(print);
+    first = 1;
+    //Code for adding timestamp
+    if(cj)
+    {
+        addCjTimestamp(cj, "Timestamp");
+        char *out = cJSON_PrintUnformatted(cj);
+        cJSON_Delete(cj);
+        cj = NULL;
+        cfgdb->p_fims->Send("pub", "/mypub/message", NULL, out);
+        free(out);
+    }
+    //std::cout << "******************************An: <<" <<std::endl;
 }
 void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<DoubleBitBinary>>& values) {
     std::cout << "******************************DBin: " <<std::endl;
@@ -48,58 +75,34 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
 }
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     // magic static
-    static sysCfg *ycfgdb = cfgdb;
-    static cJSON *cj; // = cJSON_CreateObject();
-    //cJSON_AddNumberToObject(body_object, "severity", severity);
-    static std::stringstream myss;
+    static sysCfg *static_cfgdb = cfgdb;
+    static cJSON *cj; 
     static int first = 1;
-    myss << "[";
-    std::cout << "******************************An: >>>" <<std::endl;
-    std::cout << " Values size:" << values.Count() << std::endl;
     auto print = [](const Indexed<Analog>& pair) {
-        std::cout << "Analog "
-                  << " index [" << pair.index <<"]"
-                  << " id ["<< ycfgdb->getAnalog(pair.index) << "]" 
-                  << " value [" << pair.value.value <<"]"
-                  << std::endl;
-        //cJSON_AddNumberToObject(cj, ycfgdb->getAnalog(pair.index), pair.value.value);
-
         if(first == 1)
         {
             cj = cJSON_CreateObject();
             first = 0;
         }
-        else 
-        {
-            myss << ",";    
-        }
-        char * vname = ycfgdb->getAnalog(pair.index);
-        myss<< "\"" <<  vname << "\":" << pair.value.value;
+        char* vname = static_cfgdb->getAnalog(pair.index);
         if(strcmp(vname,"Unknown")!= 0) 
         {
             cJSON_AddNumberToObject(cj, vname, pair.value.value);
         }
     };
     values.ForeachItem(print);
-    myss <<"]\n";
-    std::cout << myss.str();
-    myss.str("");
     first = 1;
     //Code for adding timestamp
-    addCjTimestamp(cj, "Timestamp");
-    
-
-    char *out = cJSON_PrintUnformatted(cj);
-    std::cout << out <<"\n";
-    cJSON_Delete(cj);
-    //free(tmp);
-    ycfgdb->p_fims->Send("pub", "/mypub/message", NULL, out);
-    free(out);
-    //cfgdb->lock(Analog);
-    //cfgdb->triggerSend();
-    //cfgdb->unlock(Analog);
-    //myPrintAll(info, values);
-    std::cout << "******************************An: <<" <<std::endl;
+    if(cj)
+    {
+        addCjTimestamp(cj, "Timestamp");
+        char *out = cJSON_PrintUnformatted(cj);
+        cJSON_Delete(cj);
+        cj = NULL;
+        cfgdb->p_fims->Send("pub", "/mypub/message", NULL, out);
+        free(out);
+    }
+    //std::cout << "******************************An: <<" <<std::endl;
     return;
 }
 void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Counter>>& values) {
