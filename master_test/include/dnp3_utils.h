@@ -209,29 +209,40 @@ typedef struct sysCfg_t {
        // TODO maps and fims
     }
     public:
-      char* getAnalog(int idx) {
-         if(idx < (int)analogNames.size() ) 
-         {
-            return analogNames[idx];
-         }
-         else
-         {
-            return (char *) "Unknown";
-         }
-          
-      }
-      char* name;
-      char* protocol;
-      int version;
-      char* id;
-      char* ip_address;
-      int port;
-      int local_address;
-      int remote_address;
+        char* getAnalog(int idx) 
+        {
+            if(idx < (int)analogNames.size() ) 
+            {
+                return analogNames[idx];
+            }
+            else
+            {
+                return (char *) "Unknown";
+            }
+        }
+        char* getAnalog(int idx) 
+        {
+            if(idx < (int)analogNames.size() ) 
+            {
+                return analogNames[idx];
+            }
+            else
+            {
+                return (char *) "Unknown";
+            }
+        }
+        char* name;
+        char* protocol;
+        int version;
+        char* id;
+        char* ip_address;
+        int port;
+        int local_address;
+        int remote_address;
 
-      std::map<int,char*>binaryNames;
-      std::map<int,char*>analogNames;
-      fims* p_fims;
+        std::map<int,char*>binaryNames;
+        std::map<int,char*>analogNames;
+        fims* p_fims;
 
 } sysCfg;
 
