@@ -21,7 +21,7 @@
 #include "dnp3_utils.h"
 
 // dont like this
-extern sysCfg * xcfgdb;
+extern sysCfg *xcfgdb;
 using namespace std; 
 using namespace opendnp3; 
 
@@ -45,12 +45,13 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
     values.ForeachItem(print);
 }
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
+    static sysCfg *ycfgdb = xcfgdb;
     std::cout << "******************************An: >>>" <<std::endl;
     std::cout << " Values size:" << values.Count() << std::endl;
     auto print = [](const Indexed<Analog>& pair) {
         std::cout << "Analog "
                   << " index [" << pair.index <<"]"
-                  << " id ["<< xcfgdb->getAnalog(pair.index) << "]" 
+                  << " id ["<< ycfgdb->getAnalog(pair.index) << "]" 
                   << " value [" << pair.value.value <<"]"
                   << std::endl;
     };
