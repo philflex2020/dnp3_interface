@@ -125,7 +125,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    bool bin = false;
 
     while(running && p_fims->Connected())
     {
@@ -178,7 +177,7 @@ int main(int argc, char* argv[])
             {
                 UpdateBuilder builder;
 
-                if(strcmp(itype->vauestring,"analog")==0)
+                if(strcmp(itype->valuestring,"analog")==0)
                 {
                     //bin = !bin;
                     printf("analog offset %d bodyval: %f\n", offset->valueint, body_value->valuedouble);
@@ -195,7 +194,7 @@ int main(int argc, char* argv[])
 
             if (body_JSON != NULL)
             {
-               cJSON_Destroy(body_JSON)
+               cJSON_Delete(body_JSON)
             }
             // TODO delete fims message
         }
