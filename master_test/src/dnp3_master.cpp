@@ -348,12 +348,12 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
 
-    if (server_map == NULL)
-    {
-        fprintf(stderr, "Failed to initialize the mapping\n");
-        rc = 1;
-        goto cleanup;
-    }
+    //if (server_map == NULL)
+    //{
+    //    fprintf(stderr, "Failed to initialize the mapping\n");
+    //    rc = 1;
+    //    goto cleanup;
+    //}
 
     sys_cfg.p_fims = new fims();
     if (sys_cfg.p_fims == NULL)
