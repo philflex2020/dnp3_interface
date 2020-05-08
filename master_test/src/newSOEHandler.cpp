@@ -39,10 +39,10 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
     };
     values.ForeachItem(print);
 }
-void newSOEHandler::Process(const HeaderInfo& /* info*/, const ICollection<Indexed<Analog>>& values) {
+void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     std::cout << "******************************An: >>>" <<std::endl;
     std::cout << " Values size:" << values.Count() << std::endl;
-    auto print = [](const Indexed<Analog>& pair) {
+    auto print = [](const Indexed<Analog>& pair, cfgdb) {
         std::cout << "Analog "
                   << " index [" << pair.index <<"]"
                   << " id ["<< cfgdb->getAnalog(pair.index) << "]" 
