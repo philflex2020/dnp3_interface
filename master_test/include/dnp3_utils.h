@@ -177,11 +177,40 @@ typedef struct sdata
 
 } server_data;
 
+// "system": {
+//        "protocol": "DNP3",
+//        "version": 1,
+//        "id": "dnp3_outstation",
+//        "ip_address": "192.168.1.50",
+//        "port": 502,
+//        "local_address": 1,
+//		"remote_address": 0
+//    },
+
+typedef struct _sysCfg {
+    public:
+    string protocol;
+    int version;
+    string id;
+    string ip_address;
+    int port;
+    int local_address;
+    int remote_address;
+
+    map<int,string>binaryNames;
+    map<int,string>analogNames;
+} sysCfg;
+
 bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);
 bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value);
 void emit_event(fims* pFims, const char* source, const char* message, int severity);
 cJSON* get_config_json(int argc, char* argv[]);
 server_data* create_register_map(cJSON* registers, datalog* data);
 int parse_system(cJSON *system, system_config *config);
+
+// new mapping
+bool parse_system(cJSON* object, sysCfg* sys);
+bool parse_variables(cJSON* object, sysCfg* sys);
+cJSON *parseJSONConfig(char *file_path);
 
 #endif

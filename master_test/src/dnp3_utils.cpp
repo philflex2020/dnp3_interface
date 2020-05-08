@@ -23,6 +23,8 @@
 #include <fims/libfims.h>
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
+#include <map>
+
 
 int establish_connection(system_config* config)
 {
@@ -164,6 +166,180 @@ cJSON* get_config_json(int argc, char* argv[])
     if(config == NULL)
         fprintf(stderr, "Invalid JSON object in file\n");
     return config;
+}
+
+// new parser for sample2
+cJSON *parseJSONConfig(char *file_path)
+{
+    //Open a file//
+    if (file_path == NULL)
+    {
+        FPS_ERROR_PRINT(" Failed to get the path of the test file. \n"); //a check to make sure that args[1] is not NULL//
+        return NULL;
+    }
+    FILE* fp = fopen(file_path, "r");
+    if (fp == NULL)
+    {
+        FPS_ERROR_PRINT("Failed to open file %s\n", file_path);
+        return NULL;
+    }
+    else FPS_DEBUG_PRINT("Opened file %s\n", file_path);
+    // obtain file size
+
+    fseek(fp, 0, SEEK_END);
+    long unsigned file_size = ftell(fp);
+    rewind(fp);
+    // create configuration file
+
+    char* configFile = new char[file_size];
+    if (configFile == NULL)
+    {
+        FPS_ERROR_PRINT("Memory allocation error config file\n");
+        fclose(fp);
+        return NULL;
+    }
+    size_t bytes_read = fread(configFile, 1, file_size, fp);
+    if (bytes_read != file_size)
+    {
+        FPS_ERROR_PRINT("Read error: read: %lu, file size: %lu .\n", (unsigned long)bytes_read, (unsigned long)file_size);
+        fclose(fp);
+        delete[] configFile;
+        return NULL;
+    }
+    else
+       FPS_DEBUG_PRINT("File size %lu\n", file_size);
+
+    fclose(fp);
+    cJSON* pJsonRoot = cJSON_Parse(configFile);
+    delete[] configFile;
+    if (pJsonRoot == NULL)
+        FPS_ERROR_PRINT("cJSON_Parse returned NULL.\n");
+    return(pJsonRoot);
+}
+
+// "system": {
+//        "protocol": "DNP3",
+//        "version": 1,
+//        "id": "dnp3_outstation",
+//        "ip_address": "192.168.1.50",
+//        "port": 502,
+//        "local_address": 1,
+//		"remote_address": 0
+//    },
+
+
+bool getCJint (cJSON *cj, const char *name, int& val)
+{
+    bool ok = false;
+    cJSON *cji = cJSON_GetObjectItem(cj, name);
+    if (cji) {
+        val= cji->valueint;
+        ok = true;
+    }
+    return ok;
+}
+
+bool getCJstr (cJSON *cj, const char *name, string& val)
+{
+    bool ok = false;
+    cJSON *cji = cJSON_GetObjectItem(cj, name);
+    if (cji) {
+        val= cji->valuestring;
+        ok = true;
+    }
+    return ok;
+}
+
+bool parse_system(cJSON* cji, sysCfg* sys)
+{
+    bool ret = true;
+    cJSON *cj = cJSON_GetObjectItem(cji, "system");
+
+    if (cj == NULL)
+    {
+        FPS_ERROR_PRINT("system  missing from file! \n");
+        ret = false;
+    }
+
+    if(ret) ret = getCJint(cj,"version",sys->version);
+    if(ret) ret = getCJint(cj,"port",sys->port);
+    if(ret) ret = getCJint(cj,"local_address",sys->local_address);
+    if(ret) ret = getCJint(cj,"remote_address",sys->remote_address);
+    if(ret) ret = getCJstr(cj,"id",sys->id);
+    if(ret) ret = getCJstr(cj,"protocol",sys->ptotocol);
+    if(ret) ret = getCJstr(cj,"ip_address",sys->ip_address);
+
+    // config file has "objects" with children groups "binary" and "analog"
+    return ret;
+}
+
+bool parse_variables(cJSON* object, sysCfg* sys)
+{
+    cJSON *id, *offset;
+
+    // config file has "objects" with children groups "binary" and "analog"
+    cJSON *JSON_objects = cJSON_GetObjectItem(object, "objects");
+    if (JSON_objects == NULL)
+    {
+        FPS_ERROR_PRINT("objects object is missing from file! \n");
+        return false;
+    }
+
+    cJSON *JSON_binary = cJSON_GetObjectItem(JSON_objects, "binary");
+    if (JSON_binary == NULL)
+    {
+        FPS_ERROR_PRINT("binary object is missing from file! \n");
+        return false;
+    }
+    uint numBinaries = cJSON_GetArraySize(JSON_binary);
+    for(uint i = 0; i < numBinaries; i++)
+    {
+        cJSON* binary_object = cJSON_GetArrayItem(JSON_binary, i);
+        if(binary_object == NULL)
+        {
+            FPS_ERROR_PRINT("Invalid or NULL binary #%d\n", i);
+            return false;
+        }
+        id = cJSON_GetObjectItem(binary_object, "id");
+        offset = cJSON_GetObjectItem(binary_object, "offset");
+        if (id == NULL || offset == NULL || id->valuestring == NULL)
+        {
+            FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
+            return false;
+        }
+        //binary_names[i] = id->valuestring;
+        //binary_indices[i] = &(offset->valueint);
+        sys->binaryNames[offset->valueint] = id->valuestring;   // assume this tkes a copy
+    }
+
+    cJSON *JSON_analog = cJSON_GetObjectItem(JSON_objects, "analog");
+    if (JSON_analog == NULL)
+    {
+        FPS_ERROR_PRINT("analog object is missing from file! \n");
+        return false;
+    }
+    uint numAnalogs = cJSON_GetArraySize(JSON_analog);
+    for(uint i = 0; i < numAnalogs; i++)
+    {
+        cJSON* analog_object = cJSON_GetArrayItem(JSON_analog, i);
+        if(analog_object == NULL)
+        {
+            FPS_ERROR_PRINT("Invalid or NULL analog #%d\n", i);
+            return false;
+        }
+        id = cJSON_GetObjectItem(analog_object, "id");
+        offset = cJSON_GetObjectItem(analog_object, "offset");
+        if (id == NULL || offset == NULL || id->valuestring == NULL)
+        {
+            FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
+            return false;
+        }
+        //analog_names[i] = id->valuestring;
+        //analog_indices[i] = &(offset->valueint);
+        sys->analogNames[offset->valueint] = id->valuestring;   // assume this tkes a copy
+
+    }
+    return true;
 }
 
 int parse_system(cJSON *system, system_config *config)
