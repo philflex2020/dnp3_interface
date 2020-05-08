@@ -120,7 +120,7 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
 
 void addCjTimestamp(cJSON *cj, const char * ts)
 {
-    char buffer[128],time_str[128];
+    char buffer[64],time_str[256];
     struct timeval tv;
     gettimeofday(&tv, NULL);
     struct tm local_tm;
