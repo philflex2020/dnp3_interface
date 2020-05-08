@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cjson/cJSON.h>
 #include <sstream>
 #include "newSOEHandler.h"
 #include "dnp3_utils.h"
@@ -48,6 +49,8 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     // magic static
     static sysCfg *ycfgdb = cfgdb;
+    static cJSON *cj = cJSON_CreateObject();
+    //cJSON_AddNumberToObject(body_object, "severity", severity);
     static std::stringstream myss;
     static int first = 1;
     myss << "[";
@@ -59,6 +62,8 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
                   << " id ["<< ycfgdb->getAnalog(pair.index) << "]" 
                   << " value [" << pair.value.value <<"]"
                   << std::endl;
+        cJSON_AddNumberToObject(cj, ycfgdb->getAnalog(pair.index), pair.pair.value);
+
         if(first == 1)
         {
             first = 0;
@@ -73,7 +78,11 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     myss <<"]\n";
     std::cout << myss.str();
     myss.str("");
-
+    char *tmp = cJSON_Print(cj);
+    std::cout << tmp <<"\n";
+    cJSON_Delete(cj);
+    free(tmp);
+    
     //cfgdb->lock(Analog);
     //cfgdb->triggerSend();
     //cfgdb->unlock(Analog);
