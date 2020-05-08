@@ -168,6 +168,7 @@ int main(int argc, char* argv[])
                     ok = false;
                 }
             }
+            
             if(ok) 
             {
                 UpdateBuilder builder;
