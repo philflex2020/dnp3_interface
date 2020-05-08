@@ -62,7 +62,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     };
     values.ForeachItem(print);
     myss <<"]\n";
-    std::cout << myss;
+    std::cout << myss.str();
     //cfgdb->lock(Analog);
     //cfgdb->triggerSend();
     //cfgdb->unlock(Analog);
