@@ -49,6 +49,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     // magic static
     static sysCfg *ycfgdb = cfgdb;
     static std::stringstream myss;
+    static int first = 1;
     myss << "[";
     std::cout << "******************************An: >>>" <<std::endl;
     std::cout << " Values size:" << values.Count() << std::endl;
@@ -58,13 +59,21 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
                   << " id ["<< ycfgdb->getAnalog(pair.index) << "]" 
                   << " value [" << pair.value.value <<"]"
                   << std::endl;
-        myss<< "\"" << ycfgdb->getAnalog(pair.index) << "\":" << pair.value.value <<",";
+        if(first == 1)
+        {
+            first = 0;
+        }
+        else 
+        {
+            myss << ",";    
+        }
+        myss<< "\"" << ycfgdb->getAnalog(pair.index) << "\":" << pair.value.value;
     };
     values.ForeachItem(print);
     myss <<"]\n";
     std::cout << myss.str();
     myss.str("");
-    
+
     //cfgdb->lock(Analog);
     //cfgdb->triggerSend();
     //cfgdb->unlock(Analog);
