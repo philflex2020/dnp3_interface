@@ -45,7 +45,7 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
     values.ForeachItem(print);
 }
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
-    static sysCfg *ycfgdb = xcfgdb;
+    static sysCfg *ycfgdb = cfgdb;
     std::cout << "******************************An: >>>" <<std::endl;
     std::cout << " Values size:" << values.Count() << std::endl;
     auto print = [](const Indexed<Analog>& pair) {
