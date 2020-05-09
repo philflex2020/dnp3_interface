@@ -324,6 +324,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
             return false;
         }
         sys->binaryNames[offset->valueint] = strdup(id->valuestring);   // assume this tkes a copy
+        sys->binaryIdx[id->valuestring] = offset->valueint;   
     }
 
     cJSON *JSON_analog = cJSON_GetObjectItem(JSON_objects, "analog");
@@ -349,6 +350,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
             return false;
         }
         sys->analogNames[offset->valueint] = strdup(id->valuestring);   // assume this tkes a copy
+        sys->analogIdx[id->valuestring] = offset->valueint;   
     }
     return true;
 }
@@ -813,7 +815,7 @@ bool process_dnp3_message(int bytes_read, int header_length, datalog* data, syst
             if(reg == NULL)
             {
                 fprintf(stderr, "Wrote to undefined coil.\n");
-                return false;
+                 return false;
             }
             cJSON* send_body = cJSON_CreateObject();
             if(send_body != NULL)

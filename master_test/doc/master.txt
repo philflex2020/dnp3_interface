@@ -247,7 +247,7 @@ The Master can set up to scan the outstation at regular intervals.
       cfgdb->setVal(Type, Name, Value);
 
       the code to do this would be something like this:
-         int idx = cfgdb->getIndex(Type,Name)
+         int idx = cfgdb->getAnalogIndex(Name)
          if (Type == AnalogOP){
             AnalogOutputInt16 ao(Value);
             master->DirectOperate(CommandSet(
@@ -290,7 +290,7 @@ The json config file will probably look like this.
         "ip_address": "192.168.1.50",
         "port": 502,
         "local_address": 1,
-		"remote_address": 0
+		"remote_address": 10
     },
     "objects": {
         "binary": [
