@@ -1,3 +1,8 @@
+/* 
+ *  dnp3 outstation test code  
+ * pwilshire / pmiller
+ *  5/11/2020
+ */
 
 #include <iostream>
 #include <string>
@@ -46,13 +51,13 @@ struct State
     uint8_t octetStringValue = 1;
 };
 
-std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager &manager) {
+std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *manager) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_COMMS;
 
     // Create a TCP server (listener)
-    auto channel = manager.AddTCPServer("server", FILTERS, ServerAcceptMode::CloseExisting, "127.0.0.1", 20001,
+    auto channel = manager->AddTCPServer("server", FILTERS, ServerAcceptMode::CloseExisting, "127.0.0.1", 20001,
                                         PrintingChannelListener::Create());
 
     // The main object for a outstation. The defaults are useable,
@@ -91,6 +96,12 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager &ma
     return outstation;
 }
 
+DNP3Manager* setupDNP3Manager(void)
+{
+    auto manager = new DNP3Manager(1, ConsoleLogger::Create());
+    return manager;
+}
+
 int main(int argc, char* argv[])
 {
     // char *subscriptions[1];
@@ -101,13 +112,32 @@ int main(int argc, char* argv[])
     char* subs = sub;
     bool publish_only = false;
     bool running = true;
-
+    sysCfg sys_cfg;
+    xcfgdb = &sys_cfg;
     p_fims = new fims();
 
+    cJSON* config = get_config_json(argc, argv);
+    if(config == NULL)
+        return 1;
+    if(!parse_system(config, &sys_cfg)) 
+    {
+        fprintf(stderr, "Error reading config file system.\n");
+        cJSON_Delete(config);
+        return 1;
+    }
+    if(!parse_variables(config, &sys_cfg)) 
+    {
+        fprintf(stderr, "Error reading config file variables.\n");
+        cJSON_Delete(config);
+        return 1;
+    }
+
+    // sys_cfg.name, ip_address, port
+    cJSON_Delete(config);
     // This is the main point of interaction with the stack
     // Allocate a single thread to the pool since this is a single outstation
     // Must be in main scope
-    DNP3Manager manager(1, ConsoleLogger::Create());
+    DNP3Manager *manager = setupDNP3Manger();//(1, ConsoleLogger::Create());
     auto outstation = outstation_init(manager);
     printf("outstation started\n");
 
