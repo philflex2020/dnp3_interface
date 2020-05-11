@@ -442,6 +442,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Main loop complete: Entering clean up.\n");
 
     cleanup:
+    if (manager) delete manager;
 
     //if(sys_cfg.eth_dev       != NULL) free(sys_cfg.eth_dev);
     if(sys_cfg.ip_address    != NULL) free(sys_cfg.ip_address);
