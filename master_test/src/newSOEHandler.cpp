@@ -55,8 +55,15 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         char *out = cJSON_PrintUnformatted(cj);
         cJSON_Delete(cj);
         cj = NULL;
-        cfgdb->p_fims->Send("pub", "/mypub/message", NULL, out);
-        free(out);
+        if (out) 
+        {
+           cfgdb->p_fims->Send("pub", "/mypub/message", NULL, out);
+           free(out);
+        }
+        else
+        {
+            std::cout << "***************bin error in pub : <<" <<std::endl;
+        }
     }
     //std::cout << "******************************An: <<" <<std::endl;
 }
