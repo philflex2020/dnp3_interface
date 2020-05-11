@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
                 ok = false;
             }
             // set /dnp3/test '{"type":"xx", offset:yy value: zz}'
-            // set /dnp3/test '{"type":"analog", "offset":01, "value": "2.34"}'
+            // set /dnp3/test '{"type":"analog", "offset":01, "value": 2.34}'
 
             if (ok) 
             {
@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
                 if (offset == NULL)
                 {
                     FPS_ERROR_PRINT("fims message body offset key not found \n");
-                ok = false;
+                    ok = false;
                 }
             }
 
@@ -213,18 +213,28 @@ int main(int argc, char* argv[])
 
             if(ok) 
             {
+                int dboffset = offset->valueint;
                 UpdateBuilder builder;
-
                 if(strcmp(itype->valuestring,"analog")==0)
                 {
+                    if(offset->type == cJSON_String) 
+                    {
+                        dboffset = syscfg->getAnalogIdx(offset->valuestring);
+                    }
+
                     //bin = !bin;
-                    printf("analog offset %d bodyval: %f\n", offset->valueint, body_value->valuedouble);
-                    builder.Update(Analog(body_value->valuedouble), offset->valueint);
+                    printf("analog offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
+                    builder.Update(Analog(body_value->valuedouble), dboffset);
                 }
                 else
                 {
-                    printf("binry offset %d bodyval: %f\n", offset->valueint, body_value->valuedouble);
-                    builder.Update(Binary(body_value->valueint != 0), offset->valueint);
+                    if(offset->type == cJSON_String) 
+                    {
+                        dboffset = syscfg->getBinaryIdx(offset->valuestring);
+                    }
+
+                    printf("binry offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
+                    builder.Update(Binary(body_value->valueint != 0), dboffset);
                     
                 }
                 
@@ -238,4 +248,5 @@ int main(int argc, char* argv[])
             // TODO delete fims message
         }
     }
+    delete manager;
 }
