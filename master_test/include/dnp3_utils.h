@@ -287,7 +287,7 @@ typedef struct sysCfg_t {
                 std::cout << it_names->first << " => " << it_names->second << '\n';
             }
             std::map<char*,int>::iterator it_ids;
-            for (it_ids = analogIdx.begin() ; it_ids != anaolgIdx.end();++it_ids)
+            for (it_ids = analogIdx.begin() ; it_ids != analolgIdx.end();++it_ids)
             {
                 std::cout << it_ids->first << " => " << it_ids->second << '\n';
             }
