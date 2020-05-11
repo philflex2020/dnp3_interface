@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
     bool publish_only = false;
     bool running = true;
     sysCfg sys_cfg;
-    sysCfg * xcfgdb = &sys_cfg;
+    //sysCfg * xcfgdb = &sys_cfg;
     p_fims = new fims();
 
     cJSON* config = get_config_json(argc, argv);
