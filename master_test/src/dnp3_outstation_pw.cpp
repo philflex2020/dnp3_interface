@@ -225,10 +225,13 @@ int main(int argc, char* argv[])
                              FPS_ERROR_PRINT("fims message body analog variable [%s] not in config\n", offset->valuestring);
                         }
                     }
-                    printf("analog offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
-                    builder.Update(Analog(body_value->valuedouble), dboffset);
+                    if(dboffset >= 0) 
+                    {
+                        printf("analog offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
+                        builder.Update(Analog(body_value->valuedouble), dboffset);
+                    }
                 }
-                else
+                else  // default to binary
                 {
                     if(offset->type == cJSON_String) 
                     {
