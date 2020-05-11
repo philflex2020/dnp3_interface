@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
                 {
                     if(offset->type == cJSON_String) 
                     {
-                        dboffset = syscfg->getAnalogIdx(offset->valuestring);
+                        dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
                     }
 
                     //bin = !bin;
@@ -230,7 +230,7 @@ int main(int argc, char* argv[])
                 {
                     if(offset->type == cJSON_String) 
                     {
-                        dboffset = syscfg->getBinaryIdx(offset->valuestring);
+                        dboffset = sys_cfg.getBinaryIdx(offset->valuestring);
                     }
 
                     printf("binry offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
