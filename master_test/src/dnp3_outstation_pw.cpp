@@ -27,6 +27,7 @@
 #include <asiodnp3/UpdateBuilder.h>
 
 #include "dnp3_utils.h"
+
 using namespace std;
 using namespace opendnp3;
 using namespace openpal;
@@ -114,7 +115,7 @@ int main(int argc, char* argv[])
     bool publish_only = false;
     bool running = true;
     sysCfg sys_cfg;
-    xcfgdb = &sys_cfg;
+    sysCfg * xcfgdb = &sys_cfg;
     p_fims = new fims();
 
     cJSON* config = get_config_json(argc, argv);
