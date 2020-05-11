@@ -340,7 +340,7 @@ int main(int argc, char *argv[])
     //std::shared_ptr<IMaster> 
     auto master = setupDNP3master (channel, "master1", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
     if (!master){
-        printf("fooey 3\n");
+        printf("master did not setup\n");
     }
     //we cant do this
     //auto master2 = setupDNP3master (channel2, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
@@ -437,6 +437,7 @@ int main(int argc, char *argv[])
             }
         }
     }
+    delete manager;
 
     fprintf(stderr, "Main loop complete: Entering clean up.\n");
 
