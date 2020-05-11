@@ -38,15 +38,15 @@ fims *p_fims;
 
 void ConfigureDatabase(DatabaseConfig& config)
 {
-    std::cout <<" before changes svariation"<<(int) config.analog[0].svariation<<"\n";
-    std::cout <<" before changes evariation"<<(int) config.analog[0].evariation<<"\n";
+    std::cout <<" before changes svariation :"<<(int) config.analog[0].svariation<<"\n";
+    std::cout <<" before changes evariation :"<<(int) config.analog[0].evariation<<"\n";
 
     // example of configuring analog index 0 for Class2 with floating point variations by default
     config.analog[0].clazz = PointClass::Class2;
     config.analog[0].svariation = StaticAnalogVariation::Group30Var5;
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
-    std::cout <<" after changes svariation"<<(int) config.analog[0].svariation<<"\n";
-    std::cout <<" after changes evariation"<<(int) config.analog[0].evariation<<"\n";
+    std::cout <<" after changes svariation :"<<(int) config.analog[0].svariation<<"\n";
+    std::cout <<" after changes evariation :"<<(int) config.analog[0].evariation<<"\n";
 
 
 
@@ -123,7 +123,7 @@ int main(int argc, char* argv[])
     // int rtn_val = 0;
     // int num_subs = 1;
 
-    char sub[] = "/dnp3/test";
+    char sub[] = "/dnp3/outstation";
     char* subs = sub;
     bool publish_only = false;
     bool running = true;
@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
         p_fims->Close();
         return 1;
     }
-
+    // subs = /dnp3/outstation
     if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
     {
         printf("Subscription failed.\n");
@@ -276,6 +276,7 @@ int main(int argc, char* argv[])
             {
                cJSON_Delete(body_JSON);
             }
+            p_fims->free_message(msg);
             // TODO delete fims message
         }
     }

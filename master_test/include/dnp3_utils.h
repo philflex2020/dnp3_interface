@@ -197,18 +197,22 @@ typedef struct sdata
 
 typedef struct sysCfg_t {
 
-    sysCfg_t() :name(NULL), protocol(NULL),id(NULL),ip_address(NULL),p_fims(NULL)
+    sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
     {
 
 
     }
     ~sysCfg_t()
     {
-       if(name)free(name);
-       if(protocol)free(protocol);
-       if(id)free(id);
-       if(ip_address)free(ip_address);
-       // TODO maps and fims
+        std::cout<<" "<<__FUNCTION__<<" closing\n" ;
+
+        if(name)free(name);
+        if(protocol)free(protocol);
+        if(id)free(id);
+        if(ip_address)free(ip_address);
+        clearBinaries();
+        clearAnalogs();
+       // TODO fims
     }
     public:
         char* getAnalog(int idx) 
@@ -292,7 +296,7 @@ typedef struct sysCfg_t {
         }
         void showAnalogs()
         {
-            std::cout << " Analog maps\n" ;
+            std::cout << " Clear Analog maps\n" ;
             std::map<int, char *>::iterator it_names;
             for (it_names = analogNames.begin() ; it_names != analogNames.end();++it_names)
             {
@@ -305,7 +309,47 @@ typedef struct sysCfg_t {
             }
 
         }
+        void clearBinaries()
+        {
+            std::cout << " Binary maps\n" ;
+            std::map<int , char*>::iterator it_names;
+            for (it_names = binaryNames.begin() ; it_names != binaryNames.end();++it_names)
+            {
+                std::cout << it_names->first << " => " << it_names->second << '\n';
+                free(it_names->second);
+            }
+            binaryNames.clear();
 
+            std::map<char*,int>::iterator it_ids;
+            for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
+            {
+                std::cout << it_ids->first << " => " << it_ids->second << '\n';
+                free(it_ids->first);
+            }
+            binaryIdx.clear();
+
+        }
+
+        void clearAnalogs()
+        {
+            std::cout << " Analog maps\n" ;
+            std::map<int, char *>::iterator it_names;
+            for (it_names = analogNames.begin() ; it_names != analogNames.end();++it_names)
+            {
+                std::cout << it_names->first << " => " << it_names->second << '\n';
+                free(it_names->second); 
+            }
+            analogNames.clear();
+
+            std::map<char*,int>::iterator it_ids;
+            for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
+            {
+                std::cout << it_ids->first << " => " << it_ids->second << '\n';
+                free(it_ids->first);
+            }
+            analogIdx.clear();
+
+        }
         char* name;
         char* protocol;
         int version;

@@ -276,14 +276,14 @@ bool parse_system(cJSON* cji, sysCfg* sys)
         ret = false;
     }
 
-    if(ret) ret = getCJint(cj,"version",sys->version);
-    if(ret) ret = getCJint(cj,"port",sys->port);
-    if(ret) ret = getCJint(cj,"local_address",sys->local_address);
-    if(ret) ret = getCJint(cj,"remote_address",sys->remote_address);
-    if(ret) ret = getCJstr(cj,"id",sys->id);
-    if(ret) ret = getCJstr(cj,"protocol",sys->protocol);
-    if(ret) ret = getCJstr(cj,"ip_address",sys->ip_address);
-    if(ret) ret = getCJstr(cj,"name",sys->name);
+    if(ret) ret = getCJint(cj,"version",         sys->version);
+    if(ret) ret = getCJint(cj,"port",            sys->port);
+    if(ret) ret = getCJint(cj,"local_address",   sys->local_address);
+    if(ret) ret = getCJint(cj,"remote_address",  sys->remote_address);
+    if(ret) ret = getCJstr(cj,"id",              sys->id);
+    if(ret) ret = getCJstr(cj,"protocol",        sys->protocol);
+    if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address);
+    //if(ret) ret = getCJstr(cj,"name",sys->name);
 
     // config file has "objects" with children groups "binary" and "analog"
     return ret;

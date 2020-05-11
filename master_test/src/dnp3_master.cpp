@@ -262,6 +262,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
     // do a Class 1 exception poll every 5 seconds
     auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
+
     auto objscan = master->AddAllObjectsScan(GroupVariationID(30,1),
                                                                    TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
@@ -367,7 +368,7 @@ int main(int argc, char *argv[])
         goto cleanup;
     }
     // could alternatively fims connect using a stored name for the server
-    while(fims_connect < MAX_FIMS_CONNECT && sys_cfg.p_fims->Connect(sys_cfg.name) == false)
+    while(fims_connect < MAX_FIMS_CONNECT && sys_cfg.p_fims->Connect(sys_cfg.id) == false)
     {
         fims_connect++;
         sleep(1);
@@ -443,10 +444,11 @@ int main(int argc, char *argv[])
 
     cleanup:
     if (manager) delete manager;
+    // sys_cfg should clean itself up
 
     //if(sys_cfg.eth_dev       != NULL) free(sys_cfg.eth_dev);
-    if(sys_cfg.ip_address    != NULL) free(sys_cfg.ip_address);
-    if(sys_cfg.name          != NULL) free(sys_cfg.name);
+    //if(sys_cfg.ip_address    != NULL) free(sys_cfg.ip_address);
+    //if(sys_cfg.name          != NULL) free(sys_cfg.name);
     //if(sys_cfg.serial_device != NULL) free(sys_cfg.serial_device);
     //if(sys_cfg.mb != NULL)             modbus_free(sys_cfg.mb);
     for(int fd = 0; fd < fd_max; fd++)
