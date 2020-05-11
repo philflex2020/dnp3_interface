@@ -57,8 +57,11 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         cj = NULL;
         if (out) 
         {
-           cfgdb->p_fims->Send("pub", "/mypub/binaries", NULL, out);
-           free(out);
+            char tmp[1024];
+            snprintf(tmp,1024,"/mypub/%s/%s", cfgdb->id, "binaries");
+
+            cfgdb->p_fims->Send("pub", tmp, NULL, out);
+            free(out);
         }
         else
         {
@@ -106,8 +109,18 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         char *out = cJSON_PrintUnformatted(cj);
         cJSON_Delete(cj);
         cj = NULL;
-        cfgdb->p_fims->Send("pub", "/mypub/analogs", NULL, out);
-        free(out);
+        if(out)
+        {
+            char tmp[1024];
+            snprintf(tmp,1024,"/mypub/%s/%s", cfgdb->id, "binaries");
+            cfgdb->p_fims->Send("pub", "/mypub/analogs", NULL, out);
+            free(out);
+        }
+        else
+        {
+            std::cout << "***************analogs  error in pub : <<" <<std::endl;                
+        }
+        
     }
     //std::cout << "******************************An: <<" <<std::endl;
     return;
