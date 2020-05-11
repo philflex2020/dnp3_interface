@@ -307,8 +307,9 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         FPS_ERROR_PRINT("binary object is missing from file! \n");
         return false;
     }
-    uint numBinaries = cJSON_GetArraySize(JSON_binary);
-    for(uint i = 0; i < numBinaries; i++)
+
+    sys->numBinaries = cJSON_GetArraySize(JSON_binary);
+    for(int i = 0; i < sys->numBinaries; i++)
     {
         cJSON* binary_object = cJSON_GetArrayItem(JSON_binary, i);
         if(binary_object == NULL)
@@ -333,8 +334,9 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         FPS_ERROR_PRINT("analog object is missing from file! \n");
         return false;
     }
-    uint numAnalogs = cJSON_GetArraySize(JSON_analog);
-    for(uint i = 0; i < numAnalogs; i++)
+
+    sys->numAnalogs = cJSON_GetArraySize(JSON_analog);
+    for(int i = 0; i < sys->numAnalogs; i++)
     {
         cJSON* analog_object = cJSON_GetArrayItem(JSON_analog, i);
         if(analog_object == NULL)
