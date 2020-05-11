@@ -235,31 +235,43 @@ typedef struct sysCfg_t {
         }
         int  getAnalogIdx(char *name) 
         {
-            int idx;
-            if(analogIdx.find(name) != analogIdx.end())
+            int idx = -1;
+            std::map<char*,int>::iterator it_ids;
+            for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
             {
-                idx = analogIdx[name];
+                std::cout << it_ids->first << " => " << it_ids->second << '\n';
+                if(strcmp(it_ids->first, name)== 0 )
+                {
+                   idx = it->ids->second;
+                   break;
+                }
             }
-            else
-            {
-                idx =  -1;
-            }
+            //if(analogIdx.find(name) != analogIdx.end())
+            //{
+            //    idx = analogIdx[name];
+            //}
+            //else
+            //{
+            //    idx =  -1;
+            //}
             std::cout << " Seeking Analog ["<< name <<"] found [" << idx <<"]\n";
             return idx;
 
         }
         int  getBinaryIdx(char *name) 
         {
-            int idx;
+            int idx = -1;
+            std::map<char*,int>::iterator it_ids;
+            for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
+            {
+                std::cout << it_ids->first << " => " << it_ids->second << '\n';
+                if(strcmp(it_ids->first, name)== 0 )
+                {
+                   idx = it->ids->second;
+                   break;
+                }
+            }
 
-            if(binaryIdx.find(name) != binaryIdx.end())
-            {
-                idx =  binaryIdx[name];
-            }
-            else
-            {
-                idx = -1;
-            }
             std::cout << " Seeking Binary ["<< name <<"] found [" << idx << "]\n";
             return idx;
         }
