@@ -460,6 +460,8 @@ enum class OperateType : uint8_t
   DirectOperateNoAck = 0x2
 };
 
+
+
 class MyCommandHandler final : public opendnp3::ICommandHandler
 {
 

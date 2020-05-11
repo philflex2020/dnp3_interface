@@ -226,7 +226,9 @@ int main(int argc, char* argv[])
                         dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
                         if(dboffset < 0)
                         {
-                             FPS_ERROR_PRINT("fims message body analog variable [%s] not in config\n", offset->valuestring);
+                            FPS_ERROR_PRINT("fims message body analog variable [%s] not in config\n", offset->valuestring);
+                            sys_cfg.showAnalogs();
+
                         }
                     }
                     if(dboffset >= 0) 
@@ -242,7 +244,9 @@ int main(int argc, char* argv[])
                         dboffset = sys_cfg.getBinaryIdx(offset->valuestring);
                         if(dboffset < 0)
                         {
-                             FPS_ERROR_PRINT("fims message body binary variable [%s] not in config\n", offset->valuestring);
+                            FPS_ERROR_PRINT("fims message body binary variable [%s] not in config\n", offset->valuestring);
+                            sys_cfg.showBinaries();
+
                         }
                     }
                     if (dboffset >= 0)
