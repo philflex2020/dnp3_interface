@@ -233,25 +233,33 @@ typedef struct sysCfg_t {
         }
         int  getAnalogIdx(char *name) 
         {
+            int idx;
             if(analogIdx.find(name) != analogIdx.end())
             {
-                return analogIdx[name];
+                idx = analogIdx[name];
             }
             else
             {
-                return -1;
+                idx =  -1;
             }
+            std::cout << " Seeking Analog ["<< name <<"] found [" idx"]\n";
+            return idx;
+
         }
         int  getBinaryIdx(char *name) 
         {
+            int idx;
+
             if(binaryIdx.find(name) != binaryIdx.end())
             {
-                return binaryIdx[name];
+                idx =  binaryIdx[name];
             }
             else
             {
-                return -1;
+                idx -1;
             }
+            std::cout << " Seeking Binary ["<< name <<"] found [" idx"]\n";
+            return idx;
         }
 
         char* name;
