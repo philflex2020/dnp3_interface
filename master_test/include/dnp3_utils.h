@@ -244,7 +244,7 @@ typedef struct sysCfg_t {
             {
                 idx =  -1;
             }
-            std::cout << " Seeking Analog ["<< name <<"] found [" idx"]\n";
+            std::cout << " Seeking Analog ["<< name <<"] found [" << idx <<"]\n";
             return idx;
 
         }
@@ -260,7 +260,7 @@ typedef struct sysCfg_t {
             {
                 idx = -1;
             }
-            std::cout << " Seeking Binary ["<< name <<"] found [" idx"]\n";
+            std::cout << " Seeking Binary ["<< name <<"] found [" << idx << "]\n";
             return idx;
         }
 
