@@ -97,7 +97,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         char* vname = static_cfgdb->getAnalog(pair.index);
         if(strcmp(vname,"Unknown")!= 0) 
         {
-            cJSON_AddNumberToObject(cj, vname, pair.value.value);
+            cJSON_AddNumberToObject(cj, vname, (float)pair.value.value);
         }
     };
     values.ForeachItem(print);
