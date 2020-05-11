@@ -1,4 +1,4 @@
-Notes on the dnp3 master interface.
+Notes on the dnp3 master.outstation interfaces.
 
 The master station acts as a connection to an outstation.
 
