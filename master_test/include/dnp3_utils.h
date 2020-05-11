@@ -256,7 +256,7 @@ typedef struct sysCfg_t {
             }
             else
             {
-                idx -1;
+                idx = -1;
             }
             std::cout << " Seeking Binary ["<< name <<"] found [" idx"]\n";
             return idx;
