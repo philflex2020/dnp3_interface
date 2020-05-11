@@ -220,9 +220,11 @@ int main(int argc, char* argv[])
                     if(offset->type == cJSON_String) 
                     {
                         dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
+                        if(dboffset < 0)
+                        {
+                             FPS_ERROR_PRINT("fims message body analog variable [%s] not in config\n", offset->valuestring);
+                        }
                     }
-
-                    //bin = !bin;
                     printf("analog offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
                     builder.Update(Analog(body_value->valuedouble), dboffset);
                 }
@@ -231,13 +233,18 @@ int main(int argc, char* argv[])
                     if(offset->type == cJSON_String) 
                     {
                         dboffset = sys_cfg.getBinaryIdx(offset->valuestring);
+                        if(dboffset < 0)
+                        {
+                             FPS_ERROR_PRINT("fims message body binary variable [%s] not in config\n", offset->valuestring);
+                        }
                     }
-
-                    printf("binry offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
-                    builder.Update(Binary(body_value->valueint != 0), dboffset);
-                    
+                    if (dboffset >= 0)
+                    {
+                        printf("binry offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
+                        builder.Update(Binary(body_value->valueint != 0), dboffset);
+                    }
                 }
-                
+                // TODO multiple variables in one message
                 outstation->Apply(builder.Build());
             }
 
