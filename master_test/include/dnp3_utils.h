@@ -7,6 +7,8 @@
 #include <map>
 #include <cstring>
 #include <string>
+#include <iostream>
+
 
 #ifndef FPS_ERROR_PRINT 
 #define FPS_ERROR_PRINT printf
