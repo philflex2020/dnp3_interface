@@ -242,7 +242,7 @@ typedef struct sysCfg_t {
                 std::cout << it_ids->first << " => " << it_ids->second << '\n';
                 if(strcmp(it_ids->first, name)== 0 )
                 {
-                   idx = it->ids->second;
+                   idx = it_ids->second;
                    break;
                 }
             }
@@ -267,7 +267,7 @@ typedef struct sysCfg_t {
                 std::cout << it_ids->first << " => " << it_ids->second << '\n';
                 if(strcmp(it_ids->first, name)== 0 )
                 {
-                   idx = it->ids->second;
+                   idx = it_ids->second;
                    break;
                 }
             }
