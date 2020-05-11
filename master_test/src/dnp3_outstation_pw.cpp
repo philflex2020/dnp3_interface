@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
     // int rtn_val = 0;
     // int num_subs = 1;
 
-    char sub[] = "/test";
+    char sub[] = "/dnp3/test";
     char* subs = sub;
     bool publish_only = false;
     bool running = true;
@@ -120,16 +120,20 @@ int main(int argc, char* argv[])
 
     cJSON* config = get_config_json(argc, argv);
     if(config == NULL)
-        return 1;
-    if(!parse_system(config, &sys_cfg)) 
     {
         fprintf(stderr, "Error reading config file system.\n");
+        return 1;
+
+    }
+    if(!parse_system(config, &sys_cfg)) 
+    {
+        fprintf(stderr, "Error parsing config file system.\n");
         cJSON_Delete(config);
         return 1;
     }
     if(!parse_variables(config, &sys_cfg)) 
     {
-        fprintf(stderr, "Error reading config file variables.\n");
+        fprintf(stderr, "Error parsing config file variables.\n");
         cJSON_Delete(config);
         return 1;
     }
@@ -157,7 +161,6 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-
     while(running && p_fims->Connected())
     {
         fims_message* msg = p_fims->Receive();
@@ -174,6 +177,9 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
                 ok = false;
             }
+            // set /dnp3/test '{"type":"xx", offset:yy value: zz}'
+            // set /dnp3/test '{"type":"analog", "offset":01, "value": "2.34"}'
+
             if (ok) 
             {
                 body_value = cJSON_GetObjectItem(body_JSON, "value");
@@ -217,6 +223,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
+                    printf("binry offset %d bodyval: %f\n", offset->valueint, body_value->valuedouble);
                     builder.Update(Binary(body_value->valueint != 0), offset->valueint);
                     
                 }
