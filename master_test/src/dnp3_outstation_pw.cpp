@@ -131,15 +131,19 @@ int main(int argc, char* argv[])
         cJSON_Delete(config);
         return 1;
     }
+
     if(!parse_variables(config, &sys_cfg)) 
     {
         fprintf(stderr, "Error parsing config file variables.\n");
         cJSON_Delete(config);
         return 1;
     }
+    sys_cfg.showBinaries();
+    sys_cfg.showBAnalogs();
 
     // sys_cfg.name, ip_address, port
     cJSON_Delete(config);
+
     // This is the main point of interaction with the stack
     // Allocate a single thread to the pool since this is a single outstation
     // Must be in main scope
