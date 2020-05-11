@@ -239,7 +239,7 @@ typedef struct sysCfg_t {
             std::map<char*,int>::iterator it_ids;
             for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
             {
-                std::cout << it_ids->first << " => " << it_ids->second << '\n';
+                std::cout << __FUNCTION__ << it_ids->first << " => " << it_ids->second << '\n';
                 if(strcmp(it_ids->first, name)== 0 )
                 {
                    idx = it_ids->second;
@@ -264,7 +264,7 @@ typedef struct sysCfg_t {
             std::map<char*,int>::iterator it_ids;
             for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
             {
-                std::cout << it_ids->first << " => " << it_ids->second << '\n';
+                std::cout << __FUNCTION__<< it_ids->first << " => " << it_ids->second << '\n';
                 if(strcmp(it_ids->first, name)== 0 )
                 {
                    idx = it_ids->second;
