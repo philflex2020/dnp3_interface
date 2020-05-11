@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
     // This is the main point of interaction with the stack
     // Allocate a single thread to the pool since this is a single outstation
     // Must be in main scope
-    DNP3Manager *manager = setupDNP3Manger();//(1, ConsoleLogger::Create());
+    DNP3Manager *manager = setupDNP3Manager();//(1, ConsoleLogger::Create());
     auto outstation = outstation_init(manager);
     printf("outstation started\n");
 
