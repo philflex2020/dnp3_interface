@@ -26,6 +26,7 @@
 #include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
 
+#include "dnp3_utils.h"
 using namespace std;
 using namespace opendnp3;
 using namespace openpal;
