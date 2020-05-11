@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
         return 1;
     }
     sys_cfg.showBinaries();
-    sys_cfg.showBAnalogs();
+    sys_cfg.showAnalogs();
 
     // sys_cfg.name, ip_address, port
     cJSON_Delete(config);
