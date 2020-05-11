@@ -112,8 +112,8 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         if(out)
         {
             char tmp[1024];
-            snprintf(tmp,1024,"/mypub/%s/%s", cfgdb->id, "binaries");
-            cfgdb->p_fims->Send("pub", "/mypub/analogs", NULL, out);
+            snprintf(tmp, 1024, "/mypub/%s/%s", cfgdb->id, "binaries");
+            cfgdb->p_fims->Send("pub", tmp, NULL, out);
             free(out);
         }
         else
