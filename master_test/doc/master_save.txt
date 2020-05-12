@@ -38,9 +38,6 @@ This needs to know the number of items for each data type.
 The config map , is parsed , and the size of each data set (Binary, Analog) is used to set up the data maps for the DNP stack
 
 
-
-
-
     The master station has no knowledge of the data set available from each outstation.
     When data arrives at the master station it only knows the datatype and the point index of the data item.
 
@@ -237,7 +234,42 @@ The Master can set up to scan the outstation at regular intervals.
 
     exceptionScan->Demand();
     objscan->Demand();
- 
+
+    Notes on data rypes
+    
+// Analog Input - Any Variation
+struct Group30Var0
+{
+  static GroupVariationID ID() { return GroupVariationID(30,0); }
+};
+
+// Analog Input - 32-bit With Flag
+struct Group30Var1
+  typedef int32_t ValueType;
+
+// Analog Input - 16-bit With Flag
+struct Group30Var2
+  typedef int16_t ValueType;
+
+// Analog Input - 32-bit Without Flag
+struct Group30Var3
+  typedef int32_t ValueType;
+
+// Analog Input - 16-bit Without Flag
+struct Group30Var4
+  Group30Var4();
+  typedef int16_t ValueType;
+
+// Analog Input - Single-precision With Flag
+  Group30Var5();
+  typedef float ValueType;
+
+// Analog Input - Double-precision With Flag
+  Group30Var6();
+  typedef double ValueType;
+
+
+
   fims messages can be used to trigger these requests.
 
 
