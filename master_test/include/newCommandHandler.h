@@ -5,6 +5,8 @@
 
 #include "dnp3_utils.h"
 
+#include <memory>
+
 //#include <vector>
 //#include <map>
 
