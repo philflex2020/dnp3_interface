@@ -43,6 +43,8 @@
 #include <asiopal/ChannelRetry.h>
 
 #include "newSOEHandler.h"
+#include "newMasterApplication.h"
+
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
 using namespace std; 
@@ -259,7 +261,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                 //                     stackConfig // stack configuration
     auto master = channel->AddMaster("master", // id for logging
                                      newSOEHandler::Create(ourDB), // callback for data processing
-                                     newMasterApplication::Create(outDB), // master application instance
+                                     newMasterApplication::Create(ourDB), // master application instance
                                      stackConfig // stack configuration
     );
     // do an integrity poll (Class 3/2/1/0) once per minute
