@@ -14,7 +14,7 @@
 #include <string.h>
 #include <fims/fps_utils.h>
 #include <cjson/cJSON.h>
-
+#include <fims/libfims.h>
 
 #include <opendnp3/LogLevels.h>
 #include <opendnp3/outstation/IUpdateHandler.h>
