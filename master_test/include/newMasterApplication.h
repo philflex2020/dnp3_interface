@@ -34,7 +34,7 @@ class newMasterApplication : public opendnp3::IMasterApplication
 public:
     newMasterApplication(sysCfg* myDB){cfgdb = myDB;};
 
-    static std::shared_ptr<IMasterApplication> Create(sysCfg* myDB))
+    static std::shared_ptr<IMasterApplication> Create(sysCfg* myDB)
     {
         return std::make_shared<newMasterApplication>(myDB);
     }
