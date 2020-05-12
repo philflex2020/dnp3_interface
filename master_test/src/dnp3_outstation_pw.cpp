@@ -46,6 +46,7 @@ void ConfigureDatabase(DatabaseConfig& config)
     // example of configuring analog index 0 for Class2 with floating point variations by default
     config.analog[0].clazz = PointClass::Class2;
     config.analog[0].svariation = StaticAnalogVariation::Group30Var5;
+    config.analog[1].svariation = StaticAnalogVariation::Group30Var5;
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
     std::cout <<" after changes svariation :"<<(int) config.analog[0].svariation<<"\n";
     std::cout <<" after changes evariation :"<<(int) config.analog[0].evariation<<"\n";
