@@ -263,7 +263,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                                      newSOEHandler::Create(ourDB), // callback for data processing
                                      newMasterApplication::Create(ourDB), // master application instance
                                      stackConfig // stack configuration
-    );
+                                        );
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
     auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Seconds(5));
@@ -273,9 +273,9 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     //auto binscan = master->AddAllObjectsScan(GroupVariationID(1,1),
     //                                                               TimeDuration::Seconds(5));
     //auto objscan = master->AddAllObjectsScan(GroupVariationID(30,1),
-                                                                   TimeDuration::Seconds(5));
+    //                                                               TimeDuration::Seconds(5));
     //auto objscan2 = master->AddAllObjectsScan(GroupVariationID(30,5),
-                                                                   TimeDuration::Seconds(10));
+    //                                                               TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
     master->Enable();
     bool channelCommsLoggingEnabled = true;
