@@ -235,8 +235,30 @@ The Master can set up to scan the outstation at regular intervals.
     exceptionScan->Demand();
     objscan->Demand();
 
-    Notes on data rypes
-    
+Notes on input data types
+
+
+// Binary Input - Any Variation
+struct Group1Var0
+
+// Binary Input - Packed Format
+struct Group1Var1
+
+// Binary Input - With Flags
+struct Group1Var2
+
+// Binary Input Event - Any Variation
+struct Group2Var0
+
+// Binary Input Event - Without Time
+struct Group2Var1
+
+// Binary Input Event - With Absolute Time
+struct Group2Var2
+
+// Binary Input Event - With Relative Time
+struct Group2Var3
+
 // Analog Input - Any Variation
 struct Group30Var0
 {
@@ -268,6 +290,53 @@ struct Group30Var4
   Group30Var6();
   typedef double ValueType;
 
+
+Group 32 are the same but for Analog Input Events.
+
+Notes on output data types
+
+// Analog Output Status - Any Variation
+struct Group40Var0
+
+// Analog Output Status - 32-bit With Flag
+struct Group40Var1
+
+// Analog Output Status - 16-bit With Flag
+struct Group40Var2
+  typedef int16_t ValueType;
+
+// Analog Output Status - Single-precision With Flag
+struct Group40Var3
+  typedef float ValueType;
+
+// Analog Output Status - Double-precision With Flag
+struct Group40Var4
+  typedef double ValueType;
+
+// Analog Output - Any Variation
+struct Group41Var0
+
+
+// Analog Output - 32-bit With Flag
+struct Group41Var1
+  typedef int32_t ValueType;
+ 
+// Analog Output - 16-bit With Flag
+struct Group41Var2
+  typedef int16_t ValueType;
+
+// Analog Output - Single-precision
+  typedef float ValueType;
+
+// Analog Output - Double-precision
+struct Group41Var4
+  typedef double ValueType;
+
+
+
+Q1 how is an analog (or any other) event triggered
+
+Q2 how is an analog (or any other) event scanned 
 
 
   fims messages can be used to trigger these requests.
