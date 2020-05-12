@@ -120,12 +120,12 @@ CommandStatus newCommandHandler::GetPinAndState(uint16_t index, opendnp3::Contro
     //}
     //io = iter->second;
 
-    //std::cout << "              ************" << __FUNCTION__ 
-    //<< " called, code:" <<(int)code
-    //<< " index:" <<index
-    //<< " io:" <<(int)io
-    //<< " INDEX FOUND" 
-    //<< std::endl;
+    std::cout << "              ************" << __FUNCTION__ 
+    << " called, code:" <<(int)code
+    << " index:" <<index
+    << " io:" <<(int)io
+    << " INDEX FOUND" 
+    << std::endl;
 
-    //return CommandStatus::SUCCESS;
+    return CommandStatus::SUCCESS;
 }
