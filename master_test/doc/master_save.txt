@@ -335,10 +335,25 @@ struct Group41Var4
 
 
 Q1 how is an analog (or any other) event triggered
+event
+The crossing of a threshold by an analog value, or the switch of a binary
+input. For example, an event occurs when an analog value changes by
+more than the configured dead-band or threshold, or when a binary input
+changes from On to Off.
+An event can be recorded with or without a timestamp. Timestamps
+enable the master to generate time-sequence reports.
+Event data are kept in the datalogger until confirmation has been received
+from the master that the data are received. In other words, event data will
+not be discarded until after the datalogger receives confirmation that the
+master has received the data.
+
 
 Q2 how is an analog (or any other) event scanned 
 
-
+not sure but a class 1-3 scan may do the trick
+DNPVariable(Array(),4,30,1,0,0,0,0) 'static analog data
+ 'must specify object 30 before using object 32
+ DNPVariable(Array(),4,32,1,1,0,trigger,10) 'event analog data
   fims messages can be used to trigger these requests.
 
 

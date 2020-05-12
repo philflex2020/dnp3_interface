@@ -66,7 +66,8 @@ struct State
     uint8_t octetStringValue = 1;
 };
 
-std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *manager) {
+
+std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *manager, sysCfg* ourDB) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_COMMS;
@@ -96,11 +97,13 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *ma
 
     // You can optionally change the default reporting variations or class assignment prior to enabling the outstation
     ConfigureDatabase(config.dbConfig);
-
+    //const auto commandHandler = std::make_shared<newCommandHandler>(MyOutputs);
     // Create a new outstation with a log level, command handler, and
     // config info this	returns a thread-safe interface used for
     // updating the outstation's database.
-    auto outstation = channel->AddOutstation("outstation", SuccessCommandHandler::Create(),
+    //auto outstation = channel->AddOutstation("outstation", SuccessCommandHandler::Create(),
+    //                                         DefaultOutstationApplication::Create(), config);
+    auto outstation = channel->AddOutstation("outstation", newCommandHandler::Create(ourDB),
                                              DefaultOutstationApplication::Create(), config);
     printf("server channel created\n");
 
@@ -161,7 +164,7 @@ int main(int argc, char* argv[])
     // Allocate a single thread to the pool since this is a single outstation
     // Must be in main scope
     DNP3Manager *manager = setupDNP3Manager();//(1, ConsoleLogger::Create());
-    auto outstation = outstation_init(manager);
+    auto outstation = outstation_init(manager, &sys_cfg);
     printf("outstation started\n");
 
     if(p_fims->Connect((char *)"fims_listen") == false)
@@ -194,8 +197,8 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
                 ok = false;
             }
-            // set /dnp3/test '{"type":"xx", offset:yy value: zz}'
-            // set /dnp3/test '{"type":"analog", "offset":01, "value": 2.34}'
+            // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
+            // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
 
             if (ok) 
             {
