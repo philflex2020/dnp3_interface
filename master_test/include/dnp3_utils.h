@@ -4,6 +4,10 @@
  * mapping shared library
  *      pwilshire      5/5/2020
  */
+
+#include <cjson/cJSON.h>
+#include <fims/libfims.h>
+
 #include <map>
 #include <cstring>
 #include <string>
