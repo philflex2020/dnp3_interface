@@ -1,3 +1,14 @@
 things to do.
 
 
+link status
+individual reg set outstation
+same from master
+scan classes
+master for each outstation link definition for one channel
+how does outstation set a variable .. no need to do that
+ERCOT dnp3 master we are an outstation pubs from outstation sent to local masters then to their outstations
+
+put fims config 
+look for only scan changed values ( not needed perhaps)
+

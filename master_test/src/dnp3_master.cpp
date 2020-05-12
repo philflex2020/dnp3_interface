@@ -265,15 +265,16 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                                      stackConfig // stack configuration
     );
     // do an integrity poll (Class 3/2/1/0) once per minute
-    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
+    //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
+    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Seconds(5));
     // do a Class 1 exception poll every 5 seconds
     auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
     
-    auto binscan = master->AddAllObjectsScan(GroupVariationID(1,1),
+    //auto binscan = master->AddAllObjectsScan(GroupVariationID(1,1),
+    //                                                               TimeDuration::Seconds(5));
+    //auto objscan = master->AddAllObjectsScan(GroupVariationID(30,1),
                                                                    TimeDuration::Seconds(5));
-    auto objscan = master->AddAllObjectsScan(GroupVariationID(30,1),
-                                                                   TimeDuration::Seconds(5));
-    auto objscan2 = master->AddAllObjectsScan(GroupVariationID(30,5),
+    //auto objscan2 = master->AddAllObjectsScan(GroupVariationID(30,5),
                                                                    TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
     master->Enable();
