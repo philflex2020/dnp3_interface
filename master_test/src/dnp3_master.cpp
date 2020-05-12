@@ -253,9 +253,13 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     ///void * ourDB = NULL;
     //auto newSOE = newSOEHandler::Create(ourDB);
     //newSOE.setDB(ourDB);
+    //auto master = channel->AddMaster("master", // id for logging
+                //                     newSOEHandler::Create(ourDB), // callback for data processing
+                //                     asiodnp3::DefaultMasterApplication::Create(), // master application instance
+                //                     stackConfig // stack configuration
     auto master = channel->AddMaster("master", // id for logging
                                      newSOEHandler::Create(ourDB), // callback for data processing
-                                     asiodnp3::DefaultMasterApplication::Create(), // master application instance
+                                     newMasterApplication::Create(outDB), // master application instance
                                      stackConfig // stack configuration
     );
     // do an integrity poll (Class 3/2/1/0) once per minute
