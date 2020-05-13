@@ -237,7 +237,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
-std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB , int localAddr , int RemoteAddr)
+std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB , int localAddr , int remoteAddr)
 {
 
     MasterStackConfig stackConfig;
@@ -247,8 +247,8 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     stackConfig.master.disableUnsolOnStartup = true;
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
-    stackConfig.link.LocalAddr = 1;
-    stackConfig.link.RemoteAddr = 10;
+    stackConfig.link.LocalAddr = localAddr; // 1
+    stackConfig.link.RemoteAddr = remoteAddr; //10;
     // Create a new master on a previously declared port, with a
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
