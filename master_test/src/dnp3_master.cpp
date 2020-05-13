@@ -41,7 +41,7 @@
 #include <asiodnp3/PrintingChannelListener.h> 
 #include <asiodnp3/PrintingCommandCallback.h> 
 #include <asiopal/ChannelRetry.h>
-#include <asiodnp3/UpdateBuilder.h>
+//#include <asiodnp3/UpdateBuilder.h>
 
 #include "newSOEHandler.h"
 #include "newMasterApplication.h"
