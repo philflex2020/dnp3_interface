@@ -216,7 +216,7 @@ typedef struct sysCfg_t {
         if(ip_address)free(ip_address);
         clearBinaries();
         clearAnalogs();
-        if (cj) cJSON_Delete(cj)
+        if (cj) cJSON_Delete(cj);
        // TODO fims
     }
     public:
@@ -355,7 +355,7 @@ typedef struct sysCfg_t {
             analogIdx.clear();
 
         }
-        
+
         char* name;
         char* protocol;
         int version;
