@@ -164,6 +164,8 @@ bool process_fims_message(fims_message* msg, server_data* server_map)
     return true;
 }
 
+// this subscribes to a number of uris which has been set up from reading the config file.
+// TODO review this
 bool initialize_map(server_data* server_map)
 {
     if(server_map->p_fims->Subscribe((const char**)server_map->uris, server_map->num_uris + 1) == false)
@@ -227,9 +229,10 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     // You can add all the comms logging by uncommenting below
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
     // This is the main point of interaction with the stack
-    //DNP3Manager manager(1, ConsoleLogger::Create());
     // Connect via a TCPClient socket to a outstation
     // repeat for each outstation
+
+    // TODO setup our own PrintingChannelListener
     std::shared_ptr<IChannel> channel = manager->AddTCPClient(cname, FILTERS, ChannelRetry::Default(), {IPEndpoint(addr, port)},
                                         "0.0.0.0", PrintingChannelListener::Create());
     // The master config object for a master. The default are
@@ -252,20 +255,18 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     // Create a new master on a previously declared port, with a
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
-    ///void * ourDB = NULL;
-    //auto newSOE = newSOEHandler::Create(ourDB);
-    //newSOE.setDB(ourDB);
     //auto master = channel->AddMaster("master", // id for logging
                 //                     newSOEHandler::Create(ourDB), // callback for data processing
                 //                     asiodnp3::DefaultMasterApplication::Create(), // master application instance
                 //                     stackConfig // stack configuration
     auto master = channel->AddMaster("master", // id for logging
-                                     newSOEHandler::Create(ourDB), // callback for data processing
-                                     newMasterApplication::Create(ourDB), // master application instance
+                                     newSOEHandler::Create(ourDB), // callback for data processing  this generates the pub elements when we get data
+                                     newMasterApplication::Create(ourDB), // master application instance this managed the collection of al the pub elements 
                                      stackConfig // stack configuration
                                     );
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
+    // TODO we need a way to demand this via FIMS
     auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Seconds(5));
     // do a Class 1 exception poll every 5 seconds
     auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
@@ -284,10 +285,11 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     channel->SetLogFilters(levels);
     levels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
     master->SetLogFilters(levels);
+    // other master controls are :
+    //
     return master;
 }
 
-sysCfg * xcfgdb;
 
 
 int main(int argc, char *argv[])
@@ -306,7 +308,6 @@ int main(int argc, char *argv[])
     fd_set all_connections;
     FD_ZERO(&all_connections);
     sysCfg sys_cfg;
-    xcfgdb = &sys_cfg;
     
     //memset(&sys_cfg, 0, sizeof(sysCfg));
     datalog data[Num_Register_Types];
@@ -315,45 +316,46 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Reading config file and starting setup.\n");
     cJSON* config = get_config_json(argc, argv);
     if(config == NULL)
+    {
+        fprintf(stderr, "Error reading config file\n");
         return 1;
+    }
     if(!parse_system(config, &sys_cfg)) 
     {
-        fprintf(stderr, "Error reading config file system.\n");
+        fprintf(stderr, "Error reading system from config file.\n");
         cJSON_Delete(config);
         return 1;
     }
     if(!parse_variables(config, &sys_cfg)) 
     {
-        fprintf(stderr, "Error reading config file variables.\n");
+        fprintf(stderr, "Error reading variabled from config file.\n");
         cJSON_Delete(config);
         return 1;
     }
 
-    // sys_cfg.name, ip_address, port
     cJSON_Delete(config);
-    //setupDNP3();
+    sys_cfg.p_fims = new fims();
+
     auto manager = setupDNP3Manager();
     if (!manager){
-        printf("fooey 1\n");
+        fprintf(stderr, "Error in setupDNP3Manager.\n");
+        return 1;
     }
     // now we use data from the config file
     //std::shared_ptr<IChannel> 
     //auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
     auto channel = setupDNP3channel(manager, sys_cfg.id, sys_cfg.ip_address, sys_cfg.port);
     if (!channel){
-        printf("fooey 2\n");
+        fprintf(stderr, "Error in setupDNP3channel.\n");
+        delete manager;
+        return 1;
     }
         //std::shared_ptr<IChannel> 
-    //auto channel2 = setupDNP3channel(manager, "tcpclient2", "192.168.1.148", 20001);
-    //if (!channel2){
-    //    printf("fooey 2.1\n");
-    //}
-
-    //void * ourDB = NULL;
-    //std::shared_ptr<IMaster> 
     auto master = setupDNP3master (channel, "master1", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
     if (!master){
-        printf("fooey 3\n");
+        fprintf(stderr, "Error in setupDNP3master.\n");
+        delete manager;
+        return 1;
     }
     //we cant do this
     //auto master2 = setupDNP3master (channel2, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
@@ -364,14 +366,8 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
 
-    //if (server_map == NULL)
-    //{
-    //    fprintf(stderr, "Failed to initialize the mapping\n");
-    //    rc = 1;
-    //    goto cleanup;
-    //}
+    //sys_cfg.p_fims = new fims();
 
-    sys_cfg.p_fims = new fims();
     if (sys_cfg.p_fims == NULL)
     {
         fprintf(stderr,"Failed to allocate connection to FIMS server.\n");

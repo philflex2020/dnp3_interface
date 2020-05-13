@@ -511,6 +511,9 @@ This will change the function and classification of the object to allow it to be
 The data type of the object cannot be changed.
 (Note perhaps we can add a tag here I dont know yet)
 
+Note 2: this is where the data types of the value recovered in a class scan are set 
+for example Group30Var5 means send floating point.
+ 
 void ConfigureDatabase(DatabaseConfig& config)
 {
     // example of configuring analog index 0 for Class2 with floating point variations by default
