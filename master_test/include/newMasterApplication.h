@@ -53,7 +53,7 @@ public:
         std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
         if(cfgdb->cj)
         {
-            ubWithTimeStamp(cfgdb->cj, cfgdb, "interfaces");
+            pubWithTimeStamp(cfgdb->cj, cfgdb, "interfaces");
             cJSON_Delete(cfgdb->cj);
             cfgdb->cj = NULL;
         }  
