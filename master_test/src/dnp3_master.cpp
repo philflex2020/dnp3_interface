@@ -294,10 +294,11 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
 
 int main(int argc, char *argv[])
 {
+    fims* p_fims;
     char sub[] = "/dnp3/master";
     char* subs = sub;
-    //bool publish_only = false;
-    //bool running = true;
+    bool publish_only = false;
+    bool running = true;
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
 
@@ -338,7 +339,7 @@ int main(int argc, char *argv[])
     }
 
     cJSON_Delete(config);
-    sys_cfg.p_fims = new fims();
+    sys_cfg.p_fims = p_fims = new fims();
 
     auto manager = setupDNP3Manager();
     if (!manager){
@@ -372,14 +373,14 @@ int main(int argc, char *argv[])
 
     //sys_cfg.p_fims = new fims();
 
-    if (sys_cfg.p_fims == NULL)
+    if (p_fims == NULL)
     {
         fprintf(stderr,"Failed to allocate connection to FIMS server.\n");
         rc = 1;
         goto cleanup;
     }
     // could alternatively fims connect using a stored name for the server
-    while(fims_connect < MAX_FIMS_CONNECT && sys_cfg.p_fims->Connect(sys_cfg.id) == false)
+    while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(sys_cfg.id) == false)
     {
         fims_connect++;
         sleep(1);
@@ -395,7 +396,7 @@ int main(int argc, char *argv[])
     //todo this should be defined to a better length
     //char uri[100];
     //sprintf(uri,"/interfaces/%s", sys_cfg.name);
-    if(p_fims->Connect((char *)"fims_listen") == false)
+    if(p_fims->Connect((char *)"fims_master") == false)
     {
         printf("Connect failed.\n");
         p_fims->Close();
