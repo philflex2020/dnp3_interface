@@ -53,23 +53,10 @@ public:
         std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
         if(cfgdb->cj)
         {
-            addCjTimestamp(cfgdb->cj, "Timestamp");
-            char *out = cJSON_PrintUnformatted(cfgdb->cj);
+            ubWithTimeStamp(cfgdb->cj, cfgdb, "interfaces");
             cJSON_Delete(cfgdb->cj);
             cfgdb->cj = NULL;
-            if (out) 
-            {
-                char tmp[1024];
-                snprintf(tmp,1024,"/mypub/%s/%s", "id", cfgdb->id);
-
-                cfgdb->p_fims->Send("pub", tmp, NULL, out);
-                free(out);
-            }
-            else
-            {
-                std::cout << "***************error in Application pub : <<" <<std::endl;
-            }
-    }
+        }  
     }
 
     virtual bool AssignClassDuringStartup() override final
