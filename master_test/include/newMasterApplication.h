@@ -86,7 +86,7 @@ public:
         std::cout << "Running ["<<__FUNCTION__<<"] status ["<<LinkStatusToString(value)<<"]\n";
         cJSON* cj = cJSON_CreateObject();
         cJSON_AddStringToObject(cj, "LinkStatus", LinkStatusToString(value));
-        pubWithTimeStamp(cfgdb,cj,"StateChange");
+        pubWithTimeStamp(cj, cfgdb,"StateChange");
         cJSON_Delete(cj);
         cj = NULL;
     }    
