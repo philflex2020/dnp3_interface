@@ -119,31 +119,36 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
 }
 void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
 {
-    addCjTimestamp(cj, "Timestamp");
-    char *out = cJSON_PrintUnformatted(cj);
-    //cJSON_Delete(cj);
-    //    cj = NULL;
-    if (out) 
+    if(cj)
     {
-        char tmp[1024];
-        if(ev) 
+
+    
+        addCjTimestamp(cj, "Timestamp");
+        char *out = cJSON_PrintUnformatted(cj);
+        //cJSON_Delete(cj);
+        //    cj = NULL;
+        if (out) 
         {
-            snprintf(tmp,1024,"/mypub/%s/%s/%s", "id", ev, sys->id);
-        }
-        else
-        {
-            snprintf(tmp,1024,"/mypub/%s/%s", "id", sys->id);
-        }
-        if(sys->p_fims)
-        {
-           sys->p_fims->Send("pub", tmp, NULL, out);
-        }
-        else
-        {
-            std::cout << __FUNCTION__ << " Error in sys->p_fims\n";
-        }
+            char tmp[1024];
+            if(ev) 
+            {
+                snprintf(tmp,1024,"/mypub/%s/%s/%s", "id", ev, sys->id);
+            }
+            else
+            {
+                snprintf(tmp,1024,"/mypub/%s/%s", "id", sys->id);
+            }
+            if(sys->p_fims)
+            {
+               sys->p_fims->Send("pub", tmp, NULL, out);
+            }
+            else
+            {
+                std::cout << __FUNCTION__ << " Error in sys->p_fims\n";
+            }
         
-        free(out);
+            free(out);
+        }
     }
 }
 
