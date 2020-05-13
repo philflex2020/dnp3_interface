@@ -397,12 +397,12 @@ int main(int argc, char *argv[])
     //todo this should be defined to a better length
     //char uri[100];
     //sprintf(uri,"/interfaces/%s", sys_cfg.name);
-    if(p_fims->Connect((char *)"fims_master") == false)
-    {
-        printf("Connect failed.\n");
-        p_fims->Close();
-        return 1;
-    }
+    //if(p_fims->Connect((char *)"fims_master2") == false)
+    //{
+    //    printf("Connect failed.\n");
+    //    p_fims->Close();
+    //    return 1;
+    //}
     // subs = /dnp3/master
     if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
     {
