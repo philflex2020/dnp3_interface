@@ -371,8 +371,8 @@ typedef struct sysCfg_t {
         int port;
         int local_address;
         int remote_address;
-        int numAnalogs;
-        int numBinaries;
+        uint numAnalogs;
+        uint numBinaries;
         // really need an array of these 
         std::map<int,char*>binaryNames;
         std::map<int,char*>analogNames;
