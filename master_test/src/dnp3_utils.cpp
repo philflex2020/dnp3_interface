@@ -140,7 +140,7 @@ void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
         }
         else
         {
-            st::cout << __FUNCTION__ << " Error in sys->p_fims\n";
+            std::cout << __FUNCTION__ << " Error in sys->p_fims\n";
         }
         
         free(out);
