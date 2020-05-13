@@ -53,9 +53,9 @@ public:
         std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
         if(cfgdb->cj)
         {
-            addCjTimestamp(cj, "Timestamp");
-            char *out = cJSON_PrintUnformatted(cj);
-            cJSON_Delete(cj);
+            addCjTimestamp(cfgdb->cj, "Timestamp");
+            char *out = cJSON_PrintUnformatted(cfgdb->cj);
+            cJSON_Delete(cfgdb->cj);
             cfgdb->cj = NULL;
             if (out) 
             {
