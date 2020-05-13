@@ -49,32 +49,29 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
     values.ForeachItem(print);
     first = 1;
     //Code for adding timestamp
+
     if(cj)
     {
-        addCjTimestamp(cj, "Timestamp");
-        char *out = cJSON_PrintUnformatted(cj);
-        cJSON_Delete(cj);
-        cj = NULL;
-        if (out) 
+        if(static_cfgdb->cj)
         {
-            char tmp[1024];
-            snprintf(tmp,1024,"/mypub/%s/%s", cfgdb->id, "binaries");
-
-            cfgdb->p_fims->Send("pub", tmp, NULL, out);
-            free(out);
+            cJSON_AddItemToObject(static_cfgdb->cj, "binaries", cj);
         }
         else
         {
-            std::cout << "***************bin error in pub : <<" <<std::endl;
+            pubWithTimeStamp(cj, sysCfg* static_cfgdb,"binaries")
         }
+        cJSON_Delete(cj);
+        cj = NULL;        
     }
     //std::cout << "******************************An: <<" <<std::endl;
 }
+
 void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<DoubleBitBinary>>& values) {
     std::cout << "******************************DBin: " <<std::endl;
     return PrintAll(info, values);
     
 }
+
 void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<BinaryCommandEvent>>& values) {
     auto print = [](const Indexed<BinaryCommandEvent>& pair) {
         std::cout << "BinaryCommandEvent: "
@@ -83,6 +80,7 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
     };
     values.ForeachItem(print);
 }
+
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     // magic static
     static sysCfg *static_cfgdb = cfgdb;
@@ -102,25 +100,18 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     };
     values.ForeachItem(print);
     first = 1;
-    //Code for adding timestamp
     if(cj)
     {
-        addCjTimestamp(cj, "Timestamp");
-        char *out = cJSON_PrintUnformatted(cj);
-        cJSON_Delete(cj);
-        cj = NULL;
-        if(out)
+        if(static_cfgdb->cj)
         {
-            char tmp[1024];
-            snprintf(tmp, 1024, "/mypub/%s/%s", cfgdb->id, "analogs");
-            cfgdb->p_fims->Send("pub", tmp, NULL, out);
-            free(out);
+            cJSON_AddItemToObject(static_cfgdb->cj, "analogs", cj);
         }
         else
         {
-            std::cout << "***************analogs  error in pub : <<" <<std::endl;                
+            pubWithTimeStamp(cj, sysCfg* static_cfgdb,"analogs")
         }
-        
+        cJSON_Delete(cj);
+        cj = NULL;        
     }
     //std::cout << "******************************An: <<" <<std::endl;
     return;
