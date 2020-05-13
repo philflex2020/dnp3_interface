@@ -410,7 +410,22 @@ int main(int argc, char *argv[])
         p_fims->Close();
         return 1;
     }
-
+    // AnalogOutputInt16 ao(100);
+    // AnalogOutputInt16 a1(101);
+    // AnalogOutputInt16 a2(102);
+    // AnalogOutputInt16 a3(103);
+    //         master->DirectOperate(CommandSet(
+    //             {WithIndex(ao, 2),
+    //             WithIndex(a1, 3),
+    //             WithIndex(a2, 4),
+    //             WithIndex(a3, 5)}
+    //             ), PrintingCommandCallback::Get());
+    //         master->SelectAndOperate(CommandSet(
+    //             {WithIndex(ao, 2),
+    //             WithIndex(a1, 3),
+    //             WithIndex(a2, 4),
+    //             WithIndex(a3, 5)}
+    //             ), PrintingCommandCallback::Get());
     while(running && p_fims->Connected())
     {
         fims_message* msg = p_fims->Receive();
@@ -464,8 +479,8 @@ int main(int argc, char *argv[])
             if(ok) 
             {
                 int dboffset = offset->valueint;
-                UpdateBuilder builder;
-                if(strcmp(itype->valuestring,"analog")==0)
+                //UpdateBuilder builder;
+                if(strcmp(itype->valuestring,"analog16")==0)
                 {
                     if(offset->type == cJSON_String) 
                     {
@@ -479,8 +494,13 @@ int main(int argc, char *argv[])
                     }
                     if(dboffset >= 0) 
                     {
-                        printf("analog offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
-                        builder.Update(Analog(body_value->valuedouble), dboffset);
+                        printf("analog offset %d bodyval: %d\n", dboffset, body_value->valueint);
+                        AnalogOutputInt16 ao(body_value->valueint);
+                        master->DirectOperate(CommandSet(
+                                    {WithIndex(ao, dboffset),}
+                                    ), PrintingCommandCallback::Get());
+  
+                        //builder.Update(Analog(body_value->valuedouble), dboffset);
                     }
                 }
                 else  // default to binary
@@ -497,12 +517,17 @@ int main(int argc, char *argv[])
                     }
                     if (dboffset >= 0)
                     {
-                        printf("binry offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
-                        builder.Update(Binary(body_value->valueint != 0), dboffset);
+                        printf("binry offset %d bodyval: %d\n", dboffset, body_value->valueint);
+                        AnalogOutputInt32 ao(body_value->valueint);
+                        master->DirectOperate(CommandSet(
+                                    {WithIndex(ao, dboffset),}
+                                    ), PrintingCommandCallback::Get());
+  
+                        //builder.Update(Binary(body_value->valueint != 0), dboffset);
                     }
                 }
                 // TODO multiple variables in one message
-                master->Apply(builder.Build());
+                //master->Apply(builder.Build());
             }
 
             if (body_JSON != NULL)
