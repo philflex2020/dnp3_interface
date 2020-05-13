@@ -201,8 +201,9 @@ typedef struct sdata
 
 typedef struct sysCfg_t {
 
-    sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL), cj(NULL), numBinaries(0), numAnalogs(0)
+    sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL),  numBinaries(0), numAnalogs(0)
     {
+        cj = NULL;
         pub = strdup("MyPubs");
 
     }
