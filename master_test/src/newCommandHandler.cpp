@@ -47,7 +47,28 @@ CommandStatus newCommandHandler::Operate(const ControlRelayOutputBlock& command,
 
 CommandStatus newCommandHandler::Select(const AnalogOutputInt16& command, uint16_t index)
 { 
-    std::cout << "              ************" << __FUNCTION__ 
+    std::cout << "              ************ int16 " << __FUNCTION__ 
+    //<< " called, code:" <<(int)code
+    << " index:" <<index
+    //<< " io:" <<(int)io
+    << std::endl;
+
+    return CommandStatus::SUCCESS; 
+}
+ 
+CommandStatus newCommandHandler::Operate(const AnalogOutputInt16& command, uint16_t index, OperateType opType)
+{ 
+    std::cout << "              ************ int16 " << __FUNCTION__ 
+    //<< " called, code:" <<(int)code
+    << " index:" <<index
+    << " value:" << (int)command.value
+    << " opType:" <<(int)opType
+    << std::endl;
+    return CommandStatus::SUCCESS; 
+}
+CommandStatus newCommandHandler::Select(const AnalogOutputInt32& command, uint16_t index)
+{ 
+    std::cout << "              ************ int32 " << __FUNCTION__ 
     //<< " called, code:" <<(int)code
     << " index:" <<index
     //<< " io:" <<(int)io
@@ -56,9 +77,31 @@ CommandStatus newCommandHandler::Select(const AnalogOutputInt16& command, uint16
     return CommandStatus::SUCCESS; 
 }
 
-CommandStatus newCommandHandler::Operate(const AnalogOutputInt16& command, uint16_t index, OperateType opType)
+CommandStatus newCommandHandler::Operate(const AnalogOutputInt32& command, uint16_t index, OperateType opType)
 { 
-    std::cout << "              ************" << __FUNCTION__ 
+    std::cout << "              ************ int32" << __FUNCTION__ 
+    //<< " called, code:" <<(int)code
+    << " index:" <<index
+    << " value:" << (int)command.value
+    << " opType:" <<(int)opType
+    << std::endl;
+    return CommandStatus::SUCCESS; 
+}
+
+CommandStatus newCommandHandler::Select(const AnalogOutputFloat32& command, uint16_t index)
+{ 
+    std::cout << "              ************ float32 " << __FUNCTION__ 
+    //<< " called, code:" <<(int)code
+    << " index:" <<index
+    //<< " io:" <<(int)io
+    << std::endl;
+
+    return CommandStatus::SUCCESS; 
+}
+
+CommandStatus newCommandHandler::Operate(const AnalogOutputFloat32& command, uint16_t index, OperateType opType)
+{ 
+    std::cout << "              ************ float32" << __FUNCTION__ 
     //<< " called, code:" <<(int)code
     << " index:" <<index
     << " value:" << (int)command.value
