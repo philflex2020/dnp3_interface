@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
                     }
                 }
                 // TODO multiple variables in one message
-                outstation->Apply(builder.Build());
+                master->Apply(builder.Build());
             }
 
             if (body_JSON != NULL)
