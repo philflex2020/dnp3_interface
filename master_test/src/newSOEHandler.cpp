@@ -58,7 +58,7 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         }
         else
         {
-            pubWithTimeStamp(cj, static_cfgdb,"binaries")
+            pubWithTimeStamp(cj, static_cfgdb,"binaries");
         }
         cJSON_Delete(cj);
         cj = NULL;        
@@ -108,7 +108,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         }
         else
         {
-            pubWithTimeStamp(cj, static_cfgdb, "analogs")
+            pubWithTimeStamp(cj, static_cfgdb, "analogs");
         }
         cJSON_Delete(cj);
         cj = NULL;        
