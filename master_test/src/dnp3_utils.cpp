@@ -134,7 +134,15 @@ void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
         {
             snprintf(tmp,1024,"/mypub/%s/%s", "id", sys->id);
         }
-        sys->p_fims->Send("pub", tmp, NULL, out);
+        if(sys->p_fims)
+        {
+           sys->p_fims->Send("pub", tmp, NULL, out);
+        }
+        else
+        {
+            st::cout << __FUNCTION__ << " Error in sys->p_fims\n";
+        }
+        
         free(out);
     }
 }
