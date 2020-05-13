@@ -117,8 +117,29 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
     free(body);
     cJSON_Delete(body_object);
 }
+void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
+{
+    addCjTimestamp(cj, "Timestamp");
+    char *out = cJSON_PrintUnformatted(cj);
+    //cJSON_Delete(cj);
+    //    cj = NULL;
+    if (out) 
+    {
+        char tmp[1024];
+        if(ev) 
+        {
+            snprintf(tmp,1024,"/mypub/%s/%s/%s", "id", ev, sys->id);
+        }
+        else
+        {
+            snprintf(tmp,1024,"/mypub/%s/%s", "id", sys->id);
+        }
+        sys->p_fims->Send("pub", tmp, NULL, out);
+        free(out);
+    }
+}
 
-void addCjTimestamp(cJSON *cj, const char * ts)
+void addCjTimestamp(cJSON *cj, const char* ts)
 {
     char buffer[64],time_str[256];
     struct timeval tv;
