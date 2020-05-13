@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 //#include "asiodnp3/DefaultMasterApplication.h"
+
+// this starts and stops the pub for the event 
 #include "newMasterApplication.h"
 
 using namespace opendnp3;

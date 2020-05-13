@@ -201,7 +201,7 @@ typedef struct sdata
 
 typedef struct sysCfg_t {
 
-    sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
+    sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL), cj(NULL)
     {
 
 
@@ -216,6 +216,7 @@ typedef struct sysCfg_t {
         if(ip_address)free(ip_address);
         clearBinaries();
         clearAnalogs();
+        if (cj) cJSON_Delete(cj)
        // TODO fims
     }
     public:
@@ -354,6 +355,7 @@ typedef struct sysCfg_t {
             analogIdx.clear();
 
         }
+        
         char* name;
         char* protocol;
         int version;
@@ -364,13 +366,14 @@ typedef struct sysCfg_t {
         int remote_address;
         int numAnalogs;
         int numBinaries;
-
+        // really need an array of these 
         std::map<int,char*>binaryNames;
         std::map<int,char*>analogNames;
         std::map<char*,int>binaryIdx;
         std::map<char*,int>analogIdx;
 
         fims* p_fims;
+        cJSON* cj;
 
 } sysCfg;
 

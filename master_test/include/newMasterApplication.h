@@ -28,6 +28,7 @@
 
 #include "dnp3_utils.h"
 
+// this starts and stops the pub for the event 
 
 class newMasterApplication : public opendnp3::IMasterApplication
 {
@@ -39,14 +40,36 @@ public:
         return std::make_shared<newMasterApplication>(myDB);
     }
 
+
     virtual void OnReceiveIIN(const opendnp3::IINField& iin) override final {}
 
     virtual void OnTaskStart(opendnp3::MasterTaskType type, opendnp3::TaskId id) override final {
-        std::cout << "Running ["<<__FUNCTION__<<"]\n";
+        std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
+        cfgdb->cj = cJSON_CreateObject();
     }
 
     virtual void OnTaskComplete(const opendnp3::TaskInfo& info) override final {
-        std::cout << "Running ["<<__FUNCTION__<<"]\n";
+        //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
+        std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
+        if(cfgdb->cj)
+        {
+            addCjTimestamp(cj, "Timestamp");
+            char *out = cJSON_PrintUnformatted(cj);
+            cJSON_Delete(cj);
+            cfgdb->cj = NULL;
+            if (out) 
+            {
+                char tmp[1024];
+                snprintf(tmp,1024,"/mypub/%s/%s", "id", cfgdb->id);
+
+                cfgdb->p_fims->Send("pub", tmp, NULL, out);
+                free(out);
+            }
+            else
+            {
+                std::cout << "***************error in Application pub : <<" <<std::endl;
+            }
+    }
     }
 
     virtual bool AssignClassDuringStartup() override final
