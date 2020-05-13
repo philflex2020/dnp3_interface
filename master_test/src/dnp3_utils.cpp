@@ -22,13 +22,14 @@
 #include <signal.h>
 #include <arpa/inet.h>
 #include <fims/libfims.h>
-//#include <modbus/modbus.h>
+
 #include "dnp3_utils.h"
 #include <map>
 #include <string>
 #include <cstring>
 using namespace std;
 
+// modbus code 
 int establish_connection(system_config* config)
 {
     struct ifreq ifr;
@@ -132,11 +133,11 @@ void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
             char tmp[1024];
             if(ev) 
             {
-                snprintf(tmp,1024,"/mypub/%s/%s/%s", "id", ev, sys->id);
+                snprintf(tmp,1024,"/%s/%s/%s/%s", "id", sys->pub, ev, sys->id);
             }
             else
             {
-                snprintf(tmp,1024,"/mypub/%s/%s", "id", sys->id);
+                snprintf(tmp,1024,"/%s/%s/%s", "id", sys->pub, sys->id);
             }
             if(sys->p_fims)
             {
@@ -273,26 +274,27 @@ cJSON *parseJSONConfig(char *file_path)
 //        "ip_address": "192.168.1.50",
 //        "port": 502,
 //        "local_address": 1,
-//		"remote_address": 0
+//		"remote_address": 10
 //    },
 
 
-bool getCJint (cJSON *cj, const char *name, int& val)
+bool getCJint (cJSON *cj, const char *name, int& val, bool required)
 {
-    bool ok = false;
+    bool ok = !required;
     cJSON *cji = cJSON_GetObjectItem(cj, name);
     if (cji) {
-        val= cji->valueint;
+        val = cji->valueint;
         ok = true;
     }
     return ok;
 }
 
-bool getCJstr (cJSON *cj, const char *name, char *& val)
+bool getCJstr (cJSON *cj, const char *name, char *& val, bool required)
 {
-    bool ok = false;
+    bool ok = !required;
     cJSON *cji = cJSON_GetObjectItem(cj, name);
     if (cji) {
+        if(val) free(val);
         val = strdup(cji->valuestring);
         ok = true;
     }
@@ -309,14 +311,15 @@ bool parse_system(cJSON* cji, sysCfg* sys)
         FPS_ERROR_PRINT("system  missing from file! \n");
         ret = false;
     }
-
-    if(ret) ret = getCJint(cj,"version",         sys->version);
-    if(ret) ret = getCJint(cj,"port",            sys->port);
-    if(ret) ret = getCJint(cj,"local_address",   sys->local_address);
-    if(ret) ret = getCJint(cj,"remote_address",  sys->remote_address);
-    if(ret) ret = getCJstr(cj,"id",              sys->id);
-    if(ret) ret = getCJstr(cj,"protocol",        sys->protocol);
-    if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address);
+    
+    if(ret) ret = getCJint(cj,"version",         sys->version       ,true );
+    if(ret) ret = getCJint(cj,"port",            sys->port          ,true);
+    if(ret) ret = getCJint(cj,"local_address",   sys->local_address ,true);
+    if(ret) ret = getCJint(cj,"remote_address",  sys->remote_address,true);
+    if(ret) ret = getCJstr(cj,"id",              sys->id            ,true);
+    if(ret) ret = getCJstr(cj,"protocol",        sys->protocol      ,true);
+    if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address    ,true);
+    if(ret) ret = getCJstr(cj,"pub",             sys->pub           ,false);
     //if(ret) ret = getCJstr(cj,"name",sys->name);
 
     // config file has "objects" with children groups "binary" and "analog"
@@ -341,8 +344,8 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         FPS_ERROR_PRINT("binary object is missing from file! \n");
         return false;
     }
-    uint numBinaries = cJSON_GetArraySize(JSON_binary);
-    for(uint i = 0; i < numBinaries; i++)
+    sys->numBinaries = cJSON_GetArraySize(JSON_binary);
+    for(uint i = 0; i < sys->numBinaries; i++)
     {
         cJSON* binary_object = cJSON_GetArrayItem(JSON_binary, i);
         if(binary_object == NULL)
@@ -368,8 +371,8 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         FPS_ERROR_PRINT("analog object is missing from file! \n");
         return false;
     }
-    uint numAnalogs = cJSON_GetArraySize(JSON_analog);
-    for(uint i = 0; i < numAnalogs; i++)
+    sys->numAnalogs = cJSON_GetArraySize(JSON_analog);
+    for(uint i = 0; i < sys->numAnalogs; i++)
     {
         cJSON* analog_object = cJSON_GetArrayItem(JSON_analog, i);
         if(analog_object == NULL)
