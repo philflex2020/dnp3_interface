@@ -294,6 +294,10 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
 
 int main(int argc, char *argv[])
 {
+    char sub[] = "/dnp3/master";
+    char* subs = sub;
+    //bool publish_only = false;
+    //bool running = true;
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
 
@@ -391,63 +395,182 @@ int main(int argc, char *argv[])
     //todo this should be defined to a better length
     //char uri[100];
     //sprintf(uri,"/interfaces/%s", sys_cfg.name);
-
-    fd_set connections_with_data;
-    fims_socket = sys_cfg.p_fims->get_socket();
-
-    if(fims_socket != -1)
-        FD_SET(fims_socket, &all_connections);
-    else
+    if(p_fims->Connect((char *)"fims_listen") == false)
     {
-        fprintf(stderr, "Failed to get fims socket.\n");
-        rc = 1;
-        goto cleanup;
+        printf("Connect failed.\n");
+        p_fims->Close();
+        return 1;
+    }
+    // subs = /dnp3/master
+    if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
+    {
+        printf("Subscription failed.\n");
+        p_fims->Close();
+        return 1;
     }
 
-    fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
-    fprintf(stderr, "Fims Setup complete: now for DNP3\n");
-
-    while(running)
+    while(running && p_fims->Connected())
     {
-        connections_with_data = all_connections;
-        // Select will block until one of the file descriptors has data
-        if(-1 == select(fd_max+1, &connections_with_data, NULL, NULL, NULL))
+        fims_message* msg = p_fims->Receive();
+        if(msg != NULL)
         {
-            fprintf(stderr, "server select() failure: %s.\n", strerror(errno));
-            break;
-        }
-        //Loop through file descriptors to see which have data to read
-        for(int current_fd = 0; current_fd <= fd_max; current_fd++)
-        {
-            // if no data on this file descriptor skip to the next one
-            if(!FD_ISSET(current_fd, &connections_with_data))
-                continue;
-            if(current_fd == fims_socket)
+            bool ok = true;
+            cJSON* body_JSON = cJSON_Parse(msg->body);
+            cJSON* itype = NULL;
+            cJSON* offset = NULL;
+            cJSON* body_value = NULL;
+            
+            if (body_JSON == NULL)
             {
-                // Fims message received
-                fims_message* msg = server_map->p_fims->Receive_Timeout(1*MICROSECOND_TO_MILLISECOND);
-                if(msg == NULL)
+                FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
+                ok = false;
+            }
+            // set /dnp3/master '{"type":"xx", offset:yy value: zz}'
+            // set /dnp3/master '{"type":"analog", "offset":01, "value": 2.34}'
+
+            if (ok) 
+            {
+                body_value = cJSON_GetObjectItem(body_JSON, "value");
+                if (body_value == NULL)
                 {
-                    if(server_map->p_fims->Connected() == false)
+                    FPS_ERROR_PRINT("fims message body value key not found \n");
+                    ok = false;
+                }
+            }
+            if (ok) 
+            {
+
+                offset = cJSON_GetObjectItem(body_JSON, "offset");
+                if (offset == NULL)
+                {
+                    FPS_ERROR_PRINT("fims message body offset key not found \n");
+                    ok = false;
+                }
+            }
+
+            if(ok) 
+            {
+
+                itype = cJSON_GetObjectItem(body_JSON, "type");
+                if (itype == NULL)
+                {
+                    FPS_ERROR_PRINT("fims message body type key not found \n");
+                    ok = false;
+                }
+            }
+
+            if(ok) 
+            {
+                int dboffset = offset->valueint;
+                UpdateBuilder builder;
+                if(strcmp(itype->valuestring,"analog")==0)
+                {
+                    if(offset->type == cJSON_String) 
                     {
-                        // fims connection closed
-                        fprintf(stderr, "Fims connection closed.\n");
-                        FD_CLR(current_fd, &all_connections);
-                        break;
+                        dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
+                        if(dboffset < 0)
+                        {
+                            FPS_ERROR_PRINT("fims message body analog variable [%s] not in config\n", offset->valuestring);
+                            sys_cfg.showAnalogs();
+
+                        }
+                    }
+                    if(dboffset >= 0) 
+                    {
+                        printf("analog offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
+                        builder.Update(Analog(body_value->valuedouble), dboffset);
+                    }
+                }
+                else  // default to binary
+                {
+                    if(offset->type == cJSON_String) 
+                    {
+                        dboffset = sys_cfg.getBinaryIdx(offset->valuestring);
+                        if(dboffset < 0)
+                        {
+                            FPS_ERROR_PRINT("fims message body binary variable [%s] not in config\n", offset->valuestring);
+                            sys_cfg.showBinaries();
+
+                        }
+                    }
+                    if (dboffset >= 0)
+                    {
+                        printf("binry offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
+                        builder.Update(Binary(body_value->valueint != 0), dboffset);
+                    }
+                }
+                // TODO multiple variables in one message
+                outstation->Apply(builder.Build());
+            }
+
+            if (body_JSON != NULL)
+            {
+            cJSON_Delete(body_JSON);
+            }
+            p_fims->free_message(msg);
+            // TODO delete fims message
+        }
+    }
+       
+    if (0)
+    {
+        fd_set connections_with_data;
+        fims_socket = sys_cfg.p_fims->get_socket();
+
+        if(fims_socket != -1)
+            FD_SET(fims_socket, &all_connections);
+        else
+        {
+            fprintf(stderr, "Failed to get fims socket.\n");
+            rc = 1;
+            goto cleanup;
+        }
+
+        fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
+        fprintf(stderr, "Fims Setup complete: now for DNP3\n");
+
+        while(running)
+        {
+            connections_with_data = all_connections;
+            // Select will block until one of the file descriptors has data
+            if(-1 == select(fd_max+1, &connections_with_data, NULL, NULL, NULL))
+            {
+                fprintf(stderr, "server select() failure: %s.\n", strerror(errno));
+                break;
+            }
+            //Loop through file descriptors to see which have data to read
+            for(int current_fd = 0; current_fd <= fd_max; current_fd++)
+            {
+                // if no data on this file descriptor skip to the next one
+                if(!FD_ISSET(current_fd, &connections_with_data))
+                    continue;
+                if(current_fd == fims_socket)
+                {
+                    // Fims message received
+                    fims_message* msg = server_map->p_fims->Receive_Timeout(1*MICROSECOND_TO_MILLISECOND);
+                    if(msg == NULL)
+                    {
+                        if(server_map->p_fims->Connected() == false)
+                        {
+                            // fims connection closed
+                            fprintf(stderr, "Fims connection closed.\n");
+                            FD_CLR(current_fd, &all_connections);
+                            break;
+                        }
+                        else
+                            fprintf(stderr, "No fims message. Select led us to a bad place.\n");
                     }
                     else
-                        fprintf(stderr, "No fims message. Select led us to a bad place.\n");
-                }
-                else
-                {
-                    process_fims_message(msg, server_map);
-                    server_map->p_fims->free_message(msg);
+                    {
+                        process_fims_message(msg, server_map);
+                        server_map->p_fims->free_message(msg);
+                    }
                 }
             }
         }
-    }
 
-    fprintf(stderr, "Main loop complete: Entering clean up.\n");
+        fprintf(stderr, "Main loop complete: Entering clean up.\n");
+    }
 
     cleanup:
     if (manager) delete manager;
