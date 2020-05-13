@@ -44,7 +44,7 @@ public:
     virtual void OnReceiveIIN(const opendnp3::IINField& iin) override final {}
 
     virtual void OnTaskStart(opendnp3::MasterTaskType type, opendnp3::TaskId id) override final {
-        std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< (int)id << " Task Type :"<< (int)type <<"]\n";
+        std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
         cfgdb->cj = cJSON_CreateObject();
     }
 
