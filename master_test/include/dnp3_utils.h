@@ -201,9 +201,12 @@ typedef struct sdata
 
 typedef struct sysCfg_t {
 
-    sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL),  numBinaries(0), numAnalogs(0)
+    sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
     {
         cj = NULL;
+        numBinaries  = 0;
+        numAnalogs  = 0;
+        
         pub = strdup("MyPubs");
 
     }
@@ -219,8 +222,9 @@ typedef struct sysCfg_t {
         clearBinaries();
         clearAnalogs();
         if (cj) cJSON_Delete(cj);
-       // TODO fims
-    }
+        //todo fims
+        }
+
     public:
         char* getAnalog(int idx) 
         {
