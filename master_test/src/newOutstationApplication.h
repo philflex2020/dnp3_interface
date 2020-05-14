@@ -19,20 +19,32 @@
 #include "dnp3_utils.h"
 #include <iostream>
 
+// class newCommandHandler final : public opendnp3::ICommandHandler
+// {
+
+// public:
+//     newCommandHandler(sysCfg* myDB){cfgdb = myDB;};
+
+//     static std::shared_ptr<ICommandHandler> Create(sysCfg* db)
+//     {
+//         return std::make_shared<newCommandHandler>(db);
+//     }
+
+//     void Start() override {}
+//     void End() override {}
 /**
  * A singleton 
  */
-class newOutstationApplication : public opendnp3::IOutstationApplication
+class newOutstationApplication final : public opendnp3::IOutstationApplication
 {
 public:
-    static std::shared_ptr<opendnp3::IOutstationApplication> Create(sysCfg *db)
+    newOutstationApplication(sysCfg* db) {cfgdb=db;};
+
+    static std::shared_ptr<IOutstationApplication> Create(sysCfg* db)
     {
         return std::make_shared<newOutstationApplication>(db);
     }
 
-    newOutstationApplication(sysCfg* db) {
-        cfgdb=db;
-    };
     bool SupportsWriteAbsoluteTime()
     {
         std::cout << " newOutstationApplication -<"<< __FUNCTION__<<" called \n";
