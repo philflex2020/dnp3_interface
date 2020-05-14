@@ -41,3 +41,4 @@ public:
     sysCfg* cfgdb;
 
 };
+#endif
