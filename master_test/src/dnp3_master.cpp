@@ -410,6 +410,8 @@ int main(int argc, char *argv[])
         p_fims->Close();
         return 1;
     }
+    //build/release/fims_send -m set -u "/dnp3/master" '{"type":"analog32","offset":4,"value":38}'
+    //fims_send -m set -u "/dnp3/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
     // AnalogOutputInt16 ao(100);
     // AnalogOutputInt16 a1(101);
     // AnalogOutputInt16 a2(102);
@@ -433,106 +435,102 @@ int main(int argc, char *argv[])
         {
             bool ok = true;
             cJSON* body_JSON = cJSON_Parse(msg->body);
-            cJSON* itype = NULL;
-            cJSON* offset = NULL;
-            cJSON* body_value = NULL;
+            cJSON* itypeA16 = NULL;
+            cJSON* itypeA32 = NULL;
+            cJSON* itypeF32 = NULL;
+            cJSON* itypeCROB = NULL;
+            cJSON* cjoffset = NULL;
+            cJSON* cjvalue = NULL;
+            cJSON* iterator = NULL;
             
             if (body_JSON == NULL)
             {
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
                 ok = false;
             }
-            // set /dnp3/master '{"type":"xx", offset:yy value: zz}'
-            // set /dnp3/master '{"type":"analog", "offset":01, "value": 2.34}'
-
+            //-m set -u "/dnp3/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
             if (ok) 
             {
-                body_value = cJSON_GetObjectItem(body_JSON, "value");
-                if (body_value == NULL)
+                itypeA16 = cJSON_GetObjectItem(body_JSON, "AnalogInt16");
+                itypeA32 = cJSON_GetObjectItem(body_JSON, "AnalogInt32");
+                itypeF32 = cJSON_GetObjectItem(body_JSON, "AnalogFloat32");
+                itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
+                if (itypeA16 != NULL)
                 {
-                    FPS_ERROR_PRINT("fims message body value key not found \n");
-                    ok = false;
-                }
-            }
-            if (ok) 
-            {
-
-                offset = cJSON_GetObjectItem(body_JSON, "offset");
-                if (offset == NULL)
-                {
-                    FPS_ERROR_PRINT("fims message body offset key not found \n");
-                    ok = false;
-                }
-            }
-
-            if(ok) 
-            {
-
-                itype = cJSON_GetObjectItem(body_JSON, "type");
-                if (itype == NULL)
-                {
-                    FPS_ERROR_PRINT("fims message body type key not found \n");
-                    ok = false;
-                }
-            }
-
-            if(ok) 
-            {
-                int dboffset = offset->valueint;
-                //UpdateBuilder builder;
-                if(strcmp(itype->valuestring,"analog16")==0)
-                {
-                    if(offset->type == cJSON_String) 
+                    // decode A16
+                    if (cJSON_IsArray(itypeA16)) 
                     {
-                        dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
-                        if(dboffset < 0)
+                        CommandSet commands;
+                        cJSON_ArrayForEach(iterator, itypeA16) 
                         {
-                            FPS_ERROR_PRINT("fims message body analog variable [%s] not in config\n", offset->valuestring);
-                            sys_cfg.showAnalogs();
-
+                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                            cjvalue = cJSON_GetObjectItem(iterator, "value");
+                            int dboffset = cjoffset->valueint;
+                            commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
                         }
-                    }
-                    if(dboffset >= 0) 
-                    {
-                        printf("analog offset %d bodyval: %d\n", dboffset, body_value->valueint);
-                        AnalogOutputInt16 ao(body_value->valueint);
-                        master->DirectOperate(CommandSet(
-                                    {WithIndex(ao, dboffset),}
-                                    ), PrintingCommandCallback::Get());
-  
-                        //builder.Update(Analog(body_value->valuedouble), dboffset);
+                        master->DirectOperate(commands, PrintingCommandCallback::Get());
                     }
                 }
-                else  // default to binary
+                if (itypeA32 != NULL)
                 {
-                    if(offset->type == cJSON_String) 
+                    // decode A16
+                    if (cJSON_IsArray(itypeA32)) 
                     {
-                        dboffset = sys_cfg.getBinaryIdx(offset->valuestring);
-                        if(dboffset < 0)
+                        CommandSet commands;
+                        cJSON_ArrayForEach(iterator, itypeA32) 
                         {
-                            FPS_ERROR_PRINT("fims message body binary variable [%s] not in config\n", offset->valuestring);
-                            sys_cfg.showBinaries();
-
+                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                            cjvalue = cJSON_GetObjectItem(iterator, "value");
+                            int dboffset = cjoffset->valueint;
+                            commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),dboffset)});
                         }
-                    }
-                    if (dboffset >= 0)
-                    {
-                        printf("binry offset %d bodyval: %d\n", dboffset, body_value->valueint);
-                        AnalogOutputInt32 ao(body_value->valueint);
-                        master->DirectOperate(CommandSet(
-                                    {WithIndex(ao, dboffset),}
-                                    ), PrintingCommandCallback::Get());
-  
-                        //builder.Update(Binary(body_value->valueint != 0), dboffset);
+                        master->DirectOperate(commands, PrintingCommandCallback::Get());
                     }
                 }
-                // TODO multiple variables in one message
-                //master->Apply(builder.Build());
+                if (itypeF32 != NULL)
+                {
+                    // decode A16
+                    if (cJSON_IsArray(itypeF32)) 
+                    {
+                        CommandSet commands;
+                        cJSON_ArrayForEach(iterator, itypeF32) 
+                        {
+                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                            cjvalue = cJSON_GetObjectItem(iterator, "value");
+                            int dboffset = cjoffset->valueint;
+                            commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valueint),dboffset)});
+                        }
+                        master->DirectOperate(commands, PrintingCommandCallback::Get());
+                    }
+                }
+                if (itypeCROB != NULL)
+                {
+                    // decode A16
+                    if (cJSON_IsArray(itypeCROB)) 
+                    {
+                        CommandSet commands;
+                        cJSON_ArrayForEach(iterator, itypeCROB) 
+                        {
+                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                            cjvalue = cJSON_GetObjectItem(iterator, "value");
+                            int dboffset = cjoffset->valueint;
+                            if(cjvalue->valueint == 1)
+                            {
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelatOutputBlock(ControlCode::PULSE_ON),dboffset)});
+                            }
+                            else
+                            {
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelatOutputBlock(ControlCode::PULSE_OFF),dboffset)});
+                            }
+                        }
+                        master->DirectOperate(commands, PrintingCommandCallback::Get());
+                    }
+                }
             }
-
+            //            dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
             if (body_JSON != NULL)
             {
-            cJSON_Delete(body_JSON);
+                cJSON_Delete(body_JSON);
             }
             p_fims->free_message(msg);
             // TODO delete fims message
