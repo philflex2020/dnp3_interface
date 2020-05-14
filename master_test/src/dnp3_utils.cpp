@@ -895,7 +895,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const ControlRelayOutputB
     //const char* indexName = cfgindextoName(CROB,index);
     //cJSON_AddStringToObject(cji,"offset",indexName);
     // ??
-    cJSON_AddNumberToObject(cji,"value", cmd.rawcode);
+    cJSON_AddNumberToObject(cji,"value", cmd.rawCode);
     cJSON_AddItemToArray(cjf,cji);
 
 }
