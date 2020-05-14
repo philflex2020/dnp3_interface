@@ -26,7 +26,7 @@ void newCommandHandler::Start()
   {
       cJSON_Delete(cfgdb->cj);
   }
-  cfgdb->cj = cJSON>CreateObject();
+  cfgdb->cj = cJSON_CreateObject();
   cjloaded = 0;
   
 }
