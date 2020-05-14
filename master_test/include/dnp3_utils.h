@@ -210,7 +210,7 @@ typedef struct sysCfg_t {
         cj = NULL;
         numBinaries  = 0;
         numAnalogs  = 0;
-        
+        cjloaded = 0;
         pub = strdup("MyPubs");
 
     }
@@ -385,6 +385,7 @@ typedef struct sysCfg_t {
 
         fims* p_fims;
         cJSON* cj;
+        int cjloaded;
 
 } sysCfg;
 
