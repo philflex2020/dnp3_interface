@@ -22,10 +22,10 @@
 /**
  * A singleton 
  */
-class newOutstationApplication : public IOutstationApplication
+class newOutstationApplication : public opendnp3::IOutstationApplication
 {
 public:
-    static std::shared_ptr<IOutstationApplication> Create(sysCfg *db)
+    static std::shared_ptr<opendnp3::IOutstationApplication> Create(sysCfg *db)
     {
         return std::make_shared<newOutstationApplication>(db);
     }
