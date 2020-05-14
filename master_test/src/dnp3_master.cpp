@@ -488,7 +488,7 @@ int main(int argc, char *argv[])
                             int dboffset = cjoffset->valueint;
                             commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),dboffset)});
                         }
-                        master->DirectOperate(commands, PrintingCommandCallback::Get());
+                        master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                     }
                 }
                 if (itypeF32 != NULL)
@@ -504,7 +504,7 @@ int main(int argc, char *argv[])
                             int dboffset = cjoffset->valueint;
                             commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valueint),dboffset)});
                         }
-                        master->DirectOperate(commands, PrintingCommandCallback::Get());
+                        master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                     }
                 }
                 if (itypeCROB != NULL)
@@ -527,7 +527,7 @@ int main(int argc, char *argv[])
                                 commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelatOutputBlock(ControlCode::PULSE_OFF),dboffset)});
                             }
                         }
-                        master->DirectOperate(commands, PrintingCommandCallback::Get());
+                        master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                     }
                 }
             }
