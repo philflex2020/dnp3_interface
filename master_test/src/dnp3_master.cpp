@@ -455,12 +455,13 @@ int main(int argc, char *argv[])
                 itypeA32 = cJSON_GetObjectItem(body_JSON, "AnalogInt32");
                 itypeF32 = cJSON_GetObjectItem(body_JSON, "AnalogFloat32");
                 itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
+                CommandSet commands;
+
                 if (itypeA16 != NULL)
                 {
                     // decode A16
                     if (cJSON_IsArray(itypeA16)) 
                     {
-                        CommandSet commands;
                         cJSON_ArrayForEach(iterator, itypeA16) 
                         {
                             cjoffset = cJSON_GetObjectItem(iterator, "offset");
@@ -468,11 +469,6 @@ int main(int argc, char *argv[])
                             int dboffset = cjoffset->valueint;
                             commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
                         }
-                        master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
-                        // master->DirectOperate(CommandSet(
-                        //             {WithIndex(ao, dboffset),}
-                        //             ), PrintingCommandCallback::Get());
-
                     }
                 }
                 if (itypeA32 != NULL)
@@ -480,7 +476,6 @@ int main(int argc, char *argv[])
                     // decode A16
                     if (cJSON_IsArray(itypeA32)) 
                     {
-                        CommandSet commands;
                         cJSON_ArrayForEach(iterator, itypeA32) 
                         {
                             cjoffset = cJSON_GetObjectItem(iterator, "offset");
@@ -488,7 +483,6 @@ int main(int argc, char *argv[])
                             int dboffset = cjoffset->valueint;
                             commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),dboffset)});
                         }
-                        master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                     }
                 }
                 if (itypeF32 != NULL)
@@ -496,7 +490,6 @@ int main(int argc, char *argv[])
                     // decode A16
                     if (cJSON_IsArray(itypeF32)) 
                     {
-                        CommandSet commands;
                         cJSON_ArrayForEach(iterator, itypeF32) 
                         {
                             cjoffset = cJSON_GetObjectItem(iterator, "offset");
@@ -504,7 +497,6 @@ int main(int argc, char *argv[])
                             int dboffset = cjoffset->valueint;
                             commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valueint),dboffset)});
                         }
-                        master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                     }
                 }
                 if (itypeCROB != NULL)
@@ -512,7 +504,6 @@ int main(int argc, char *argv[])
                     // decode A16
                     if (cJSON_IsArray(itypeCROB)) 
                     {
-                        CommandSet commands;
                         cJSON_ArrayForEach(iterator, itypeCROB) 
                         {
                             cjoffset = cJSON_GetObjectItem(iterator, "offset");
@@ -527,9 +518,9 @@ int main(int argc, char *argv[])
                                 commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::PULSE_OFF),dboffset)});
                             }
                         }
-                        master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                     }
                 }
+                master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
             }
             //            dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
             if (body_JSON != NULL)
