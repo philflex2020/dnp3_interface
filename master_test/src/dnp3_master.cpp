@@ -455,8 +455,8 @@ int main(int argc, char *argv[])
                 itypeA32 = cJSON_GetObjectItem(body_JSON, "AnalogInt32");
                 itypeF32 = cJSON_GetObjectItem(body_JSON, "AnalogFloat32");
                 itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
-                CommandSet commands;
 
+                CommandSet commands;
                 if (itypeA16 != NULL)
                 {
                     // decode A16
@@ -473,7 +473,7 @@ int main(int argc, char *argv[])
                 }
                 if (itypeA32 != NULL)
                 {
-                    // decode A16
+                    // decode A32
                     if (cJSON_IsArray(itypeA32)) 
                     {
                         cJSON_ArrayForEach(iterator, itypeA32) 
@@ -487,7 +487,7 @@ int main(int argc, char *argv[])
                 }
                 if (itypeF32 != NULL)
                 {
-                    // decode A16
+                    // decode F32
                     if (cJSON_IsArray(itypeF32)) 
                     {
                         cJSON_ArrayForEach(iterator, itypeF32) 
@@ -501,7 +501,7 @@ int main(int argc, char *argv[])
                 }
                 if (itypeCROB != NULL)
                 {
-                    // decode A16
+                    // decode CROB
                     if (cJSON_IsArray(itypeCROB)) 
                     {
                         cJSON_ArrayForEach(iterator, itypeCROB) 
@@ -520,6 +520,7 @@ int main(int argc, char *argv[])
                         }
                     }
                 }
+                printf(" *****Running Outputs \n");
                 master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
             }
             //            dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
