@@ -19,6 +19,15 @@ using namespace opendnp3;
 //    std::cout << "                 ************" << __FUNCTION__ << " called index:" <<index << std::endl;
     
 //}
+void newCommandHandler::Start()
+{
+  std::cout << "               ************" <<__FUNCTION__ << " called " << std::endl;
+}
+void newCommandHandler::End()
+{
+  std::cout << "               ************" <<__FUNCTION__ << " called " << std::endl;
+
+}
 
 CommandStatus newCommandHandler::Select(const ControlRelayOutputBlock& command, uint16_t index)
 {

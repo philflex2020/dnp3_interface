@@ -109,7 +109,7 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *ma
     //                                         DefaultOutstationApplication::Create(), config);
     auto outstation = channel->AddOutstation("outstation", newCommandHandler::Create(ourDB),
                                              newOutstationApplication::Create(ourDB), config);
-    printf("server channel created\n");
+    printf("outstation channel created\n");
 
     // Enable the outstation and start communications
     std::cout << "Enabling" << std::endl;   

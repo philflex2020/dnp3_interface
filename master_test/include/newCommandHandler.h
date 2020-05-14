@@ -21,8 +21,8 @@ public:
         return std::make_shared<newCommandHandler>(db);
     }
 
-    void Start() override {}
-    void End() override {}
+    void Start() override;
+    void End() override;
 
     opendnp3::CommandStatus Select(const opendnp3::ControlRelayOutputBlock& command, uint16_t index) override;
 
