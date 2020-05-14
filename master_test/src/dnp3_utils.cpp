@@ -29,6 +29,8 @@
 #include <cstring>
 #include "opendnp3/app/AnalogOutput.h"
 #include "opendnp3/app/ControlRelayOutputBlock.h"
+#include "opendnp3/gen/CommandStatus.h"
+#include "opendnp3/gen/ControlCode.h"
 
 using namespace opendnp3;
 
@@ -892,7 +894,8 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const ControlRelayOutputB
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(CROB,index);
     //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd.state);
+    // ??
+    cJSON_AddNumberToObject(cji,"value", cmd.rawcode);
     cJSON_AddItemToArray(cjf,cji);
 
 }
