@@ -14,6 +14,8 @@
 #include "opendnp3/gen/RestartMode.h"
 #include "opendnp3/link/ILinkListener.h"
 #include "opendnp3/outstation/ApplicationIIN.h"
+#include "opendnp3/outstation/IOutstationApplication.h"
+
 
 #include <memory>
 #include "dnp3_utils.h"
@@ -35,6 +37,7 @@
 /**
  * A singleton 
  */
+
 class newOutstationApplication final : public opendnp3::IOutstationApplication
 {
 public:
