@@ -16,7 +16,7 @@
 #include "opendnp3/outstation/ApplicationIIN.h"
 
 #include <memory>
-#include "dnp_utils.h"
+#include "dnp3_utils.h"
 #include <iostream>
 
 /**
