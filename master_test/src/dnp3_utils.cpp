@@ -886,7 +886,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOut
     cJSON_AddItemToArray(cjf,cji);
 
 }
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const ControlRelayOutputBlock& cmd, uint16_t index)
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
     cJSON*cji = cJSON_CreateObject();
@@ -895,7 +895,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const ControlRelayOutputB
     //const char* indexName = cfgindextoName(CROB,index);
     //cJSON_AddStringToObject(cji,"offset",indexName);
     // ??
-    cJSON_AddNumberToObject(cji,"value", cmd.rawCode);
+    cJSON_AddStringToObject(cji,"value", cmd);
     cJSON_AddItemToArray(cjf,cji);
 
 }

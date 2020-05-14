@@ -405,6 +405,6 @@ void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev);
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index);
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputFloat32& cmd, uint16_t index);
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const ControlRelayOutputBlock& cmd, uint16_t index);
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t index);
 
 #endif
