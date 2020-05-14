@@ -848,7 +848,7 @@ cJSON* cfgdbFindAddArray(sysCfg* cfgdb, const char* field)
     }
 
 }
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index)
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
     cJSON*cji = cJSON_CreateObject();
@@ -860,7 +860,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt16& 
     cJSON_AddItemToArray(cjf,cji);
 
 }
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index)
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
     cJSON*cji = cJSON_CreateObject();
@@ -872,7 +872,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt32& 
     cJSON_AddItemToArray(cjf,cji);
 
 }
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputFloat32& cmd, uint16_t index)
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
     cJSON*cji = cJSON_CreateObject();
