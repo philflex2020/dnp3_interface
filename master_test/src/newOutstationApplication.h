@@ -40,7 +40,7 @@ class newOutstationApplication final : public opendnp3::IOutstationApplication
 public:
     newOutstationApplication(sysCfg* db) {cfgdb=db;};
 
-    static std::shared_ptr<IOutstationApplication> Create(sysCfg* db)
+    static std::shared_ptr<newOutstationApplication> Create(sysCfg* db)
     {
         return std::make_shared<newOutstationApplication>(db);
     }
