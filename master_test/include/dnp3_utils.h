@@ -13,6 +13,10 @@
 #include <string>
 #include <iostream>
 
+#include "opendnp3/app/AnalogOutput.h"
+#include "opendnp3/app/ControlRelayOutputBlock.h"
+
+using namespace opendnp3;
 
 #ifndef FPS_ERROR_PRINT 
 #define FPS_ERROR_PRINT printf
