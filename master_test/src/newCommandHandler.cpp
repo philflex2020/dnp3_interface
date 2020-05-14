@@ -27,13 +27,13 @@ void newCommandHandler::Start()
       cJSON_Delete(cfgdb->cj);
   }
   cfgdb->cj = cJSON_CreateObject();
-  cjloaded = 0;
+  cfgdb->cjloaded = 0;
   
 }
 void newCommandHandler::End()
 {
-  std::cout << "               ************" <<__FUNCTION__ << " called loaded = "<< cjloaded << std::endl;
-   if(cjloaded) 
+  std::cout << "               ************" <<__FUNCTION__ << " called loaded = "<< cfgdb->cjloaded << std::endl;
+   if(cfgdb->cjloaded) 
    {
       if(cfgdb->cj)
         {
@@ -41,7 +41,7 @@ void newCommandHandler::End()
             cJSON_Delete(cfgdb->cj);
             cfgdb->cj = NULL;
         }
-        cjloaded = 0; 
+        cfgdb->cjloaded = 0; 
    }
 }
 
