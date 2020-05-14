@@ -27,6 +27,7 @@
 #include <asiodnp3/UpdateBuilder.h>
 
 #include "newCommandHandler.h"
+#include "newOutstationApplication.h"
 
 #include "dnp3_utils.h"
 
@@ -107,7 +108,7 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *ma
     //auto outstation = channel->AddOutstation("outstation", SuccessCommandHandler::Create(),
     //                                         DefaultOutstationApplication::Create(), config);
     auto outstation = channel->AddOutstation("outstation", newCommandHandler::Create(ourDB),
-                                             DefaultOutstationApplication::Create(), config);
+                                             newOutstationApplication::Create(ourDB), config);
     printf("server channel created\n");
 
     // Enable the outstation and start communications
