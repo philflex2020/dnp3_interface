@@ -27,6 +27,11 @@
 #include <map>
 #include <string>
 #include <cstring>
+#include "opendnp3/app/AnalogOutput.h"
+#include "opendnp3/app/ControlRelayOutputBlock.h"
+
+using namespace opendnp3;
+
 using namespace std;
 
 // modbus code 
@@ -830,6 +835,68 @@ bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings,
     }
     return true;
 }
+
+cJSON* cfgdbFindAddArray(sysCfg* cfgdb, const char* field)
+{
+    // look for cJSON Object called field
+    cJSON* cjf = cJSON_GetObjectItem(cfgdb->cj, field);
+    if(!cjf)
+    {
+        cJSON* cja =cJSON_CreateArray();
+        cJSON_AddItemToObject(cfgdb->cj,field,cja);
+        cjf = cJSON_GetObjectItem(cfgdb->cj, field);
+    }
+
+}
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index)
+{
+    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+    cJSON*cji = cJSON_CreateObject();
+    // todo resolve name
+    cJSON_AddNumberToObject(cji,"offset",index);
+    //const char* indexName = cfgindextoName(AOP16,index);
+    //cJSON_AddStringToObject(cji,"offset",indexName);
+    cJSON_AddNumberToObject(cji,"value", cmd->value);
+    cJSON_AddItemToArray(cjf,cji);
+
+}
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index)
+{
+    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+    cJSON*cji = cJSON_CreateObject();
+    // todo resolve name
+    cJSON_AddNumberToObject(cji,"offset",index);
+    //const char* indexName = cfgindextoName(AOP32,index);
+    //cJSON_AddStringToObject(cji,"offset",indexName);
+    cJSON_AddNumberToObject(cji,"value", cmd->value);
+    cJSON_AddItemToArray(cjf,cji);
+
+}
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputFloat32& cmd, uint16_t index)
+{
+    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+    cJSON*cji = cJSON_CreateObject();
+    // todo resolve name
+    cJSON_AddNumberToObject(cji,"offset",index);
+    //const char* indexName = cfgindextoName(Float32,index);
+    //cJSON_AddStringToObject(cji,"offset",indexName);
+    cJSON_AddNumberToObject(cji,"value", cmd->value);
+    cJSON_AddItemToArray(cjf,cji);
+
+}
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const ControlRelayOutputBlock& cmd, uint16_t index)
+{
+    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+    cJSON*cji = cJSON_CreateObject();
+    // todo resolve name
+    cJSON_AddNumberToObject(cji,"offset",index);
+    //const char* indexName = cfgindextoName(CROB,index);
+    //cJSON_AddStringToObject(cji,"offset",indexName);
+    cJSON_AddNumberToObject(cji,"value", cmd->value);
+    cJSON_AddItemToArray(cjf,cji);
+
+}
+
 
 bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query)
 {

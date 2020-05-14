@@ -22,11 +22,27 @@ using namespace opendnp3;
 void newCommandHandler::Start()
 {
   std::cout << "               ************" <<__FUNCTION__ << " called " << std::endl;
+  if(cfgdb->cj)
+  {
+      cJSON_Delete(cfgdb->cj);
+  }
+  cfgdb->cj = cJSON>CreateObject();
+  cjloaded = 0;
+  
 }
 void newCommandHandler::End()
 {
-  std::cout << "               ************" <<__FUNCTION__ << " called " << std::endl;
-
+  std::cout << "               ************" <<__FUNCTION__ << " called loaded = "<< cjloaded << std::endl;
+   if(cjloaded) 
+   {
+      if(cfgdb->cj)
+        {
+            pubWithTimeStamp(cfgdb->cj, cfgdb, "outputs");
+            cJSON_Delete(cfgdb->cj);
+            cfgdb->cj = NULL;
+        }
+        cjloaded = 0; 
+   }
 }
 
 CommandStatus newCommandHandler::Select(const ControlRelayOutputBlock& command, uint16_t index)
@@ -34,7 +50,19 @@ CommandStatus newCommandHandler::Select(const ControlRelayOutputBlock& command, 
     uint8_t io = 0;
     bool state = false;
     std::cout << "               ************" <<__FUNCTION__ << " called index:" <<index << std::endl;
-    return GetPinAndState(index, command.functionCode, io, state);
+    CommandStatus cs = GetPinAndState(index, command.functionCode, io, state);
+    //TODO decode index
+    //TODO add other command states
+    if (command.functionCode == ControlCode::LATCH_ON)
+    {
+        cfgdbAddtoRecord(cfgdb,"CROB_SELECT","LATCH_ON", index);
+    }
+    else
+    {
+        cfgdbAddtoRecord(cfgdb,"CROB_SELECT","LATCH_OFF", index);
+    }
+    
+    return cs;
 }
 
 CommandStatus newCommandHandler::Operate(const ControlRelayOutputBlock& command, uint16_t index, OperateType opType)
@@ -50,6 +78,14 @@ CommandStatus newCommandHandler::Operate(const ControlRelayOutputBlock& command,
          std::cout <<" operate on pin " << (int)io <<std::endl;
         //digitalWrite(gpio, state);
     }
+    if (command.functionCode == ControlCode::LATCH_ON)
+    {
+        cfgdbAddtoRecord(cfgdb,"CROB_DIRECT","LATCH_ON", index);
+    }
+    else
+    {
+        cfgdbAddtoRecord(cfgdb,"CROB_DIRECT","LATCH_OFF", index);
+    }
 
     return ret;
 }
@@ -61,7 +97,7 @@ CommandStatus newCommandHandler::Select(const AnalogOutputInt16& command, uint16
     << " index:" <<index
     //<< " io:" <<(int)io
     << std::endl;
-
+    cfgdbAddtoRecord(cfgdb,"AnalogInt16_SELECT",command, index);
     return CommandStatus::SUCCESS; 
 }
  
@@ -73,6 +109,8 @@ CommandStatus newCommandHandler::Operate(const AnalogOutputInt16& command, uint1
     << " value:" << (int)command.value
     << " opType:" <<(int)opType
     << std::endl;
+    cfgdbAddtoRecord(cfgdb,"AnalogInt16",command, index);
+
     return CommandStatus::SUCCESS; 
 }
 CommandStatus newCommandHandler::Select(const AnalogOutputInt32& command, uint16_t index)
@@ -82,6 +120,7 @@ CommandStatus newCommandHandler::Select(const AnalogOutputInt32& command, uint16
     << " index:" <<index
     //<< " io:" <<(int)io
     << std::endl;
+    cfgdbAddtoRecord(cfgdb,"AnalogInt32_SELECT",command, index);
 
     return CommandStatus::SUCCESS; 
 }
@@ -94,6 +133,8 @@ CommandStatus newCommandHandler::Operate(const AnalogOutputInt32& command, uint1
     << " value:" << (int)command.value
     << " opType:" <<(int)opType
     << std::endl;
+    cfgdbAddtoRecord(cfgdb,"AnalogInt32",command, index);
+
     return CommandStatus::SUCCESS; 
 }
 
@@ -104,6 +145,7 @@ CommandStatus newCommandHandler::Select(const AnalogOutputFloat32& command, uint
     << " index:" <<index
     //<< " io:" <<(int)io
     << std::endl;
+    cfgdbAddtoRecord(cfgdb,"AnalogFloat32_SELECT",command, index);
 
     return CommandStatus::SUCCESS; 
 }
@@ -116,6 +158,7 @@ CommandStatus newCommandHandler::Operate(const AnalogOutputFloat32& command, uin
     << " value:" << (int)command.value
     << " opType:" <<(int)opType
     << std::endl;
+    cfgdbAddtoRecord(cfgdb,"AnalogFloat32",command, index);
     return CommandStatus::SUCCESS; 
 }
 

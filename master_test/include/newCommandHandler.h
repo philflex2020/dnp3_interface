@@ -14,7 +14,7 @@ class newCommandHandler final : public opendnp3::ICommandHandler
 {
 
 public:
-    newCommandHandler(sysCfg* myDB){cfgdb = myDB;};
+    newCommandHandler(sysCfg* myDB){cfgdb = myDB; cjloaded = 0;};
 
     static std::shared_ptr<ICommandHandler> Create(sysCfg* db)
     {
@@ -57,6 +57,7 @@ private:
     opendnp3::CommandStatus GetPinAndState(uint16_t index, opendnp3::ControlCode code, uint8_t& gpio, bool& state);
 
     sysCfg* cfgdb;
+    int cjloaded;  // tells us if this command resulted in cJSON material for a publish;
     //std::map<uint16_t, uint8_t> dnp2io;
 };
 
