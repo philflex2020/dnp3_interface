@@ -856,7 +856,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt16& 
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(AOP16,index);
     //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd->value);
+    cJSON_AddNumberToObject(cji,"value", cmd.value);
     cJSON_AddItemToArray(cjf,cji);
 
 }
@@ -868,7 +868,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt32& 
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(AOP32,index);
     //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd->value);
+    cJSON_AddNumberToObject(cji,"value", cmd.value);
     cJSON_AddItemToArray(cjf,cji);
 
 }
@@ -880,7 +880,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputFloat32
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(Float32,index);
     //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd->value);
+    cJSON_AddNumberToObject(cji,"value", cmd.value);
     cJSON_AddItemToArray(cjf,cji);
 
 }
@@ -892,7 +892,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const ControlRelayOutputB
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(CROB,index);
     //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd->value);
+    cJSON_AddNumberToObject(cji,"value", cmd.value);
     cJSON_AddItemToArray(cjf,cji);
 
 }
