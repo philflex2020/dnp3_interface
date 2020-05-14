@@ -520,11 +520,11 @@ int main(int argc, char *argv[])
                             int dboffset = cjoffset->valueint;
                             if(cjvalue->valueint == 1)
                             {
-                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelatOutputBlock(ControlCode::PULSE_ON),dboffset)});
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::PULSE_ON),dboffset)});
                             }
                             else
                             {
-                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelatOutputBlock(ControlCode::PULSE_OFF),dboffset)});
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::PULSE_OFF),dboffset)});
                             }
                         }
                         master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
