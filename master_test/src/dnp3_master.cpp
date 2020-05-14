@@ -468,7 +468,11 @@ int main(int argc, char *argv[])
                             int dboffset = cjoffset->valueint;
                             commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
                         }
-                        master->DirectOperate(commands, PrintingCommandCallback::Get());
+                        master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
+                        // master->DirectOperate(CommandSet(
+                        //             {WithIndex(ao, dboffset),}
+                        //             ), PrintingCommandCallback::Get());
+
                     }
                 }
                 if (itypeA32 != NULL)
