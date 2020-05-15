@@ -28,7 +28,10 @@
 
 #include "dnp3_utils.h"
 
-// this starts and stops the pub for the event 
+// NOTE
+// this starts and stops the pub for the eventthe newSOE handler 
+// The FM master pubs the results of the outstation scan
+// this will have to be picked up by the Fleet Manager outstation and sent back to the ERCOT system
 
 class newMasterApplication : public opendnp3::IMasterApplication
 {
@@ -40,21 +43,27 @@ public:
         return std::make_shared<newMasterApplication>(myDB);
     }
 
-
     virtual void OnReceiveIIN(const opendnp3::IINField& iin) override final {}
-
+    // start the pub object.
+    // TODO find a way to detect the scan result. I dont think we'll have more that one of these running at a time
+    // newSOEHandler populates the cJSON object
     virtual void OnTaskStart(opendnp3::MasterTaskType type, opendnp3::TaskId id) override final {
         std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
         cfgdb->cj = cJSON_CreateObject();
+        cfgdb->cjloaded = 0; 
     }
 
     virtual void OnTaskComplete(const opendnp3::TaskInfo& info) override final {
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
         std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
         if(cfgdb->cj)
-        // TODO add cjloaded test
+        // TODO fix interfaces name
         {
-            pubWithTimeStamp(cfgdb->cj, cfgdb, "interfaces");
+            if (cfgdb->cjloaded > 0) 
+            {
+                pubWithTimeStamp(cfgdb->cj, cfgdb, "interfaces");
+                cfgdb->cjloaded = 0;
+            }
             cJSON_Delete(cfgdb->cj);
             cfgdb->cj = NULL;
         }  

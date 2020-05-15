@@ -1,9 +1,28 @@
+/*
+*  newCommandHandler.cpp
+* author :pwilshire
+*  11 May, 2020
+*
+* This runs in the outstation and will handle the control requests from the master.
+* There are two variants of this
+* one will be the customer facing outstation in the Fleet Manage.
+* the other will be the site outstations in the FlexGen satellite sites.
+* the FM outstation will provide a pub intensed for the FM Master stations.
+* this pub will contain all the details of the command from the Customer Master station.
+* The second output will be a pub intended for the MODBUS clients on the site systems.
+* communcations with the MODBUS clients are via set /get 
+*  /components/sys.cfgname [{"name":"value"},{"name":"value"},...]
+*  /components/sys.cfgname/item {"value":"value"}
+* we'll try and make both outputs the same
+* the config file will contain the choice of pub output mode and details of the DNP3 - Modbus conversion 
+*
+*/
+
 #include "newCommandHandler.h"
 
 #include "dnp3_utils.h"
 #include <iostream>
 
-//#include <wiringPi.h>
 
 using namespace opendnp3;
 
@@ -30,6 +49,10 @@ void newCommandHandler::Start()
   cfgdb->cjloaded = 0;
   
 }
+// Uri:     /id/MyPubs/outputs/dnp3_outstation
+// ReplyTo: (null)
+// Body:    {"AnalogInt16":[{"offset":8,"value":1234}],"AnalogInt32":[{"offset":0,"value":52},{"offset":2,"value":5}],"Timestamp":"05-12-2020 04:11:00.973867"}
+// Met
 void newCommandHandler::End()
 {
   std::cout << "               ************" <<__FUNCTION__ << " called loaded = "<< cfgdb->cjloaded << std::endl;

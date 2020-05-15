@@ -1,6 +1,10 @@
 /*
  * newOutStation.h
+ * author : pwilshire
+ *    11 May, 2020
+ *  looks like nothing is happening here ... yet 
  */
+
 #ifndef NEW_OUTSTATIONAPPLICATION_H
 #define NEW_OUTSTATIONAPPLICATION_H
 

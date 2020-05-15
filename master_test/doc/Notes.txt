@@ -1,0 +1,225 @@
+
+
+pwilshire
+May 15, 2020
+
+Discussion Document  on the whole Fleet Manager/DNP3 system.
+
+The Fleet Manager (FM) unit has one customer facing DNP3 Outstation and one or more site facing DNP3 FM Site Master stations.
+Each Site will have a DNP3 Site Outstation connecting to a Modbus Client.
+
+Customer      |  Fleet Manager                                   |   |  Sites
+DNP3 Master<---->FM DNP3 Outstation                              |   |
+              |           |                                      |   |
+              |           --------------->FM Site1 DNP3 Master<---------->Site1 DNP3 Outstation    Site1 Modbus Client
+              |           |                                      |   |
+              |           --------------->FM Site2 DNP3 Master<---------->Site2 DNP3 Outstation    Site2 Modbus Client
+              |           ~
+              |           ~
+              |           |                                      |   |
+              |           --------------->FM SiteN DNP3 Master<---------->SiteN DNP3 Outstation    SiteN Modbus Client
+
+
+The FM DNP3 Outstation will receive output commands and query requests from the Customer DNP3 Master.
+The Customer commands will be passed on to one of the FM Site DNP3 Masters based on the output destination.
+The FM DNP3 Outstation will receive PUBS from each of the FM Site DNP3 Master stations connected to the site units.
+The FM DNP3 Outstation will hold registers containing the values of the system variables designated as inputs.
+
+Question: does the FM DNP3 outstation need to retain the state of the Output commands. 
+        if so we can use the DNP3 status variables for these.
+        The status variables can be set in  the Site DNP3 Outstations after the Output command has been reeived.
+        These variables will be returned to the FM DNP3 Outstation as part of the FM Site Master queries
+
+
+Each FM Site DNP3 Master will issue queries on its assigned Site DNP3 Outstation.
+Ther reults of these queries will be used to update the FM DNP3 Outstation variables,
+
+
+The modbus FIMS message struture is:
+
+set/get/pub /components/sys.cfg_name [{"name": name, "value":value},....] 
+or   
+set/get /components/sys.cfg_name/item {"value":value}
+
+
+The dnp3 scheme is more complex in that a name resolves to :
+
+<type>:index    for outputs and inputs
+types being : 
+    binary,analog, [counters , strings etc ] for DNP3 Site Outstation INPUTS
+and
+   AnalogOutputInt16, AnalogOutputInt32,AnalogOutputFloat32,ControlRelayOutputBlock [AnalogOutputDouble64,] for DNP3 Site Outstation OUTPUTS
+ 
+each of these item types uses an index to define the component.
+
+In addition the outstation INPUTS can define a variant to define to format used for the the value messages.
+
+Lets consider an Output command from the Customer DNP3 Master.
+We want to set the variable "gen_resource_breaker" on Site 21  to LATCH_OFF
+The Customer Database knows this as Site21/gen_resource_breaker, it is of type CROB ( Control Relay Output Block) 
+   and its index in the FM DNP3 Outstation CROB array is 32
+The Customer Database also reads the status of this output as BinaryStatus offset 12.
+
+This is the suggested config file fragment   
+
+not quite sure of the exact systax yet.
+
+"Sites": {
+        "Site21": {
+            "outputs" : {
+                "CROB" : [
+                    {
+                        "id": "gen_resource_breaker",
+                        "dest": "Site21_modbus/gen_resource_breaker",
+                        "status": "Site21_outstation/gen_resource_breaker_status",
+                        "offset": 32,
+                        "name": "Generation Resource Breaker Control"
+                        "initial_value":"LATCH_OFF"
+                        "site_offset: 2
+                    },
+                ] <,>
+            }
+            "inputs" : {
+                "BinaryOutputStatus" : [
+                    {
+                        "id": "gen_resource_breaker_status",
+                        "offset": 12,
+                        "name": "Generation Resource Breaker Control Status"
+                        "site_offset: 1
+                        "variant":"Group10Var2"
+                    },
+                ] ,
+                "Analog" : [
+                    {
+                        "id": "line_flows_MW",
+                        "offset": 4,
+                        "name": "line flows MW"
+                        "site_offset: 2
+                        "variant":"Group30Var1"
+                    },
+                ] <,>
+
+
+            }
+        }<,>
+}
+
+
+Customer Output
+
+So lets create a dummy DNP3 Master to simulate the customer DNP3 master.
+We would congfigure it with the something like the fragment shown above.
+
+Somewhere the sys_config.name of the master is ERCOT_master.
+Also we will have two other site names to consider 
+FM_outstation
+Site21_master
+Site21_outstation
+
+
+The FIMS message to send to this Simulated master would be:
+ERCOT_master <== set /components/ERCOT_master/Site21/gen_resource_breaker "LATCH_ON"
+
+This would cause the FM DNP3 Outstation to receive a LATCH_ON command for CROB index 32.
+It would look up the designated site from the config file and detect that it needs to direct this command to Site1_master.
+
+FM_outstation ==> set /component/Site21_master/gen_resource_breaker "LATCH_ON"
+
+The FM_Site21_master will send the CROB message to CROB:<2> to the Site1 DNP3 Outstation this system will then relay the command to the Site21 Modbus Client
+
+
+This Site21 DNP3 outstation will then issue the Modbus fims message due to the  "dest":"Site21_modbus/gen_resource_breaker" field
+
+    set /component/Site21_modbus/gen_resource_breaker "LATCH_ON" ( or whatever the modbus requires as a 'latch_on' value)
+
+The Site21 DNP3 outstation will  also send a fims message to itself due to the "status":"Site21_outstation/gen_resource_breaker_status" field
+
+    set /component/Site21_outstation/gen_resource_breaker_status "LATCH_ON"
+
+
+Customer inputs
+An Example 
+Our Customer DNP3 Master wants to know what the current value of 
+"line_flows_MW" on Site21 
+
+We'll use the fims command
+ERCOT_master <== get /components/ERCOT_master/Site21/line_flows_MW
+The ERCOTT_master will issue a query to the FM DNP3_outstation which will respond with the current value in its local storage.
+
+The FM DNP3 Site Masters will each issue queries on their outstations and issue pubs when they receive results.
+The pubs will be monitored buy the FM DNP3 outstation and translated into updates to the ERCOTT_master.
+
+
+
+The Site DNP3 outstations will listen to the MODBUS_Client pubs and update their values.
+This will transfer to the FM DNP3 Master
+that will also issue pubs on the current values.
+
+the FM DNP3 Outstation will listen to those pubs and issue updates to its own copies of the variables.
+
+
+Here is the whole path from Site Modbus Client to FM DNP3 Outstation
+
+Site21 MODBUS Client, 
+       pub /comonents/Site21  '[{"name":value},{"name":value}]
+Site21 DNP3 outstation translates names to local variable types and offsets.
+       issues update commands to its DNP3 local Database 
+FM Site21 DNP3  master  queries Site21 DNP3 Outstation and issues a pub when the response is received.
+       pub /comonents/Site21_master  '[{"name":value},{"name":value}]
+
+FM DNP3_outstation listens to these pubs and updates the local database with the modified customer offsets.
+
+The Customer DNP3 master will then get the updated values.
+
+
+How about a demand query ??
+
+I understand that this may be an enhancement. the system may happily depend on scheduled quieries.
+
+This will ripple a query all the way down to the Site Modbus client
+
+Start at the Site DNP3 Outstation.
+
+This is issued with a demand for a list of values (not just a general Class 0 scan) from its FM Site DNP3 Master
+This can be simulated using a "get" for a list of variables sent to the FM Site DNP3 Master
+
+The Site DNP3 Outstation will translate this into a Site modbus client "get" request.
+
+The response (via reply to) to the "get" request will be treated the same as a "set" request placed on the Site DNP3 Outstation.
+This will result in a number of buffer puts relayed to the FM Site DNP3  Master.
+
+Lets assume that we can modify the "pub" issued by the FM DNP3 Site Master into "sets" headed for the FM DNP3 Outstation
+( For example use the indicator for an unsolicitated response)
+
+These "sets" to the FM DNP3 Outstation will result in Buffer pushes to the Customer DNP3 Master
+
+
+This is a diagram of the transaction:
+
+get /components/ERCOTT_master '["name","name"]'
+
+   master creates a variable list and send request to FM DNP3 Outstation
+   since this is not a general class scan FM DNP3 issues "get" fims messages to FM Site DNP3 Masters
+
+   get /components/Sitex_master '["name","name"]'
+
+   FM Sitex DNP3 Master creates and sends a query list to its Site DNP3 outstation
+
+   The site DNP3 outstation notices this is not a general query and sends "get" message to the  Site Modbus Client
+   The Site Modbus Client responds
+   The Site DNP3 Outstation sets it buffers and sends updates to the FM Site DNP3 Master
+   The FM Site DNP3 Master will issue pubs which are received by the FM DNP outstation. 
+   This sets its buffers and causes a response to the Customer DNP3 Master.
+
+
+
+
+
+
+
+
+
+
+
+
+

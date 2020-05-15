@@ -1,3 +1,11 @@
+
+/*
+*   newCommandHandler.h
+* author : pwilshire
+*  5, Mat 2020
+* start and end are used to signify the start ans completion of the response process   for an message from the master to the outstation
+*
+*/
 #ifndef DNP3_NEWCOMMANDHANDLER_H
 #define DNP3_NEWCOMMANDHANDLER_H
 
@@ -7,14 +15,11 @@
 
 #include <memory>
 
-//#include <vector>
-//#include <map>
-
 class newCommandHandler final : public opendnp3::ICommandHandler
 {
 
 public:
-    newCommandHandler(sysCfg* myDB){cfgdb = myDB; cjloaded = 0;};
+    newCommandHandler(sysCfg* myDB){cfgdb = myDB;};
 
     static std::shared_ptr<ICommandHandler> Create(sysCfg* db)
     {
@@ -57,7 +62,7 @@ private:
     opendnp3::CommandStatus GetPinAndState(uint16_t index, opendnp3::ControlCode code, uint8_t& gpio, bool& state);
 
     sysCfg* cfgdb;
-    int cjloaded;  // tells us if this command resulted in cJSON material for a publish;
+    //int cjloaded;  // tells us if this command resulted in cJSON material for a publish;
     //std::map<uint16_t, uint8_t> dnp2io;
 };
 

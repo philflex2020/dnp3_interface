@@ -1,29 +1,16 @@
 /*
- * Copyright 2013-2019 Automatak, LLC
- *
- * Licensed to Green Energy Corp (www.greenenergycorp.com) and Automatak
- * LLC (www.automatak.com) under one or more contributor license agreements.
- * See the NOTICE file distributed with this work for additional information
- * regarding copyright ownership. Green Energy Corp and Automatak LLC license
- * this file to you under the Apache License, Version 2.0 (the "License"); you
- * may not use this file except in compliance with the License. You may obtain
- * a copy of the License at:
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * author: pwilshire
+ *     11 May, 2020
+ * This code provides the details for a pub from the master of the componets returned in an outstation scan.
+ * This pub is returned to the customer facing Fleet Manager Outstation
+ * NOTE only analogs and binaries are reported at this stage.
+ * 
  */
 #include <cjson/cJSON.h>
 #include <sstream>
 #include "newSOEHandler.h"
 #include "dnp3_utils.h"
 
-// dont like this so dont do it
-//extern sysCfg *xcfgdb;
 using namespace std; 
 using namespace opendnp3; 
 
@@ -34,6 +21,7 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
     static sysCfg *static_cfgdb = cfgdb;
     static cJSON *cj; 
     static int first = 1;
+    // start a cjson object for this collecion of items
     auto print = [](const Indexed<Binary>& pair) {
         if(first == 1)
         {
@@ -48,19 +36,16 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
     };
     values.ForeachItem(print);
     first = 1;
-    //Code for adding timestamp
-
     if(cj)
     {
         if(static_cfgdb->cj)
         {
-            cJSON_AddItemToObject(static_cfgdb->cj, "binaries", cj);
+            cJSON_AddItemToObject(static_cfgdb->cj, cfgGetSOEName(static_cfgdb,"binaries"), cj);
+            static_cfgdb->cjloaded++;
         }
-        else
+        else 
         {
-            pubWithTimeStamp(cj, static_cfgdb,"binaries");
             cJSON_Delete(cj);
-
         }
         cj = NULL;        
     }
@@ -87,6 +72,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     static sysCfg *static_cfgdb = cfgdb;
     static cJSON *cj; 
     static int first = 1;
+    // start a cjson object for this collecion of items
     auto print = [](const Indexed<Analog>& pair) {
         if(first == 1)
         {
@@ -94,26 +80,24 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
             first = 0;
         }
         char* vname = static_cfgdb->getAnalog(pair.index);
+        // skip undefined indexes
         if(strcmp(vname,"Unknown")!= 0) 
         {
-            //TODO remove float let cJSON handle it
-            cJSON_AddNumberToObject(cj, vname, (float)pair.value.value);
+            cJSON_AddNumberToObject(cj, vname, pair.value.value);
         }
     };
     values.ForeachItem(print);
     first = 1;
+    // at the end of this scan add the collection object to the main syscfg cjosn pub object
     if(cj)
     {
         if(static_cfgdb->cj)
         {
-            cJSON_AddItemToObject(static_cfgdb->cj, "analogs", cj);
+            cJSON_AddItemToObject(static_cfgdb->cj, cfgGetSOEName(static_cfgdb,"analogs"), cj);
+            static_cfgdb->cjloaded++;
         }
-        static_cfgdb->cjloaded++;
-        // TODO add cjloaded
-        // TODO remove "else" code
-        else
+        else 
         {
-            pubWithTimeStamp(cj, static_cfgdb, "analogs");
             cJSON_Delete(cj);
         }
         cj = NULL;        
@@ -169,6 +153,7 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
     };
     values.ForeachItem(print);
 }
+
 void newSOEHandler::Process(const opendnp3::HeaderInfo& /*info*/,
                                  const opendnp3::ICollection<opendnp3::DNPTime>& values) {
     auto print = [](const DNPTime& value) { std::cout << "DNPTime: " << value.value << std::endl; };

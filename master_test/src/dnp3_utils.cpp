@@ -906,6 +906,12 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t
     cfgdb->cjloaded++;
 }
 
+// TODO allow a setup option in the config file to supply the SOEname
+const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname)
+{
+    return fname;
+}
+
 bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query)
 {
 #if 0
