@@ -52,6 +52,7 @@ public:
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
         std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
         if(cfgdb->cj)
+        // TODO add cjloaded test
         {
             pubWithTimeStamp(cfgdb->cj, cfgdb, "interfaces");
             cJSON_Delete(cfgdb->cj);

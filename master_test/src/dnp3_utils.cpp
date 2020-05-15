@@ -854,7 +854,7 @@ cJSON* cfgdbFindAddArray(sysCfg* cfgdb, const char* field)
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON*cji = cJSON_CreateObject();
+    cJSON* cji = cJSON_CreateObject();
     // todo resolve name
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(AOP16,index);
@@ -868,7 +868,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOut
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON*cji = cJSON_CreateObject();
+    cJSON* cji = cJSON_CreateObject();
     // todo resolve name
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(AOP32,index);
@@ -881,7 +881,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOut
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON*cji = cJSON_CreateObject();
+    cJSON* cji = cJSON_CreateObject();
     // todo resolve name
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(Float32,index);
@@ -891,10 +891,11 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOut
     cfgdb->cjloaded++;
 }
 
+// TODO fix up CROB
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON*cji = cJSON_CreateObject();
+    cJSON* cji = cJSON_CreateObject();
     // todo resolve name
     cJSON_AddNumberToObject(cji,"offset",index);
     //const char* indexName = cfgindextoName(CROB,index);

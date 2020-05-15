@@ -160,7 +160,7 @@ int main(int argc, char* argv[])
     }
     sys_cfg.showBinaries();
     sys_cfg.showAnalogs();
-    
+
     sys_cfg.p_fims = p_fims;
     // sys_cfg.name, ip_address, port
     cJSON_Delete(config);
@@ -202,6 +202,7 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
                 ok = false;
             }
+            // TODO create a map of types
             // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
             // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
 
@@ -214,6 +215,7 @@ int main(int argc, char* argv[])
                     ok = false;
                 }
             }
+            
             if (ok) 
             {
 

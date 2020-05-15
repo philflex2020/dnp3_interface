@@ -262,7 +262,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                 //                     stackConfig // stack configuration
     auto master = channel->AddMaster("master", // id for logging
                                      newSOEHandler::Create(ourDB), // callback for data processing  this generates the pub elements when we get data
-                                     newMasterApplication::Create(ourDB), // master application instance this managed the collection of al the pub elements 
+                                     newMasterApplication::Create(ourDB), // master application instance this manages the collection of al the pub elements 
                                      stackConfig // stack configuration
                                     );
     // do an integrity poll (Class 3/2/1/0) once per minute
@@ -511,11 +511,11 @@ int main(int argc, char *argv[])
                             int dboffset = cjoffset->valueint;
                             if(cjvalue->valueint == 1)
                             {
-                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::PULSE_ON),dboffset)});
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),dboffset)});
                             }
                             else
                             {
-                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::PULSE_OFF),dboffset)});
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_OFF),dboffset)});
                             }
                         }
                     }

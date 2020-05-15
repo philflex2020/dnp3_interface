@@ -96,6 +96,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         char* vname = static_cfgdb->getAnalog(pair.index);
         if(strcmp(vname,"Unknown")!= 0) 
         {
+            //TODO remove float let cJSON handle it
             cJSON_AddNumberToObject(cj, vname, (float)pair.value.value);
         }
     };
@@ -107,6 +108,9 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         {
             cJSON_AddItemToObject(static_cfgdb->cj, "analogs", cj);
         }
+        static_cfgdb->cjloaded++;
+        // TODO add cjloaded
+        // TODO remove "else" code
         else
         {
             pubWithTimeStamp(cj, static_cfgdb, "analogs");
