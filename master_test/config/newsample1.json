@@ -1,0 +1,112 @@
+{
+    "fileInfo": {
+        "sourceFileName": "dnp3_outstation.xlsx",
+        "sourceFileCreated": "2020-01-02T21:16:38.000Z",
+        "sourceFileLastModified": "2020-05-05T16:29:07.000Z",
+        "sourceFileCreatedBy": "Microsoft Office User",
+        "sourceFileLastModifiedBy": "pmiller",
+        "outputFileName": "dnp3_outstation.json",
+        "outputFileType": "server",
+        "outputFileCreated": "2020-05-05T16:29:13.344Z"
+    },
+    "oldsystem":
+	{
+		"id": "pm-130_1",
+		"ip_address": "????",
+		"port": 502,
+		"frequency": 500,
+		"byte_swap": false
+	},
+    "system": {
+        "name":"dnp3_test_master",
+        "protocol": "DNP3",
+        "version": 1,
+        "id": "pm-130_1",
+        "ip_address2": "192.168.1.50",
+        "ip_address": "127.0.0.1",
+        "port": 20001,
+        "local_address": 1,
+		"remote_address": 10,
+		"frequency": 500,
+    },
+    
+    "registers":
+    [
+        {
+            "type": "Input Registers",
+            "DNP3type": "analog",
+            "FMSite":"Site1",
+            "starting_offset": 40256,
+            "number_of_registers": 11,
+            "map":
+            [
+                {
+                    "id": "ac_voltage_l1_l2",
+                    "offset": 100,
+                    "site_offset": 0,
+                    "scale": 10
+                },
+                {
+                    "id": "ac_voltage_l2_l3",
+                    "offset": 101,
+                    "site_offset": 1,
+                    "scale": 10
+                },
+                {
+                    "id": "ac_voltage_l3_l1",
+                    "offset": 102,
+                    "site_offset": 2,
+                    "scale": 10
+                },
+                {
+                    "id": "ac_current_l1",
+                    "offset": 103,
+                    "site_offset": 3,
+                    "scale": 10
+                },
+                {
+                    "id": "ac_current_l2",
+                    "offset": 104,
+                    "site_offset": 4,
+                    "scale": 10
+                },
+                {
+                    "id": "ac_current_l3",
+                    "offset": 105,
+                    "site_offset": 5,
+                    "scale": 10
+                },
+                {
+                    "id": "power_factor",
+                    "offset": 106,
+                    "site_offset": 6,
+                    "scale": 10
+                },
+                {
+                    "id": "active_power",
+                    "offset": 107,
+                    "site_offset": 7,
+                    "scale": 10
+                },
+                {
+                    "id": "reactive_power",
+                    "offset": 108,
+                    "site_offset": 8,
+                    "scale": 10
+                },
+                {
+                    "id": "apparent_power",
+                    "offset": 109,
+                    "site_offset": 9,
+                    "scale": 10
+                },
+                {
+                    "id": "frequency",
+                    "offset": 110,
+                    "site_offset": 10,
+                    "scale": 10
+                }
+            ]
+        }
+    ]
+}
