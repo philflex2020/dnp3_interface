@@ -300,7 +300,7 @@ void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSO
         return;
     }
 
-    DbVar* pt = getDbVar(cfgdb, cjoffset->valuestring) 
+    DbVar* pt = getDbVar(cfgdb, cjoffset->valuestring); 
     if (!pt)
     {
         printf(" %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring);
@@ -483,7 +483,7 @@ int main(int argc, char *argv[])
                 ok = false;
             }
             uri = msg->pfrags[2];
-            if (strcmp(uri,sys_cfg.id) ! = 0)
+            if (strcmp(uri,sys_cfg.id) != 0)
             {
                 FPS_ERROR_PRINT("fims message frag 2 [%s] not for this master [%s] \n", uri, sys_cfg.id);
                 ok = false;
