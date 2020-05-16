@@ -316,7 +316,7 @@ typedef struct sysCfg_t {
         {
             if (dbMap.find(name) != dbMap.end() )
             {   
-                return cfgdb->dbMap[name];
+                return dbMap[name];
             }
             return NULL;
         };
