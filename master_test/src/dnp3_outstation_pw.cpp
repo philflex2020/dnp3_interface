@@ -51,7 +51,7 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
     std::cout <<" after changes svariation :"<<(int) config.analog[0].svariation<<"\n";
     std::cout <<" after changes evariation :"<<(int) config.analog[0].evariation<<"\n";
-    std::cout <<" *****************analog[0] value :"<<(int) config.analog[0].value.value<<"\n";
+    //std::cout <<" *****************analog[0] value :"<<(int) config.analog[0].value.value<<"\n";
 
     //config.analog[1].clazz = PointClass::Class2;
     //config.analog[1].svariation = StaticAnalogVariation::Group30Var5;
