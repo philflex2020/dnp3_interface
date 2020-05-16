@@ -312,7 +312,7 @@ typedef struct sysCfg_t {
                 return cfgdb->dbMap[name];
             }
             return NULL;
-        }
+        };
 
         int  getBinaryIdx(char *name) 
         {
