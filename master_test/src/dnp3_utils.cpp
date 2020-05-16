@@ -128,14 +128,9 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
 
 DbVar* getDbVar(sysCfg *cfgdb, const char *name)
 {
-   //todo find var from map
-   //std::map<std::string , dbVar *> dbMap;
-    if (cfgdb->dbMap.find(name) != cfgdb->dbMap.end() )
-    {
-        return cfgdb->dbMap[name];
-    }
-    return NULL;
+    return cfgdb->getDbVar(name);
 }
+
 //old version deprecated
 void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
 {
@@ -412,6 +407,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             return false;
         }
+        sys->addDbVar(id->valuestring, Type_Binary, offset->valueint);
         sys->binaryNames[offset->valueint] = strdup(id->valuestring);   // assume this takes a copy
         sys->binaryIdx[strdup(id->valuestring)] = offset->valueint;   
         std::cout << " config adding Binary name ["<<id->valuestring<<"] id [" << offset->valueint << "]\n";
@@ -439,6 +435,9 @@ bool parse_variables(cJSON* object, sysCfg* sys)
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             return false;
         }
+
+        sys->addDbVar(id->valuestring, Type_Analog, offset->valueint);
+
         sys->analogNames[offset->valueint] = strdup(id->valuestring);   // assume this tkes a copy
         sys->analogIdx[strdup(id->valuestring)] = offset->valueint;   
         std::cout << " config adding Analog name ["<<id->valuestring<<"] id [" << offset->valueint << "]\n";

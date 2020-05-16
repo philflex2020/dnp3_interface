@@ -186,6 +186,7 @@ typedef struct sdata
      //   }
         return 0;
     }
+
     int datasendAdd( mapr * mr)
     {
         return 0;
@@ -209,8 +210,12 @@ typedef struct sdata
 #define AnIn32 2
 #define AnF32 3
 #define Crob 4
+#define Type_Analog 5
+#define Type_Binary 6
+
 
 typedef struct DbVar_t {
+    DbVar_t(string _name, int _type, int _offset):name(_name), type(_type), offset(_offset),site(""),site_offset(-1){};
     std::string name;
     std::string site;
     int type;
@@ -267,6 +272,7 @@ typedef struct sysCfg_t {
                 return (char *) "Unknown";
             }
         }
+
         int  getAnalogIdx(char *name) 
         {
             int idx = -1;
@@ -292,6 +298,22 @@ typedef struct sysCfg_t {
             return idx;
 
         }
+
+        void addDbVar(string name, int type, int offset) 
+        {
+            DbVar* db = new DbVar(name,type,offset);
+            dbMaps[name] = db;
+        }
+
+        DbVar* getDbVar(sysCfg *cfgdb, const char *name)
+        {
+            if (dbMap.find(name) != dbMap.end() )
+            {   
+                return cfgdb->dbMap[name];
+            }
+            return NULL;
+        }
+
         int  getBinaryIdx(char *name) 
         {
             int idx = -1;
@@ -309,6 +331,7 @@ typedef struct sysCfg_t {
             std::cout << " Seeking Binary ["<< name <<"] found [" << idx << "]\n";
             return idx;
         }
+
         void showBinaries()
         {
             std::cout << " Binary maps\n" ;
@@ -324,6 +347,7 @@ typedef struct sysCfg_t {
             }
 
         }
+        
         void showAnalogs()
         {
             std::cout << " Clear Analog maps\n" ;
@@ -339,6 +363,17 @@ typedef struct sysCfg_t {
             }
 
         }
+        void showDbMap()
+        {
+            std::cout << " Clear Analog maps\n" ;
+            std::map<string, DbVar *>::iterator it_vars;
+            for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
+            {
+                DbVar* db = it_vars->second;
+                std::cout << it_vars->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+            }
+        }
+
         void clearBinaries()
         {
             std::cout << " Binary maps\n" ;

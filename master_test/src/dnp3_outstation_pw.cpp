@@ -148,6 +148,7 @@ int main(int argc, char* argv[])
         return 1;
 
     }
+
     if(!parse_system(config, &sys_cfg)) 
     {
         fprintf(stderr, "Error parsing config file system.\n");
@@ -163,6 +164,7 @@ int main(int argc, char* argv[])
     }
     sys_cfg.showBinaries();
     sys_cfg.showAnalogs();
+    sys_cfg.showDbVars();
 
     sys_cfg.p_fims = p_fims;
     // sys_cfg.name, ip_address, port
