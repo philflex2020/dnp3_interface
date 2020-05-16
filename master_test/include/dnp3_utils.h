@@ -405,7 +405,7 @@ typedef struct sysCfg_t {
 
 } sysCfg;
 
-struct DbVar* getDbVar(sysCfg *cfgdb, const char *name);
+DbVar* getDbVar(sysCfg *cfgdb, const char *name);
 
 bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);
 bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value);
