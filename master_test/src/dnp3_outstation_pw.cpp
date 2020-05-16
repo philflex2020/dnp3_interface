@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
     // int rtn_val = 0;
     // int num_subs = 1;
 
-    char sub[] = "/dnp3/outstation";
+    char sub[] = "/components/outstation";
     char* subs = sub;
     bool publish_only = false;
     bool running = true;

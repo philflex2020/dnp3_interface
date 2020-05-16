@@ -143,7 +143,7 @@ void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
     {
 
     
-        addCjTimestamp(cj, "Timestamp");
+        addCjTimestamp(cj, "Timestampxx");
         char *out = cJSON_PrintUnformatted(cj);
         //cJSON_Delete(cj);
         //    cj = NULL;
@@ -191,7 +191,7 @@ void pubWithTimeStamp2(cJSON *cj, sysCfg* sys, const char* ev)
             }
             else
             {
-                snprintf(tmp,1024,"/%s/%s", sys->pub, sys->id);
+                snprintf(tmp,1024,"/%s/%s", "/components", sys->id);
             }
 
             if(sys->p_fims)
