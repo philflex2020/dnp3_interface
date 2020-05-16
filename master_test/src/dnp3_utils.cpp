@@ -136,17 +136,15 @@ DbVar* getDbVar(sysCfg *cfgdb, const char *name)
     }
     return NULL;
 }
-
+//old version deprecated
 void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
 {
     if(cj)
     {
-
-    
         addCjTimestamp(cj, "Timestampxx");
         char *out = cJSON_PrintUnformatted(cj);
         //cJSON_Delete(cj);
-        //    cj = NULL;
+        //cj = NULL;
         if (out) 
         {
             char tmp[1024];
@@ -166,18 +164,16 @@ void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
             {
                 std::cout << __FUNCTION__ << " Error in sys->p_fims\n";
             }
-        
             free(out);
         }
     }
 }
+
 //uses the ev field
 void pubWithTimeStamp2(cJSON *cj, sysCfg* sys, const char* ev)
 {
     if(cj)
-    {
-
-    
+    {    
         addCjTimestamp(cj, "Timestamp");
         char *out = cJSON_PrintUnformatted(cj);
         //cJSON_Delete(cj);
@@ -185,13 +181,14 @@ void pubWithTimeStamp2(cJSON *cj, sysCfg* sys, const char* ev)
         if (out) 
         {
             char tmp[1024];
-            if(ev) 
+            if(ev == NULL) 
             {
-                snprintf(tmp,1024,"/%s/%s", ev, sys->id);
+                snprintf(tmp,1024,"/%s/%s", "/components", sys->id);
+
             }
             else
             {
-                snprintf(tmp,1024,"/%s/%s", "/components", sys->id);
+                snprintf(tmp,1024,"/%s/%s", ev, sys->id);
             }
 
             if(sys->p_fims)

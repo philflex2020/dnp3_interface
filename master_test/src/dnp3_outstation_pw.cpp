@@ -1,6 +1,6 @@
 /* 
  *  dnp3 outstation test code  
- * pwilshire / pmiller
+ *  pwilshire / pmiller
  *  5/11/2020
  */
 
@@ -51,10 +51,6 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
     std::cout <<" after changes svariation :"<<(int) config.analog[0].svariation<<"\n";
     std::cout <<" after changes evariation :"<<(int) config.analog[0].evariation<<"\n";
-
-
-
-
     //config.analog[1].clazz = PointClass::Class2;
     //config.analog[1].svariation = StaticAnalogVariation::Group30Var5;
     //config.analog[1].evariation = EventAnalogVariation::Group30Var5;
@@ -70,19 +66,25 @@ struct State
     uint8_t octetStringValue = 1;
 };
 
+OutstationStackConfig myConfig(DatabaseSizes::AllTypes(10));
 
-std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *manager, sysCfg* ourDB) {
+std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *manager, sysCfg* ourDB, OutstationStackConfig& config) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_COMMS;
 
     // Create a TCP server (listener)
-    auto channel = manager->AddTCPServer("server", FILTERS, ServerAcceptMode::CloseExisting, "127.0.0.1", 20001,
-                                        PrintingChannelListener::Create());
+    auto channel = manager->AddTCPServer("server"
+                                        , FILTERS
+                                        , ServerAcceptMode::CloseExisting
+                                        , "127.0.0.1"
+                                        , 20001
+                                        , PrintingChannelListener::Create()
+                                        );
 
     // The main object for a outstation. The defaults are useable,
     // but understanding the options are important.
-    OutstationStackConfig config(DatabaseSizes::AllTypes(10));
+    //OutstationStackConfig config(DatabaseSizes::AllTypes(10));
 
     // Specify the maximum size of the event buffers
     config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
@@ -107,8 +109,10 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *ma
     // updating the outstation's database.
     //auto outstation = channel->AddOutstation("outstation", SuccessCommandHandler::Create(),
     //                                         DefaultOutstationApplication::Create(), config);
-    auto outstation = channel->AddOutstation("outstation", newCommandHandler::Create(ourDB),
-                                             newOutstationApplication::Create(ourDB), config);
+    auto outstation = channel->AddOutstation("outstation"
+                                            , newCommandHandler::Create(ourDB)
+                                            , newOutstationApplication::Create(ourDB)
+                                            , config);
     printf("outstation channel created\n");
 
     // Enable the outstation and start communications
@@ -135,7 +139,6 @@ int main(int argc, char* argv[])
     bool publish_only = false;
     bool running = true;
     sysCfg sys_cfg;
-    //sysCfg * xcfgdb = &sys_cfg;
     p_fims = new fims();
 
     cJSON* config = get_config_json(argc, argv);
@@ -169,7 +172,7 @@ int main(int argc, char* argv[])
     // Allocate a single thread to the pool since this is a single outstation
     // Must be in main scope
     DNP3Manager *manager = setupDNP3Manager();//(1, ConsoleLogger::Create());
-    auto outstation = outstation_init(manager, &sys_cfg);
+    auto outstation = outstation_init(manager, &sys_cfg, myConfig);
     printf("outstation started\n");
 
     if(p_fims->Connect((char *)"fims_listen") == false)
@@ -178,7 +181,7 @@ int main(int argc, char* argv[])
         p_fims->Close();
         return 1;
     }
-    // subs = /dnp3/outstation
+    // subs = /components/outstation
     if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
     {
         printf("Subscription failed.\n");
@@ -188,6 +191,8 @@ int main(int argc, char* argv[])
 
     while(running && p_fims->Connected())
     {
+        const char* uri;
+        
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
@@ -202,6 +207,13 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
                 ok = false;
             }
+            uri = msg->pfrags[2];
+            if (strcmp(uri,sys_cfg.id) != 0)
+            {
+                FPS_ERROR_PRINT("fims message frag 2 [%s] not for this outstation [%s] \n", uri, sys_cfg.id);
+                ok = false;
+            }
+
             // TODO create a map of types
             // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
             // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
