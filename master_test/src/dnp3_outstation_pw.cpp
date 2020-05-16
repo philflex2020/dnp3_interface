@@ -194,7 +194,7 @@ int main(int argc, char* argv[])
     while(running && p_fims->Connected())
     {
         const char* uri;
-
+        UpdateBuilder builder;
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
@@ -259,7 +259,7 @@ int main(int argc, char* argv[])
                         //addValueToCommand(&sys_cfg, commands, cjoffset, cjvalue);
                         //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
                     }// parse all the values
-                    
+
                     outstation->Apply(builder.Build());
 
                 }
@@ -299,7 +299,7 @@ int main(int argc, char* argv[])
             if(ok) 
             {
                 int dboffset = offset->valueint;
-                UpdateBuilder builder;
+                
                 if(strcmp(itype->valuestring,"analogs")==0)
                 {
                     if(offset->type == cJSON_String) 
