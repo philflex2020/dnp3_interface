@@ -51,12 +51,24 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
     std::cout <<" after changes svariation :"<<(int) config.analog[0].svariation<<"\n";
     std::cout <<" after changes evariation :"<<(int) config.analog[0].evariation<<"\n";
-    //std::cout <<" *****************analog[0] value :"<<(int) config.analog[0].value.value<<"\n";
+    std::cout <<" *****************analog[0] value :"<<(int) config.analog[0].value<<"\n";
 
     //config.analog[1].clazz = PointClass::Class2;
     //config.analog[1].svariation = StaticAnalogVariation::Group30Var5;
     //config.analog[1].evariation = EventAnalogVariation::Group30Var5;
- 
+//  OutstationConfig cfg;
+//     OutstationTestObject t(cfg, DatabaseSizes::BinaryOnly(10));
+
+//     {
+//         auto view = t.context.GetConfigView();
+//         auto setValue = [](Cell<BinarySpec>& cell) -> void {
+//             cell.value = Binary(false);
+//             cell.config.svariation = StaticBinaryVariation::Group1Var1;
+//         };
+
+//         view.binaries.foreach (setValue);
+//     }
+
 }
 // keep the state for outputs.
 struct State
