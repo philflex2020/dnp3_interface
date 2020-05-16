@@ -313,7 +313,7 @@ typedef struct sysCfg_t {
             }
             return NULL;
         };
-
+        
         int  getBinaryIdx(char *name) 
         {
             int idx = -1;
