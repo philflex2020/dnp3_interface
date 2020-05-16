@@ -290,31 +290,6 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     //
     return master;
 }
-//TODO use real types
-// test code for dnp3_utils
-#define AnIn16 1
-#define AnIn32 2
-#define AnF32 3
-#define Crob 4
-
-typedef struct DbVar {
-    string name;
-    string site;
-    int type;
-    int offset;
-    int site_offset;
-}DbVar_t;
-
-struct DbVar* getDbVar(sysCfg *cfgdb, const char *name)
-{
-   //todo find var from map
-   std::map<string , dbVar *> dbMap;
-    if (cfgdb->dbMap.find(name) != cfgdb->dbMap.end() )
-    {
-        return cfgdb->dbMap[name];
-    }
-    return NULL;
-}
 
 void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON *cjvalue)
 {
@@ -324,7 +299,7 @@ void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSO
         printf(" %s offset is not  string\n",__FUNCTION__)
         return;
     }
-    
+
     DbVar* pt = getDbVar(cfgdb, cjoffset->valuestring) 
     if (!pt)
     {
