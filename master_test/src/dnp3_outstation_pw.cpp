@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
     while(running && p_fims->Connected())
     {
         const char* uri;
-        
+
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
@@ -254,7 +254,7 @@ int main(int argc, char* argv[])
             {
                 int dboffset = offset->valueint;
                 UpdateBuilder builder;
-                if(strcmp(itype->valuestring,"analog")==0)
+                if(strcmp(itype->valuestring,"analogs")==0)
                 {
                     if(offset->type == cJSON_String) 
                     {
