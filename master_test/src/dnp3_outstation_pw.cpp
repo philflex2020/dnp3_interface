@@ -236,6 +236,19 @@ int main(int argc, char* argv[])
                         if (db != NULL)
                         {
                             std::cout<< "Found variable type "<<db->type<<"\n";
+                            if (db->type == Type_Analog)
+                            {
+                                builder.Update(Analog(body_value->valuedouble), db->offset);
+                            }
+                            else if (db->type == Type_Binary)
+                            {
+                                builder.Update(Binary(body_value->valueint), db->offset);
+                            }
+                            else 
+                            {
+                                std::cout << " Variable ["<<iterator->string<<"] type not correct ["<<db->type<<"]\n";
+                            }
+
                         }
                         else
                         {
@@ -246,6 +259,8 @@ int main(int argc, char* argv[])
                         //addValueToCommand(&sys_cfg, commands, cjoffset, cjvalue);
                         //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
                     }// parse all the values
+                    
+                    outstation->Apply(builder.Build());
 
                 }
                 ok = false;
