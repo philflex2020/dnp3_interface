@@ -307,7 +307,7 @@ typedef struct sysCfg_t {
             }
             else
             {
-                std::cout << __FUNCTION__<< " name [" name <<"] allready defined  in dbMap\n";                
+                std::cout << __FUNCTION__<< " name [" << name <<"] allready defined  in dbMap\n";                
             }
             
         }
