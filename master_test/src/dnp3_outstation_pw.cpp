@@ -51,6 +51,8 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
     std::cout <<" after changes svariation :"<<(int) config.analog[0].svariation<<"\n";
     std::cout <<" after changes evariation :"<<(int) config.analog[0].evariation<<"\n";
+    std::cout <<" *****************analog[0] value :"<<(int) config.analog[0].value.value<<"\n";
+
     //config.analog[1].clazz = PointClass::Class2;
     //config.analog[1].svariation = StaticAnalogVariation::Group30Var5;
     //config.analog[1].evariation = EventAnalogVariation::Group30Var5;
@@ -198,6 +200,19 @@ int main(int argc, char* argv[])
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
+        // this is all for the set method
+        // the get method needs something like this
+        // bool Database::Update(const TimeAndInterval& value, uint16_t index)
+        // {
+        //     auto rawIndex = GetRawIndex<TimeAndIntervalSpec>(index);
+        //     auto view = buffers.buffers.GetArrayView<TimeAndIntervalSpec>();
+
+        //     if (view.Contains(rawIndex))
+        //     {
+        //         view[rawIndex].value = value;
+        //         return true;
+        //     }
+        // }
             bool ok = true;
             cJSON* body_JSON = cJSON_Parse(msg->body);
             cJSON* itype = NULL;
