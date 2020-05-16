@@ -58,7 +58,7 @@ void ConfigureDatabase(DatabaseConfig& config)
     //config.analog[1].evariation = EventAnalogVariation::Group30Var5;
  
 }
-
+// keep the state for outputs.
 struct State
 {
     uint32_t count = 0;
