@@ -60,7 +60,7 @@ void newCommandHandler::End()
    {
       if(cfgdb->cj)
         {
-            pubWithTimeStamp(cfgdb->cj, cfgdb, "outputs");
+            pubWithTimeStamp2(cfgdb->cj, cfgdb, "components");
             cJSON_Delete(cfgdb->cj);
             cfgdb->cj = NULL;
         }
