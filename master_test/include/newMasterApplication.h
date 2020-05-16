@@ -61,7 +61,7 @@ public:
         {
             if (cfgdb->cjloaded > 0) 
             {
-                pubWithTimeStamp(cfgdb->cj, cfgdb, "interfaces");
+                pubWithTimeStamp2(cfgdb->cj, cfgdb, "components");
                 cfgdb->cjloaded = 0;
             }
             cJSON_Delete(cfgdb->cj);

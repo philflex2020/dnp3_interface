@@ -202,6 +202,21 @@ typedef struct sdata
 //        "local_address": 1,
 //		"remote_address": 0
 //    },
+//TODO use real types
+// test code for dnp3_utils
+
+#define AnIn16 1
+#define AnIn32 2
+#define AnF32 3
+#define Crob 4
+
+typedef struct DbVar_t {
+    string name;
+    string site;
+    int type;
+    int offset;
+    int site_offset;
+} DbVar;
 
 typedef struct sysCfg_t {
 
@@ -382,12 +397,15 @@ typedef struct sysCfg_t {
         std::map<int,char*>analogNames;
         std::map<char*,int>binaryIdx;
         std::map<char*,int>analogIdx;
+        std::map<string , dbVar *> dbMap;
 
         fims* p_fims;
         cJSON* cj;
         int cjloaded;
 
 } sysCfg;
+
+struct DbVar* getDbVar(sysCfg *cfgdb, const char *name);
 
 bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);
 bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value);
@@ -402,6 +420,7 @@ bool parse_variables(cJSON* object, sysCfg* sys);
 cJSON *parseJSONConfig(char *file_path);
 void addCjTimestamp(cJSON *cj, const char * ts);
 void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev);
+void pubWithTimeStamp2(cJSON *cj, sysCfg* sys, const char* ev);
 
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index);
