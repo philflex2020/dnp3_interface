@@ -294,16 +294,16 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
 void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON *cjvalue)
 {
     // cjoffset myst be a name
-    if (!cjoffset-valuestring)
+    if (!cjoffset->valuestring)
     {
-        printf(" %s offset is not  string\n",__FUNCTION__)
+        printf(" %s offset is not  string\n",__FUNCTION__);
         return;
     }
 
     DbVar* pt = getDbVar(cfgdb, cjoffset->valuestring) 
     if (!pt)
     {
-        printf(" %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring)
+        printf(" %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring);
         return;
     }
     if (pt->type == AnIn16) 
