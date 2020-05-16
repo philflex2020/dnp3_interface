@@ -366,7 +366,7 @@ typedef struct sysCfg_t {
         void showDbMap()
         {
             std::cout << " Clear Analog maps\n" ;
-            std::map<string, DbVar *>::iterator it_vars;
+            std::map<std::string, DbVar *>::iterator it_vars;
             for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
             {
                 DbVar* db = it_vars->second;
