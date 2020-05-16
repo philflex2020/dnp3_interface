@@ -305,7 +305,7 @@ typedef struct sysCfg_t {
             dbMaps[name] = db;
         }
 
-        DbVar* getDbVar(sysCfg *cfgdb, const char *name)
+        DbVar* getDbVar(const char *name)
         {
             if (dbMap.find(name) != dbMap.end() )
             {   
@@ -313,7 +313,7 @@ typedef struct sysCfg_t {
             }
             return NULL;
         };
-        
+
         int  getBinaryIdx(char *name) 
         {
             int idx = -1;
