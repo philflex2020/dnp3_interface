@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
                     cJSON_ArrayForEach(iterator, body_value) 
                     {
                         std::cout << " Variable name ["<<iterator->string<<"]\n";
-                        dbVal * db = sys_cfg.getDbVar(iterator->string);
+                        DbVar * db = sys_cfg.getDbVar(iterator->string);
                         if (db != NULL)
                         {
                             std::cout<< "Found variable type "<<db->type<<"\n";
