@@ -301,7 +301,7 @@ void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSO
     }
 
     DbVar* pt = getDbVar(cfgdb, cjoffset->valuestring); 
-    if (!pt)
+    if (pt == NULL)
     {
         printf(" %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring);
         return;

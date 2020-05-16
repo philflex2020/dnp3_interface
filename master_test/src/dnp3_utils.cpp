@@ -126,10 +126,10 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
     cJSON_Delete(body_object);
 }
 
-DbVar* getDbVar(sysCfg *cfgdb, const char *name);
+DbVar* getDbVar(sysCfg *cfgdb, const char *name)
 {
    //todo find var from map
-   //std::map<string , dbVar *> dbMap;
+   //std::map<std::string , dbVar *> dbMap;
     if (cfgdb->dbMap.find(name) != cfgdb->dbMap.end() )
     {
         return cfgdb->dbMap[name];
