@@ -301,8 +301,15 @@ typedef struct sysCfg_t {
 
         void addDbVar(std::string name, int type, int offset) 
         {
-            DbVar* db = new DbVar(name,type,offset);
-            dbMaps[name] = db;
+            if (dbMap.find(name) == dbMap.end()){
+                DbVar* db = new DbVar(name, type, offset);
+                dbMap[name] = db;
+            }
+            else
+            {
+                std::cout << __FUNCTION__<< " name [" name <<"] allready defined  in dbMap\n";                
+            }
+            
         }
 
         DbVar* getDbVar(const char *name)
