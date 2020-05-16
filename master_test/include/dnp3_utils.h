@@ -215,7 +215,7 @@ typedef struct sdata
 
 
 typedef struct DbVar_t {
-    DbVar_t(std::string _name, int _type, int _offset):name(_name), type(_type), offset(_offset),site(""),site_offset(-1){};
+    DbVar_t(std::string _name, int _type, int _offset):name(_name), site(""),type(_type), offset(_offset),site_offset(-1){};
     std::string name;
     std::string site;
     int type;
