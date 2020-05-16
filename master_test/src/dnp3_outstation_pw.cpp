@@ -203,6 +203,7 @@ int main(int argc, char* argv[])
             cJSON* itype = NULL;
             cJSON* offset = NULL;
             cJSON* body_value = NULL;
+            cJSON* iterator = NULL;
             
             if (body_JSON == NULL)
             {
@@ -216,11 +217,40 @@ int main(int argc, char* argv[])
                 ok = false;
             }
 
-            // TODO create a map of types
+            // 
             // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
             // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
+            // set /dnp3/outstation '{"values":{"name1":value1, "name2":value2}}'           if (ok) 
+            {
+                body_value = cJSON_GetObjectItem(body_JSON, "values");
+                if (body_value == NULL)
+                {
+                    FPS_ERROR_PRINT("fims message body values key not found \n");
+                }
+                else
+                {
+                    cJSON_ArrayForEach(iterator, body_value) 
+                    {
+                        std::cout << " Variable name ["<<iterator->string<<"]\n";
+                        dbVal * db = sys_cfg.getDbVal(iterator->string);
+                        if (db != NULL)
+                        {
+                            std::cout<< "Found variable type "<<db->type<<"\n";
+                        }
+                        else
+                        {
+                            std::cout<< "Error no variable found \n";
+                        }
+                        
+                        //cjvalue = cJSON_GetObjectItem(iterator, "value");
+                        //addValueToCommand(&sys_cfg, commands, cjoffset, cjvalue);
+                        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
+                    }// parse all the values
 
-            if (ok) 
+                }
+                ok = false;
+            }
+            if(ok)
             {
                 body_value = cJSON_GetObjectItem(body_JSON, "value");
                 if (body_value == NULL)
@@ -243,7 +273,6 @@ int main(int argc, char* argv[])
 
             if(ok) 
             {
-
                 itype = cJSON_GetObjectItem(body_JSON, "type");
                 if (itype == NULL)
                 {

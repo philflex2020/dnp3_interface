@@ -438,7 +438,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
 
         sys->addDbVar(id->valuestring, Type_Analog, offset->valueint);
 
-        sys->analogNames[offset->valueint] = strdup(id->valuestring);   // assume this tkes a copy
+        sys->analogNames[offset->valueint] = strdup(id->valuestring);   // assume this takes a copy
         sys->analogIdx[strdup(id->valuestring)] = offset->valueint;   
         std::cout << " config adding Analog name ["<<id->valuestring<<"] id [" << offset->valueint << "]\n";
     }
