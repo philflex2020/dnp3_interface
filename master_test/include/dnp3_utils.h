@@ -211,8 +211,8 @@ typedef struct sdata
 #define Crob 4
 
 typedef struct DbVar_t {
-    string name;
-    string site;
+    std::string name;
+    std::string site;
     int type;
     int offset;
     int site_offset;
