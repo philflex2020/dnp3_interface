@@ -299,7 +299,7 @@ typedef struct sysCfg_t {
 
         }
 
-        void addDbVar(string name, int type, int offset) 
+        void addDbVar(std::string name, int type, int offset) 
         {
             DbVar* db = new DbVar(name,type,offset);
             dbMaps[name] = db;
