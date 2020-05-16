@@ -397,7 +397,7 @@ typedef struct sysCfg_t {
         std::map<int,char*>analogNames;
         std::map<char*,int>binaryIdx;
         std::map<char*,int>analogIdx;
-        std::map<string , DbVar *> dbMap;
+        std::map<std::string , DbVar *> dbMap;
 
         fims* p_fims;
         cJSON* cj;
