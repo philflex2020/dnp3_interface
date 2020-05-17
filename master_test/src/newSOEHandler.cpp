@@ -31,7 +31,7 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         DbVar* db = static_cfgdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
         {
-            const char* vname = db->name;// static_cfgdb->getBinary(pair.index);
+            const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
             if(strcmp(vname,"Unknown")!= 0) 
             {
                 cJSON_AddNumberToObject(cj, vname, pair.value.value);
@@ -86,7 +86,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         DbVar* db = static_cfgdb->getDbVarId(Type_Analog, pair.index);
         if (db != NULL) 
         {
-            const char* vname = db->name;// static_cfgdb->getBinary(pair.index);
+            const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
             if(strcmp(vname,"Unknown")!= 0) 
             {
                 cJSON_AddNumberToObject(cj, vname, pair.value.value);
