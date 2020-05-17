@@ -246,7 +246,7 @@ int main(int argc, char* argv[])
             if(ok)
             {
                 uri = msg->pfrags[2];
-                if (strncmp(uri,sys_cfg.id,strlen(sys+fg.id)) != 0)
+                if (strncmp(uri,sys_cfg.id,strlen(sys_cfg.id)) != 0)
                 {
                     FPS_ERROR_PRINT("fims message frag 2 [%s] not for this outstation [%s] \n", uri, sys_cfg.id);
                     ok = false;
