@@ -205,14 +205,64 @@ typedef struct sdata
 //    },
 //TODO use real types
 // test code for dnp3_utils
+enum {
+    AnIn16,
+    AnIn32,
+    AnF32,
+    Type_Crob,
+    Type_Analog,
+    Type_Binary,
+    NumTypes
+};
 
-#define AnIn16 1
-#define AnIn32 2
-#define AnF32 3
-#define Crob 4
-#define Type_Analog 5
-#define Type_Binary 6
+// #define AnIn16 1
+// #define AnIn32 2
+// #define AnF32 3
+// #define Crob 4
+// #define Type_Analog 5
+// #define Type_Binary 6
 
+const char *iotypToStr (int t)
+{
+    swtch (t) {
+        case AnIn16:
+            return "AnOPInt16";
+        case AnIn32:
+            return "AnOPInt32";
+        case AnF32:
+            return "AnOPF32";
+        case Type_Crob:
+            return "CROB";
+        case Type_Analog:
+            return "analog";
+        case Type_Binary:
+            return "binary";
+        default:
+            return "Unknwn";
+    }
+    return "Unknwn";
+}
+
+int iotypToId (const char* t)
+{
+    swtch (t) {
+        case "AnOPInt16":
+            return AnIn16;  
+        case "AnOPInt32":
+            return AnIn32;  
+        case "AnOPF32":
+            return AnF32;
+        case "CROB":
+            return Type_Crob;
+        case "analog":
+            return Type_Analog;  
+        case "binary":
+            return Type_Binary;    
+        default:
+            return -1;
+    }
+    return -1;
+}
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
     DbVar_t(std::string _name, int _type, int _offset):name(_name), site(""),type(_type), offset(_offset),site_offset(-1){
