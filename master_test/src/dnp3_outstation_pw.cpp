@@ -255,7 +255,8 @@ int main(int argc, char* argv[])
             // 
             // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
             // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
-            // set /dnp3/outstation '{"values":{"name1":value1, "name2":value2}}'           if (ok) 
+            // set /dnp3/outstation '{"values":{"name1":value1, "name2":value2}}'
+            if (ok) 
             {
                 body_value = cJSON_GetObjectItem(body_JSON, "values");
                 if (body_value == NULL)
