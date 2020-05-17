@@ -250,6 +250,7 @@ typedef struct DbVar_t {
 
 } DbVar;
 
+int addVarToCj(cJSON* cj, DbVar*db);
 typedef struct sysCfg_t {
 
     sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
@@ -356,7 +357,7 @@ typedef struct sysCfg_t {
                 db->valuedouble = dval;
             } 
         };
-        
+
         void setDbVar(const char *name, int ival)
         {
             DbVar* db = getDbVar(name);
@@ -433,13 +434,24 @@ typedef struct sysCfg_t {
         // }
         void showDbMap()
         {
-            std::cout << " Clear Analog maps\n" ;
+            std::cout << " show DbVars\n" ;
             std::map<std::string, DbVar *>::iterator it_vars;
             for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
             {
                 DbVar* db = it_vars->second;
                 std::cout << it_vars->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
             }
+        }
+        void addVarsToCj(cJSON* cj)
+        {
+            std::map<std::string, DbVar *>::iterator it_vars;
+            for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
+            {
+                DbVar* db = it_vars->second;
+                addVarToCj(cj, db);
+                std::cout << it_vars->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+            }
+
         }
 
         // void clearBinaries()
@@ -536,5 +548,6 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t
 const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname);
 const char *iotypToStr (int t);
 int iotypToId (const char* t);
+int addVarToCj(cJSON* cj, DbVar*db);
 
 #endif

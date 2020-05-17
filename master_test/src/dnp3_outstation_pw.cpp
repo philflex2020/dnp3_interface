@@ -274,13 +274,36 @@ int main(int argc, char* argv[])
             {
                 if(strcmp(msg->method,"get") == 0)
                 {
+                    cJSON* cj = cJSON_CreateObject();
+
                     if (msg->nfrags > 3)
                     {
                         uri = msg->pfrags[3];
                         FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
-                    }
+                        DbVar *db = sys_cfg.getDbVar(uri);
+                        if (db != NULL)
+                        {
+                            std::cout<< "Found variable type "<<db->type<<"\n";
+                            addVarToCj(cj, db);
 
-                    FPS_ERROR_PRINT("fims method [%s] not yet supported\n", msg->method);
+                        }
+                    }
+                    else
+                    {
+                        sys_cfg.addVarsToCJ(cj);
+                    }
+                    
+                    const char* reply = cJSON_PrintUnformatted(cj);
+                    cJSON_Delete(cj);
+                    if(msg->replyto != NULL)
+                        p_fims->Send("set", msg->replyto, NULL, reply);
+                    free(reply);
+
+                    //don't know when we would receive a get
+                    //if(msg->replyto != NULL)
+                    //    p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
+                    //return true;
+                    //FPS_ERROR_PRINT("fims method [%s] not yet supported\n", msg->method);
                 }
 
                 if(strcmp(msg->method,"set") == 0)
@@ -332,6 +355,7 @@ int main(int argc, char* argv[])
                     ok = false;
                 }
             }
+
             if (body_JSON != NULL)
             {
                cJSON_Delete(body_JSON);

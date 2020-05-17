@@ -323,6 +323,29 @@ cJSON *parseJSONConfig(char *file_path)
 //        "local_address": 1,
 //		"remote_address": 10
 //    },const char *iotypToStr (int t)
+int addVarToCj(cJSON* cj, DbVar*db)
+{
+    int rc = 0;
+    
+    if (db->type == Type_Analog)
+        cJSON_AddNumberToObject(cj, db->name, db->valuedouble);
+    else if (db->type == Type_Binary)
+        cJSON_AddNumberToObject(cj, db->name, db->valueint);
+    else if (db->type == Type_Crob)
+        cJSON_AddNumberToObject(cj, db->name, db->crob);
+    else if (db->type == AnIn16)
+        cJSON_AddNumberToObject(cj, db->name, db->anInt16);
+    else if (db->type == AnIn32)
+        cJSON_AddNumberToObject(cj, db->name, db->anInt32);
+    else if (db->type == AnF32)
+        cJSON_AddNumberToObject(cj, db->name, db->anF32);
+    else
+    {
+        rc = -1;
+        std::cout << __FUNCTION__<<" unknown db_->type :" << db->type <<"\n";
+    } 
+    return rc;
+}
 
 const char *iotypToStr (int t)
 {
