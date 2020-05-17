@@ -290,7 +290,7 @@ int main(int argc, char* argv[])
                     }
                     else
                     {
-                        sys_cfg.addVarsToCJ(cj);
+                        sys_cfg.addVarsToCj(cj);
                     }
                     
                     const char* reply = cJSON_PrintUnformatted(cj);
