@@ -367,10 +367,43 @@ bool parse_system(cJSON* cji, sysCfg* sys)
     if(ret) ret = getCJstr(cj,"protocol",        sys->protocol      ,true);
     if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address    ,true);
     if(ret) ret = getCJstr(cj,"pub",             sys->pub           ,false);
-    //if(ret) ret = getCJstr(cj,"name",sys->name);
-
     // config file has "objects" with children groups "binary" and "analog"
     return ret;
+}
+
+int  parse_object(sysCfg* sys, cJSON* objs, int idx)
+{
+    cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr (idx));
+    if (JSON_list == NULL)
+    {
+        FPS_ERROR_PRINT("[%s] objects missing from config! \n",iotypToStr (idx));
+        return -1;
+    }
+
+    uint num = cJSON_GetArraySize(JSON_list);
+    sys->numObjs[idx] = 0; 
+    for(uint i = 0; i < num; i++)
+    {
+        cJSON* obj = cJSON_GetArrayItem(JSON_list, i);
+        if(obj == NULL)
+        {
+            FPS_ERROR_PRINT("Invalid or NULL binary at %d\n", i);
+            continue;
+        }
+        id = cJSON_GetObjectItem(obj, "id");
+        offset = cJSON_GetObjectItem(obj, "offset");
+        if (id == NULL || offset == NULL || id->valuestring == NULL)
+        {
+            FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
+            continue;
+        }
+        sys->addDbVar(id->valuestring, idx, offset->valueint);
+        //sys->binaryNames[offset->valueint] = strdup(id->valuestring);   // assume this takes a copy
+        //sys->binaryIdx[strdup(id->valuestring)] = offset->valueint;   
+        std::cout << " config adding name ["<<id->valuestring<<"] id [" << offset->valueint << "]\n";
+        sys->numObjs[idx]++; 
+    }
+    return  sys->numObjs[idx]; 
 }
 
 bool parse_variables(cJSON* object, sysCfg* sys)
@@ -384,64 +417,8 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         FPS_ERROR_PRINT("objects object is missing from file! \n");
         return false;
     }
-
-    cJSON *JSON_binary = cJSON_GetObjectItem(JSON_objects, "binary");
-    if (JSON_binary == NULL)
-    {
-        FPS_ERROR_PRINT("binary object is missing from file! \n");
-        return false;
-    }
-    sys->numBinaries = cJSON_GetArraySize(JSON_binary);
-    for(uint i = 0; i < sys->numBinaries; i++)
-    {
-        cJSON* binary_object = cJSON_GetArrayItem(JSON_binary, i);
-        if(binary_object == NULL)
-        {
-            FPS_ERROR_PRINT("Invalid or NULL binary #%d\n", i);
-            return false;
-        }
-        id = cJSON_GetObjectItem(binary_object, "id");
-        offset = cJSON_GetObjectItem(binary_object, "offset");
-        if (id == NULL || offset == NULL || id->valuestring == NULL)
-        {
-            FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
-            return false;
-        }
-        sys->addDbVar(id->valuestring, Type_Binary, offset->valueint);
-        sys->binaryNames[offset->valueint] = strdup(id->valuestring);   // assume this takes a copy
-        sys->binaryIdx[strdup(id->valuestring)] = offset->valueint;   
-        std::cout << " config adding Binary name ["<<id->valuestring<<"] id [" << offset->valueint << "]\n";
-    }
-
-    cJSON *JSON_analog = cJSON_GetObjectItem(JSON_objects, "analog");
-    if (JSON_analog == NULL)
-    {
-        FPS_ERROR_PRINT("analog object is missing from file! \n");
-        return false;
-    }
-    sys->numAnalogs = cJSON_GetArraySize(JSON_analog);
-    for(uint i = 0; i < sys->numAnalogs; i++)
-    {
-        cJSON* analog_object = cJSON_GetArrayItem(JSON_analog, i);
-        if(analog_object == NULL)
-        {
-            FPS_ERROR_PRINT("Invalid or NULL analog #%d\n", i);
-            return false;
-        }
-        id = cJSON_GetObjectItem(analog_object, "id");
-        offset = cJSON_GetObjectItem(analog_object, "offset");
-        if (id == NULL || offset == NULL || id->valuestring == NULL)
-        {
-            FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
-            return false;
-        }
-
-        sys->addDbVar(id->valuestring, Type_Analog, offset->valueint);
-
-        sys->analogNames[offset->valueint] = strdup(id->valuestring);   // assume this takes a copy
-        sys->analogIdx[strdup(id->valuestring)] = offset->valueint;   
-        std::cout << " config adding Analog name ["<<id->valuestring<<"] id [" << offset->valueint << "]\n";
-    }
+    for (int idx = 0; idx<NumTypes; idx++)
+        parse_object(sys, cJSON_objects, idx);
     return true;
 }
 

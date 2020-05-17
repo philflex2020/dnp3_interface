@@ -259,6 +259,7 @@ int iotypToId (const char* t)
         return Type_Binary;
     return -1;
 }
+// local copy of all inputs and outputs
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
     DbVar_t(std::string _name, int _type, int _offset):name(_name), site(""),type(_type), offset(_offset),site_offset(-1){
@@ -274,7 +275,7 @@ typedef struct DbVar_t {
     int type;
     int offset;
     int site_offset;
-    // todo outputs
+    // outputs
     double valuedouble;
     int valueint;
     uint16_t anInt16;
@@ -494,14 +495,18 @@ typedef struct sysCfg_t {
         int port;
         int local_address;
         int remote_address;
-        uint numAnalogs;
-        uint numBinaries;
+        //uint numAnalogs;
+        //uint numBinaries;
         // really need an array of these 
-        std::map<int,char*>binaryNames;
-        std::map<int,char*>analogNames;
-        std::map<char*,int>binaryIdx;
-        std::map<char*,int>analogIdx;
-        std::map<std::string , DbVar *> dbMap;
+        //std::map<int,char*>binaryNames;
+        //std::map<int,char*>analogNames;
+        //std::map<char*,int>binaryIdx;
+        //std::map<char*,int>analogIdx;
+        
+        // new way of doing this
+        std::map<std::string, DbVar*> dbMap;
+        std::map<int, DbVar *> dbMapIx[NumTypes];
+        int numObjs[NumTypes];
 
         fims* p_fims;
         cJSON* cj;
