@@ -51,7 +51,8 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
     std::cout <<" after changes svariation :"<<(int) config.analog[0].svariation<<"\n";
     std::cout <<" after changes evariation :"<<(int) config.analog[0].evariation<<"\n";
-    std::cout <<" *****************analog[0] value :"<<(int) config.analog[0].value<<"\n";
+    //  you cant do this.... sigh
+    //std::cout <<" *****************analog[0] value :"<<config.dbConfig.analog[0].value<<"\n";
 
     //config.analog[1].clazz = PointClass::Class2;
     //config.analog[1].svariation = StaticAnalogVariation::Group30Var5;
@@ -266,10 +267,13 @@ int main(int argc, char* argv[])
                             if (db->type == Type_Analog)
                             {
                                 builder.Update(Analog(iterator->valuedouble), db->offset);
+                                db->valuedouble = iterator->valuedouble;
                             }
                             else if (db->type == Type_Binary)
                             {
                                 builder.Update(Binary(iterator->valueint), db->offset);
+                                db->valueint = iterator->valueint;
+
                             }
                             else 
                             {

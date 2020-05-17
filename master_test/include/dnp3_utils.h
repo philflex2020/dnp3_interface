@@ -213,14 +213,30 @@ typedef struct sdata
 #define Type_Analog 5
 #define Type_Binary 6
 
-
+//see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
-    DbVar_t(std::string _name, int _type, int _offset):name(_name), site(""),type(_type), offset(_offset),site_offset(-1){};
+    DbVar_t(std::string _name, int _type, int _offset):name(_name), site(""),type(_type), offset(_offset),site_offset(-1){
+        valuedouble = 0.0;
+        valueint = 0;
+        anInt16 = 0;
+        anInt32 = 0;
+        anF32 = 0.0;
+        crob = 0;
+    };
     std::string name;
     std::string site;
     int type;
     int offset;
     int site_offset;
+    // todo outputs
+    double valuedouble;
+    int valueint;
+    uint16_t anInt16;
+    uint32_t anInt32;
+    double anF32;
+    uint8_t crob;
+    
+
 } DbVar;
 
 typedef struct sysCfg_t {
