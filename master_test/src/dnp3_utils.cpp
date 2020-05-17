@@ -326,19 +326,19 @@ cJSON *parseJSONConfig(char *file_path)
 int addVarToCj(cJSON* cj, DbVar*db)
 {
     int rc = 0;
-    
+    const char * dname = db->name.c_str();
     if (db->type == Type_Analog)
-        cJSON_AddNumberToObject(cj, db->name, db->valuedouble);
+        cJSON_AddNumberToObject(cj, dname, db->valuedouble);
     else if (db->type == Type_Binary)
-        cJSON_AddNumberToObject(cj, db->name, db->valueint);
+        cJSON_AddNumberToObject(cj, dname, db->valueint);
     else if (db->type == Type_Crob)
-        cJSON_AddNumberToObject(cj, db->name, db->crob);
+        cJSON_AddNumberToObject(cj, dname, db->crob);
     else if (db->type == AnIn16)
-        cJSON_AddNumberToObject(cj, db->name, db->anInt16);
+        cJSON_AddNumberToObject(cj, dname, db->anInt16);
     else if (db->type == AnIn32)
-        cJSON_AddNumberToObject(cj, db->name, db->anInt32);
+        cJSON_AddNumberToObject(cj, dname, db->anInt32);
     else if (db->type == AnF32)
-        cJSON_AddNumberToObject(cj, db->name, db->anF32);
+        cJSON_AddNumberToObject(cj, dname, db->anF32);
     else
     {
         rc = -1;
