@@ -306,8 +306,8 @@ typedef struct sysCfg_t {
         if(id)free(id);
         if(ip_address)free(ip_address);
         if (pub) free(pub);
-        clearBinaries();
-        clearAnalogs();
+        //clearBinaries();
+        //clearAnalogs();
         if (cj) cJSON_Delete(cj);
         //todo fims
         }
@@ -384,55 +384,55 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
-        int  getBinaryIdx(char *name) 
-        {
-            int idx = -1;
-            std::map<char*,int>::iterator it_ids;
-            for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
-            {
-                std::cout << __FUNCTION__<< it_ids->first << " => " << it_ids->second << '\n';
-                if(strcmp(it_ids->first, name)== 0 )
-                {
-                   idx = it_ids->second;
-                   break;
-                }
-            }
+        // int  getBinaryIdx(char *name) 
+        // {
+        //     int idx = -1;
+        //     std::map<char*,int>::iterator it_ids;
+        //     for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
+        //     {
+        //         std::cout << __FUNCTION__<< it_ids->first << " => " << it_ids->second << '\n';
+        //         if(strcmp(it_ids->first, name)== 0 )
+        //         {
+        //            idx = it_ids->second;
+        //            break;
+        //         }
+        //     }
 
-            std::cout << " Seeking Binary ["<< name <<"] found [" << idx << "]\n";
-            return idx;
-        }
+        //     std::cout << " Seeking Binary ["<< name <<"] found [" << idx << "]\n";
+        //     return idx;
+        // }
 
-        void showBinaries()
-        {
-            std::cout << " Binary maps\n" ;
-            std::map<int , char*>::iterator it_names;
-            for (it_names = binaryNames.begin() ; it_names != binaryNames.end();++it_names)
-            {
-                std::cout << it_names->first << " => " << it_names->second << '\n';
-            }
-            std::map<char*,int>::iterator it_ids;
-            for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
-            {
-                std::cout << it_ids->first << " => " << it_ids->second << '\n';
-            }
+        // void showBinaries()
+        // {
+        //     std::cout << " Binary maps\n" ;
+        //     std::map<int , char*>::iterator it_names;
+        //     for (it_names = binaryNames.begin() ; it_names != binaryNames.end();++it_names)
+        //     {
+        //         std::cout << it_names->first << " => " << it_names->second << '\n';
+        //     }
+        //     std::map<char*,int>::iterator it_ids;
+        //     for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
+        //     {
+        //         std::cout << it_ids->first << " => " << it_ids->second << '\n';
+        //     }
 
-        }
+        // }
         
-        void showAnalogs()
-        {
-            std::cout << " Clear Analog maps\n" ;
-            std::map<int, char *>::iterator it_names;
-            for (it_names = analogNames.begin() ; it_names != analogNames.end();++it_names)
-            {
-                std::cout << it_names->first << " => " << it_names->second << '\n';
-            }
-            std::map<char*,int>::iterator it_ids;
-            for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
-            {
-                std::cout << it_ids->first << " => " << it_ids->second << '\n';
-            }
+        // void showAnalogs()
+        // {
+        //     std::cout << " Clear Analog maps\n" ;
+        //     std::map<int, char *>::iterator it_names;
+        //     for (it_names = analogNames.begin() ; it_names != analogNames.end();++it_names)
+        //     {
+        //         std::cout << it_names->first << " => " << it_names->second << '\n';
+        //     }
+        //     std::map<char*,int>::iterator it_ids;
+        //     for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
+        //     {
+        //         std::cout << it_ids->first << " => " << it_ids->second << '\n';
+        //     }
 
-        }
+        // }
         void showDbMap()
         {
             std::cout << " Clear Analog maps\n" ;
@@ -444,47 +444,47 @@ typedef struct sysCfg_t {
             }
         }
 
-        void clearBinaries()
-        {
-            std::cout << " Binary maps\n" ;
-            std::map<int , char*>::iterator it_names;
-            for (it_names = binaryNames.begin() ; it_names != binaryNames.end();++it_names)
-            {
-                std::cout << it_names->first << " => " << it_names->second << '\n';
-                free(it_names->second);
-            }
-            binaryNames.clear();
+        // void clearBinaries()
+        // {
+        //     std::cout << " Binary maps\n" ;
+        //     std::map<int , char*>::iterator it_names;
+        //     for (it_names = binaryNames.begin() ; it_names != binaryNames.end();++it_names)
+        //     {
+        //         std::cout << it_names->first << " => " << it_names->second << '\n';
+        //         free(it_names->second);
+        //     }
+        //     binaryNames.clear();
 
-            std::map<char*,int>::iterator it_ids;
-            for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
-            {
-                std::cout << it_ids->first << " => " << it_ids->second << '\n';
-                free(it_ids->first);
-            }
-            binaryIdx.clear();
+        //     std::map<char*,int>::iterator it_ids;
+        //     for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
+        //     {
+        //         std::cout << it_ids->first << " => " << it_ids->second << '\n';
+        //         free(it_ids->first);
+        //     }
+        //     binaryIdx.clear();
 
-        }
+        // }
 
-        void clearAnalogs()
-        {
-            std::cout << " Analog maps\n" ;
-            std::map<int, char *>::iterator it_names;
-            for (it_names = analogNames.begin() ; it_names != analogNames.end();++it_names)
-            {
-                std::cout << it_names->first << " => " << it_names->second << '\n';
-                free(it_names->second); 
-            }
-            analogNames.clear();
+        // void clearAnalogs()
+        // {
+        //     std::cout << " Analog maps\n" ;
+        //     std::map<int, char *>::iterator it_names;
+        //     for (it_names = analogNames.begin() ; it_names != analogNames.end();++it_names)
+        //     {
+        //         std::cout << it_names->first << " => " << it_names->second << '\n';
+        //         free(it_names->second); 
+        //     }
+        //     analogNames.clear();
 
-            std::map<char*,int>::iterator it_ids;
-            for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
-            {
-                std::cout << it_ids->first << " => " << it_ids->second << '\n';
-                free(it_ids->first);
-            }
-            analogIdx.clear();
+        //     std::map<char*,int>::iterator it_ids;
+        //     for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
+        //     {
+        //         std::cout << it_ids->first << " => " << it_ids->second << '\n';
+        //         free(it_ids->first);
+        //     }
+        //     analogIdx.clear();
 
-        }
+        // }
 
         char* name;
         char* protocol;
