@@ -291,8 +291,8 @@ typedef struct sysCfg_t {
     sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
     {
         cj = NULL;
-        numBinaries  = 0;
-        numAnalogs  = 0;
+        //numBinaries  = 0;
+        //numAnalogs  = 0;
         cjloaded = 0;
         pub = strdup("MyPubs");
 
@@ -502,7 +502,7 @@ typedef struct sysCfg_t {
         //std::map<int,char*>analogNames;
         //std::map<char*,int>binaryIdx;
         //std::map<char*,int>analogIdx;
-        
+
         // new way of doing this
         std::map<std::string, DbVar*> dbMap;
         std::map<int, DbVar *> dbMapIx[NumTypes];
