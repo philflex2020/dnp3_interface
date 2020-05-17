@@ -256,135 +256,81 @@ int main(int argc, char* argv[])
             // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
             // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
             // set /dnp3/outstation '{"values":{"name1":value1, "name2":value2}}'
-            if(strcmp(msg->method,"set") != 0)
+            ok = false;
+            if(strcmp(msg->method,"set") == 0)
             {
+                ok = true;
+            }
+            if(strcmp(msg->method,"get") == 0)
+            {
+                ok = true;
+            }
+            if(ok == false)
                 FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
-                ok = false;
             }
 
             if (ok)
             {
-                body_value = cJSON_GetObjectItem(body_JSON, "values");
-                if (body_value == NULL)
+                if(strcmp(msg->method,"get") == 0)
                 {
-                    FPS_ERROR_PRINT("fims message body values key not found \n");
-                }
-                else
-                {
-                    cJSON_ArrayForEach(iterator, body_value) 
+                    if (msg->nfrags > 3)
                     {
-                        std::cout << " Variable name ["<<iterator->string<<"]\n";
-                        DbVar * db = sys_cfg.getDbVar(iterator->string);
-                        if (db != NULL)
-                        {
-                            std::cout<< "Found variable type "<<db->type<<"\n";
-                            if (db->type == Type_Analog)
-                            {
-                                builder.Update(Analog(iterator->valuedouble), db->offset);
-                                db->valuedouble = iterator->valuedouble;
-                            }
-                            else if (db->type == Type_Binary)
-                            {
-                                builder.Update(Binary(iterator->valueint), db->offset);
-                                db->valueint = iterator->valueint;
+                        uri = msg->pfrags[3];
+                        FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri,);
+                    }
 
-                            }
-                            else 
-                            {
-                                std::cout << " Variable ["<<iterator->string<<"] type not correct ["<<db->type<<"]\n";
-                            }
-
-                        }
-                        else
-                        {
-                            std::cout<< "Error no variable found \n";
-                        }
-                        
-                        //cjvalue = cJSON_GetObjectItem(iterator, "value");
-                        //addValueToCommand(&sys_cfg, commands, cjoffset, cjvalue);
-                        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
-                    }// parse all the values
-
-                    outstation->Apply(builder.Build());
-
+                    FPS_ERROR_PRINT("fims method [%s] not yet supported\n", msg->method);
                 }
-                ok = false;
-            }
-            if(ok)
-            {
-                body_value = cJSON_GetObjectItem(body_JSON, "value");
-                if (body_value == NULL)
+
+                if(strcmp(msg->method,"set") == 0)
                 {
-                    FPS_ERROR_PRINT("fims message body value key not found \n");
+                    body_value = cJSON_GetObjectItem(body_JSON, "values");
+                    if (body_value == NULL)
+                    {
+                        FPS_ERROR_PRINT("fims message body values key not found \n");
+                    }
+                    else
+                    {
+                        cJSON_ArrayForEach(iterator, body_value) 
+                        {
+                            std::cout << " Variable name ["<<iterator->string<<"]\n";
+                            DbVar * db = sys_cfg.getDbVar(iterator->string);
+                            if (db != NULL)
+                            {
+                                std::cout<< "Found variable type "<<db->type<<"\n";
+                                if (db->type == Type_Analog)
+                                {
+                                    builder.Update(Analog(iterator->valuedouble), db->offset);
+                                    db->valuedouble = iterator->valuedouble;
+                                }
+                                else if (db->type == Type_Binary)
+                                {
+                                    builder.Update(Binary(iterator->valueint), db->offset);
+                                    db->valueint = iterator->valueint;
+
+                                }
+                                else 
+                                {
+                                    std::cout << " Variable ["<<iterator->string<<"] type not correct ["<<db->type<<"]\n";
+                                }
+
+                            }
+                            else
+                            {
+                                std::cout<< "Error no variable found \n";
+                            }
+                            
+                            //cjvalue = cJSON_GetObjectItem(iterator, "value");
+                            //addValueToCommand(&sys_cfg, commands, cjoffset, cjvalue);
+                            //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
+                        }// parse all the values
+
+                        outstation->Apply(builder.Build());
+
+                    }
                     ok = false;
                 }
             }
-            
-            if (ok) 
-            {
-
-                offset = cJSON_GetObjectItem(body_JSON, "offset");
-                if (offset == NULL)
-                {
-                    FPS_ERROR_PRINT("fims message body offset key not found \n");
-                    ok = false;
-                }
-            }
-
-            if(ok) 
-            {
-                itype = cJSON_GetObjectItem(body_JSON, "type");
-                if (itype == NULL)
-                {
-                    FPS_ERROR_PRINT("fims message body type key not found \n");
-                    ok = false;
-                }
-            }
-
-            if(ok) 
-            {
-                int dboffset = offset->valueint;
-                
-                if(strcmp(itype->valuestring,"analogs")==0)
-                {
-                    if(offset->type == cJSON_String) 
-                    {
-                        dboffset = sys_cfg.getDbIdx(Type_Analog, offset->valuestring);
-                        if(dboffset < 0)
-                        {
-                            FPS_ERROR_PRINT("fims message body analog variable [%s] not in config\n", offset->valuestring);
-                            //sys_cfg.showAnalogs();
-                        }
-                    }
-                    if(dboffset >= 0) 
-                    {
-                        printf("analog offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
-                        builder.Update(Analog(body_value->valuedouble), dboffset);
-                        sys_cfg.setDbVar(offset->valuestring, body_value->valuedouble);
-                    }
-                }
-                else  // default to binary
-                {
-                    if(offset->type == cJSON_String) 
-                    {
-                        dboffset = sys_cfg.getDbIdx(Type_Binary, offset->valuestring);
-                        if(dboffset < 0)
-                        {
-                            FPS_ERROR_PRINT("fims message body binary variable [%s] not in config\n", offset->valuestring);
-                            //sys_cfg.showBinaries();
-                        }
-                    }
-                    if (dboffset >= 0)
-                    {
-                        printf("binry offset %d bodyval: %d\n", dboffset, body_value->valueint);
-                        builder.Update(Binary(body_value->valueint != 0), dboffset);
-                        sys_cfg.setDbVar(offset->valuestring, body_value->valueint);
-                    }
-                }
-                // TODO multiple variables in one message
-                outstation->Apply(builder.Build());
-            }
-
             if (body_JSON != NULL)
             {
                cJSON_Delete(body_JSON);
