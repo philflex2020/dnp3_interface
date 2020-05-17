@@ -373,6 +373,9 @@ bool parse_system(cJSON* cji, sysCfg* sys)
 
 int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 {
+
+    cJSON *id, *offset;
+
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr (idx));
     if (JSON_list == NULL)
     {
@@ -408,7 +411,6 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 
 bool parse_variables(cJSON* object, sysCfg* sys)
 {
-    cJSON *id, *offset;
 
     // config file has "objects" with children groups "binary" and "analog"
     cJSON *JSON_objects = cJSON_GetObjectItem(object, "objects");
