@@ -266,6 +266,7 @@ int main(int argc, char* argv[])
                 ok = true;
             }
             if(ok == false)
+            {
                 FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
             }
 
