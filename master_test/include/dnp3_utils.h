@@ -222,43 +222,7 @@ enum {
 // #define Type_Analog 5
 // #define Type_Binary 6
 
-const char *iotypToStr (int t)
-{
-    switch (t) {
-        case AnIn16:
-            return "AnOPInt16";
-        case AnIn32:
-            return "AnOPInt32";
-        case AnF32:
-            return "AnOPF32";
-        case Type_Crob:
-            return "CROB";
-        case Type_Analog:
-            return "analog";
-        case Type_Binary:
-            return "binary";
-        default:
-            return "Unknwn";
-    }
-    return "Unknwn";
-}
 
-int iotypToId (const char* t)
-{
-    if (strcmp(t,"AnOPInt16")==0)
-        return AnIn16;
-    if (strcmp(t,"AnOPInt32")==0)
-        return AnIn32;
-    if (strcmp(t,"AnOPF32")==0)
-        return AnF32;
-    if (strcmp(t,"CROB")==0)
-        return Type_Crob;
-    if (strcmp(t,"analog")==0)
-        return Type_Analog;
-    if (strcmp(t,"binary")==0)
-        return Type_Binary;
-    return -1;
-}
 // local copy of all inputs and outputs
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
@@ -383,7 +347,7 @@ typedef struct sysCfg_t {
             }
             return NULL;
         };
-        
+
         DbVar* getDbVarId(int dbtype, int idx)
         {
             if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
@@ -544,5 +508,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt32& 
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputFloat32& cmd, uint16_t index);
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t index);
 const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname);
+const char *iotypToStr (int t);
+int iotypToId (const char* t);
 
 #endif
