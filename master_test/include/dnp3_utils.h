@@ -245,22 +245,18 @@ const char *iotypToStr (int t)
 
 int iotypToId (const char* t)
 {
-    switch (t) {
-        case "AnOPInt16":
-            return AnIn16;  
-        case "AnOPInt32":
-            return AnIn32;  
-        case "AnOPF32":
-            return AnF32;
-        case "CROB":
-            return Type_Crob;
-        case "analog":
-            return Type_Analog;  
-        case "binary":
-            return Type_Binary;    
-        default:
-            return -1;
-    }
+    if (strcmp(t,"AnOPInt16")==0)
+        return AnIn16;
+    if (strcmp(t,"AnOPInt32")==0)
+        return AnIn32;
+    if (strcmp(t,"AnOPF32")==0)
+        return AnF32;
+    if (strcmp(t,"CROB")==0)
+        return Type_Crob;
+    if (strcmp(t,"analog")==0)
+        return Type_Analog;
+    if (strcmp(t,"binary")==0)
+        return Type_Binary;
     return -1;
 }
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
