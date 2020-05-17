@@ -318,7 +318,7 @@ void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSO
     {
         commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
     }
-    else if (pt->type == Crob) 
+    else if (pt->type == Type_Crob) 
     {
         commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),pt->offset)});
     }
