@@ -238,13 +238,20 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
                 ok = false;
             }
-            uri = msg->pfrags[2];
-            if (strcmp(uri,sys_cfg.id) != 0)
+            if (msg->nfrags < 3)
             {
-                FPS_ERROR_PRINT("fims message frag 2 [%s] not for this outstation [%s] \n", uri, sys_cfg.id);
+                FPS_ERROR_PRINT("fims message not enough pfrags outstation [%s] \n", sys_cfg.id);
                 ok = false;
             }
-
+            if(ok)
+            {
+                uri = msg->pfrags[2];
+                if (strcmp(uri,sys_cfg.id) != 0)
+                {
+                    FPS_ERROR_PRINT("fims message frag 2 [%s] not for this outstation [%s] \n", uri, sys_cfg.id);
+                    ok = false;
+                }
+            }
             // 
             // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
             // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
