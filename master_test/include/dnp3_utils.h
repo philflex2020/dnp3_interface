@@ -383,7 +383,15 @@ typedef struct sysCfg_t {
             }
             return NULL;
         };
-
+        
+        DbVar* getDbVarId(int dbtype, int idx)
+        {
+            if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
+            {   
+                return dbMapIx[dbtype][idx];
+            }
+            return NULL;
+        };
         // int  getBinaryIdx(char *name) 
         // {
         //     int idx = -1;

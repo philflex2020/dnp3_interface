@@ -28,10 +28,14 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
             cj = cJSON_CreateObject();
             first = 0;
         }
-        char* vname = static_cfgdb->getBinary(pair.index);
-        if(strcmp(vname,"Unknown")!= 0) 
+        DbVar* db = static_cfgdb->getDbVarId(Type_binary, pair.index) 
+        if (db != NULL) 
         {
-            cJSON_AddNumberToObject(cj, vname, pair.value.value);
+            const char* vname = db->name;// static_cfgdb->getBinary(pair.index);
+            if(strcmp(vname,"Unknown")!= 0) 
+            {
+                cJSON_AddNumberToObject(cj, vname, pair.value.value);
+            }
         }
     };
     values.ForeachItem(print);
@@ -79,11 +83,14 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
             cj = cJSON_CreateObject();
             first = 0;
         }
-        char* vname = static_cfgdb->getAnalog(pair.index);
-        // skip undefined indexes
-        if(strcmp(vname,"Unknown")!= 0) 
+        DbVar* db = static_cfgdb->getDbVarId(Type_analog, pair.index) 
+        if (db != NULL) 
         {
-            cJSON_AddNumberToObject(cj, vname, pair.value.value);
+            const char* vname = db->name;// static_cfgdb->getBinary(pair.index);
+            if(strcmp(vname,"Unknown")!= 0) 
+            {
+                cJSON_AddNumberToObject(cj, vname, pair.value.value);
+            }
         }
     };
     values.ForeachItem(print);
