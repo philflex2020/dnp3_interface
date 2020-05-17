@@ -224,7 +224,7 @@ enum {
 
 const char *iotypToStr (int t)
 {
-    swtch (t) {
+    switch (t) {
         case AnIn16:
             return "AnOPInt16";
         case AnIn32:
@@ -245,7 +245,7 @@ const char *iotypToStr (int t)
 
 int iotypToId (const char* t)
 {
-    swtch (t) {
+    switch (t) {
         case "AnOPInt16":
             return AnIn16;  
         case "AnOPInt32":
