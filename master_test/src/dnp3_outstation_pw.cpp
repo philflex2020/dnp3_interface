@@ -228,8 +228,8 @@ int main(int argc, char* argv[])
         // }
             bool ok = true;
             cJSON* body_JSON = cJSON_Parse(msg->body);
-            cJSON* itype = NULL;
-            cJSON* offset = NULL;
+            //cJSON* itype = NULL;
+            //cJSON* offset = NULL;
             cJSON* body_value = NULL;
             cJSON* iterator = NULL;
             
