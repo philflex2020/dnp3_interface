@@ -1,0 +1,115 @@
+{
+    "fileInfo": {
+        "sourceFileName": "dnp3_outstation.xlsx",
+        "sourceFileCreated": "2020-01-02T21:16:38.000Z",
+        "sourceFileLastModified": "2020-05-05T16:29:07.000Z",
+        "sourceFileCreatedBy": "Microsoft Office User",
+        "sourceFileLastModifiedBy": "pmiller",
+        "outputFileName": "dnp3_outstation.json",
+        "outputFileType": "server",
+        "outputFileCreated": "2020-05-05T16:29:13.344Z"
+    },
+    "system": {
+        "name":"dnp3_test_master",
+        "protocol": "DNP3",
+        "version": 1,
+        "id": "dnp3_outstation",
+        "ip_address": "192.168.1.148",
+        "ip_address2": "127.0.0.1",
+        "port": 20001,
+        "local_address": 1,
+		"remote_address": 10
+    },
+    "objects": {
+        "binary": [
+            {
+                "id": "voltage_regulator",
+                "offset": 0,
+                "name": "Voltage Regulator"
+            },
+            {
+                "id": "power_system_stabilizer",
+                "offset": 1,
+                "name": "Power System Stabilizer"
+            },
+            {
+                "id": "gen_resource_switches",
+                "offset": 2,
+                "name": "Generation Resource Switches"
+            },
+            {
+                "id": "gen_resource_breaker_status",
+                "offset": 3,
+                "name": "Generation Resource Breaker Status"
+            },
+            {
+                "id": "gen_virtual_breaker_status",
+                "offset": 4,
+                "name": "Gen Virtual Breaker Status"
+            }
+        ],
+        "analog": [
+            {
+                "id": "line_flows_mw",
+                "offset": 0,
+                "name": "Line flows MW",
+                "unit": "MW",
+                "signed": true
+            },
+            {
+                "id": "line_flows_mv",
+                "offset": 1,
+                "name": "Line flows MV",
+                "unit": "MW",
+                "signed": true
+            },
+            {
+                "id": "voltage",
+                "offset": 2,
+                "name": "Voltage",
+                "unit": "kV",
+                "signed": true
+            },
+            {
+                "id": "plant_auxiliary_load_mw",
+                "offset": 3,
+                "name": "Plant Auxiliary Load MW",
+                "unit": "MW",
+                "signed": true
+            },
+            {
+                "id": "plant_auxiliary_load_mv",
+                "offset": 4,
+                "name": "Plant Auxiliary Load MV",
+                "unit": "MV",
+                "signed": true
+            }
+        ],
+        "AnOPInt32": [
+            {
+                "id": "testOP_32_1",
+                "offset": 0,
+                "name": "testOP_32_1",
+                "unit": "MW",
+                "signed": true
+            },
+            {
+                "id": "testOP_32_22",
+                "offset": 2,
+                "name": "testOP_32_22",
+                "unit": "MW",
+                "signed": true
+            }
+        ],
+        "AnOPInt16": [
+            {
+                "id": "testOP_16_8",
+                "offset": 8,
+                "name": "testOP_16_8",
+                "unit": "MW",
+                "signed": true
+            }
+       ]
+
+    }
+}
