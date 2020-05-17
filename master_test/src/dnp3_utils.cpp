@@ -420,7 +420,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         return false;
     }
     for (int idx = 0; idx<NumTypes; idx++)
-        parse_object(sys, cJSON_objects, idx);
+        parse_object(sys, JSON_objects, idx);
     return true;
 }
 
