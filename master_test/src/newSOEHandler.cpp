@@ -28,7 +28,7 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
             cj = cJSON_CreateObject();
             first = 0;
         }
-        DbVar* db = static_cfgdb->getDbVarId(Type_binary, pair.index) 
+        DbVar* db = static_cfgdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
         {
             const char* vname = db->name;// static_cfgdb->getBinary(pair.index);
@@ -83,7 +83,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
             cj = cJSON_CreateObject();
             first = 0;
         }
-        DbVar* db = static_cfgdb->getDbVarId(Type_analog, pair.index) 
+        DbVar* db = static_cfgdb->getDbVarId(Type_Analog, pair.index);
         if (db != NULL) 
         {
             const char* vname = db->name;// static_cfgdb->getBinary(pair.index);
