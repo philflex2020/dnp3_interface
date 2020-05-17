@@ -348,6 +348,32 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
+        void setDbVar(const char *name, double dval)
+        {
+            DbVar* db = getDbVar(name);
+            if ((db != NULL) && (db->type == Type_Analog))
+            {
+                db->valuedouble = dval;
+            } 
+        };
+        
+        void setDbVar(const char *name, int ival)
+        {
+            DbVar* db = getDbVar(name);
+            if ((db != NULL) && (db->type == Type_Binary))
+            {
+                db->valueint = ival;
+            } 
+        };
+
+        int getDbIdx(int dbtype, const char * name)
+        {
+            DbVar* db = getDbVar(name);
+            if ((db != NULL) && (db->type == dbtype))
+                return db->offset;
+            return -1;
+        }
+
         DbVar* getDbVarId(int dbtype, int idx)
         {
             if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())

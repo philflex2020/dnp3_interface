@@ -177,8 +177,8 @@ int main(int argc, char* argv[])
         cJSON_Delete(config);
         return 1;
     }
-    sys_cfg.showBinaries();
-    sys_cfg.showAnalogs();
+    //sys_cfg.showBinaries();
+    //sys_cfg.showAnalogs();
     sys_cfg.showDbMap();
 
     sys_cfg.p_fims = p_fims;
@@ -335,36 +335,36 @@ int main(int argc, char* argv[])
                 {
                     if(offset->type == cJSON_String) 
                     {
-                        dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
+                        dboffset = sys_cfg.getDbIdx(Type_Analog, offset->valuestring);
                         if(dboffset < 0)
                         {
                             FPS_ERROR_PRINT("fims message body analog variable [%s] not in config\n", offset->valuestring);
-                            sys_cfg.showAnalogs();
-
+                            //sys_cfg.showAnalogs();
                         }
                     }
                     if(dboffset >= 0) 
                     {
                         printf("analog offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
                         builder.Update(Analog(body_value->valuedouble), dboffset);
+                        sys_cfg.setDbVar(offset->valuestring, body_value->valuedouble);
                     }
                 }
                 else  // default to binary
                 {
                     if(offset->type == cJSON_String) 
                     {
-                        dboffset = sys_cfg.getBinaryIdx(offset->valuestring);
+                        dboffset = sys_cfg.getDbIdx(Type_Binary, offset->valuestring);
                         if(dboffset < 0)
                         {
                             FPS_ERROR_PRINT("fims message body binary variable [%s] not in config\n", offset->valuestring);
-                            sys_cfg.showBinaries();
-
+                            //sys_cfg.showBinaries();
                         }
                     }
                     if (dboffset >= 0)
                     {
-                        printf("binry offset %d bodyval: %f\n", dboffset, body_value->valuedouble);
+                        printf("binry offset %d bodyval: %d\n", dboffset, body_value->valueint);
                         builder.Update(Binary(body_value->valueint != 0), dboffset);
+                        sys_cfg.setDbVar(offset->valuestring, body_value->valueint);
                     }
                 }
                 // TODO multiple variables in one message
