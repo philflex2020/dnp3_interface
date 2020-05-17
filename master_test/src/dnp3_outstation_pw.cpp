@@ -277,7 +277,7 @@ int main(int argc, char* argv[])
                     if (msg->nfrags > 3)
                     {
                         uri = msg->pfrags[3];
-                        FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri,);
+                        FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
                     }
 
                     FPS_ERROR_PRINT("fims method [%s] not yet supported\n", msg->method);
