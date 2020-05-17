@@ -313,54 +313,54 @@ typedef struct sysCfg_t {
         }
 
     public:
-        char* getAnalog(int idx) 
-        {
-            if(analogNames.find(idx) != analogNames.end())
-            {
-                return analogNames[idx];
-            }
-            else
-            {
-                return (char *) "Unknown";
-            }
-        }
-        char* getBinary(int idx) 
-        {
-            if(binaryNames.find(idx) != binaryNames.end())
-            {
-                return binaryNames[idx];
-            }
-            else
-            {
-                return (char *) "Unknown";
-            }
-        }
+        // char* getAnalog(int idx) 
+        // {
+        //     if(analogNames.find(idx) != analogNames.end())
+        //     {
+        //         return analogNames[idx];
+        //     }
+        //     else
+        //     {
+        //         return (char *) "Unknown";
+        //     }
+        // }
+        // char* getBinary(int idx) 
+        // {
+        //     if(binaryNames.find(idx) != binaryNames.end())
+        //     {
+        //         return binaryNames[idx];
+        //     }
+        //     else
+        //     {
+        //         return (char *) "Unknown";
+        //     }
+        // }
 
-        int  getAnalogIdx(char *name) 
-        {
-            int idx = -1;
-            std::map<char*,int>::iterator it_ids;
-            for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
-            {
-                std::cout << __FUNCTION__ << it_ids->first << " => " << it_ids->second << '\n';
-                if(strcmp(it_ids->first, name)== 0 )
-                {
-                   idx = it_ids->second;
-                   break;
-                }
-            }
-            //if(analogIdx.find(name) != analogIdx.end())
-            //{
-            //    idx = analogIdx[name];
-            //}
-            //else
-            //{
-            //    idx =  -1;
-            //}
-            std::cout << " Seeking Analog ["<< name <<"] found [" << idx <<"]\n";
-            return idx;
+        // int  getAnalogIdx(char *name) 
+        // {
+        //     int idx = -1;
+        //     std::map<char*,int>::iterator it_ids;
+        //     for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
+        //     {
+        //         std::cout << __FUNCTION__ << it_ids->first << " => " << it_ids->second << '\n';
+        //         if(strcmp(it_ids->first, name)== 0 )
+        //         {
+        //            idx = it_ids->second;
+        //            break;
+        //         }
+        //     }
+        //     //if(analogIdx.find(name) != analogIdx.end())
+        //     //{
+        //     //    idx = analogIdx[name];
+        //     //}
+        //     //else
+        //     //{
+        //     //    idx =  -1;
+        //     //}
+        //     std::cout << " Seeking Analog ["<< name <<"] found [" << idx <<"]\n";
+        //     return idx;
 
-        }
+        // }
 
         void addDbVar(std::string name, int type, int offset) 
         {
