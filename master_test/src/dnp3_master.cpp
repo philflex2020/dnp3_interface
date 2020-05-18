@@ -588,7 +588,7 @@ int main(int argc, char *argv[])
                                 int dboffset = cjoffset->valueint;
                                 printf(" *****Adding Direct AnOPInt16 value %d offset %d \n", cjvalue->valueint, dboffset);
                                 commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), dboffset)});
-                                sys_cfg.setDbVarIx(anIn16, dboffset, cjvalue->valueint)
+                                sys_cfg.setDbVarIx(AnIn16, dboffset, cjvalue->valueint)
                             }
                         }
                     }
@@ -603,7 +603,7 @@ int main(int argc, char *argv[])
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
                                 commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),dboffset)});
-                                sys_cfg.setDbVarIx(anIn32, dboffset, cjvalue->valueint)
+                                sys_cfg.setDbVarIx(AnIn32, dboffset, cjvalue->valueint)
                             }
                         }
                     }
@@ -618,7 +618,7 @@ int main(int argc, char *argv[])
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
                                 commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),dboffset)});
-                                sys_cfg.setDbVarIx(anF32, dboffset, cjvalue->valuedouble)
+                                sys_cfg.setDbVarIx(AnF32, dboffset, cjvalue->valuedouble)
 
                             }
                         }
