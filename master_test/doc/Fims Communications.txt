@@ -159,6 +159,11 @@ Add the following to the config file
 
 Then ( after the outstation restart) we get this
 
-[vagrant@localhost master_test]$ /usr/local/bin/fims/fims_send -m get -r /me -u "/components/outstation/dnp3_outstation"   
-{"gen_resource_breaker_status":0,"gen_resource_switches":0,"gen_virtual_breaker_status":0,"line_flows_mv":0,"line_flows_mw":0,"plant_auxiliary_load_mv":0,"plant_auxiliary_load_mw":0,"power_system_stabilizer":0,"testOP_16_8":0,"testOP_32_1":0,"testOP_32_22":0,"voltage":0,"voltage_regulator":0}
+
+/usr/local/bin/fims/fims_send -m get -r /me -u "/components/outstation/dnp3_outstation"     
+{
+    "gen_resource_breaker_status":0,"gen_resource_switches":0,"gen_virtual_breaker_status":0,"line_flows_mv":0,
+    "line_flows_mw":0,"plant_auxiliary_load_mv":0,"plant_auxiliary_load_mw":0,"power_system_stabilizer":0,
+    "testOP_16_8":1234,"testOP_32_1":52,"testOP_32_22":5,"voltage":0,"voltage_regulator":0
+}
 

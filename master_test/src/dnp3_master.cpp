@@ -310,10 +310,15 @@ void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSO
     if (pt->type == AnIn16) 
     {
         commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),pt->offset)});
+        pt->valueint = cjvalue->valueint;
+        pt->anInt16 = cjvalue->valueint;
+        
     }
     else if (pt->type == AnIn32) 
     {
         commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
+        pt->valueint = cjvalue->valueint;
+        pt->anInt32 = cjvalue->valueint;
     }
     else if (pt->type == AnF32) 
     {
@@ -583,6 +588,7 @@ int main(int argc, char *argv[])
                                 int dboffset = cjoffset->valueint;
                                 printf(" *****Adding Direct AnOPInt16 value %d offset %d \n", cjvalue->valueint, dboffset);
                                 commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), dboffset)});
+                                sys_cfg.setDbVarIx(anIn16, dboffset, cjvalue->valueint)
                             }
                         }
                     }
@@ -597,6 +603,7 @@ int main(int argc, char *argv[])
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
                                 commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),dboffset)});
+                                sys_cfg.setDbVarIx(anIn32, dboffset, cjvalue->valueint)
                             }
                         }
                     }
@@ -610,7 +617,9 @@ int main(int argc, char *argv[])
                                 cjoffset = cJSON_GetObjectItem(iterator, "offset");
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
-                                commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valueint),dboffset)});
+                                commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),dboffset)});
+                                sys_cfg.setDbVarIx(anF32, dboffset, cjvalue->valuedouble)
+
                             }
                         }
                     }
