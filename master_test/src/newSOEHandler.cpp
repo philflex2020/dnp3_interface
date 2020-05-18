@@ -94,7 +94,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         if (db != NULL) 
         {
             const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
-            printf("***************************** analog idx %d name [%s] value [%d]\n", pair.index, db->name.c_str(), pair.value.value);
+            printf("***************************** analog idx %d name [%s] value [%f]\n", pair.index, db->name.c_str(), pair.value.value);
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
