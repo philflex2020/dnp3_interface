@@ -581,7 +581,8 @@ int main(int argc, char *argv[])
                                 cjoffset = cJSON_GetObjectItem(iterator, "offset");
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
-                                commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
+                                printf(" *****Adding Direct AnOPInt16 value %d offset %d \n");
+                                commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), dboffset)});
                             }
                         }
                     }
@@ -634,7 +635,8 @@ int main(int argc, char *argv[])
                             }
                         }
                     }
-                    printf(" *****Running Outputs \n");
+
+                    printf(" *****Running Diret Outputs \n");
                     master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                 }
             }
