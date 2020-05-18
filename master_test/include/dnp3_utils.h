@@ -318,9 +318,46 @@ typedef struct sysCfg_t {
             {
                 db->valueint = ival;
             } 
+            if ((db != NULL) && (db->type == AnIn32))
+            {
+                db->valueint = ival;
+                db->AnInt32 = ival;
+
+            } 
+            if ((db != NULL) && (db->type == AnIn16))
+            {
+                db->valueint = ival;
+                db->AnInt16 = ival;
+
+            } 
+
         };
 
-        int getDbIdx(int dbtype, const char * name)
+        void setDbVarIx(int dbtype, int idx, int ival)
+        {
+            if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
+            {   
+                DbVar* db = dbMapIx[dbtype][idx];
+            }
+            if ((db != NULL) && (db->type == Type_Binary))
+            {
+                db->valueint = ival;
+            } 
+            if ((db != NULL) && (db->type == AnIn32))
+            {
+                db->valueint = ival;
+                db->AnInt32 = ival;
+
+            } 
+            if ((db != NULL) && (db->type == AnIn16))
+            {
+                db->valueint = ival;
+                db->AnInt16 = ival;
+
+            } 
+        };
+
+        int getDbIdx(int dbtype, const char* name)
         {
             DbVar* db = getDbVar(name);
             if ((db != NULL) && (db->type == dbtype))

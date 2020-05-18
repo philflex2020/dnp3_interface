@@ -941,7 +941,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOut
     //const char* indexName = cfgindextoName(AOP16,index);
     //cJSON_AddStringToObject(cji,"offset",indexName);
     cJSON_AddNumberToObject(cji,"value", cmd.value);
-    cJSON_AddItemToArray(cjf,cji);
+    cJSON_AddItemToArray(cjf, cji);
     cfgdb->cjloaded++;
 }
 
