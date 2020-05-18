@@ -329,23 +329,25 @@ typedef struct sysCfg_t {
 
         void addDbVar(std::string name, int type, int offset) 
         {
+            DbVar* db = NULL;
+
             if (dbMap.find(name) == dbMap.end()){
-                DbVar* db = new DbVar(name, type, offset);
+                db = new DbVar(name, type, offset);
                 dbMap[name] = db;
+                if(dbMapIx[type].find(idx) == dbMapIx[type].end())
+                {   
+                    dbMapIx[type][idx] = db;
+                }
+                else
+                {
+                    std::cout << __FUNCTION__<< " name [" << name <<"] already defined  in dbMapIx\n";                
+                }
             }
             else
             {
                 std::cout << __FUNCTION__<< " name [" << name <<"] already defined  in dbMap\n";                
             }
-            
-            if(dbMapIx[type].find(idx) == dbMapIx[type].end())
-            {   
-                dbMapIx[type][idx] = db;
-            }
-            else
-            {
-                std::cout << __FUNCTION__<< " name [" << name <<"] already defined  in dbMapIx\n";                
-            }
+
 
         }
 
