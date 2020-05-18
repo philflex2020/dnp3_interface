@@ -133,7 +133,7 @@ CommandStatus newCommandHandler::Operate(const AnalogOutputInt16& command, uint1
     << " opType:" <<(int)opType
     << std::endl;
     cfgdbAddtoRecord(cfgdb,"AnOPInt16",command, index);
-    cfgdb->setDbVarIx(AnIn16, index, command.value)
+    cfgdb->setDbVarIx(AnIn16, index, command.value);
 
     return CommandStatus::SUCCESS; 
 }
@@ -158,7 +158,7 @@ CommandStatus newCommandHandler::Operate(const AnalogOutputInt32& command, uint1
     << " opType:" <<(int)opType
     << std::endl;
     cfgdbAddtoRecord(cfgdb,"AnOPInt32", command, index);
-    cfgdb->setDbVarIx(AnIn32, index, command.value)
+    cfgdb->setDbVarIx(AnIn32, index, command.value);
 
     return CommandStatus::SUCCESS; 
 }
