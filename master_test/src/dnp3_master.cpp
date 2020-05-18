@@ -265,7 +265,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                                      newMasterApplication::Create(ourDB), // master application instance this manages the collection of al the pub elements 
                                      stackConfig // stack configuration
                                     );
-                                    
+
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
     // TODO we need a way to demand this via FIMS
@@ -536,17 +536,30 @@ int main(int argc, char *argv[])
             {
                 if(strcmp(msg->method,"set") == 0)
                 {
-
-                    itypeA16 = cJSON_GetObjectItem(body_JSON, "AnalogInt16");
-                    itypeA32 = cJSON_GetObjectItem(body_JSON, "AnalogInt32");
-                    itypeF32 = cJSON_GetObjectItem(body_JSON, "AnalogFloat32");
+    //    case AnIn16:
+    //         return "AnOPInt16";
+    //     case AnIn32:
+    //         return "AnOPInt32";
+    //     case AnF32:
+    //         return "AnOPF32";
+    //     case Type_Crob:
+    //         return "CROB";
+    //     case Type_Analog:
+    //         return "analog";
+    //     case Type_Binary:
+    //         return "binary";
+    //     default:
+    //         return "Unknwn";
+                    itypeA16 = cJSON_GetObjectItem(body_JSON, "AnOPInt16");
+                    itypeA32 = cJSON_GetObjectItem(body_JSON, "AnOPInt32");
+                    itypeF32 = cJSON_GetObjectItem(body_JSON, "AnOPF32");
                     itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
                     itypeValues = cJSON_GetObjectItem(body_JSON, "values");
 
                     CommandSet commands;
                     if (itypeValues != NULL)
                     {
-                        // decode A16
+                        // decode values
                         if (cJSON_IsArray(itypeValues)) 
                         {
                             cJSON_ArrayForEach(iterator, itypeValues) 

@@ -363,9 +363,9 @@ const char *iotypToStr (int t)
         case Type_Binary:
             return "binary";
         default:
-            return "Unknwn";
+            return "Unknown";
     }
-    return "Unknwn";
+    return "Unknown";
 }
 int iotypToId (const char* t)
 {
