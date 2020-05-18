@@ -267,7 +267,7 @@ typedef struct sysCfg_t {
         //clearAnalogs();
         if (cj) cJSON_Delete(cj);
         //todo fims
-        }
+    }
 
     public:
         
@@ -332,6 +332,19 @@ typedef struct sysCfg_t {
             } 
 
         };
+        
+        void setDbVarIx(int dbtype, int idx, float fval)
+        {
+            DbVar* db = NULL;
+            if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
+            {   
+                db = dbMapIx[dbtype][idx];
+            }
+            if ((db != NULL) && (db->type == AnF32))
+            {
+                db->valuedouble = ival;
+            } 
+        };
 
         void setDbVarIx(int dbtype, int idx, int ival)
         {
@@ -355,7 +368,6 @@ typedef struct sysCfg_t {
             {
                 db->valueint = ival;
                 db->anInt16 = ival;
-
             } 
         };
 

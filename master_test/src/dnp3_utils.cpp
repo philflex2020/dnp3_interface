@@ -469,7 +469,6 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 
 bool parse_variables(cJSON* object, sysCfg* sys)
 {
-
     // config file has "objects" with children groups "binary" and "analog"
     cJSON *JSON_objects = cJSON_GetObjectItem(object, "objects");
     if (JSON_objects == NULL)

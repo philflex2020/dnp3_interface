@@ -109,7 +109,7 @@ CommandStatus newCommandHandler::Operate(const ControlRelayOutputBlock& command,
     {
         cfgdbAddtoRecord(cfgdb,"CROB_DIRECT","LATCH_OFF", index);
     }
-
+    //cfgdb->setDbVarIx(Type_Crob, index, command.functioncode);
     return ret;
 }
 
@@ -159,7 +159,6 @@ CommandStatus newCommandHandler::Operate(const AnalogOutputInt32& command, uint1
     << std::endl;
     cfgdbAddtoRecord(cfgdb,"AnOPInt32", command, index);
     cfgdb->setDbVarIx(AnIn32, index, command.value);
-
     return CommandStatus::SUCCESS; 
 }
 
@@ -171,7 +170,6 @@ CommandStatus newCommandHandler::Select(const AnalogOutputFloat32& command, uint
     //<< " io:" <<(int)io
     << std::endl;
     cfgdbAddtoRecord(cfgdb,"AnalogFloat32_SELECT",command, index);
-
     return CommandStatus::SUCCESS; 
 }
 
@@ -184,6 +182,7 @@ CommandStatus newCommandHandler::Operate(const AnalogOutputFloat32& command, uin
     << " opType:" <<(int)opType
     << std::endl;
     cfgdbAddtoRecord(cfgdb,"AnOPF32",command, index);
+    cfgdb->setDbVarIx(AnF32, index, command.value);    
     return CommandStatus::SUCCESS; 
 }
 

@@ -291,7 +291,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     //
     return master;
 }
-
+// TODO CROB
 void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON *cjvalue)
 {
     // cjoffset myst be a name
@@ -323,10 +323,19 @@ void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSO
     else if (pt->type == AnF32) 
     {
         commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
+        pt->anF32 = cjvalue->valuedouble;
     }
     else if (pt->type == Type_Crob) 
     {
+        //set { "myCROB":"somevalue", ...}
+        // decode somevalue to ControlCode
+        //TODO get corret ControlCode from the cJSON input
+        //ControlCode ccfoo = ControlCodeFromString(cjvalue->valuestring)
+        //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromString(cjvalue->valuestring)),pt->offset)});
+
         commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),pt->offset)});
+        //pt->crob = (uint8_t)cjvalue->valueint;
+        // this may be a string like LATCH_ON in which case more work is needed to decode
     }
    
 }
@@ -538,7 +547,7 @@ int main(int argc, char *argv[])
 
                 if (msg->nfrags > 3)
                 {
-                    uri = msg->pfrags[3];
+                    uri = msg->pfrags[3];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
                     FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
                     DbVar *db = sys_cfg.getDbVar(uri);
                     if (db != NULL)
@@ -587,7 +596,7 @@ int main(int argc, char *argv[])
                     CommandSet commands;
                     if (itypeValues != NULL)
                     {
-                        // decode values
+                        // decode values must be in an array //TODO single option
                         if (cJSON_IsArray(itypeValues)) 
                         {
                             cJSON_ArrayForEach(iterator, itypeValues) 
