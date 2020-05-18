@@ -335,9 +335,18 @@ typedef struct sysCfg_t {
             }
             else
             {
-                std::cout << __FUNCTION__<< " name [" << name <<"] allready defined  in dbMap\n";                
+                std::cout << __FUNCTION__<< " name [" << name <<"] already defined  in dbMap\n";                
             }
             
+            if(dbMapIx[type].find(idx) == dbMapIx[type].end())
+            {   
+                dbMapIx[type][idx] = db;
+            }
+            else
+            {
+                std::cout << __FUNCTION__<< " name [" << name <<"] already defined  in dbMapIx\n";                
+            }
+
         }
 
         DbVar* getDbVar(const char *name)
