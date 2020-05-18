@@ -334,9 +334,9 @@ typedef struct sysCfg_t {
             if (dbMap.find(name) == dbMap.end()){
                 db = new DbVar(name, type, offset);
                 dbMap[name] = db;
-                if(dbMapIx[type].find(idx) == dbMapIx[type].end())
+                if(dbMapIx[type].find(offset) == dbMapIx[type].end())
                 {   
-                    dbMapIx[type][idx] = db;
+                    dbMapIx[type][offset] = db;
                 }
                 else
                 {
