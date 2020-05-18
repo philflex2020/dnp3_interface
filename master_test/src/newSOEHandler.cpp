@@ -32,11 +32,18 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         if (db != NULL) 
         {
             const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
+            printf("***************************** bin idx %d name [%s] value [%d]\n", pair.index, db->name.c_str(), pair.value.value);
+
             if(strcmp(vname,"Unknown")!= 0) 
             {
                 cJSON_AddNumberToObject(cj, vname, pair.value.value);
             }
         }
+        else
+        {
+            printf("***************************** bin idx %d No Var Found\n", pair.index);
+        }
+        
     };
     values.ForeachItem(print);
     first = 1;
@@ -53,7 +60,7 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         }
         cj = NULL;        
     }
-    //std::cout << "******************************An: <<" <<std::endl;
+    std::cout << "******************************Bin: <<" <<std::endl;
 }
 
 void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<DoubleBitBinary>>& values) {
@@ -87,10 +94,16 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         if (db != NULL) 
         {
             const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
+            printf("***************************** analog idx %d name [%s] value [%d]\n", pair.index, db->name.c_str(), pair.value.value);
+
             if(strcmp(vname,"Unknown")!= 0) 
             {
                 cJSON_AddNumberToObject(cj, vname, pair.value.value);
             }
+        }
+        else
+        {
+            printf("***************************** analog idx %d No Var Found\n", pair.index);
         }
     };
     values.ForeachItem(print);
@@ -109,7 +122,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         }
         cj = NULL;        
     }
-    //std::cout << "******************************An: <<" <<std::endl;
+    std::cout << "******************************An: <<" <<std::endl;
     return;
 }
 void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Counter>>& values) {
