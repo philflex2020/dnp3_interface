@@ -1,0 +1,312 @@
+Data Types
+
+BTW take a look at this stuff https://sunspec.org/wp-content/uploads/2015/06/
+These are the currently defined data types, each Outstation->Master Data type can have one or more variants
+
+"AnOPInt16"  Master->Outstation AnalogOutput int16_t 
+"AnOPInt32"  Master->Outstation AnalogOutput int32_t 
+"AnOPF32"    Master->Outstation AnalogOutput float (32 bit) 
+"CROB"       Master->Outstation ControlRelayOutputBlock 
+"analog"     Outstation->Master analog int32_t(1) double (5) 
+"binary"     Outstation->Master binary bool 
+
+
+Example of current use in config file 
+
+    "objects": {
+        "binary": [
+            {
+                "id": "voltage_regulator",
+                "offset": 0,
+                "name": "Voltage Regulator"
+            },
+    ...
+        ],
+        "analog": [
+            {
+                "id": "line_flows_mw",
+                "offset": 0,
+                "name": "Line flows MW",
+                "unit": "MW",
+                "signed": true
+            },
+        ]
+    }
+
+Possible Modbus Definition (use same config file)
+    "registers":
+	[
+		{
+			"type": "Input Registers",
+			"starting_offset": 30010,  << used to set DNP3 index base 
+			"number_of_registers": 35,
+			"map":
+			[
+				{
+					"id": "ac_voltage_l1",
+					"offset": 30010,   << DNP offset = base-offset
+					"scale": 10,       << may need to use this in pubs etc 
+                    "Dnp3Type":"analog:v5"  << Not sure of this yet 
+				},
+
+            Bitfields, we'll need to add this to the local db copy   
+			"type": "Input Registers",
+			"starting_offset": 30110,
+			"number_of_registers": 4,
+			"map":
+			[
+				{
+					"id": "alarms",
+					"offset": 30110,
+					"size": 4,
+					"bit_field": true,
+					"bit_strings":
+					[
+						"DC Voltage High Over Voltage Slow",
+						"DC Voltage Low Over Voltage",
+						"DC Voltage Low Under Voltage",
+						"AC Voltage Over Voltage",
+						"AC Voltage Under Voltage",
+
+            Thise look like outputs, probably AnOPInt32            
+            "type": "Holding Registers",
+            "starting_offset": 50028,
+            "number_of_registers": 2,
+            "map":
+            [
+                {
+                    "id": "frequency_setpoint",
+                    "offset": 50028
+                },
+                {
+                    "id": "power_factor_setpoint",
+                    "offset": 50029
+                }
+            ]
+        },
+
+
+flags :: bitfield that stores type specific quality information
+/**
+  Quality field bitmask for binary values
+*/
+ONLINE         = 0x1 /// set when the data is "good", meaning that rest of the system can trust the value
+RESTART        = 0x2 /// the quality all points get before we have established communication (or populated) the point
+COMM_LOST      = 0x4 /// set if communication has been lost with the source of the data (after establishing contact)
+REMOTE_FORCED  = 0x8/// set if the value is being forced to a "fake" value somewhere in the system
+LOCAL_FORCED   = 0x10/// set if the value is being forced to a "fake" value on the original device
+CHATTER_FILTER = 0x20/// set if the value is oscillating very quickly and some events are being suppressed
+RESERVED       = 0x40 /// reserved bit
+STATE          = 0x80 /// state bit
+
+Group1Var0  Binary Input any variation
+Group1Var1  Binary Input packed format
+Group1Var2  Binary Input with flags
+
+/**
+  Quality field bitmask for analog values
+*/
+ONLINE         = 0x1  /// set when the data is "good", meaning that rest of the system can trust the value
+RESTART        = 0x2  /// the quality all points get before we have established communication (or populated) the point
+COMM_LOST      = 0x4  /// set if communication has been lost with the source of the data (after establishing contact)
+REMOTE_FORCED  = 0x8  /// set if the value is being forced to a "fake" value somewhere in the system
+LOCAL_FORCED   = 0x10 /// set if the value is being forced to a "fake" value on the original device
+OVERRANGE      = 0x20 /// set if a hardware input etc. is out of range and we are using a place holder value
+REFERENCE_ERR  = 0x40 /// set if calibration or reference voltage has been lost meaning readings are questionable
+RESERVED       = 0x80 /// reserved bit
+ 
+
+Group30Var1  Analog Input 32 bit with flags
+Group30Var2  Analog Input 16 bit with flags
+Group30Var3  Analog Input 32 bit without flags
+Group30Var4  Analog Input 16 bit without flags
+Group30Var5  Analog Input single precision with flags (Float)
+Group30Var5  Analog Input double precision with flags (Double)
+
+Typical low level stuff
+    Type(value,flag), index
+    Update(Analog(42, 0x01), 5);
+    Update(Analog(41, 0x01), 6);
+    
+// group30var2 = analog as 16 bit integer
+    SendToOutstation "C2 01 1E 02 00 05 06"  // read 30 var 2, [05 : 06]
+    return     "C2 81 80 00 1E 02 00 05 06 01 2A 00 01 29 00"
+
+
+Major data types defined in the Outstation:
+
+    Binary
+    DoubleBitBinary
+    Analog
+    Counter 
+    FrozenCounter 
+    BinaryOutputStatus 
+    AnalogOutputStatus 
+    OctetString
+    TimeAndInterval
+
+Static data is recovered in a "normal" class 0 scan 
+auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Seconds(20));
+// do a Class 1 exception poll every 5 seconds
+auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(60));
+
+Events are recovered in an eventscan
+Not sure how to do that yet...
+
+
+Types not yet used ( but our customers may be using them)
+
+Group2Var0 // Binary Input Event - Any Variation
+Group2Var1 // Binary Input Event - Without Time
+Group2Var2 // Binary Input Event - With Absolute Time
+Group2Var3 // Binary Input Event - With Relative Time
+
+
+Double bit binaries have 4 states 
+Group3Var0 // Double-bit Binary Input - Any Variation
+Group3Var1 // Double-bit Binary Input - Packed Format
+Group3Var2 // Double-bit Binary Input - With Flags
+
+Group4Var0 // Double-bit Binary Input Event - Any Variation
+Group4Var1 // Double-bit Binary Input Event - Without Time
+Group4Var2 // Double-bit Binary Input Event - With Absolute Time
+Group4Var3  // Double-bit Binary Input Event - With Relative Time
+
+Group10Var0 // Binary Output - Any Variation
+Group10Var1 // Binary Output - Packed Format
+Group10Var2 // Binary Output - Output Status With Flags
+
+Group11Var0 // Binary Output Event - Any Variation
+Group11Var1 // Binary Output Event - Output Status Without Time
+Group11Var2 // Binary Output Event - Output Status With Time
+
+
+Group12Var0 // Binary Command - Any Variation
+Group12Var1 // Binary Command - CROB
+
+Group13Var1 // Binary Command Event - Without Time
+Group13Var2 // Binary Command Event - With Time
+
+// TODO counter flags
+Group20Var0 // Counter - Any Variation
+Group20Var1 // Counter - 32-bit With Flag
+Group20Var2 // Counter - 16-bit With Flag
+Group20Var5 // Counter - 32-bit Without Flag
+Group20Var6 // Counter - 16-bit Without Flag
+
+
+Group21Var0 // Frozen Counter - Any Variation
+Group21Var1 // Frozen Counter - 32-bit With Flag
+Group21Var2 // Frozen Counter - 16-bit With Flag
+Group21Var5 // Frozen Counter - 32-bit With Flag and Time
+Group21Var6 // Frozen Counter - 16-bit With Flag and Time
+Group21Var9 // Frozen Counter - 32-bit Without Flag
+Group21Var10 // Frozen Counter - 16-bit Without Flag
+
+
+Group22Var0 // Counter Event - Any Variation
+Group22Var1 // Counter Event - 32-bit With Flag
+Group22Var2 // Counter Event - 16-bit With Flag
+Group22Var5 // Counter Event - 32-bit With Flag and Time
+Group22Var6 // Counter Event - 16-bit With Flag and Time
+
+Group23Var0 // Frozen Counter Event - Any Variation
+Group23Var1 // Frozen Counter Event - 32-bit With Flag
+Group23Var2 // Frozen Counter Event - 16-bit With Flag
+Group23Var5 // Frozen Counter Event - 32-bit With Flag and Time
+Group23Var6 // Frozen Counter Event - 16-bit With Flag and Time
+Group23Var9 // Frozen Counter Event - 32-bit Without Flag
+Group23Var10 // Frozen Counter Event - 16-bit Without Flag
+
+Group32Var1  Analog Input Event - 32 bit with flags
+Group32Var2  Analog Input Event - 16 bit with flags
+Group32Var3  Analog Input Event - 32 bit without flags
+Group32Var4  Analog Input Event - 16 bit without flags
+Group32Var5  Analog Input Event - single precision with flags (Float)
+Group32Var5  Analog Input Event - double precision with flags (Double)
+
+
+Group40Var0 // Analog Output Status - Any Variation
+Group40Var1// Analog Output Status - 32-bit With Flag
+Group40Var2 // Analog Output Status - 16-bit With Flag
+Group40Var3 // Analog Output Status - Single-precision With Flag
+Group40Var4 // Analog Output Status - Double-precision With Flag
+
+Group41Var0 // Analog Output - Any Variation
+Group41Var1 // Analog Output - 32-bit With Flag
+Group41Var2 // Analog Output - 16-bit With Flag
+Group41Var3 // Analog Output - Single-precision
+Group41Var4 // Analog Output - Double-precision
+
+Group42Var0 // Analog Output Event - Any Variation
+Group42Var1 // Analog Output Event - 32-bit With Flag
+Group42Var2 // Analog Output Event - 16-bit With Flag
+Group42Var3 // Analog Output Event - Single-precision
+Group42Var4 // Analog Output Event - Double-precision
+
+
+Group43Var1 // Analog Command Event - 32-bit
+Group43Var2 // Analog Command Event - 16-bit
+Group43Var3 // Analog Command Event - 32-bit With Time
+Group43Var4 // Analog Command Event - 16-bit With Time
+Group43Var5 // Analog Command Event - Single-precision
+Group43Var6 // Analog Command Event - Double-precision
+Group43Var7 // Analog Command Event - Single-precision With Time
+Group43Var8 // Analog Command Event - Double-precision With Time
+
+Group50Var1// Time and Date - Absolute Time
+Group50Var3 // Time and Date - Absolute Time at last recorded time
+Group50Var4 // Time and Date - Indexed absolute time and long interval
+
+Group51Var1 // Time and Date CTO - Absolute time, synchronized
+Group51Var2 // Time and Date CTO - Absolute time, unsynchronized
+ 
+Group52Var1 // Time Delay - Coarse
+Group52Var2 // Time Delay - Fine
+
+
+Group60Var1 // Class Data - Class 0
+Group60Var2 // Class Data - Class 1
+Group60Var3 // Class Data - Class 2
+Group60Var4 // Class Data - Class 3
+
+Group70Var1 // File-control - File identifier
+Group70Var2 // File-control - Authentication
+Group70Var3 // File-control - File command
+Group70Var4 // File-control - File command status
+Group70Var5 // File-control - File transport
+Group70Var6 // File-control - File transport status
+Group70Var7 // File-control - File descriptor
+Group70Var8 // File-control - File specification string
+
+Group80Var1 // Internal Indications - Packed Format
+
+Group110Var0 // Octet String - Sized by variation
+
+Group111Var0 // Octet String Event - Sized by variation
+
+Group112Var0 // Virtual Terminal Output Block - Sized by variation
+
+Group113Var0 // Virtual Terminal Event Data - Sized by variation
+
+Group120Var1 // Authentication - Challenge
+Group120Var2 // Authentication - Reply
+Group120Var3 // Authentication - Aggressive Mode Request
+Group120Var4 // Authentication - Session Key Status Request
+Group120Var5 // Authentication - Session Key Status
+Group120Var6 // Authentication - Session Key Change
+Group120Var7 // Authentication - Error
+Group120Var9 // Authentication - HMAC
+Group120Var10 // Authentication - User Status Change
+Group120Var11 // Authentication - Update Key Change Request
+Group120Var12 // Authentication - Update Key Change Reply
+Group120Var13 // Authentication - Update Key Change
+Group120Var14 // Authentication - Update Key Change Signature
+Group120Var15 // Authentication - Update Key Change Confirmation
+
+Group121Var0 // Security statistic - Any Variation
+Group121Var1 // Security statistic - 32-bit With Flag
+
+Group122Var0 // Security Statistic event - Any Variation
+Group122Var1 // Security Statistic event - 32-bit With Flag
+Group122Var2 // Security Statistic event - 32-bit With Flag and Time
