@@ -533,8 +533,31 @@ int main(int argc, char *argv[])
 
             if(strcmp(msg->method,"get") == 0)
             {
-                FPS_ERROR_PRINT("fims method [%s] not yet supported for master\n", msg->method);
-                ok = false;
+                FPS_ERROR_PRINT("fims method [%s] almost  supported for master\n", msg->method);
+                cJSON* cj = cJSON_CreateObject();
+
+                if (msg->nfrags > 3)
+                {
+                    uri = msg->pfrags[3];
+                    FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
+                    DbVar *db = sys_cfg.getDbVar(uri);
+                    if (db != NULL)
+                    {
+                        std::cout<< "Found variable type "<<db->type<<"\n";
+                        addVarToCj(cj, db);
+                    }
+                }
+                else
+                {
+                    sys_cfg.addVarsToCj(cj);
+                }
+                
+                const char* reply = cJSON_PrintUnformatted(cj);
+                cJSON_Delete(cj);
+                if(msg->replyto != NULL)
+                    p_fims->Send("set", msg->replyto, NULL, reply);
+                free((void* )reply);
+                ok = false;  // we are done
             }
 
             if (ok) 
