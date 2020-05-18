@@ -265,6 +265,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                                      newMasterApplication::Create(ourDB), // master application instance this manages the collection of al the pub elements 
                                      stackConfig // stack configuration
                                     );
+                                    
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
     // TODO we need a way to demand this via FIMS
