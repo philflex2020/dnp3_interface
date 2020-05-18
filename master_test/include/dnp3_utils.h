@@ -333,7 +333,7 @@ typedef struct sysCfg_t {
 
         };
 
-        void setDbVarIx(int dbtype, int idx, float fval)
+        void setDbVarIx(int dbtype, int idx, double fval)
         {
             DbVar* db = NULL;
             if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
