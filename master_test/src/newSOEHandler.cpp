@@ -19,15 +19,15 @@ namespace asiodnp3 {
 void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
     std::cout << "******************************Bin: " <<std::endl;
     static sysCfg *static_cfgdb = cfgdb;
-    static cJSON *cj; 
-    static int first = 1;
+    //static cJSON *cj; 
+    //static int first = 1;
     // start a cjson object for this collecion of items
     auto print = [](const Indexed<Binary>& pair) {
-        if(first == 1)
-        {
-            cj = cJSON_CreateObject();
-            first = 0;
-        }
+        // if(first == 1)
+        // {
+        //     //cj = cJSON_CreateObject();
+        //     first = 0;
+        // }
         DbVar* db = static_cfgdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
         {
@@ -36,7 +36,7 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
-                cJSON_AddNumberToObject(cj, vname, pair.value.value);
+                cJSON_AddNumberToObject(static_cfgdb->cj, vname, pair.value.value);
             }
         }
         else
@@ -46,20 +46,20 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         
     };
     values.ForeachItem(print);
-    first = 1;
-    if(cj)
-    {
+    //first = 1;
+    //if(cj)
+    //{
         if(static_cfgdb->cj)
         {
-            cJSON_AddItemToObject(static_cfgdb->cj, cfgGetSOEName(static_cfgdb,"binaries"), cj);
+            //cJSON_AddItemToObject(static_cfgdb->cj, cfgGetSOEName(static_cfgdb,"binaries"), cj);
             static_cfgdb->cjloaded++;
         }
-        else 
-        {
-            cJSON_Delete(cj);
-        }
-        cj = NULL;        
-    }
+        // else 
+        // {
+        //     cJSON_Delete(cj);
+        // }
+        //cj = NULL;        
+    //}
     std::cout << "******************************Bin: <<" <<std::endl;
 }
 
@@ -81,15 +81,15 @@ void newSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
 void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     // magic static
     static sysCfg *static_cfgdb = cfgdb;
-    static cJSON *cj; 
-    static int first = 1;
+    //static cJSON *cj; 
+    //static int first = 1;
     // start a cjson object for this collecion of items
     auto print = [](const Indexed<Analog>& pair) {
-        if(first == 1)
-        {
-            cj = cJSON_CreateObject();
-            first = 0;
-        }
+        // if(first == 1)
+        // {
+        //     cj = cJSON_CreateObject();
+        //     first = 0;
+        // }
         DbVar* db = static_cfgdb->getDbVarId(Type_Analog, pair.index);
         if (db != NULL) 
         {
@@ -98,7 +98,7 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
-                cJSON_AddNumberToObject(cj, vname, pair.value.value);
+                cJSON_AddNumberToObject(static_cfgdb->cj, vname, pair.value.value);
             }
         }
         else
@@ -107,21 +107,21 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         }
     };
     values.ForeachItem(print);
-    first = 1;
+    //first = 1;
     // at the end of this scan add the collection object to the main syscfg cjosn pub object
-    if(cj)
+    //if(cj)
+    //{
+    if(static_cfgdb->cj)
     {
-        if(static_cfgdb->cj)
-        {
-            cJSON_AddItemToObject(static_cfgdb->cj, cfgGetSOEName(static_cfgdb,"analogs"), cj);
-            static_cfgdb->cjloaded++;
-        }
-        else 
-        {
-            cJSON_Delete(cj);
-        }
-        cj = NULL;        
+        //cJSON_AddItemToObject(static_cfgdb->cj, cfgGetSOEName(static_cfgdb,"analogs"), cj);
+        static_cfgdb->cjloaded++;
     }
+        // else 
+        // {
+        //     cJSON_Delete(cj);
+        // }
+        // cj = NULL;        
+    //}
     std::cout << "******************************An: <<" <<std::endl;
     return;
 }

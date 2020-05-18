@@ -322,13 +322,11 @@ typedef struct sysCfg_t {
             {
                 db->valueint = ival;
                 db->anInt32 = ival;
-
             } 
             if ((db != NULL) && (db->type == AnIn16))
             {
                 db->valueint = ival;
                 db->anInt16 = ival;
-
             } 
 
         };
