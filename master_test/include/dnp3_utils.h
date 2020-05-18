@@ -332,7 +332,7 @@ typedef struct sysCfg_t {
             } 
 
         };
-        
+
         void setDbVarIx(int dbtype, int idx, float fval)
         {
             DbVar* db = NULL;
@@ -342,7 +342,7 @@ typedef struct sysCfg_t {
             }
             if ((db != NULL) && (db->type == AnF32))
             {
-                db->valuedouble = ival;
+                db->valuedouble = fval;
             } 
         };
 
