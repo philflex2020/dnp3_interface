@@ -222,6 +222,7 @@ DNP3Manager* setupDNP3Manager(void)
     auto manager = new DNP3Manager(1, ConsoleLogger::Create());
     return manager;
 }
+
 // I think we can have several channels under one manager
 std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, const char* addr, int port)
 {
@@ -243,7 +244,6 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
 
 std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB , int localAddr , int remoteAddr)
 {
-
     MasterStackConfig stackConfig;
     // you can override application layer settings for the master here
     // in this example, we've change the application layer timeout to 2 seconds
@@ -268,9 +268,9 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
     // TODO we need a way to demand this via FIMS
-    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Seconds(5));
+    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Seconds(20);
     // do a Class 1 exception poll every 5 seconds
-    auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(20));
+    auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(60));
     
     //auto binscan = master->AddAllObjectsScan(GroupVariationID(1,1),
     //                                                               TimeDuration::Seconds(5));
@@ -402,7 +402,6 @@ int main(int argc, char *argv[])
     //    printf("fooey 4\n");
     //}
 
-
     fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
 
     //sys_cfg.p_fims = new fims();
@@ -482,103 +481,148 @@ int main(int argc, char *argv[])
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
                 ok = false;
             }
-            uri = msg->pfrags[2];
-            if (strcmp(uri,sys_cfg.id) != 0)
+            
+            if (msg->nfrags < 3)
             {
-                FPS_ERROR_PRINT("fims message frag 2 [%s] not for this master [%s] \n", uri, sys_cfg.id);
+                FPS_ERROR_PRINT("fims message not enough pfrags outstation [%s] \n", sys_cfg.id);
                 ok = false;
-
+            }
+            if(ok)
+            {
+                uri = msg->pfrags[1];
+                if (strncmp(uri,"master",strlen("master")) != 0)
+                {
+                    FPS_ERROR_PRINT("fims message frag 1 [%s] not for  master [%s] \n", uri, "master");
+                    ok = false;
+                }
+            }
+            if(ok)
+            {
+                uri = msg->pfrags[2];
+                if (strncmp(uri,sys_cfg.id,strlen(sys_cfg.id)) != 0)
+                {
+                    FPS_ERROR_PRINT("fims message frag 2 [%s] not for this master [%s] \n", uri, sys_cfg.id);
+                    ok = false;
+                }
+            }
+            // 
+            // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
+            // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
+            // set /dnp3/outstation '{"values":{"name1":value1, "name2":value2}}'
+            ok = false;
+            if(strcmp(msg->method,"set") == 0)
+            {
+                ok = true;
+            }
+            if(strcmp(msg->method,"get") == 0)
+            {
+                ok = true;
+            }
+            if(ok == false)
+            {
+                FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
             }
             //-m set -u "/dnp3/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
             //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
+
+            if(strcmp(msg->method,"get") == 0)
+            {
+                FPS_ERROR_PRINT("fims method [%s] not yet supported for master\n", msg->method);
+                ok = false;
+            }
+
             if (ok) 
             {
-                itypeA16 = cJSON_GetObjectItem(body_JSON, "AnalogInt16");
-                itypeA32 = cJSON_GetObjectItem(body_JSON, "AnalogInt32");
-                itypeF32 = cJSON_GetObjectItem(body_JSON, "AnalogFloat32");
-                itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
-                itypeValues = cJSON_GetObjectItem(body_JSON, "values");
+                if(strcmp(msg->method,"set") == 0)
+                {
 
-                CommandSet commands;
-                if (itypeValues != NULL)
-                {
-                    // decode A16
-                    if (cJSON_IsArray(itypeValues)) 
+                    itypeA16 = cJSON_GetObjectItem(body_JSON, "AnalogInt16");
+                    itypeA32 = cJSON_GetObjectItem(body_JSON, "AnalogInt32");
+                    itypeF32 = cJSON_GetObjectItem(body_JSON, "AnalogFloat32");
+                    itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
+                    itypeValues = cJSON_GetObjectItem(body_JSON, "values");
+
+                    CommandSet commands;
+                    if (itypeValues != NULL)
                     {
-                        cJSON_ArrayForEach(iterator, itypeValues) 
+                        // decode A16
+                        if (cJSON_IsArray(itypeValues)) 
                         {
-                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
-                            cjvalue = cJSON_GetObjectItem(iterator, "value");
-                            addValueToCommand(&sys_cfg, commands, cjoffset, cjvalue);
-                            //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
-                        }
-                    }
-                }
-                if (itypeA16 != NULL)
-                {
-                    // decode A16
-                    if (cJSON_IsArray(itypeA16)) 
-                    {
-                        cJSON_ArrayForEach(iterator, itypeA16) 
-                        {
-                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
-                            cjvalue = cJSON_GetObjectItem(iterator, "value");
-                            int dboffset = cjoffset->valueint;
-                            commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
-                        }
-                    }
-                }
-                if (itypeA32 != NULL)
-                {
-                    // decode A32
-                    if (cJSON_IsArray(itypeA32)) 
-                    {
-                        cJSON_ArrayForEach(iterator, itypeA32) 
-                        {
-                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
-                            cjvalue = cJSON_GetObjectItem(iterator, "value");
-                            int dboffset = cjoffset->valueint;
-                            commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),dboffset)});
-                        }
-                    }
-                }
-                if (itypeF32 != NULL)
-                {
-                    // decode F32
-                    if (cJSON_IsArray(itypeF32)) 
-                    {
-                        cJSON_ArrayForEach(iterator, itypeF32) 
-                        {
-                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
-                            cjvalue = cJSON_GetObjectItem(iterator, "value");
-                            int dboffset = cjoffset->valueint;
-                            commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valueint),dboffset)});
-                        }
-                    }
-                }
-                if (itypeCROB != NULL)
-                {
-                    // decode CROB
-                    if (cJSON_IsArray(itypeCROB)) 
-                    {
-                        cJSON_ArrayForEach(iterator, itypeCROB) 
-                        {
-                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
-                            cjvalue = cJSON_GetObjectItem(iterator, "value");
-                            int dboffset = cjoffset->valueint;
-                            if(cjvalue->valueint == 1)
+                            cJSON_ArrayForEach(iterator, itypeValues) 
                             {
-                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),dboffset)});
-                            }
-                            else
-                            {
-                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_OFF),dboffset)});
+                                cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                                cjvalue = cJSON_GetObjectItem(iterator, "value");
+                                addValueToCommand(&sys_cfg, commands, cjoffset, cjvalue);
+                                //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
                             }
                         }
                     }
+                    if (itypeA16 != NULL)
+                    {
+                        // decode A16
+                        if (cJSON_IsArray(itypeA16)) 
+                        {
+                            cJSON_ArrayForEach(iterator, itypeA16) 
+                            {
+                                cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                                cjvalue = cJSON_GetObjectItem(iterator, "value");
+                                int dboffset = cjoffset->valueint;
+                                commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),dboffset)});
+                            }
+                        }
+                    }
+                    if (itypeA32 != NULL)
+                    {
+                        // decode A32
+                        if (cJSON_IsArray(itypeA32)) 
+                        {
+                            cJSON_ArrayForEach(iterator, itypeA32) 
+                            {
+                                cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                                cjvalue = cJSON_GetObjectItem(iterator, "value");
+                                int dboffset = cjoffset->valueint;
+                                commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),dboffset)});
+                            }
+                        }
+                    }
+                    if (itypeF32 != NULL)
+                    {
+                        // decode F32
+                        if (cJSON_IsArray(itypeF32)) 
+                        {
+                            cJSON_ArrayForEach(iterator, itypeF32) 
+                            {
+                                cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                                cjvalue = cJSON_GetObjectItem(iterator, "value");
+                                int dboffset = cjoffset->valueint;
+                                commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valueint),dboffset)});
+                            }
+                        }
+                    }
+                    if (itypeCROB != NULL)
+                    {
+                        // decode CROB
+                        if (cJSON_IsArray(itypeCROB)) 
+                        {
+                            cJSON_ArrayForEach(iterator, itypeCROB) 
+                            {
+                                cjoffset = cJSON_GetObjectItem(iterator, "offset");
+                                cjvalue = cJSON_GetObjectItem(iterator, "value");
+                                int dboffset = cjoffset->valueint;
+                                if(cjvalue->valueint == 1)
+                                {
+                                    commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),dboffset)});
+                                }
+                                else
+                                {
+                                    commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_OFF),dboffset)});
+                                }
+                            }
+                        }
+                    }
+                    printf(" *****Running Outputs \n");
+                    master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                 }
-                printf(" *****Running Outputs \n");
-                master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
             }
             //            dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
             if (body_JSON != NULL)
