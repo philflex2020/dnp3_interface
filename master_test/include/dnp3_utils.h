@@ -335,9 +335,11 @@ typedef struct sysCfg_t {
 
         void setDbVarIx(int dbtype, int idx, int ival)
         {
+            DbVar* db = NULL;
+            
             if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
             {   
-                DbVar* db = dbMapIx[dbtype][idx];
+                db = dbMapIx[dbtype][idx];
             }
             if ((db != NULL) && (db->type == Type_Binary))
             {
