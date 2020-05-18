@@ -327,7 +327,7 @@ typedef struct sysCfg_t {
             if ((db != NULL) && (db->type == AnIn16))
             {
                 db->valueint = ival;
-                db->AnInt16 = ival;
+                db->anInt16 = ival;
 
             } 
 
@@ -348,7 +348,7 @@ typedef struct sysCfg_t {
             if ((db != NULL) && (db->type == AnIn32))
             {
                 db->valueint = ival;
-                db->AnInt32 = ival;
+                db->anInt32 = ival;
 
             } 
             if ((db != NULL) && (db->type == AnIn16))
