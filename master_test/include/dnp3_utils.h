@@ -163,29 +163,29 @@ typedef struct sdata
         base_uri = NULL;
         num_uris = 0;
     }
-    int setValue(int idx, float value, int send) 
-    {
-     //   maps* mp = regs_to_map[AnalogIP];
-     //   if (idx < mp->num_regs)
-     //   {
-     //       mapr* mr = mp->regs[idx];
-     //       mapr->avalue = value;
-     //       if(send)datasendAdd(mr);
-     //   }
-        return 0;
-    }
+    // int setValue(int idx, float value, int send) 
+    // {
+    //  //   maps* mp = regs_to_map[AnalogIP];
+    //  //   if (idx < mp->num_regs)
+    //  //   {
+    //  //       mapr* mr = mp->regs[idx];
+    //  //       mapr->avalue = value;
+    //  //       if(send)datasendAdd(mr);
+    //  //   }
+    //     return 0;
+    // }
 
-    int setValue(int idx, bool value, int send) 
-    {
-     //   maps* mp = regs_to_map[BinaryIP];
-     //   if (idx < mp->num_regs)
-     //   {
-     //       mapr* mr = mp->regs[idx];
-     //       mapr->bvalue = value;
-     //       if(send)datasendAdd(mr);
-     //   }
-        return 0;
-    }
+    // int setValue(int idx, bool value, int send) 
+    // {
+    //  //   maps* mp = regs_to_map[BinaryIP];
+    //  //   if (idx < mp->num_regs)
+    //  //   {
+    //  //       mapr* mr = mp->regs[idx];
+    //  //       mapr->bvalue = value;
+    //  //       if(send)datasendAdd(mr);
+    //  //   }
+    //     return 0;
+    // }
 
     int datasendAdd( mapr * mr)
     {
@@ -214,14 +214,6 @@ enum {
     Type_Binary,
     NumTypes
 };
-
-// #define AnIn16 1
-// #define AnIn32 2
-// #define AnF32 3
-// #define Crob 4
-// #define Type_Analog 5
-// #define Type_Binary 6
-
 
 // local copy of all inputs and outputs
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
@@ -278,55 +270,7 @@ typedef struct sysCfg_t {
         }
 
     public:
-        // char* getAnalog(int idx) 
-        // {
-        //     if(analogNames.find(idx) != analogNames.end())
-        //     {
-        //         return analogNames[idx];
-        //     }
-        //     else
-        //     {
-        //         return (char *) "Unknown";
-        //     }
-        // }
-        // char* getBinary(int idx) 
-        // {
-        //     if(binaryNames.find(idx) != binaryNames.end())
-        //     {
-        //         return binaryNames[idx];
-        //     }
-        //     else
-        //     {
-        //         return (char *) "Unknown";
-        //     }
-        // }
-
-        // int  getAnalogIdx(char *name) 
-        // {
-        //     int idx = -1;
-        //     std::map<char*,int>::iterator it_ids;
-        //     for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
-        //     {
-        //         std::cout << __FUNCTION__ << it_ids->first << " => " << it_ids->second << '\n';
-        //         if(strcmp(it_ids->first, name)== 0 )
-        //         {
-        //            idx = it_ids->second;
-        //            break;
-        //         }
-        //     }
-        //     //if(analogIdx.find(name) != analogIdx.end())
-        //     //{
-        //     //    idx = analogIdx[name];
-        //     //}
-        //     //else
-        //     //{
-        //     //    idx =  -1;
-        //     //}
-        //     std::cout << " Seeking Analog ["<< name <<"] found [" << idx <<"]\n";
-        //     return idx;
-
-        // }
-
+        
         void addDbVar(std::string name, int type, int offset) 
         {
             DbVar* db = NULL;
@@ -347,8 +291,6 @@ typedef struct sysCfg_t {
             {
                 std::cout << __FUNCTION__<< " name [" << name <<"] already defined  in dbMap\n";                
             }
-
-
         }
 
         DbVar* getDbVar(const char *name)
@@ -394,55 +336,7 @@ typedef struct sysCfg_t {
             }
             return NULL;
         };
-        // int  getBinaryIdx(char *name) 
-        // {
-        //     int idx = -1;
-        //     std::map<char*,int>::iterator it_ids;
-        //     for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
-        //     {
-        //         std::cout << __FUNCTION__<< it_ids->first << " => " << it_ids->second << '\n';
-        //         if(strcmp(it_ids->first, name)== 0 )
-        //         {
-        //            idx = it_ids->second;
-        //            break;
-        //         }
-        //     }
-
-        //     std::cout << " Seeking Binary ["<< name <<"] found [" << idx << "]\n";
-        //     return idx;
-        // }
-
-        // void showBinaries()
-        // {
-        //     std::cout << " Binary maps\n" ;
-        //     std::map<int , char*>::iterator it_names;
-        //     for (it_names = binaryNames.begin() ; it_names != binaryNames.end();++it_names)
-        //     {
-        //         std::cout << it_names->first << " => " << it_names->second << '\n';
-        //     }
-        //     std::map<char*,int>::iterator it_ids;
-        //     for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
-        //     {
-        //         std::cout << it_ids->first << " => " << it_ids->second << '\n';
-        //     }
-
-        // }
         
-        // void showAnalogs()
-        // {
-        //     std::cout << " Clear Analog maps\n" ;
-        //     std::map<int, char *>::iterator it_names;
-        //     for (it_names = analogNames.begin() ; it_names != analogNames.end();++it_names)
-        //     {
-        //         std::cout << it_names->first << " => " << it_names->second << '\n';
-        //     }
-        //     std::map<char*,int>::iterator it_ids;
-        //     for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
-        //     {
-        //         std::cout << it_ids->first << " => " << it_ids->second << '\n';
-        //     }
-
-        // }
         void showDbMap()
         {
             std::cout << " show DbVars\n" ;
@@ -453,6 +347,7 @@ typedef struct sysCfg_t {
                 std::cout << it_vars->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
             }
         }
+
         void addVarsToCj(cJSON* cj)
         {
             std::map<std::string, DbVar *>::iterator it_vars;
@@ -465,48 +360,6 @@ typedef struct sysCfg_t {
 
         }
 
-        // void clearBinaries()
-        // {
-        //     std::cout << " Binary maps\n" ;
-        //     std::map<int , char*>::iterator it_names;
-        //     for (it_names = binaryNames.begin() ; it_names != binaryNames.end();++it_names)
-        //     {
-        //         std::cout << it_names->first << " => " << it_names->second << '\n';
-        //         free(it_names->second);
-        //     }
-        //     binaryNames.clear();
-
-        //     std::map<char*,int>::iterator it_ids;
-        //     for (it_ids = binaryIdx.begin() ; it_ids != binaryIdx.end();++it_ids)
-        //     {
-        //         std::cout << it_ids->first << " => " << it_ids->second << '\n';
-        //         free(it_ids->first);
-        //     }
-        //     binaryIdx.clear();
-
-        // }
-
-        // void clearAnalogs()
-        // {
-        //     std::cout << " Analog maps\n" ;
-        //     std::map<int, char *>::iterator it_names;
-        //     for (it_names = analogNames.begin() ; it_names != analogNames.end();++it_names)
-        //     {
-        //         std::cout << it_names->first << " => " << it_names->second << '\n';
-        //         free(it_names->second); 
-        //     }
-        //     analogNames.clear();
-
-        //     std::map<char*,int>::iterator it_ids;
-        //     for (it_ids = analogIdx.begin() ; it_ids != analogIdx.end();++it_ids)
-        //     {
-        //         std::cout << it_ids->first << " => " << it_ids->second << '\n';
-        //         free(it_ids->first);
-        //     }
-        //     analogIdx.clear();
-
-        // }
-
         char* name;
         char* protocol;
         int version;
@@ -516,13 +369,6 @@ typedef struct sysCfg_t {
         int port;
         int local_address;
         int remote_address;
-        //uint numAnalogs;
-        //uint numBinaries;
-        // really need an array of these 
-        //std::map<int,char*>binaryNames;
-        //std::map<int,char*>analogNames;
-        //std::map<char*,int>binaryIdx;
-        //std::map<char*,int>analogIdx;
 
         // new way of doing this
         std::map<std::string, DbVar*> dbMap;

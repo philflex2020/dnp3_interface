@@ -1,31 +1,164 @@
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"values":{"line_flows_mw":123.50}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"values":{"line_flows_mv":12350}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"values":{"line_flows_mv":12350,"line_flows_mw":34}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/fooo '{"hello foo"}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"hello foo"}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"binaries":{voltage_regulator":21}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"binaries":{"voltage_regulator":21}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"type":"binaries","offset":"voltage_regulator","value":21}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"type":"binaries","offset":"voltage_regulator","value":0}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"type":"analogs","offset":"voltage","value":123.50}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"type":"analogs","offset":"line_flows_mw","value":123.50}}'
-/usr/local/bin/fims/fims_send -m set -u /components/outstation/dnp3_outstation '{"type":"analogs","offset":"line_flows_mw","value":123.50}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/outstation" '{"type":"analog","offset":0,"value":3400.54321}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/outstation" '{"type":"analog","offset":0,"value":1400.54321}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/outstation" '{"type":"analog","offset":1,"value":21400.54321}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/outstation" '{"type":"analog","offset":0,"value":1400.54321}'  
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/outstation" '{"type":"analog","offset":1,"value":21400.54321}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/test" '{"type":"analog","offset":"line_flows_mv","value":34.5}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/outstation" '{"type":"analog","offset":"line_flows_mv","value":34.5}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/outstation" '{"type":"analog","offset":"voltage","value":54.5}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/outstation" '{"type":"analog","offset":"voltage","value":56.5}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/master" '{"type":"analog16","offset":0,"value":56.5}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/master" '{"type":"analog16","offset":0,"value":5}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/master" '{"type":"analog32","offset":2,"value":5}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/master" '{"type":"analog32","offset":2,"value":34}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/master" '{"type":"analog32","offset":4,"value":38}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/master" '{"AnalogInt32": [{"offset":"0","value":52},{"offset":2,"value":5}]}'
-/usr/local/bin/fim/fims_send -m set -u "/dnp3/master" '{"AnalogInt32": [{"offset":0,"value":52},{"offset":2,"value":5}],"AnalogInt16":[{"offset":8,"value":1234}]}'
+Test outstation
 
 
+from the development directory
+
+ /usr/local/bin/fims/fims_server &
+
+export LD_LIBRARY_PATH=/home/vagrant/work/flexgen-power/dnp3_interface/master_test/build/release_obj:/usr/local/lib64
+build/release/dnp3_outstation_pw config/sample2.json
+
+outstation startup output.
+
+[AnOPInt16] objects missing from config!
+[AnOPInt32] objects missing from config!
+[AnOPF32] objects missing from config!
+[CROB] objects missing from config!
+ config adding name [line_flows_mw] id [0]
+ config adding name [line_flows_mv] id [1]
+ config adding name [voltage] id [2]
+ config adding name [plant_auxiliary_load_mw] id [3]
+ config adding name [plant_auxiliary_load_mv] id [4]
+ config adding name [voltage_regulator] id [0]
+ config adding name [power_system_stabilizer] id [1]
+ config adding name [gen_resource_switches] id [2]
+ config adding name [gen_resource_breaker_status] id [3]
+ config adding name [gen_virtual_breaker_status] id [4]
+
+show DbVars
+gen_resource_breaker_status => Type:5 offset :3
+gen_resource_switches => Type:5 offset :2
+gen_virtual_breaker_status => Type:5 offset :4
+line_flows_mv => Type:4 offset :1
+line_flows_mw => Type:4 offset :0
+plant_auxiliary_load_mv => Type:4 offset :4
+plant_auxiliary_load_mw => Type:4 offset :3
+power_system_stabilizer => Type:5 offset :1
+voltage => Type:4 offset :2
+voltage_regulator => Type:5 offset :0
+
+basic fims operation
+
+/usr/local/bin/fims/fims_send -m get -u "/components/outstation"
+
+fims message body is NULL or incorrectly formatted: ((null))
+fims message not enough pfrags outstation [dnp3_outstation]
+
+[vagrant@localhost ~]$ /usr/local/bin/fims/fims_send -m get -u "/components/outstation/dnp3_outstation" -r /me
+{
+    "gen_resource_breaker_status":0,
+    "gen_resource_switches":0,
+    "gen_virtual_breaker_status":0,
+    "line_flows_mv":0,
+    "line_flows_mw":0,
+    "plant_auxiliary_load_mv":0,
+    "plant_auxiliary_load_mw":0,
+    "power_system_stabilizer":0,
+    "voltage":0,
+    "voltage_regulator":0
+}
+
+/usr/local/bin/fims/fims_send -m get -u "/components/outstation/dnp3_outstation/line_flows_mw" -r /me
+{"line_flows_mw":0}
+
+Set a value 
+[vagrant@localhost ~]$ /usr/local/bin/fims/fims_send -m set -u "/components/outstation/dnp3_outstation" '{"values":{"line_flows_mw":21}}'
+
+Check result
+[vagrant@localhost ~]$ /usr/local/bin/fims/fims_send -m get -u "/components/outstation/dnp3_outstation/line_flows_mw" -r /me {"line_flows_mw":21}
+
+
+Next run up the master 
+
+channel state change: OPEN
+ms(1589681444037) --AL->  outstation - F0 82 84 00
+ms(1589681444037) --AL->  outstation - FIR: 1 FIN: 1 CON: 1 UNS: 1 SEQ: 0 FUNC: UNSOLICITED_RESPONSE IIN: [0x84, 0x00]
+ms(1589681444037) --TL->  outstation - FIR: 1 FIN: 1 SEQ: 0 LEN: 4
+we see a scan request
+
+ms(1589681444037) --LL->  outstation - Function: PRI_UNCONFIRMED_USER_DATA Dest: 1 Source: 10 Length: 5
+ms(1589681444037) <-AL--  outstation - C0 15 3C 02 06 3C 03 06 3C 04 06
+ms(1589681444037) <-AL--  outstation - FIR: 1 FIN: 1 CON: 0 UNS: 0 SEQ: 0 FUNC: DISABLE_UNSOLICITED
+ms(1589681444037) <-AL--  outstation - 060,002 - Class Data - Class 1 - all objects
+ms(1589681444037) <-AL--  outstation - 060,003 - Class Data - Class 2 - all objects
+ms(1589681444037) <-AL--  outstation - 060,004 - Class Data - Class 3 - all objects
+ms(1589681444039) <-AL--  outstation - 060,002 - Class Data - Class 1 - all objects
+ms(1589681444039) <-AL--  outstation - 060,003 - Class Data - Class 2 - all objects
+ms(1589681444039) <-AL--  outstation - 060,004 - Class Data - Class 3 - all objects
+ms(1589681444039) <-AL--  outstation - 060,001 - Class Data - Class 0 - all objects
+
+
+The master will start to issue pubs as it scans the outstation.
+
+
+Uri:     /components/dnp3_outstation
+ReplyTo: (null)
+Body:    {
+    "binaries":{"voltage_regulator":0,"power_system_stabilizer":0,"gen_resource_switches":0,
+        "gen_resource_breaker_status":0,"gen_virtual_breaker_status":0},
+    "analogs":{"line_flows_mw":44,"line_flows_mv":0},    << these are different formats
+    "analogs":{"voltage":0,"plant_auxiliary_load_mw":0,"plant_auxiliary_load_mv":0},
+    "Timestamp":"05-16-2020 23:07:26.161714"
+    }
+
+Next setting data on the master to send to the outstation.
+// this sends to he master using the dnp3_outstation config file 
+
+/usr/local/bin/fims/fims_send -m set -u "/components/master/dnp3_outstation" 
+          '{
+                "AnOPInt32": [{"offset":0,"value":52},{"offset":2,"value":5}],
+                "AnOPInt16":[{"offset":8,"value":1234}]
+            }'
+
+
+In this example we use direct references to send values to the outstation
+THe config file will have to tell us what the offsets mean
+
+The outstation detects the master writes
+
+
+
+
+               ************Start called
+              ************ int16 Operate index:8 value:1234 opType:1
+              ************ int32 Operate index:0 value:52 opType:1
+              ************ int32 Operate index:2 value:5 opType:1
+               ************End called loaded = 3
+               
+               Since there are no config components set up we do not do anything ( IE save in local database) with those values.
+
+               Lets fix that
+
+Add the following to the config file
+
+        "AnOPInt32": [
+            {
+                "id": "testOP_32_1",
+                "offset": 0,
+                "name": "testOP_32_1",
+                "unit": "MW",
+                "signed": true
+            },
+            {
+                "id": "testOP_32_22",
+                "offset": 2,
+                "name": "testOP_32_22",
+                "unit": "MW",
+                "signed": true
+            }
+        ],
+        "AnOPInt16": [
+            {
+                "id": "testOP_16_8",
+                "offset": 8,
+                "name": "testOP_16_8",
+                "unit": "MW",
+                "signed": true
+            }
+       ]
+
+Then ( after the outstation restart) we get this
+
+[vagrant@localhost master_test]$ /usr/local/bin/fims/fims_send -m get -r /me -u "/components/outstation/dnp3_outstation"   
+{"gen_resource_breaker_status":0,"gen_resource_switches":0,"gen_virtual_breaker_status":0,"line_flows_mv":0,"line_flows_mw":0,"plant_auxiliary_load_mv":0,"plant_auxiliary_load_mw":0,"power_system_stabilizer":0,"testOP_16_8":0,"testOP_32_1":0,"testOP_32_22":0,"voltage":0,"voltage_regulator":0}
 
