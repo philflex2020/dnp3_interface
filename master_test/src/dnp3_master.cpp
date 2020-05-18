@@ -581,7 +581,7 @@ int main(int argc, char *argv[])
                                 cjoffset = cJSON_GetObjectItem(iterator, "offset");
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
-                                printf(" *****Adding Direct AnOPInt16 value %d offset %d \n");
+                                printf(" *****Adding Direct AnOPInt16 value %d offset %d \n", cjvalue->valueint, dboffset);
                                 commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), dboffset)});
                             }
                         }
