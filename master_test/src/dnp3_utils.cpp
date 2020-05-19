@@ -1001,7 +1001,6 @@ const ControlCode StringToControlCode(const char* codeWord)
         return ControlCode::NUL;
     if (strncmp("PULSE_ON_CANCEL", codeWord, strlen("PULSE_ON_CANCEL")) == 0)
         return ControlCode::PULSE_ON_CANCEL;
-
     if (strncmp("PULSE_ON", codeWord, strlen("PULSE_ON")) == 0)
         return ControlCode::PULSE_ON;
     if (strncmp("PULSE_OFF_CANCEL", codeWord, strlen("PULSE_OFF_CANCEL")) == 0)

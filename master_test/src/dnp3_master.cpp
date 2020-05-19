@@ -694,12 +694,12 @@ int main(int argc, char *argv[])
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
                                 uint8_t cval = 0x30;
-                                if (strcmp(cjvalue->valuestring, "LATCH_ON") == 0) cval = 0x3;
-                                if (strcmp(cjvalue->valuestring, "LATCH_OFF") == 0) cval = 0x4;
+                                //if (strcmp(cjvalue->valuestring, "LATCH_ON") == 0) cval = 0x3;
+                                //if (strcmp(cjvalue->valuestring, "LATCH_OFF") == 0) cval = 0x4;
                                 uint8_t cval2 = ControlCodeToType(StringToControlCode(cjvalue->valuestring));
 
                                 //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),dboffset)});
-                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval)), dboffset)});
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval2)), dboffset)});
                                 //TODO sys_cfg.setDbVarIx(Type_Crob, dboffset, cjvalue->valuestring);
                                 fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 val 0x%02x val2 0x%02x\n"
                                                     , __FUNCTION__, cjvalue->valuestring, dboffset
