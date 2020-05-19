@@ -327,15 +327,9 @@ void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSO
     }
     else if (pt->type == Type_Crob) 
     {
-        //set { "myCROB":"somevalue", ...}
-        // decode somevalue to ControlCode
-        //TODO get corret ControlCode from the cJSON input
-        //ControlCode ccfoo = ControlCodeFromString(cjvalue->valuestring)
-        //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromString(cjvalue->valuestring)),pt->offset)});
-
-        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),pt->offset)});
-        //pt->crob = (uint8_t)cjvalue->valueint;
-        // this may be a string like LATCH_ON in which case more work is needed to decode
+        //set { "myCROB":"LATCH_ON", ...}
+        // decode somevalue to ControlCode 
+        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),pt->offset)});
     }
    
 }
