@@ -331,6 +331,28 @@ int main(int argc, char* argv[])
                         }
 
                     }
+                    if(ok) 
+                    {
+                        //if(body_JSON->type == cJSON_String)  // maybe for CROB
+                        if(body_JSON->type == cJSON_Number)
+                        {
+                            if (msg->nfrags > 3)
+                            {
+                                uri = msg->pfrags[3];
+                                FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
+                                DbVar *db = sys_cfg.getDbVar(uri);
+                                if (db != NULL)
+                                {
+                                    std::cout<< "Found variable type "<<db->type<<"\n";
+                                    if (setDbVar(uri, body_JSON->valuedouble) == 0)
+                                    {
+                                        setDbVar(uri, body_JSON->valueint);    
+                                    }
+                                    ok = false;
+                                }
+                            }
+                        }
+                    }
                     if (ok)
                     {
                         cJSON_ArrayForEach(iterator, body_value) 
