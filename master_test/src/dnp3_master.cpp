@@ -333,8 +333,12 @@ int addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON
     }
     else if (pt->type == Type_Crob) 
     {
-        fprintf(stderr, " ************* %s Var [%s] CROB setting value [%s]  to %d \n", __FUNCTION__
-                                                    , pt->name, cjvalue->valuestring, (int)StringToControlCode(cjvalue->valuestring));
+        fprintf(stderr, " ************* %s Var [%s] CROB setting value [%s]  to %d \n"
+                                                    , __FUNCTION__
+                                                    , pt->name,c_str()
+                                                    , cjvalue->valuestring
+                                                    , (int)StringToControlCode(cjvalue->valuestring)
+                                                    );
 
         //set { "myCROB":"LATCH_ON", ...}
         // decode somevalue to ControlCode 

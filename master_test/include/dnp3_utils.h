@@ -23,6 +23,7 @@ using namespace opendnp3;
 #define FPS_DEBUG_PRINT printf
 #endif
 
+const opendnp3::ControlCode StringToControlCode(const char* codeWord);
 
 struct char_cmp {
     bool operator () (const char *a,const char *b) const
@@ -513,6 +514,6 @@ const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname);
 const char *iotypToStr (int t);
 int iotypToId (const char* t);
 int addVarToCj(cJSON* cj, DbVar*db);
-const opendnp3::ControlCode StringToControlCode(const char* codeWord);
+
 
 #endif
