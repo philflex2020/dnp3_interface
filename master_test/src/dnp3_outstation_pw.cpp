@@ -347,9 +347,21 @@ int main(int argc, char* argv[])
                                     {
                                         std::cout<< "Found variable type "<<db->type<<"\n";
                                         sys_cfg.setDbVar(uri, body_JSON);
-                                        ok = false;
+                                        if (db->type == Type_Analog)
+                                        {
+                                            builder.Update(Analog(body_JSON->valuedouble), db->offset);
+                                        }
+                                        else if (db->type == Type_Binary)
+                                        {
+                                            builder.Update(Binary(body_JSON->valueint), db->offset);
+                                        }
                                     }
                                 }
+                                else 
+                                {
+                                    std::cout << " Variable ["<<iterator->string<<"] type not correct ["<<db->type<<"]\n";
+                                }
+                                ok = false;
                             }
                         }
                     }
