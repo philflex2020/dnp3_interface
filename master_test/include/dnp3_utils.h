@@ -23,7 +23,7 @@ using namespace opendnp3;
 #define FPS_DEBUG_PRINT printf
 #endif
 
-const opendnp3::ControlCode StringToControlCode(const char* codeWord);
+const uint8_t StringToControlCode(const char* codeWord);
 
 struct char_cmp {
     bool operator () (const char *a,const char *b) const
@@ -339,7 +339,8 @@ typedef struct sysCfg_t {
                     }
                     case Type_Crob:
                     {
-                        db->crob = ControlCodeToType(StringToControlCode(cj->valuestring));
+                        //db->crob = ControlCodeToType(StringToControlCode(cj->valuestring));
+                        db->crob = StringToControlCode(cj->valuestring);
                         db->valueint = cj->valueint;
                         db->anInt16 = cj->valueint;
                         return  1;
