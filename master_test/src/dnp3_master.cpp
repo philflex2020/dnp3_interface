@@ -292,46 +292,56 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     return master;
 }
 // TODO CROB
-void addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON *cjvalue)
+int addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON *cjvalue)
 {
-    // cjoffset myst be a name
+    // cjoffset must be a name
     if (!cjoffset->valuestring)
     {
-        printf(" %s offset is not  string\n",__FUNCTION__);
-        return;
+        fprintf(stderr, " ************** %s offset is not  string\n",__FUNCTION__);
+        return -1;
     }
 
     DbVar* pt = getDbVar(cfgdb, cjoffset->valuestring); 
     if (pt == NULL)
     {
-        printf(" %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring);
-        return;
+        fprintf(stderr, " ************* %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring);
+        return -1;
     }
     if (pt->type == AnIn16) 
     {
         commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),pt->offset)});
-        pt->valueint = cjvalue->valueint;
-        pt->anInt16 = cjvalue->valueint;
+        cfgdb->setDbVar(cjoffset->valuestring, cjvalue);
+        //pt->valueint = cjvalue->valueint;
+        //pt->anInt16 = cjvalue->valueint;
         
     }
     else if (pt->type == AnIn32) 
     {
         commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
-        pt->valueint = cjvalue->valueint;
-        pt->anInt32 = cjvalue->valueint;
+        cfgdb->setDbVar(cjoffset->valuestring, cjvalue);
+        //pt->valueint = cjvalue->valueint;
+        //pt->anInt32 = cjvalue->valueint;
     }
     else if (pt->type == AnF32) 
     {
         commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
-        pt->anF32 = cjvalue->valuedouble;
+        cfgdb->setDbVar(cjoffset->valuestring, cjvalue);
+        //pt->anF32 = cjvalue->valuedouble;
     }
     else if (pt->type == Type_Crob) 
     {
         //set { "myCROB":"LATCH_ON", ...}
         // decode somevalue to ControlCode 
         commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),pt->offset)});
+        cfgdb->setDbVar(cjoffset->valuestring, cjvalue);
+
     }
-   
+    else
+    {
+      fprintf(stderr, " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring);  
+      return -1;
+    }
+    return 0;   
 }
 
 int main(int argc, char *argv[])
