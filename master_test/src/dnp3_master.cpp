@@ -693,7 +693,7 @@ int main(int argc, char *argv[])
                                 if (strcmp(cjvalue->valuestring, "LATCH_OFF") == 0) cval = 0x4;
 
                                 //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),dboffset)});
-                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval), dboffset)});
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval)), dboffset)});
                                 //TODO sys_cfg.setDbVarIx(Type_Crob, dboffset, cjvalue->valuestring);
                                 fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 val 0x%02x\n"
                                                     , __FUNCTION__, cjvalue->valuestring, dboffset
