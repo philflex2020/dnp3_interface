@@ -339,8 +339,8 @@ typedef struct sysCfg_t {
                     }
                     case Type_Crob:
                     {
-                        //db->crob = ControlCodeToType(StringToControlCode(cj->valuestring));
-                        db->crob = StringToControlCode(cj->valuestring);
+                        db->crob = ControlCodeToType(StringToControlCode(cj->valuestring));
+                        //db->crob = StringToControlCode(cj->valuestring);
                         db->valueint = cj->valueint;
                         db->anInt16 = cj->valueint;
                         return  1;
