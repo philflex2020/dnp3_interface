@@ -515,9 +515,9 @@ int main(int argc, char *argv[])
                 }
             }
             // 
-            // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
-            // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
-            // set /dnp3/outstation '{"values":{"name1":value1, "name2":value2}}'
+            // set /components/master/dnp3_outstation '{"type":"xx", offset:yy value: zz}'
+            // set /components/master/dnp3_outstation '{"type":"analog", "offset":01, "value": 2.34}'
+            // set /components/master/dnp3_outstation '{"values":{"name1":value1, "name2":value2}}'
             ok = false;
             if(strcmp(msg->method,"set") == 0)
             {
@@ -585,10 +585,10 @@ int main(int argc, char *argv[])
                     itypeA32 = cJSON_GetObjectItem(body_JSON, "AnOPInt32");
                     itypeF32 = cJSON_GetObjectItem(body_JSON, "AnOPF32");
                     itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
-                    itypeValues = cJSON_GetObjectItem(body_JSON, "values");
+                    itypeValues = body_JSON;//cJSON_GetObjectItem(body_JSON, "values");
 
                     CommandSet commands;
-                    if (itypeValues != NULL)
+                    if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
                     {
                         // decode values must be in an array //TODO single option
                         if (cJSON_IsArray(itypeValues)) 
@@ -659,19 +659,19 @@ int main(int argc, char *argv[])
                                 cjoffset = cJSON_GetObjectItem(iterator, "offset");
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
-                                if(cjvalue->valueint == 1)
-                                {
-                                    commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),dboffset)});
-                                }
-                                else
-                                {
-                                    commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_OFF),dboffset)});
-                                }
+                                commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),dboffset)});
+                                // if(cjvalue->valueint == 1)
+                                // {
+                                //     commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),dboffset)});
+                                // }
+                                // else
+                                // {
+                                //     commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_OFF),dboffset)});
+                                // }
                             }
                         }
                     }
-
-                    printf(" *****Running Diret Outputs \n");
+                    printf(" *****Running Direct Outputs \n");
                     master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
                 }
             }
