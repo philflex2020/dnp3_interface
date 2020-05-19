@@ -356,6 +356,7 @@ int main(int argc, char* argv[])
                                         {
                                             builder.Update(Binary(body_JSON->valueint), db->offset);
                                         }
+                                        outstation->Apply(builder.Build());
                                     }
                                     else 
                                     {
