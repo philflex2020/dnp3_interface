@@ -335,7 +335,7 @@ int addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON
     {
         fprintf(stderr, " ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
-                                                    , pt->name,c_str()
+                                                    , pt->name.c_str()
                                                     , cjvalue->valuestring
                                                     , (int)StringToControlCode(cjvalue->valuestring)
                                                     );
