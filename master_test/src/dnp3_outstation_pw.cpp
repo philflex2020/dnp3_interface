@@ -238,6 +238,13 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
                 ok = false;
             }
+            else
+            {
+                FPS_ERROR_PRINT("fims message body parsed OK (%s) -> type %d \n", msg->body, body_JSON->type);
+                
+            }
+            
+
             if (msg->nfrags < 3)
             {
                 FPS_ERROR_PRINT("fims message not enough pfrags outstation [%s] \n", sys_cfg.id);
