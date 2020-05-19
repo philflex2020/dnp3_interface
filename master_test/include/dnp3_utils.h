@@ -23,7 +23,7 @@ using namespace opendnp3;
 #define FPS_DEBUG_PRINT printf
 #endif
 
-const uint8_t StringToControlCode(const char* codeWord);
+const opendnp3::ControlCode StringToControlCode(const char* codeWord);
 
 struct char_cmp {
     bool operator () (const char *a,const char *b) const

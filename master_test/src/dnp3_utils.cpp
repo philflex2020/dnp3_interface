@@ -992,8 +992,8 @@ const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname)
     return fname;
 }
 
-//const opendnp3::ControlCode StringToControlCode(const char* codeWord)
-uint8_t  StringToControlCode(const char* codeWord)
+const opendnp3::ControlCode StringToControlCode(const char* codeWord)
+//uint8_t  StringToControlCode(const char* codeWord)
 {
     if (strncmp("NUL", codeWord, strlen("NUL")))
         return ControlCode::NUL;

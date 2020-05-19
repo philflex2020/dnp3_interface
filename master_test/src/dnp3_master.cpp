@@ -696,7 +696,7 @@ int main(int argc, char *argv[])
                                 uint8_t cval = 0x30;
                                 if (strcmp(cjvalue->valuestring, "LATCH_ON") == 0) cval = 0x3;
                                 if (strcmp(cjvalue->valuestring, "LATCH_OFF") == 0) cval = 0x4;
-                                uint8_t cval2 = StringToControlCode(cjvalue->valuestring);
+                                uint8_t cval2 = ControlCodeFromType(StringToControlCode(cjvalue->valuestring));
 
                                 //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),dboffset)});
                                 commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval)), dboffset)});
