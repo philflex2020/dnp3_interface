@@ -506,5 +506,6 @@ const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname);
 const char *iotypToStr (int t);
 int iotypToId (const char* t);
 int addVarToCj(cJSON* cj, DbVar*db);
+const opendnp3::ControlCode StringToControlCode(const char* codeWord);
 
 #endif

@@ -992,6 +992,40 @@ const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname)
     return fname;
 }
 
+const opendnp3::ControlCode StringToControlCode(const char* codeWord)
+{
+    if (strncmp("NUL", codeWord, strlen("NUL")))
+        return ControlCode::NUL;
+    if (strncmp("NUL_CANCEL", codeWord, strlen("NUL_CANCEL")))
+        return ControlCode::NUL;
+    if (strncmp("PULSE_ON", codeWord, strlen("PULSE_ON")))
+        return ControlCode::NUL;
+    if (strncmp("PULSE_ON_CANCEL", codeWord, strlen("PULSE_ON_CANCEL")))
+        return ControlCode::NUL;
+    if (strncmp("PULSE_OFF", codeWord, strlen("PULSE_OFF")))
+        return ControlCode::NUL;
+    if (strncmp("PULSE_OFF_CANCEL", codeWord, strlen("PULSE_OFF_CANCEL")))
+        return ControlCode::NUL;
+    if (strncmp("LATCH_ON", codeWord, strlen("LATCH_ON")))
+        return ControlCode::NUL;
+    if (strncmp("LATCH_ON_CANCEL", codeWord, strlen("LATCH_ON_CANCEL")))
+        return ControlCode::NUL;
+    if (strncmp("LATCH_OFF", codeWord, strlen("LATCH_OFF")))
+        return ControlCode::NUL;
+    if (strncmp("LATCH_OFF_CANCEL", codeWord, strlen("LATCH_OFF_CANCEL")))
+        return ControlCode::NUL;
+    if (strncmp("CLOSE_PULSE_ON", codeWord, strlen("CLOSE_PULSE_ON")))
+        return ControlCode::NUL;
+    if (strncmp("CLOSE_PULSE_ON_CANCEL", codeWord, strlen("CLOSE_PULSE_ON_CANCEL")))
+        return ControlCode::NUL;
+    if (strncmp("TRIP_PULSE_ON", codeWord, strlen("TRIP_PULSE_ON")))
+        return ControlCode::NUL;
+    if (strncmp("TRIP_PULSE_ON_CANCEL", codeWord, strlen("TRIP_PULSE_ON_CANCEL")))
+        return ControlCode::NUL;
+    return ControlCode::UNDEFINED;
+}
+
+
 bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query)
 {
 #if 0
