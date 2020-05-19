@@ -304,9 +304,12 @@ int addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON
     DbVar* pt = getDbVar(cfgdb, cjoffset->valuestring); 
     if (pt == NULL)
     {
-        fprintf(stderr, " ************* %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring);
+        fprintf(stderr, " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, cjoffset->valuestring);
         return -1;
     }
+
+    fprintf(stderr, " ************* %s Var [%s] found in dbMap\n", __FUNCTION__, cjoffset->valuestring);
+
     if (pt->type == AnIn16) 
     {
         commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),pt->offset)});
@@ -330,6 +333,9 @@ int addValueToCommand(sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON
     }
     else if (pt->type == Type_Crob) 
     {
+        fprintf(stderr, " ************* %s Var [%s] CROB setting value [%s]  to %d \n", __FUNCTION__
+                                                    , pt->name, cjvalue->valuestring, (int)StringToControlCode(cjvalue->valuestring));
+
         //set { "myCROB":"LATCH_ON", ...}
         // decode somevalue to ControlCode 
         commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),pt->offset)});
