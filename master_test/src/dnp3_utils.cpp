@@ -1009,11 +1009,17 @@ const ControlCode StringToControlCode(const char* codeWord)
     if (strncmp("PULSE_OFF_CANCEL", codeWord, strlen("PULSE_OFF_CANCEL")))
         return ControlCode::PULSE_OFF_CANCEL;
     if (strncmp("LATCH_ON", codeWord, strlen("LATCH_ON")))
+    {
+        fprintf(stderr, "     **** %s got codeword[%s] return LATCH_ON \n", __FUNCTION__ , codeWord);
         return ControlCode::LATCH_ON;
+    }
     if (strncmp("LATCH_ON_CANCEL", codeWord, strlen("LATCH_ON_CANCEL")))
         return ControlCode::LATCH_ON_CANCEL;
     if (strncmp("LATCH_OFF", codeWord, strlen("LATCH_OFF")))
+    {
+        fprintf(stderr, "     **** %s got codeword[%s] return LATCH_OFF \n", __FUNCTION__ , codeWord);
         return ControlCode::LATCH_OFF;
+    }
     if (strncmp("LATCH_OFF_CANCEL", codeWord, strlen("LATCH_OFF_CANCEL")))
         return ControlCode::LATCH_OFF_CANCEL;
     if (strncmp("CLOSE_PULSE_ON", codeWord, strlen("CLOSE_PULSE_ON")))
