@@ -995,7 +995,7 @@ const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname)
 const ControlCode StringToControlCode(const char* codeWord)
 //uint8_t  StringToControlCode(const char* codeWord)
 {
-    fprintf(stderr, "     **** %s got codeword [%s]\n", __FUNCTION__ , codeword);
+    fprintf(stderr, "     **** %s got codeword [%s]\n", __FUNCTION__ , codeWord);
     if (strncmp("NUL", codeWord, strlen("NUL")))
         return ControlCode::NUL;
     if (strncmp("NUL_CANCEL", codeWord, strlen("NUL_CANCEL")))
