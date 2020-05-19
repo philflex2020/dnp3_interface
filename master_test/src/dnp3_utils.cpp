@@ -1003,7 +1003,7 @@ const opendnp3::ControlCode StringToControlCode(const char* codeWord)
     if (strncmp("PULSE_ON_CANCEL", codeWord, strlen("PULSE_ON_CANCEL")))
         return ControlCode::PULSE_ON_CANCEL;
     if (strncmp("PULSE_OFF", codeWord, strlen("PULSE_OFF")))
-        return ControlCode::PUSLE_OFF;
+        return ControlCode::PULSE_OFF;
     if (strncmp("PULSE_OFF_CANCEL", codeWord, strlen("PULSE_OFF_CANCEL")))
         return ControlCode::PULSE_OFF_CANCEL;
     if (strncmp("LATCH_ON", codeWord, strlen("LATCH_ON")))
