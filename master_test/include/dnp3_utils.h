@@ -310,7 +310,7 @@ typedef struct sysCfg_t {
                 db->valuedouble = dval;
                 return 1;
             } 
-            if ((db != NULL) && (db->type == anF32))
+            if ((db != NULL) && (db->type == AnF32))
             {
                 db->valuedouble = dval;
                 return  1;
