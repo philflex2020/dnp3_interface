@@ -343,12 +343,15 @@ int main(int argc, char* argv[])
                                 DbVar *db = sys_cfg.getDbVar(uri);
                                 if (db != NULL)
                                 {
-                                    std::cout<< "Found variable type "<<db->type<<"\n";
-                                    if (setDbVar(uri, body_JSON->valuedouble) == 0)
+                                    if ((db->type == Type_Analog) || (db->type == Type_Binary))
                                     {
-                                        setDbVar(uri, body_JSON->valueint);    
+                                        std::cout<< "Found variable type "<<db->type<<"\n";
+                                        if (sys_cfg.setDbVar(uri, body_JSON->valuedouble) == 0)
+                                        {
+                                            sys_cfg.setDbVar(uri, body_JSON->valueint);    
+                                        }
+                                        ok = false;
                                     }
-                                    ok = false;
                                 }
                             }
                         }
@@ -365,13 +368,12 @@ int main(int argc, char* argv[])
                                 if (db->type == Type_Analog)
                                 {
                                     builder.Update(Analog(iterator->valuedouble), db->offset);
-                                    db->valuedouble = iterator->valuedouble;
+                                    sys_cfg.setDbVar(iterator->string, iterator->valuedouble)
                                 }
                                 else if (db->type == Type_Binary)
                                 {
                                     builder.Update(Binary(iterator->valueint), db->offset);
-                                    db->valueint = iterator->valueint;
-
+                                    sys_cfg.setDbVar(iterator->string, iterator->valueint)
                                 }
                                 else 
                                 {
