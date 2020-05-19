@@ -340,7 +340,7 @@ int main(int argc, char* argv[])
                                 uri = msg->pfrags[3];
                                 FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
                                 FPS_ERROR_PRINT("fims message frag 3 variable fvalue [%f] \n", body_JSON->valuedouble);
-                                FPS_ERROR_PRINT("fims message frag 3 variable ivalue [%f] \n", body_JSON->valueint);
+                                FPS_ERROR_PRINT("fims message frag 3 variable ivalue [%d] \n", body_JSON->valueint);
                                 DbVar *db = sys_cfg.getDbVar(uri);
                                 if (db != NULL)
                                 {
