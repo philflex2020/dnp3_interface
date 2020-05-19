@@ -240,33 +240,38 @@ int main(int argc, char* argv[])
             }
             else
             {
-                FPS_ERROR_PRINT("fims message body parsed OK (%s) -> type %d \n", msg->body, body_JSON->type);
-                
+                FPS_ERROR_PRINT("fims message body parsed OK (%s) -> type %d \n", msg->body, body_JSON->type);                
             }
             
 
-            if (msg->nfrags < 3)
+            if (msg->nfrags < 2)
             {
                 FPS_ERROR_PRINT("fims message not enough pfrags outstation [%s] \n", sys_cfg.id);
                 ok = false;
             }
             if(ok)
             {
-                uri = msg->pfrags[2];
+                uri = msg->pfrags[1];
                 if (strncmp(uri,sys_cfg.id,strlen(sys_cfg.id)) != 0)
                 {
-                    FPS_ERROR_PRINT("fims message frag 2 [%s] not for this outstation [%s] \n", uri, sys_cfg.id);
+                    FPS_ERROR_PRINT("fims message frag 1 [%s] not for this outstation [%s] \n", uri, sys_cfg.id);
                     ok = false;
                 }
             }
             // 
-            // set /dnp3/outstation '{"type":"xx", offset:yy value: zz}'
-            // set /dnp3/outstation '{"type":"analog", "offset":01, "value": 2.34}'
-            // set /dnp3/outstation '{"values":{"name1":value1, "name2":value2}}'
+            // set /components/<id> '{"type":"xx", offset:yy value: zz}'
+            // set /components/<id> '{"type":"analog", "offset":01, "value": 2.34}'
+            // set /components/<id> '{"values":{"name1":value1, "name2":value2}}'
             ok = false;
             if(strcmp(msg->method,"set") == 0)
             {
                 ok = true;
+            }
+            if(strcmp(msg->method,"pub") == 0)
+            {
+                FPS_ERROR_PRINT("fims pub [%s] outstation [%s] \n", msg->body, sys_cfg.id);
+                // a pub will only service differences perhaps
+                //ok = true;
             }
             if(strcmp(msg->method,"get") == 0)
             {
@@ -283,9 +288,9 @@ int main(int argc, char* argv[])
                 {
                     cJSON* cj = cJSON_CreateObject();
 
-                    if (msg->nfrags > 3)
+                    if (msg->nfrags > 2)
                     {
-                        uri = msg->pfrags[3];
+                        uri = msg->pfrags[2];
                         FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
                         DbVar *db = sys_cfg.getDbVar(uri);
                         if (db != NULL)
@@ -335,9 +340,9 @@ int main(int argc, char* argv[])
                         //if(body_JSON->type == cJSON_String)  // maybe for CROB
                         if(body_JSON->type == cJSON_Number)
                         {
-                            if (msg->nfrags > 3)
+                            if (msg->nfrags > 2)
                             {
-                                uri = msg->pfrags[3];
+                                uri = msg->pfrags[2];
                                 FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
                                 FPS_ERROR_PRINT("fims message frag 3 variable fvalue [%f] \n", body_JSON->valuedouble);
                                 FPS_ERROR_PRINT("fims message frag 3 variable ivalue [%d] \n", body_JSON->valueint);
