@@ -677,6 +677,11 @@ int main(int argc, char *argv[])
                     // CA 81 00 04 0C 01 28 01 00 15 00 00 01 64 00 00 00 64 00 00 00 04
                     // CF 05 0C 01 28 01 00 15 00 00 01 64 00 00 00 64 00 00 00 00
 
+                    // LATCH OFF
+                    //C8 05 0C 01 28 01 00 15 00 04 01 64 00 00 00 64 00 00 00 00
+                    // LATCH_ON
+                    //CC 05 0C 01 28 01 00 15 00 03 01 64 00 00 00 64 00 00 00 00
+
 
                     if (itypeCROB != NULL)
                     {
@@ -691,13 +696,15 @@ int main(int argc, char *argv[])
                                 uint8_t cval = 0x30;
                                 if (strcmp(cjvalue->valuestring, "LATCH_ON") == 0) cval = 0x3;
                                 if (strcmp(cjvalue->valuestring, "LATCH_OFF") == 0) cval = 0x4;
+                                uint8_t cval2 = ControlCodeToType(StringToControlCode(cjvalue->valuestring));
 
                                 //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),dboffset)});
                                 commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval)), dboffset)});
                                 //TODO sys_cfg.setDbVarIx(Type_Crob, dboffset, cjvalue->valuestring);
-                                fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 val 0x%02x\n"
+                                fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 val 0x%02x val2 0x%02x\n"
                                                     , __FUNCTION__, cjvalue->valuestring, dboffset
                                                     , cval  //ControlCodeToType(StringToControlCode(cjvalue->valuestring))
+                                                    , cval2
                                                     );
 
                                 // if(cjvalue->valueint == 1)
