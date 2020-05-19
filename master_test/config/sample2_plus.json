@@ -109,6 +109,15 @@
                 "unit": "MW",
                 "signed": true
             }
+        ],
+        "CROB": [
+            {
+                "id": "testCROB_4",
+                "offset": 4,
+                "name": "testCROB_4",
+                "unit": "MW",
+                "signed": true
+            }
        ]
 
     }
