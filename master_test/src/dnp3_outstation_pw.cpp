@@ -329,7 +329,6 @@ int main(int argc, char* argv[])
                             FPS_ERROR_PRINT("fims message body values should not be an array \n");
                             ok = false;
                         }
-
                     }
                     if(ok) 
                     {
@@ -340,6 +339,8 @@ int main(int argc, char* argv[])
                             {
                                 uri = msg->pfrags[3];
                                 FPS_ERROR_PRINT("fims message frag 3 variable name [%s] \n", uri);
+                                FPS_ERROR_PRINT("fims message frag 3 variable fvalue [%f] \n", body_JSON->valuedouble);
+                                FPS_ERROR_PRINT("fims message frag 3 variable ivalue [%f] \n", body_JSON->valueint);
                                 DbVar *db = sys_cfg.getDbVar(uri);
                                 if (db != NULL)
                                 {
@@ -356,10 +357,14 @@ int main(int argc, char* argv[])
                                             builder.Update(Binary(body_JSON->valueint), db->offset);
                                         }
                                     }
+                                    else 
+                                    {
+                                        std::cout << " Variable ["<<body_JSON->string<<"] variable ["<<uri<<"] wrong type or outstation\n";
+                                    }
                                 }
                                 else 
                                 {
-                                    std::cout << " Variable ["<<iterator->string<<"] type not correct ["<<db->type<<"]\n";
+                                    std::cout << " Variable ["<<body_JSON->string<<"] variable ["<<uri<<"] not found\n";
                                 }
                                 ok = false;
                             }
