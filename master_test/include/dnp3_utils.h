@@ -336,6 +336,13 @@ typedef struct sysCfg_t {
                         db->anInt16 = cj->valueint;
                         return  1;
                     }
+                    case Type_Crob:
+                    {
+                        db->crob = StringToControlCode(cj->valuestring)
+                        db->valueint = cj->valueint;
+                        db->anInt16 = cj->valueint;
+                        return  1;
+                    }
                     default:
                         return 0;
                 }
