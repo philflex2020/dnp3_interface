@@ -669,6 +669,12 @@ int main(int argc, char *argv[])
                             }
                         }
                     }
+                    // 21 LATCH ON
+                    //C8 81 00 04 0C 01 28 01 00 15 00 00 01 64 00 00 00 64 00 00 00 04
+                    // 21 LATCH OFF ?? nah I dont think so
+                    //C2 81 00 04 0C 01 28 01 00 15 00 00 01 64 00 00 00 64 00 00 00 04
+
+
                     if (itypeCROB != NULL)
                     {
                         // decode CROB
@@ -681,7 +687,9 @@ int main(int argc, char *argv[])
                                 int dboffset = cjoffset->valueint;
                                 commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),dboffset)});
                                 //TODO sys_cfg.setDbVarIx(Type_Crob, dboffset, cjvalue->valuestring);
-                                fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d \n", __FUNCTION__, cjvalue->valuestring, dboffset);
+                                fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 val 0x%02x\n"
+                                                    , __FUNCTION__, cjvalue->valuestring, dboffset
+                                                    , ControlCodeToType(StringToControlCode(cjvalue->valuestring)));
 
                                 // if(cjvalue->valueint == 1)
                                 // {
