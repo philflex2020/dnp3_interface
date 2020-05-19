@@ -664,7 +664,7 @@ int main(int argc, char *argv[])
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
                                 commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),dboffset)});
-                                sys_cfg.setDbVarIx(AnF32, dboffset, cjvalue->valuedouble);
+                                sys_cfg.setDbVarIx(AnF32, dboffset, cjvalue->valuesdouble);
 
                             }
                         }
@@ -680,6 +680,9 @@ int main(int argc, char *argv[])
                                 cjvalue = cJSON_GetObjectItem(iterator, "value");
                                 int dboffset = cjoffset->valueint;
                                 commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),dboffset)});
+                                sys_cfg.setDbVarIx(Type_crob, dboffset, cjvalue->valuestring);
+                                fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d \n", __FUNCTION__, cjvalue->valuestring, dboffset);
+
                                 // if(cjvalue->valueint == 1)
                                 // {
                                 //     commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCode::LATCH_ON),dboffset)});
