@@ -346,10 +346,7 @@ int main(int argc, char* argv[])
                                     if ((db->type == Type_Analog) || (db->type == Type_Binary))
                                     {
                                         std::cout<< "Found variable type "<<db->type<<"\n";
-                                        if (sys_cfg.setDbVar(uri, body_JSON->valuedouble) == 0)
-                                        {
-                                            sys_cfg.setDbVar(uri, body_JSON->valueint);    
-                                        }
+                                        sys_cfg.setDbVar(uri, body_JSON);
                                         ok = false;
                                     }
                                 }
@@ -364,22 +361,22 @@ int main(int argc, char* argv[])
                             DbVar * db = sys_cfg.getDbVar(iterator->string);
                             if (db != NULL)
                             {
+                                // outstation only allows binary and analog so far
                                 std::cout<< "Found variable type "<<db->type<<"\n";
                                 if (db->type == Type_Analog)
                                 {
                                     builder.Update(Analog(iterator->valuedouble), db->offset);
-                                    sys_cfg.setDbVar(iterator->string, iterator->valuedouble);
+                                    sys_cfg.setDbVar(iterator->string, iterator);
                                 }
                                 else if (db->type == Type_Binary)
                                 {
                                     builder.Update(Binary(iterator->valueint), db->offset);
-                                    sys_cfg.setDbVar(iterator->string, iterator->valueint);
+                                    sys_cfg.setDbVar(iterator->string, iterator);
                                 }
                                 else 
                                 {
                                     std::cout << " Variable ["<<iterator->string<<"] type not correct ["<<db->type<<"]\n";
                                 }
-
                             }
                             else
                             {

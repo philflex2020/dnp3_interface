@@ -302,6 +302,46 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
+        int setDbVar(const char* name, cJSON* cj)
+        {
+            DbVar* db = getDbVar(name);
+            if(db != NULL)
+            {
+                switch (db->type) 
+                {
+                    case Type_Analog:
+                    {
+                    db->valuedouble = cj->valuedouble;
+                    return 1;
+                    }    
+                    case AnF32:
+                    {
+                        db->valuedouble = cj->valuedouble;
+                        return  1;
+                    } 
+                    case Type_Binary:
+                    {
+                        db->valueint = cj->valueint;
+                        return  1;
+                    } 
+                    case AnIn32:
+                    {
+                        db->valueint = cj->valueint;
+                        db->anInt32 = cj->valueint;
+                        return  1;
+                    }
+                   case AnIn16:
+                    {
+                        db->valueint = cj->valueint;
+                        db->anInt16 = cj->valueint;
+                        return  1;
+                    }
+                    default:
+                        return 0;
+                }
+            }
+        };
+
         int setDbVar(const char *name, double dval)
         {
             DbVar* db = getDbVar(name);
