@@ -368,12 +368,12 @@ int main(int argc, char* argv[])
                                 if (db->type == Type_Analog)
                                 {
                                     builder.Update(Analog(iterator->valuedouble), db->offset);
-                                    sys_cfg.setDbVar(iterator->string, iterator->valuedouble)
+                                    sys_cfg.setDbVar(iterator->string, iterator->valuedouble);
                                 }
                                 else if (db->type == Type_Binary)
                                 {
                                     builder.Update(Binary(iterator->valueint), db->offset);
-                                    sys_cfg.setDbVar(iterator->string, iterator->valueint)
+                                    sys_cfg.setDbVar(iterator->string, iterator->valueint);
                                 }
                                 else 
                                 {
