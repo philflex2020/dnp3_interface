@@ -996,40 +996,40 @@ const ControlCode StringToControlCode(const char* codeWord)
 //uint8_t  StringToControlCode(const char* codeWord)
 {
     fprintf(stderr, "     **** %s got codeword [%s]\n", __FUNCTION__ , codeWord);
-    if (strncmp("NUL", codeWord, strlen("NUL")))
+    if (strncmp("NUL", codeWord, strlen("NUL")) == 0)
         return ControlCode::NUL;
-    if (strncmp("NUL_CANCEL", codeWord, strlen("NUL_CANCEL")))
+    if (strncmp("NUL_CANCEL", codeWord, strlen("NUL_CANCEL")) == 0)
         return ControlCode::NUL_CANCEL;
-    if (strncmp("PULSE_ON", codeWord, strlen("PULSE_ON")))
+    if (strncmp("PULSE_ON", codeWord, strlen("PULSE_ON"))== 0)
         return ControlCode::PULSE_ON;
-    if (strncmp("PULSE_ON_CANCEL", codeWord, strlen("PULSE_ON_CANCEL")))
+    if (strncmp("PULSE_ON_CANCEL", codeWord, strlen("PULSE_ON_CANCEL"))== 0)
         return ControlCode::PULSE_ON_CANCEL;
-    if (strncmp("PULSE_OFF", codeWord, strlen("PULSE_OFF")))
+    if (strncmp("PULSE_OFF", codeWord, strlen("PULSE_OFF"))== 0)
         return ControlCode::PULSE_OFF;
-    if (strncmp("PULSE_OFF_CANCEL", codeWord, strlen("PULSE_OFF_CANCEL")))
+    if (strncmp("PULSE_OFF_CANCEL", codeWord, strlen("PULSE_OFF_CANCEL"))== 0)
         return ControlCode::PULSE_OFF_CANCEL;
-    if (strncmp(codeWord, "LATCH_ON", strlen("LATCH_OFF")))
+    if (strncmp(codeWord, "LATCH_ON", strlen("LATCH_OFF"))== 0)
 //    if (strncmp("LATCH_ON", codeWord, strlen("LATCH_ON")))
     {
         fprintf(stderr, "     **** %s got codeword[%s] return LATCH_ON \n", __FUNCTION__ , codeWord);
         return ControlCode::LATCH_ON;
     }
-    if (strncmp("LATCH_ON_CANCEL", codeWord, strlen("LATCH_ON_CANCEL")))
+    if (strncmp("LATCH_ON_CANCEL", codeWord, strlen("LATCH_ON_CANCEL"))== 0)
         return ControlCode::LATCH_ON_CANCEL;
-    if (strncmp(codeWord, "LATCH_OFF", strlen("LATCH_OFF")))
+    if (strncmp(codeWord, "LATCH_OFF", strlen("LATCH_OFF"))== 0)
     {
         fprintf(stderr, "     **** %s got codeword[%s] return LATCH_OFF \n", __FUNCTION__ , codeWord);
         return ControlCode::LATCH_OFF;
     }
-    if (strncmp("LATCH_OFF_CANCEL", codeWord, strlen("LATCH_OFF_CANCEL")))
+    if (strncmp("LATCH_OFF_CANCEL", codeWord, strlen("LATCH_OFF_CANCEL"))== 0)
         return ControlCode::LATCH_OFF_CANCEL;
-    if (strncmp("CLOSE_PULSE_ON", codeWord, strlen("CLOSE_PULSE_ON")))
+    if (strncmp("CLOSE_PULSE_ON", codeWord, strlen("CLOSE_PULSE_ON"))== 0)
         return ControlCode::CLOSE_PULSE_ON;
-    if (strncmp("CLOSE_PULSE_ON_CANCEL", codeWord, strlen("CLOSE_PULSE_ON_CANCEL")))
+    if (strncmp("CLOSE_PULSE_ON_CANCEL", codeWord, strlen("CLOSE_PULSE_ON_CANCEL"))== 0)
         return ControlCode::CLOSE_PULSE_ON_CANCEL;
-    if (strncmp("TRIP_PULSE_ON", codeWord, strlen("TRIP_PULSE_ON")))
+    if (strncmp("TRIP_PULSE_ON", codeWord, strlen("TRIP_PULSE_ON"))== 0)
         return ControlCode::TRIP_PULSE_ON;
-    if (strncmp("TRIP_PULSE_ON_CANCEL", codeWord, strlen("TRIP_PULSE_ON_CANCEL")))
+    if (strncmp("TRIP_PULSE_ON_CANCEL", codeWord, strlen("TRIP_PULSE_ON_CANCEL"))== 0)
         return ControlCode::TRIP_PULSE_ON_CANCEL;
     return ControlCode::UNDEFINED;
 }
