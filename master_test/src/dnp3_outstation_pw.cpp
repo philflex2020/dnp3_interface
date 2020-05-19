@@ -308,12 +308,23 @@ int main(int argc, char* argv[])
 
                 if(strcmp(msg->method,"set") == 0)
                 {
-                    body_value = cJSON_GetObjectItem(body_JSON, "values");
+                    bool ok = true;
+                    body_value = body_JSON; //cJSON_GetObjectItem(body_JSON, "values");
                     if (body_value == NULL)
                     {
                         FPS_ERROR_PRINT("fims message body values key not found \n");
+                        ok = false;
                     }
-                    else
+                    if (ok) 
+                    {
+                        if (body_value->type == cJSON_Array)
+                        {
+                            FPS_ERROR_PRINT("fims message body values should not be an array \n");
+                            ok = false;
+                        }
+
+                    }
+                    if (ok)
                     {
                         cJSON_ArrayForEach(iterator, body_value) 
                         {
