@@ -721,7 +721,6 @@ int main(int argc, char *argv[])
                                 {   
                                     FPS_DEBUG_PRINT("Found variable name  [%s] child %p\n", iterator->string, (void*)iterator->child);
                                     addValueToCommand(cj, &sys_cfg, commands, iterator, iterator->child);
-
                                     iterator = iterator->next;
                                 }
                                 FPS_DEBUG_PRINT("***** Done with variable list \n\n");
