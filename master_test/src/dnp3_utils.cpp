@@ -993,7 +993,6 @@ const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname)
 }
 
 const ControlCode StringToControlCode(const char* codeWord)
-//uint8_t  StringToControlCode(const char* codeWord)
 {
     if (strncmp("NUL_CANCEL", codeWord, strlen("NUL_CANCEL")) == 0)
         return ControlCode::NUL_CANCEL;
