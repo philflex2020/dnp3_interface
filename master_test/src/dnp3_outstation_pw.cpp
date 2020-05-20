@@ -283,9 +283,11 @@ int main(int argc, char* argv[])
             {
                 FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
             }
-            if (msg->nfrags > 2)
+
+            if (msg->nfrags > 1)
             {
                 uri = msg->pfrags[1];
+                FPS_ERROR_PRINT("fims message frag 1 [%s] \n", uri);
                 if (strcmp(uri,"master") == 0)
                 {
                     FPS_ERROR_PRINT("fims message frag 1 name [%s] not for outstation \n", uri);
