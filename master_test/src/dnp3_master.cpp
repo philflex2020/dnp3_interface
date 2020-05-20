@@ -635,13 +635,13 @@ int main(int argc, char *argv[])
                                 itypeValues = body_JSON;
                                 if(itypeValues->type == cJSON_Object)
                                 {
-                                    itypeValues = cJSON_GetObjectItem(itypeValues, "value")
+                                    itypeValues = cJSON_GetObjectItem(itypeValues, "value");
                                 }
                                 if(itypeValues && (itypeValues->type == cJSON_String))
                                 {
                                     if(db->type == Type_Crob)
                                     {
-                                        uint8_t cval3 = ControlCodeToType(StringToControlCode(itypeValue->valuestring));
+                                        uint8_t cval3 = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
                                         commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval3)), db->offset)});
                                         
                                         sys_cfg.setDbVarIx(Type_Crob, db->offset, cval3);
