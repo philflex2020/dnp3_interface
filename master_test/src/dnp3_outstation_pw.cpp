@@ -288,7 +288,7 @@ int main(int argc, char* argv[])
             {
                 uri = msg->pfrags[1];
                 FPS_ERROR_PRINT("fims message frag 1 [%s] \n", uri);
-                if (strcmp(uri,"master") == 0)
+                if (strncmp(uri, "master", strlen("master")) == 0)
                 {
                     FPS_ERROR_PRINT("fims message frag 1 name [%s] not for outstation \n", uri);
                     ok = false;
