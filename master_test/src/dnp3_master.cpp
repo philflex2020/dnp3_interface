@@ -646,7 +646,7 @@ int main(int argc, char *argv[])
                                         
                                         sys_cfg.setDbVarIx(Type_Crob, db->offset, cval3);
                                         fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
-                                                        , __FUNCTION__, itypeValues->valuestring, dboffset
+                                                        , __FUNCTION__, itypeValues->valuestring, db->offset
                                                         //, cval  //ControlCodeToType(StringToControlCode(cjvalue->valuestring))
                                                         , cval3
                                                         );
