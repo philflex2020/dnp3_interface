@@ -641,20 +641,15 @@ int main(int argc, char *argv[])
                                 {
                                     if(db->type == Type_Crob)
                                     {
-                                        uint8_t cval2 = ControlCodeToType(StringToControlCode(itypeValue->valuestring));
-                                        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval2)), db->offset)});
+                                        uint8_t cval3 = ControlCodeToType(StringToControlCode(itypeValue->valuestring));
+                                        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval3)), db->offset)});
                                         
-                                        sys_cfg.setDbVarIx(Type_Crob, db->offset, cval2);
+                                        sys_cfg.setDbVarIx(Type_Crob, db->offset, cval3);
                                         fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
-                                                    , __FUNCTION__, itypeValues->valuestring, dboffset
+                                                        , __FUNCTION__, itypeValues->valuestring, dboffset
                                                         //, cval  //ControlCodeToType(StringToControlCode(cjvalue->valuestring))
-                                                            , cval2
+                                                        , cval3
                                                         );
-                                        uint8_t cval2 = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
-                                        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval2)), db->offset)});
-                                        sys_cfg.setDbVarIx(Type_Crob, db->offset, cval2);
-
-
                                     }
                                     // TODO any other strings
                                 }
