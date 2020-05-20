@@ -496,7 +496,7 @@ int main(int argc, char *argv[])
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
-            int fragptr = 1;
+            uint16_t fragptr = 1;
             bool ok = true;
             cJSON* body_JSON = cJSON_Parse(msg->body);
             cJSON* itypeA16 = NULL;
