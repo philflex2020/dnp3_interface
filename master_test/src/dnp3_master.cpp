@@ -507,6 +507,7 @@ int main(int argc, char *argv[])
             cJSON* cjoffset = NULL;
             cJSON* cjvalue = NULL;
             cJSON* iterator = NULL;
+            CommandSet commands;
             
             if (body_JSON == NULL)
             {
@@ -607,27 +608,69 @@ int main(int argc, char *argv[])
                 {
                     if(strcmp(msg->method,"set") == 0)
                     {
-        //    case AnIn16:
-        //         return "AnOPInt16";
-        //     case AnIn32:
-        //         return "AnOPInt32";
-        //     case AnF32:
-        //         return "AnOPF32";
-        //     case Type_Crob:
-        //         return "CROB";
-        //     case Type_Analog:
-        //         return "analog";
-        //     case Type_Binary:
-        //         return "binary";
-        //     default:
-        //         return "Unknwn";
+                        //    case AnIn16:
+                        //         return "AnOPInt16";
+                        //     case AnIn32:
+                        //         return "AnOPInt32";
+                        //     case AnF32:
+                        //         return "AnOPF32";
+                        //     case Type_Crob:
+                        //         return "CROB";
+                        //     case Type_Analog:
+                        //         return "analog";
+                        //     case Type_Binary:
+                        //         return "binary";
+                        //     default:
+                        //         return "Unknwn";
+
+                        // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
+                        if ((int)msg->nfrags > fragptr+2)
+                        {
+                            uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
+                            FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
+                            DbVar* db = sys_cfg.getDbVar(uri);
+                            if (db != NULL)
+                            {
+                                FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
+                                itypeValues = body_JSON;
+                                if(itypeValues->type == cJSON_Object)
+                                {
+                                    itypeValues = cJSON_GetObjectItem(itypeValues, "value")
+                                }
+                                if(itypeValues && (itypeValues->type == cJSON_String))
+                                {
+                                    if(db->type == Type_Crob)
+                                    {
+                                        uint8_t cval2 = ControlCodeToType(StringToControlCode(itypeValue->valuestring));
+                                        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval2)), db->offset)});
+                                        
+                                        sys_cfg.setDbVarIx(Type_Crob, db->offset, cval2);
+                                        fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
+                                                    , __FUNCTION__, itypeValues->valuestring, dboffset
+                                                        //, cval  //ControlCodeToType(StringToControlCode(cjvalue->valuestring))
+                                                            , cval2
+                                                        );
+                                        uint8_t cval2 = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
+                                        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval2)), db->offset)});
+                                        sys_cfg.setDbVarIx(Type_Crob, db->offset, cval2);
+
+
+                                    }
+                                    // TODO any other strings
+                                }
+                                // TODO '{"value":"string"}
+                                itypeValues = NULL;
+                                //addVarToCj(cj, db);
+                            }
+
+                        }
+
                         itypeA16 = cJSON_GetObjectItem(body_JSON, "AnOPInt16");
                         itypeA32 = cJSON_GetObjectItem(body_JSON, "AnOPInt32");
                         itypeF32 = cJSON_GetObjectItem(body_JSON, "AnOPF32");
                         itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
                         itypeValues = body_JSON;//cJSON_GetObjectItem(body_JSON, "values");
 
-                        CommandSet commands;
                         // process {"valuex":xxx,"valuey":yyy} ; xxx or yyy couls be a number or {"value":val}
                         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
                         {
@@ -649,9 +692,8 @@ int main(int argc, char *argv[])
                                 FPS_DEBUG_PRINT("****** Start with variable list \n\n");
 
                                 while(iterator!= NULL)
-                                {
+                                {   
                                     FPS_DEBUG_PRINT("Found variable name  [%s] \n", iterator->string);
-
                                     iterator = iterator->next;
                                 }
                                 FPS_DEBUG_PRINT("***** Done with variable list \n\n");
