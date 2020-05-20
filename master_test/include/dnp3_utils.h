@@ -341,8 +341,8 @@ typedef struct sysCfg_t {
                     {
                         db->crob = ControlCodeToType(StringToControlCode(cj->valuestring));
                         //db->crob = StringToControlCode(cj->valuestring);
-                        db->valueint = cj->valueint;
-                        db->anInt16 = cj->valueint;
+                        //db->valueint = cj->valueint;
+                        //db->anInt16 = cj->valueint;
                         return  1;
                     }
                     default:
@@ -407,25 +407,41 @@ typedef struct sysCfg_t {
         void setDbVarIx(int dbtype, int idx, int ival)
         {
             DbVar* db = NULL;
-            
             if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
             {   
                 db = dbMapIx[dbtype][idx];
             }
-            if ((db != NULL) && (db->type == Type_Binary))
+            if (db != NULL)
             {
-                db->valueint = ival;
-            } 
-            if ((db != NULL) && (db->type == AnIn32))
-            {
-                db->valueint = ival;
-                db->anInt32 = ival;
-
-            } 
-            if ((db != NULL) && (db->type == AnIn16))
-            {
-                db->valueint = ival;
-                db->anInt16 = ival;
+                switch (db->type) 
+                {
+                    case Type_Binary:
+                    {
+                        db->valueint = ival; 
+                        break;
+                    } 
+                    case Type_Crob:
+                    {
+                        db->crob = ival; 
+                        break;
+                    } 
+                    case AnIn32:
+                    {
+                        db->valueint = ival;
+                        db->anInt32 = ival;
+                        break;
+                    } 
+                    case AnIn16:
+                    {
+                        db->valueint = ival;
+                        db->anInt16 = ival;
+                        break;
+                    }
+                    default:
+                    {
+                        break;
+                    }
+                }
             } 
         };
 

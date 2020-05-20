@@ -332,7 +332,7 @@ int addVarToCj(cJSON* cj, DbVar*db)
     else if (db->type == Type_Binary)
         cJSON_AddNumberToObject(cj, dname, db->valueint);
     else if (db->type == Type_Crob)
-        cJSON_AddNumberToObject(cj, dname, db->crob);
+        cJSON_AddStringToObject(cj, dname, ControlCodeToString(db->crob));
     else if (db->type == AnIn16)
         cJSON_AddNumberToObject(cj, dname, db->anInt16);
     else if (db->type == AnIn32)
