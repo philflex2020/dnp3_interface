@@ -329,7 +329,7 @@ ControlCode TypeToControlCode(uint8_t arg)
   return static_cast<ControlCode>(arg);
 }
 
-int addVarToCj(cJSON* cj, DbVar*db)
+int addVarToCj(cJSON* cj, DbVar* db)
 {
     int rc = 0;
     const char * dname = db->name.c_str();
@@ -339,7 +339,8 @@ int addVarToCj(cJSON* cj, DbVar*db)
         cJSON_AddNumberToObject(cj, dname, db->valueint);
     else if (db->type == Type_Crob)
     {
-        FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u\n", __FUNCTION__, dname, db->type, db->crob);
+        FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u [%s] \n"
+        , __FUNCTION__, dname, db->type, db->crob, ControlCodeToString(TypeToControlCode(db->crob)));
         cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
     }
     else if (db->type == AnIn16)

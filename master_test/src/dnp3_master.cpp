@@ -587,7 +587,7 @@ int main(int argc, char *argv[])
                         DbVar* db = sys_cfg.getDbVar(uri);
                         if (db != NULL)
                         {
-                            FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type);
+                            FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
                             addVarToCj(cj, db);
                         }
                     }
@@ -595,12 +595,15 @@ int main(int argc, char *argv[])
                     {
                         sys_cfg.addVarsToCj(cj);
                     }
-                    
-                    const char* reply = cJSON_PrintUnformatted(cj);
-                    cJSON_Delete(cj);
                     if(msg->replyto != NULL)
+                    {
+                        const char* reply = cJSON_PrintUnformatted(cj);
+                        FPS_DEBUG_PRINT("Got reply  [%s] replyto [%s] \n", reply, msg->replyto); 
                         p_fims->Send("set", msg->replyto, NULL, reply);
-                    free((void* )reply);
+                        free((void* )reply);
+                    }
+                    cJSON_Delete(cj);
+                
                     ok = false;  // we are done
                 }
 
