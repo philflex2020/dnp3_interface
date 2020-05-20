@@ -339,7 +339,7 @@ int addVarToCj(cJSON* cj, DbVar*db)
         cJSON_AddNumberToObject(cj, dname, db->valueint);
     else if (db->type == Type_Crob)
     {
-        FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u\n", __FINCTION__, dname, db->type, db->crob);
+        FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u\n", __FUNCTION__, dname, db->type, db->crob);
         cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
     }
     else if (db->type == AnIn16)
