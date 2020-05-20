@@ -525,13 +525,12 @@ int main(int argc, char *argv[])
                 if (strncmp(uri, "master", strlen("master")) != 0)
                 {
                     FPS_ERROR_PRINT("fims message frag 1 [%s] not for  master [%s] \n", uri, "master");
-                    ok = false;
+                    ok = false; // temp we neeed the master frag 
                 }
                 else
                 {
-                    fragptr = 0;
-                }
-                
+                    fragptr = 1;
+                }              
             }
             if(ok)
             {
@@ -543,7 +542,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    FPS_ERROR_PRINT("fims message frag 2 [%s] not for this master [%s] \n", uri, sys_cfg.id);
+                    FPS_ERROR_PRINT("fims message frag %d [%s] not for this master [%s] \n", fragptr+1, uri, sys_cfg.id);
                 }
             }
             // 
