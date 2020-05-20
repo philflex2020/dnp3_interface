@@ -510,8 +510,11 @@ int main(int argc, char *argv[])
             
             if (body_JSON == NULL)
             {
-                FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted: (%s) \n", msg->body);
-                ok = false;
+                if(strcmp(msg->method,"set") == 0)
+                {
+                    FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted for  (%s) \n", msg->method);
+                    ok = false;
+                }
             }
             
             if (msg->nfrags < 2)
