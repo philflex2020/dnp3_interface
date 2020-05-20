@@ -114,7 +114,7 @@ CommandStatus newCommandHandler::Operate(const ControlRelayOutputBlock& command,
     // {
     //     cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", "LATCH_OFF", index);
     // }
-    cfgdb->setDbVarIx(Type_Crob, index, ControlCodeToType(command.functioncode));
+    cfgdb->setDbVarIx(Type_Crob, index, ControlCodeToType(command.functionCode));
     return ret;
 }
 
