@@ -587,7 +587,7 @@ int main(int argc, char *argv[])
                         DbVar* db = sys_cfg.getDbVar(uri);
                         if (db != NULL)
                         {
-                            FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
+                            FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type);
                             addVarToCj(cj, db);
                         }
                     }
@@ -639,6 +639,7 @@ int main(int argc, char *argv[])
                                 {
                                     itypeValues = cJSON_GetObjectItem(itypeValues, "value");
                                 }
+                                // Only Crob gets a string 
                                 if(itypeValues && (itypeValues->type == cJSON_String))
                                 {
                                     if(db->type == Type_Crob)
