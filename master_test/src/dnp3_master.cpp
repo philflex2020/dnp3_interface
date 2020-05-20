@@ -719,8 +719,8 @@ int main(int argc, char *argv[])
 
                                 while(iterator!= NULL)
                                 {   
-                                    FPS_DEBUG_PRINT("Found variable name  [%s] child %p\n", iterator->string, iterator->child);
-                                    addValueToCommand(cj, &sys_cfg, commands, iterator->string, iterator->child);
+                                    FPS_DEBUG_PRINT("Found variable name  [%s] child %p\n", iterator->string, (void*)iterator->child);
+                                    addValueToCommand(cj, &sys_cfg, commands, iterator, iterator->child);
 
                                     iterator = iterator->next;
                                 }
@@ -729,7 +729,7 @@ int main(int argc, char *argv[])
                             const char* reply = cJSON_PrintUnformatted(cj);
                             cJSON_Delete(cj);
                             cj = NULL;
-                            
+
                             if(msg->replyto != NULL)
                                 p_fims->Send("set", msg->replyto, NULL, reply);
                             free((void* )reply);
