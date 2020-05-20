@@ -101,15 +101,20 @@ CommandStatus newCommandHandler::Operate(const ControlRelayOutputBlock& command,
          std::cout <<" operate on pin " << (int)io <<std::endl;
         //digitalWrite(gpio, state);
     }
-    if (command.functionCode == ControlCode::LATCH_ON)
-    {
-        cfgdbAddtoRecord(cfgdb,"CROB_DIRECT","LATCH_ON", index);
-    }
-    else
-    {
-        cfgdbAddtoRecord(cfgdb,"CROB_DIRECT","LATCH_OFF", index);
-    }
-    //cfgdb->setDbVarIx(Type_Crob, index, command.functioncode);
+    //ControlCodeToString(ControlCodeFromType(uint8_t arg))
+    const char* cmd = ControlCodeToString(command.functionCode);
+
+    cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", cmd , index);
+
+    // if (command.functionCode == ControlCode::LATCH_ON)
+    // {
+    //     cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", "LATCH_ON", index);
+    // }
+    // else
+    // {
+    //     cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", "LATCH_OFF", index);
+    // }
+    cfgdb->setDbVarIx(Type_Crob, index, ControlCodeToType(command.functioncode));
     return ret;
 }
 

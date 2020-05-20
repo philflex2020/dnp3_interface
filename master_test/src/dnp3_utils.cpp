@@ -937,6 +937,7 @@ cJSON* cfgdbFindAddArray(sysCfg* cfgdb, const char* field)
     return cjf;
 }
 
+// possibly used in outstation comand handler to publish changes
 void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
@@ -978,7 +979,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOut
 }
 
 // TODO fix up CROB
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t index)
+void cfgdbAddtoRecord(sysCfg* cfgdb, const char* field, const char* cmd, uint16_t index)
 {
     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
     cJSON* cji = cJSON_CreateObject();
@@ -988,7 +989,7 @@ void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t
     //cJSON_AddStringToObject(cji,"offset",indexName);
     // ??
     cJSON_AddStringToObject(cji,"value", cmd);
-    cJSON_AddItemToArray(cjf,cji);
+    cJSON_AddItemToArray(cjf, cji);
     cfgdb->cjloaded++;
 }
 
