@@ -92,7 +92,7 @@ CommandStatus newCommandHandler::Operate(const ControlRelayOutputBlock& command,
 {
     uint8_t io = 0;
     bool state = false;
-    std::cout << "              ************" << __FUNCTION__ << " called index:" <<index << std::endl;
+    std::cout << "                     ************" << __FUNCTION__ << " called index:" <<index << std::endl;
 
     auto ret = GetPinAndState(index, command.functionCode, io, state);
 
