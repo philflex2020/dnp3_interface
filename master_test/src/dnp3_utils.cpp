@@ -332,7 +332,7 @@ ControlCode TypeToControlCode(uint8_t arg)
 int addVarToCj(cJSON* cj, DbVar* db)
 {
     int rc = 0;
-    const char * dname = db->name.c_str();
+    const char* dname = db->name.c_str();
     if (db->type == Type_Analog)
         cJSON_AddNumberToObject(cj, dname, db->valuedouble);
     else if (db->type == Type_Binary)
@@ -340,7 +340,7 @@ int addVarToCj(cJSON* cj, DbVar* db)
     else if (db->type == Type_Crob)
     {
         FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u [%s] \n"
-        , __FUNCTION__, dname, db->type, db->crob, ControlCodeToString(TypeToControlCode(db->crob)));
+                , __FUNCTION__, dname, db->type, db->crob,ControlCodeToString(TypeToControlCode(db->crob)));
         cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
     }
     else if (db->type == AnIn16)
@@ -355,6 +355,12 @@ int addVarToCj(cJSON* cj, DbVar* db)
         std::cout << __FUNCTION__<<" unknown db_->type :" << db->type <<"\n";
     } 
     return rc;
+}
+int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
+{
+    DbVar* db = sys->getDbVar(uri);
+
+    return addVarToCj(cj, db);
 }
 
 const char *iotypToStr (int t)

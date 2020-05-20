@@ -244,6 +244,7 @@ typedef struct DbVar_t {
 } DbVar;
 
 int addVarToCj(cJSON* cj, DbVar*db);
+int addVarToCj(cJSON* cj, const char *dname);
 typedef struct sysCfg_t {
 
     sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
@@ -531,6 +532,7 @@ const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname);
 const char *iotypToStr (int t);
 int iotypToId (const char* t);
 int addVarToCj(cJSON* cj, DbVar*db);
+int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
 
 
 #endif
