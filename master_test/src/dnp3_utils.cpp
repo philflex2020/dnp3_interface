@@ -358,7 +358,7 @@ int addVarToCj(cJSON* cj, DbVar* db)
 }
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
 {
-    DbVar* db = sys->getDbVar(uri);
+    DbVar* db = sys->getDbVar(dname);
 
     return addVarToCj(cj, db);
 }
