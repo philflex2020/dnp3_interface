@@ -580,7 +580,7 @@ int main(int argc, char *argv[])
                     if (msg->nfrags > fragptr+2)
                     {
                         uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-                        FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2  uri);
+                        FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
                         DbVar* db = sys_cfg.getDbVar(uri);
                         if (db != NULL)
                         {
