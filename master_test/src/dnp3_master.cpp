@@ -536,7 +536,7 @@ int main(int argc, char *argv[])
             if(ok)
             {
                 ok = false;
-                uri = msg->pfrags[frgptr+1];
+                uri = msg->pfrags[fragptr+1];
                 if (strncmp(uri,sys_cfg.id,strlen(sys_cfg.id)) == 0)
                 {
                     ok = true;
