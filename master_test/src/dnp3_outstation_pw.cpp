@@ -267,12 +267,14 @@ int main(int argc, char* argv[])
             {
                 ok = true;
             }
+
             if(strcmp(msg->method,"pub") == 0)
             {
                 FPS_ERROR_PRINT("fims pub [%s] outstation [%s] \n", msg->body, sys_cfg.id);
                 // a pub will only service differences perhaps
                 //ok = true;
             }
+
             if(strcmp(msg->method,"get") == 0)
             {
                 ok = true;
@@ -281,11 +283,20 @@ int main(int argc, char* argv[])
             {
                 FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
             }
-
+            if (msg->nfrags > 2)
+            {
+                uri = msg->pfrags[1];
+                if (strcmp(uri,"master") == 0)
+                {
+                    FPS_ERROR_PRINT("fims message frag 1 name [%s] not for outstation \n", uri);
+                    ok = false;
+                }
+            }
             if (ok)
             {
                 if(strcmp(msg->method,"get") == 0)
                 {
+
                     cJSON* cj = cJSON_CreateObject();
 
                     if (msg->nfrags > 2)
@@ -297,7 +308,6 @@ int main(int argc, char* argv[])
                         {
                             std::cout<< "Found variable type "<<db->type<<"\n";
                             addVarToCj(cj, db);
-
                         }
                     }
                     else
