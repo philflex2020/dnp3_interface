@@ -496,7 +496,7 @@ int main(int argc, char *argv[])
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
-            uint16_t fragptr = 1;
+            int fragptr = 1;
             bool ok = true;
             cJSON* body_JSON = cJSON_Parse(msg->body);
             cJSON* itypeA16 = NULL;
@@ -514,7 +514,7 @@ int main(int argc, char *argv[])
                 ok = false;
             }
             
-            if (msg->nfrags < 3)
+            if (msg->nfrags < 2)
             {
                 FPS_ERROR_PRINT("fims message not enough pfrags id [%s] \n", sys_cfg.id);
                 ok = false;
@@ -577,7 +577,7 @@ int main(int argc, char *argv[])
                     FPS_ERROR_PRINT("fims method [%s] almost  supported for master\n", msg->method);
                     cJSON* cj = cJSON_CreateObject();
 
-                    if (msg->nfrags > fragptr+2)
+                    if ((int)msg->nfrags > fragptr+2)
                     {
                         uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
                         FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
