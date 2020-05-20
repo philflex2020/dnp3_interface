@@ -323,6 +323,12 @@ cJSON *parseJSONConfig(char *file_path)
 //        "local_address": 1,
 //		"remote_address": 10
 //    },const char *iotypToStr (int t)
+
+ControlCode TypeToControlCode(uint8_t arg)
+{
+  return static_cast<ControlCode>(arg);
+}
+
 int addVarToCj(cJSON* cj, DbVar*db)
 {
     int rc = 0;
@@ -332,7 +338,7 @@ int addVarToCj(cJSON* cj, DbVar*db)
     else if (db->type == Type_Binary)
         cJSON_AddNumberToObject(cj, dname, db->valueint);
     else if (db->type == Type_Crob)
-        cJSON_AddStringToObject(cj, dname, ControlCodeToString(ControlCodeToType(db->crob)));
+        cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
     else if (db->type == AnIn16)
         cJSON_AddNumberToObject(cj, dname, db->anInt16);
     else if (db->type == AnIn32)
