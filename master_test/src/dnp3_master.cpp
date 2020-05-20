@@ -608,6 +608,8 @@ int main(int argc, char *argv[])
                 {
                     if(strcmp(msg->method,"set") == 0)
                     {
+                        cJSON* cj = cJSON_CreateObject(); // used for reply
+
                         //    case AnIn16:
                         //         return "AnOPInt16";
                         //     case AnIn32:
@@ -645,6 +647,8 @@ int main(int argc, char *argv[])
                                         commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval3)), db->offset)});
                                         
                                         sys_cfg.setDbVarIx(Type_Crob, db->offset, cval3);
+                                        addVarToCj(cj, db);
+
                                         fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
                                                         , __FUNCTION__, itypeValues->valuestring, db->offset
                                                         //, cval  //ControlCodeToType(StringToControlCode(cjvalue->valuestring))
@@ -657,7 +661,12 @@ int main(int argc, char *argv[])
                                 itypeValues = NULL;
                                 //addVarToCj(cj, db);
                             }
-
+                            const char* reply = cJSON_PrintUnformatted(cj);
+                            cJSON_Delete(cj);
+                            if(msg->replyto != NULL)
+                                p_fims->Send("set", msg->replyto, NULL, reply);
+                            free((void* )reply);
+                            ok = false;  // we are done
                         }
 
                         itypeA16 = cJSON_GetObjectItem(body_JSON, "AnOPInt16");
