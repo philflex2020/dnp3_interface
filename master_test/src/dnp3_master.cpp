@@ -697,11 +697,11 @@ int main(int argc, char *argv[])
                                 commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(cval2)), dboffset)});
                                 //TODO 
                                 sys_cfg.setDbVarIx(Type_Crob, dboffset, cval2);
-                                // fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 val 0x%02x val2 0x%02x\n"
-                                //                , __FUNCTION__, cjvalue->valuestring, dboffset
-                                //                 , cval  //ControlCodeToType(StringToControlCode(cjvalue->valuestring))
-                                //                 , cval2
-                                //                 );
+                                fprintf(stderr, " ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
+                                               , __FUNCTION__, cjvalue->valuestring, dboffset
+                                                //, cval  //ControlCodeToType(StringToControlCode(cjvalue->valuestring))
+                                                , cval2
+                                                );
                            }
                         }
                     }
