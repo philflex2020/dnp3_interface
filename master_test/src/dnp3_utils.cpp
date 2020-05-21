@@ -363,6 +363,8 @@ int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
     return addVarToCj(cj, db);
 }
 
+const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary",0 };
+
 const char *iotypToStr (int t)
 {
     if (t < Type_of_Var::NumTypes)
