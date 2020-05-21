@@ -294,12 +294,12 @@ typedef struct sysCfg_t {
                 }
                 else
                 {
-                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name);
+                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name.c_str());
                 }
             }
             else
             {
-                FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name);
+                FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name.c_str());
             }
             return db;
         }
