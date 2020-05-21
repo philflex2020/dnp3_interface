@@ -719,13 +719,17 @@ int main(int argc, char *argv[])
                             else
                             {
                                 // process a simple list
-                                iterator = itypeValues->child;
+                                iterator = itypeValues;
                                 FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", iterator->type);
 
                                 while(iterator!= NULL)
                                 {   
-                                    FPS_DEBUG_PRINT("Found variable name  [%s] child %p type %d next %p\n", iterator->string
-                                                            , (void*)iterator->child
+                                    FPS_DEBUG_PRINT("Found variable name  [%s] child %p "
+                                                            , (void*)iterator->string
+                                                            , iterator->child
+                                                            );
+                                    FPS_DEBUG_PRINT("Found variable name  [%s] child type %d next %p\n"
+                                                            , (void*)iterator->string
                                                             , iterator->child->type
                                                             , (void*)iterator->next
                                     );  
