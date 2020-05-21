@@ -367,7 +367,7 @@ const char *iotypToStr (int t)
 {
     if (t < Type_of_Var::NumTypes)
     {
-        return reg_types[t];
+        return dreg_types[t];
     }
     return "Unknown";
 }
@@ -377,7 +377,7 @@ int iotypToId (const char* t)
     int i;
     for (i = 0; i < Type_of_Var::NumTypes; i++)
     {
-        if (strcmp(t , reg_types[i] ) == 0 )
+        if (strcmp(t , dreg_types[i] ) == 0 )
         return i;
     }
     return -1;
