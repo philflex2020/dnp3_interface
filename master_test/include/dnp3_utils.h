@@ -35,6 +35,8 @@ struct char_cmp {
 typedef struct maps_t maps;
 typedef std::map<const char*, std::pair<bool*, maps**>, char_cmp> body_map;
 typedef std::map<const char*, body_map*, char_cmp> uri_map;
+typedef std::map<std::string, DbVar*> dbvar_map;
+typedef std::map<int, DbVar*>dbix_map;
 
 //typedef struct _modbus modbus_t;
 
@@ -144,6 +146,7 @@ typedef struct smapr {
     ~smapr(){};
     
 } mapr;
+
 // the server data type is given to the dnp3 process
 // the dnp3 will load  data items by value type and index and then trigger a send
 typedef struct sdata
@@ -165,30 +168,7 @@ typedef struct sdata
         base_uri = NULL;
         num_uris = 0;
     }
-    // int setValue(int idx, float value, int send) 
-    // {
-    //  //   maps* mp = regs_to_map[AnalogIP];
-    //  //   if (idx < mp->num_regs)
-    //  //   {
-    //  //       mapr* mr = mp->regs[idx];
-    //  //       mapr->avalue = value;
-    //  //       if(send)datasendAdd(mr);
-    //  //   }
-    //     return 0;
-    // }
-
-    // int setValue(int idx, bool value, int send) 
-    // {
-    //  //   maps* mp = regs_to_map[BinaryIP];
-    //  //   if (idx < mp->num_regs)
-    //  //   {
-    //  //       mapr* mr = mp->regs[idx];
-    //  //       mapr->bvalue = value;
-    //  //       if(send)datasendAdd(mr);
-    //  //   }
-    //     return 0;
-    // }
-
+  
     int datasendAdd( mapr * mr)
     {
         return 0;
@@ -207,7 +187,7 @@ typedef struct sdata
 //    },
 //TODO use real types
 // test code for dnp3_utils
-enum {
+enum Type_of_Register{
     AnIn16,
     AnIn32,
     AnF32,
@@ -216,6 +196,8 @@ enum {
     Type_Binary,
     NumTypes
 };
+
+const char* reg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary",0 }
 
 // local copy of all inputs and outputs
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
@@ -227,13 +209,19 @@ typedef struct DbVar_t {
         anInt32 = 0;
         anF32 = 0.0;
         crob = 0;
+        vallag = 0;
     };
+
+    // TODO turn these into char*
     std::string name;
-    std::string site;
+    std::string site;    // furute use for site.
+    const char *uri;
+    int valflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
     int type;
+    int variant;         // space to flag different DNP3 variant like Group30var5
     int offset;
-    int site_offset;
-    // outputs
+    int site_offset;     // future use for site offset
+    // values , one for each type
     double valuedouble;
     int valueint;
     uint16_t anInt16;
@@ -246,15 +234,14 @@ typedef struct DbVar_t {
 
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(cJSON* cj, const char *dname);
+
 typedef struct sysCfg_t {
 
     sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
     {
         cj = NULL;
-        //numBinaries  = 0;
-        //numAnalogs  = 0;
         cjloaded = 0;
-        pub = strdup("MyPubs");
+        pub = strdup("MyPubs");  // TODO remove this
 
     }
     ~sysCfg_t()
@@ -266,10 +253,9 @@ typedef struct sysCfg_t {
         if(id)free(id);
         if(ip_address)free(ip_address);
         if (pub) free(pub);
-        //clearBinaries();
-        //clearAnalogs();
+
         if (cj) cJSON_Delete(cj);
-        //todo fims
+     // TODO clear out maps
     }
 
     public:
@@ -342,9 +328,6 @@ typedef struct sysCfg_t {
                     case Type_Crob:
                     {
                         db->crob = ControlCodeToType(StringToControlCode(cj->valuestring));
-                        //db->crob = StringToControlCode(cj->valuestring);
-                        //db->valueint = cj->valueint;
-                        //db->anInt16 = cj->valueint;
                         return  1;
                     }
                     default:
@@ -467,7 +450,7 @@ typedef struct sysCfg_t {
         void showDbMap()
         {
             std::cout << " show DbVars\n" ;
-            std::map<std::string, DbVar *>::iterator it_vars;
+            dbvar_map::iterator it_vars;
             for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
             {
                 DbVar* db = it_vars->second;
@@ -477,7 +460,7 @@ typedef struct sysCfg_t {
 
         void addVarsToCj(cJSON* cj)
         {
-            std::map<std::string, DbVar *>::iterator it_vars;
+            dbvar_map::iterator it_vars;
             for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
             {
                 DbVar* db = it_vars->second;
@@ -488,7 +471,7 @@ typedef struct sysCfg_t {
         }
         void addVarsToVec(std::vector<DbVar*>&dbs)
         {
-            std::map<std::string, DbVar *>::iterator it_vars;
+            dbvar_map::iterator it_vars;
             for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
             {
                 DbVar* db = it_vars->second;
@@ -509,8 +492,8 @@ typedef struct sysCfg_t {
         int remote_address;
 
         // new way of doing this
-        std::map<std::string, DbVar*> dbMap;
-        std::map<int, DbVar *> dbMapIx[NumTypes];
+        dbvar_map dbMap;
+        dbix_map dbMapIx[NumTypes];
         int numObjs[NumTypes];
 
         fims* p_fims;

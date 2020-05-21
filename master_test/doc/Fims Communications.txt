@@ -135,9 +135,6 @@ The config file will have to tell us what the offsets mean
 
 The outstation detects the master writes
 
-
-
-
                ************Start called
               ************ int16 Operate index:8 value:1234 opType:1
               ************ int32 Operate index:0 value:52 opType:1

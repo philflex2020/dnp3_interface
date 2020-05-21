@@ -365,40 +365,24 @@ int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
 
 const char *iotypToStr (int t)
 {
-    switch (t) {
-        case AnIn16:
-            return "AnOPInt16";
-        case AnIn32:
-            return "AnOPInt32";
-        case AnF32:
-            return "AnOPF32";
-        case Type_Crob:
-            return "CROB";
-        case Type_Analog:
-            return "analog";
-        case Type_Binary:
-            return "binary";
-        default:
-            return "Unknown";
+    if (t < NumTypes)
+    {
+        return reg_types[t];
     }
     return "Unknown";
 }
+
 int iotypToId (const char* t)
 {
-    if (strcmp(t,"AnOPInt16")==0)
-        return AnIn16;
-    if (strcmp(t,"AnOPInt32")==0)
-        return AnIn32;
-    if (strcmp(t,"AnOPF32")==0)
-        return AnF32;
-    if (strcmp(t,"CROB")==0)
-        return Type_Crob;
-    if (strcmp(t,"analog")==0)
-        return Type_Analog;
-    if (strcmp(t,"binary")==0)
-        return Type_Binary;
+    int i;
+    for (i = 0; i < NumTypes; i++)
+    {
+        if (strcmp(t , reg_types[i] ) == 0 )
+        return i;
+    }
     return -1;
 }
+
 bool getCJint (cJSON *cj, const char *name, int& val, bool required)
 {
     bool ok = !required;
