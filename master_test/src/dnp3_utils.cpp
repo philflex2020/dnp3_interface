@@ -461,7 +461,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             continue;
         }
-        sys->addDbVar(id->valuestring, idx, offset->valueint uri?uri->valuestring:NULL);
+        sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL);
         FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         sys->numObjs[idx]++; 
     }
