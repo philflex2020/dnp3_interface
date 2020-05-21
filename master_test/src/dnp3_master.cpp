@@ -719,12 +719,12 @@ int main(int argc, char *argv[])
                             else
                             {
                                 // process a simple list
-                                iterator = itypeValues;
+                                iterator = itypeValues->child;
                                 FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", iterator->type);
 
                                 while(iterator!= NULL)
                                 {   
-                                    FPS_DEBUG_PRINT("Found variable name  [%s] child %p "
+                                    FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
                                                             , iterator->string
                                                             , (void *)iterator->child
                                                             );
@@ -733,7 +733,7 @@ int main(int argc, char *argv[])
                                                             , iterator->child->type
                                                             , (void*)iterator->next
                                     );  
-                                    addValueToCommand(cj, &sys_cfg, commands, iterator->string, iterator->child);
+                                    //addValueToCommand(cj, &sys_cfg, commands, iterator->string, iterator->child);
                                     iterator = iterator->next;
                                 }
                                 FPS_DEBUG_PRINT("***** Done with variable list \n\n");
