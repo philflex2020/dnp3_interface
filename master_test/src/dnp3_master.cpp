@@ -726,7 +726,7 @@ int main(int argc, char *argv[])
                                 {   
                                     FPS_DEBUG_PRINT("Found variable name  [%s] child %p "
                                                             , iterator->string
-                                                            , iterator->child
+                                                            , (void *)iterator->child
                                                             );
                                     FPS_DEBUG_PRINT("Found variable name  [%s] child type %d next %p\n"
                                                             , iterator->string
