@@ -510,6 +510,18 @@ typedef struct sysCfg_t {
             uriMap[uri].push_back(db);
             //}
         }
+
+        void addUri(cJSON* uri, DbVar*db)
+        {
+            if(uri)
+            {
+                if(uri->valuestring)
+                {
+                    return addUri(uri->valuestring, db);
+                }
+            }
+        }
+        
         void addDefUri(DbVar*db)
         {
             return addUri(id, db);
