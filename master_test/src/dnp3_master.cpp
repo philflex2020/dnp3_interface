@@ -370,7 +370,7 @@ int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjof
     return addValueToCommand(cj, cfgdb, commands, cjoffset->valuestring, cjvalue);
 }
 
-int addValueToVec(vector<DbVar*>&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue)
+int addValueToVec(std::vector<DbVar*>&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue)
 {
     // cjoffset must be a name
     // cjvalue may be an object
@@ -446,12 +446,12 @@ int addValueToVec(vector<DbVar*>&dbs, sysCfg*sys, /*CommandSet& commands,*/ cons
     return dbs.size();   
 }
 
-int addValueToVec(vector<DbVar*>&dbs, sysCfg*cfgdb, /*CommandSet& commands,*/ cJSON *cjoffset, cJSON *cjvalue)
+int addValueToVec(std::vector<DbVar*>&dbs, sysCfg*cfgdb, /*CommandSet& commands,*/ cJSON *cjoffset, cJSON *cjvalue)
 {
     return addValueToVec(dbs, cfgdb, /*commands,*/ cjoffset->valuestring, cjvalue);
 }
 
-cJSON* parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char* who)
+cJSON* parseTheThing( std::vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
     const char* uri = NULL;
     int fragptr = 1;
@@ -961,7 +961,7 @@ int main(int argc, char *argv[])
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
-            vector<DbVar *>dbs;
+            std::vector<DbVar *>dbs;
             cJSON *cjb = parseTheThing(dbs, &sys_cfg, msg, "master");
             if(dbs.size() > 0)
             {

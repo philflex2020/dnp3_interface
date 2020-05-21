@@ -486,7 +486,7 @@ typedef struct sysCfg_t {
             }
 
         }
-        void addVarsToVec(vector<DbVar*>&dbs)
+        void addVarsToVec(std::vector<DbVar*>&dbs)
         {
             std::map<std::string, DbVar *>::iterator it_vars;
             for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
