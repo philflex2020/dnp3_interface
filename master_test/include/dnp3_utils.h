@@ -485,6 +485,17 @@ typedef struct sysCfg_t {
             }
 
         }
+        void addVarsToVec(vector<DbVar*>&dbs)
+        {
+            std::map<std::string, DbVar *>::iterator it_vars;
+            for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
+            {
+                DbVar* db = it_vars->second;
+                dbs.push_back(db);
+                std::cout << "added to Vector :" <<it_vars->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+            }
+
+        }
 
         char* name;
         char* protocol;
