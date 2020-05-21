@@ -532,7 +532,6 @@ typedef struct sysCfg_t {
                                     , db->type
                                     , db->offset
                                     );
-
                 }
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);

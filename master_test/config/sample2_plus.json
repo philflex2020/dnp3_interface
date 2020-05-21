@@ -91,15 +91,18 @@
                 "offset": 0,
                 "name": "testOP_32_1",
                 "unit": "MW",
-                "signed": true
+                "signed": true,
+                "uri": "/home/mystuff/uri"
             },
             {
                 "id": "testOP_32_22",
                 "offset": 2,
                 "name": "testOP_32_22",
                 "unit": "MW",
-                "signed": true
+                "signed": true,
+                "uri": "/home/mystuff/uri"
             }
+        
         ],
         "AnOPInt16": [
             {
@@ -107,7 +110,9 @@
                 "offset": 8,
                 "name": "testOP_16_8",
                 "unit": "MW",
-                "signed": true
+                "signed": true,
+                "uri": "/home/athings/uri"
+
             }
         ],
         "CROB": [
