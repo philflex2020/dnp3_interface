@@ -824,7 +824,7 @@ int main(int argc, char *argv[])
     fims* p_fims;
     char sub[] = "/components";
     char* subs = sub;
-    char* uri;
+    //char* uri;
     bool publish_only = false;
     bool running = true;
     signal(SIGTERM, signal_handler);
