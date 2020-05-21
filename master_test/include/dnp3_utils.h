@@ -230,11 +230,11 @@ typedef struct DbVar_t {
     uint32_t anInt32;
     double anF32;
     uint8_t crob;
-    
+
 } DbVar;
 
-typedef std::map<std::string, DbVar*> dbvar_map;
-typedef std::map<int, DbVar*>dbix_map;
+typedef std::map<std::string, DbVar_t*> dbvar_map;
+typedef std::map<int, DbVar_t*>dbix_map;
 
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(cJSON* cj, const char *dname);
