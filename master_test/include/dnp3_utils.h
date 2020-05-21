@@ -214,7 +214,7 @@ typedef struct DbVar_t {
         valflag = 0;
         if(iuri)
         {
-            uri = strdup(iuri)
+            uri = strdup(iuri);
         }
         else
         {
