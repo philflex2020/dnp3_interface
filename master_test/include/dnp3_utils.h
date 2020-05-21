@@ -187,6 +187,7 @@ typedef struct sdata
 //    },
 //TODO use real types
 // test code for dnp3_utils
+
 enum Type_of_Register{
     AnIn16,
     AnIn32,
@@ -493,8 +494,8 @@ typedef struct sysCfg_t {
 
         // new way of doing this
         dbvar_map dbMap;
-        dbix_map dbMapIx[NumTypes];
-        int numObjs[NumTypes];
+        dbix_map dbMapIx[Type_of_Register::NumTypes];
+        int numObjs[Type_of_Register::NumTypes];
 
         fims* p_fims;
         cJSON* cj;
