@@ -524,6 +524,16 @@ typedef struct sysCfg_t {
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
                 FPS_ERROR_PRINT(" %s uri [%s] num vars %ld\n", __FUNCTION__, it->first, it->second.size());
+                for (int i = 0 ; i < it->second.size(); i++ )
+                {
+                    DbVar* db = it->second[i];
+                    FPS_ERROR_PRINT("                 [%s] %d %d\n"
+                                    , db->name.c_str() 
+                                    , db->type
+                                    , db->offset
+                                    );
+
+                }
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
 
