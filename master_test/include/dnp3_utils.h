@@ -523,7 +523,7 @@ typedef struct sysCfg_t {
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
-                FPS_ERROR_PRINT(" %s uri [%s] num vars %z\n", __FUNCTION__, it->first, it->second.size());
+                FPS_ERROR_PRINT(" %s uri [%s] num vars %ld\n", __FUNCTION__, it->first, it->second.size());
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
 
