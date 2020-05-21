@@ -292,24 +292,24 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     return master;
 }
 //
-int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON *cjvalue)
+int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, const char* valuestring, cJSON *cjvalue)
 {
     // cjoffset must be a name
     // cjvalue may be an object
 
-    if (!cjoffset->valuestring)
+    if (valuestring == NULL)
     {
         FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
         return -1;
     }
 
-    DbVar* pt = getDbVar(cfgdb, cjoffset->valuestring); 
+    DbVar* pt = getDbVar(cfgdb, valuestring); 
     if (pt == NULL)
     {
-        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, cjoffset->valuestring);
+        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, valuestring);
         return -1;
     }
-    FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, cjoffset->valuestring);
+    FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, valuestring);
 
     if (cjvalue->type == cJSON_Object)
     {
@@ -325,21 +325,21 @@ int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjof
     if (pt->type == AnIn16) 
     {
         commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),pt->offset)});
-        cfgdb->setDbVar(cjoffset->valuestring, cjvalue);
-        addVarToCj(cfgdb, cj, cjoffset->valuestring);
+        cfgdb->setDbVar(valuestring, cjvalue);
+        addVarToCj(cfgdb, cj, valuestring);
     }
     else if (pt->type == AnIn32) 
     {
         commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
-        cfgdb->setDbVar(cjoffset->valuestring, cjvalue);
-        addVarToCj(cfgdb, cj, cjoffset->valuestring);
+        cfgdb->setDbVar(valuestring, cjvalue);
+        addVarToCj(cfgdb, cj, valuestring);
 
     }
     else if (pt->type == AnF32) 
     {
         commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
-        cfgdb->setDbVar(cjoffset->valuestring, cjvalue);
-        addVarToCj(cfgdb, cj, cjoffset->valuestring);
+        cfgdb->setDbVar(valuestring, cjvalue);
+        addVarToCj(cfgdb, cj, valuestring);
 
     }
     else if (pt->type == Type_Crob) 
@@ -347,21 +347,26 @@ int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjof
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
                                                     , pt->name.c_str()
-                                                    , cjvalue->valuestring
-                                                    , (int)StringToControlCode(cjvalue->valuestring)
+                                                    , valuestring
+                                                    , (int)StringToControlCode(valuestring)
                                                     );
 
-        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(cjvalue->valuestring)),pt->offset)});
-        cfgdb->setDbVar(cjoffset->valuestring, cjvalue);
-        addVarToCj(cfgdb, cj, cjoffset->valuestring);
+        commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(valuestring)),pt->offset)});
+        cfgdb->setDbVar(valuestring, cjvalue);
+        addVarToCj(cfgdb, cj, valuestring);
 
     }
     else
     {
-      FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, cjoffset->valuestring);  
+      FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, valuestring);  
       return -1;
     }
     return 0;   
+}
+
+int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON *cjvalue)
+{
+    return addValueToCommand(cj, cfgdb, commands, cjoffset->valuestring, cjvalue);
 }
 
 int main(int argc, char *argv[])
