@@ -62,7 +62,7 @@ volatile bool running = true;
 void signal_handler (int sig)
 {
     running = false;
-    fprintf(stderr, "signal of type %d caught.\n", sig);
+    FPS_ERROR_PRINT("signal of type %d caught.\n", sig);
     signal(sig, SIG_DFL);
 }
 
@@ -85,7 +85,7 @@ bool process_fims_message(fims_message* msg, server_data* server_map)
                 if(uri_it == server_map->uri_to_register.end())
                 {
                     // failed to find in map
-                    fprintf(stderr, "Fims reply for unrequested uri: %s.\n", uri);
+                    FPS_ERROR_PRINT( "Fims reply for unrequested uri: %s.\n", uri);
                     return false;
                 }
                 body_map* body = uri_it->second;
@@ -93,7 +93,7 @@ bool process_fims_message(fims_message* msg, server_data* server_map)
                 //check for valid json
                 if(body_obj == NULL)
                 {
-                    fprintf(stderr, "Received invalid json object for set %s. \"%s\"\n", uri, msg->body);
+                    FPS_ERROR_PRINT(" Received invalid json object for set %s. \"%s\"\n", uri, msg->body);
                     return false;
                 }
                 for(body_map::iterator body_it = body->begin(); body_it != body->end(); ++body_it)
@@ -101,7 +101,7 @@ bool process_fims_message(fims_message* msg, server_data* server_map)
                     cJSON* cur_obj = cJSON_GetObjectItem(body_obj, body_it->first);
                     if(cur_obj == NULL)
                     {
-                        fprintf(stderr, "Failed to find %s in %s.\n", body_it->first, uri);
+                        FPS_ERROR_PRINT("Failed to find %s in %s.\n", body_it->first, uri);
                         return false;
                     }
                     update_register_value(server_map->mb_mapping, body_it->second.first, body_it->second.second, cur_obj);
@@ -136,7 +136,7 @@ bool process_fims_message(fims_message* msg, server_data* server_map)
             if(uri_it == server_map->uri_to_register.end())
             {
                 //failed to find uri in devices we care about.
-                fprintf(stderr, "Received pub not in uri list: %s.\n", msg->uri);
+                FPS_ERROR_PRINT("Received pub not in uri list: %s.\n", msg->uri);
                 return false;
             }
             cJSON* body_obj = cJSON_Parse(msg->body);
@@ -171,14 +171,14 @@ bool initialize_map(server_data* server_map)
 {
     if(server_map->p_fims->Subscribe((const char**)server_map->uris, server_map->num_uris + 1) == false)
     {
-        fprintf(stderr, "Failed to subscribe to URI.\n");
+        FPS_ERROR_PRINT("Failed to subscribe to URI.\n");
         return false;
     }
 
     char replyto[256];
     for(uri_map::iterator it = server_map->uri_to_register.begin(); it != server_map->uri_to_register.end(); ++it)
     {
-        sprintf(replyto, "%s/reply%s", server_map->base_uri, it->first);
+        snprintf(replyto, 256 , "%s/reply%s", server_map->base_uri, it->first);
         server_map->p_fims->Send("get", it->first, replyto, NULL);
         timespec current_time, timeout;
         clock_gettime(CLOCK_MONOTONIC, &timeout);
@@ -200,7 +200,7 @@ bool initialize_map(server_data* server_map)
                 found = true;
                 if(rc == false)
                 {
-                    fprintf(stderr, "Error, failed to find value from config file in defined uri.\n");
+                    FPS_ERROR_PRINT("Error, failed to find value from config file in defined uri.\n");
                     server_map->p_fims->free_message(msg);
                     return false;
                 }
@@ -209,7 +209,7 @@ bool initialize_map(server_data* server_map)
         }
         if(found == false)
         {
-            fprintf(stderr, "Failed to find get response for %s.\n", it->first);
+            FPS_ERROR_PRINT("Failed to find get response for %s.\n", it->first);
             return false;
         }
     }
@@ -809,15 +809,41 @@ cJSON* parseTheThing( std::vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, con
                         }
                     }
                 }
-                //fprintf(stderr, "      *****Running Direct Outputs \n");
-                //master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
             }
         }
-    //            dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
     }
-
     return body_JSON;//return dbs.size();
 }
+
+void addToCommands (CommandSet & commands, DbVar *db)
+{
+    switch (db->type) 
+    {
+        case Type_Crob:
+        {
+            commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(db->crob)), db->offset)});
+            break;
+        }
+        case AnIn16:
+        {
+            commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(db->anInt16), db->offset)});
+            break;
+        }
+        case AnIn32:
+        {
+            commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(db->anInt32), db->offset)});
+            break;
+        }
+        case AnF32:
+        {
+            commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(db->anF32), db->offset)});
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -846,22 +872,22 @@ int main(int argc, char *argv[])
     datalog data[Num_Register_Types];
     memset(data, 0, sizeof(datalog) * Num_Register_Types);
 
-    fprintf(stderr, "Reading config file and starting setup.\n");
+    FMS_DEBUG_PRINT("Reading config file and starting setup.\n");
     cJSON* config = get_config_json(argc, argv);
     if(config == NULL)
     {
-        fprintf(stderr, "Error reading config file\n");
+        FMS_ERROR_PRINT("Error reading config file\n");
         return 1;
     }
     if(!parse_system(config, &sys_cfg)) 
     {
-        fprintf(stderr, "Error reading system from config file.\n");
+        FMS_ERROR_PRINT("Error reading system from config file.\n");
         cJSON_Delete(config);
         return 1;
     }
     if(!parse_variables(config, &sys_cfg)) 
     {
-        fprintf(stderr, "Error reading variabled from config file.\n");
+        FMS_ERROR_PRINT("Error reading variabled from config file.\n");
         cJSON_Delete(config);
         return 1;
     }
@@ -871,7 +897,7 @@ int main(int argc, char *argv[])
 
     auto manager = setupDNP3Manager();
     if (!manager){
-        fprintf(stderr, "Error in setupDNP3Manager.\n");
+        FMS_ERROR_PRINT("Error in setupDNP3Manager.\n");
         return 1;
     }
     // now we use data from the config file
@@ -879,22 +905,19 @@ int main(int argc, char *argv[])
     //auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
     auto channel = setupDNP3channel(manager, sys_cfg.id, sys_cfg.ip_address, sys_cfg.port);
     if (!channel){
-        fprintf(stderr, "Error in setupDNP3channel.\n");
+        FMS_ERROR_PRINT("Error in setupDNP3channel.\n");
         delete manager;
         return 1;
     }
         //std::shared_ptr<IChannel> 
     auto master = setupDNP3master (channel, "master1", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
     if (!master){
-        fprintf(stderr, "Error in setupDNP3master.\n");
+        FMS_ERROR_PRINT("Error in setupDNP3master.\n");
         delete manager;
         return 1;
     }
     //we cant do this
     //auto master2 = setupDNP3master (channel2, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
-    //if (!master2){
-    //    printf("fooey 4\n");
-    //}
 
     FPS_DEBUG_PRINT("DNP3 Setup complete: Entering main loop.\n");
 
@@ -920,15 +943,7 @@ int main(int argc, char *argv[])
     }
 
     FPS_DEBUG_PRINT("Map configured: Initializing data.\n");
-    //todo this should be defined to a better length
-    //char uri[100];
-    //sprintf(uri,"/interfaces/%s", sys_cfg.name);
-    //if(p_fims->Connect((char *)"fims_master2") == false)
-    //{
-    //    printf("Connect failed.\n");
-    //    p_fims->Close();
-    //    return 1;
-    //}
+    
     // subs = /components
     if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
     {
@@ -961,21 +976,22 @@ int main(int argc, char *argv[])
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
-            std::vector<DbVar *>dbs;
+            std::vector<DbVar *>dbs; // collect all the vars here
             cJSON *cjb = parseTheThing(dbs, &sys_cfg, msg, "master");
             if(dbs.size() > 0)
             {
-                cJSON*cj = NULL;
-                
+                CommandSet commands;
+                cJSON*cj = NULL;                
                 if(msg->replyto != NULL)
                     cj = cJSON_CreateObject();
                 while (!dbs.empty())
                 {
                     DbVar* db = dbs.back();
-                    // TODO add to commands
+                    addToCommands (commands, db);
                     addVarToCj(cj, db);
                     dbs.pop_back();
                 }
+
                 if(cj)
                 {
                     const char* reply = cJSON_PrintUnformatted(cj);
@@ -984,7 +1000,9 @@ int main(int argc, char *argv[])
                     p_fims->Send("set", msg->replyto, NULL, reply);
                     free((void* )reply);
                 }
-                // TODO send commands
+                FMS_DEBUG_PRINT("      *****Running Direct Outputs \n");
+                master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
+
             }
 
             if (cjb != NULL)
@@ -1005,13 +1023,13 @@ int main(int argc, char *argv[])
             FD_SET(fims_socket, &all_connections);
         else
         {
-            fprintf(stderr, "Failed to get fims socket.\n");
+            FPS_ERROR_PRINT("Failed to get fims socket.\n");
             rc = 1;
             goto cleanup;
         }
 
         fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
-        fprintf(stderr, "Fims Setup complete: now for DNP3\n");
+        FPS_DEBUG_PRINT("Fims Setup complete: now for DNP3\n");
 
         while(running)
         {
@@ -1019,7 +1037,7 @@ int main(int argc, char *argv[])
             // Select will block until one of the file descriptors has data
             if(-1 == select(fd_max+1, &connections_with_data, NULL, NULL, NULL))
             {
-                fprintf(stderr, "server select() failure: %s.\n", strerror(errno));
+                FPS_ERROR_PRINT("server select() failure: %s.\n", strerror(errno));
                 break;
             }
             //Loop through file descriptors to see which have data to read
@@ -1037,12 +1055,12 @@ int main(int argc, char *argv[])
                         if(server_map->p_fims->Connected() == false)
                         {
                             // fims connection closed
-                            fprintf(stderr, "Fims connection closed.\n");
+                            FPS_ERROR_PRINT("Fims connection closed.\n");
                             FD_CLR(current_fd, &all_connections);
                             break;
                         }
                         else
-                            fprintf(stderr, "No fims message. Select led us to a bad place.\n");
+                            FPS_ERROR_PRINT("No fims message. Select led us to a bad place.\n");
                     }
                     else
                     {
@@ -1053,7 +1071,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        fprintf(stderr, "Main loop complete: Entering clean up.\n");
+        FPS_DEBUG_PRINT("Main loop complete: Entering clean up.\n");
     }
 
     cleanup:
