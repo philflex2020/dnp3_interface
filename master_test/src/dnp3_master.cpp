@@ -714,7 +714,7 @@ int main(int argc, char *argv[])
                             else
                             {
                                 // process a simple list
-                                iterator = itypeValues;
+                                iterator = itypeValues->child;
                                 FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", iterator->type);
 
                                 while(iterator!= NULL)
