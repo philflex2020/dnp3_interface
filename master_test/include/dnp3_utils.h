@@ -32,6 +32,8 @@ struct char_cmp {
         return strcmp(a,b)<0;
     }
 };
+struct DbVar;
+
 typedef struct maps_t maps;
 typedef std::map<const char*, std::pair<bool*, maps**>, char_cmp> body_map;
 typedef std::map<const char*, body_map*, char_cmp> uri_map;
