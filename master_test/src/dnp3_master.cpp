@@ -728,12 +728,12 @@ int main(int argc, char *argv[])
                                                             , iterator->string
                                                             , (void *)iterator->child
                                                             );
-                                    FPS_DEBUG_PRINT("Found variable name  [%s] child type %d next %p\n"
-                                                            , iterator->string
-                                                            , iterator->child->type
-                                                            , (void*)iterator->next
+                                    // FPS_DEBUG_PRINT("Found variable name  [%s] child type %d next %p\n"
+                                    //                         , iterator->string
+                                    //                         , iterator->child->type
+                                    //                         , (void*)iterator->next
                                     );  
-                                    //addValueToCommand(cj, &sys_cfg, commands, iterator->string, iterator->child);
+                                    addValueToCommand(cj, &sys_cfg, commands, iterator->string, iterator);
                                     iterator = iterator->next;
                                 }
                                 FPS_DEBUG_PRINT("***** Done with variable list \n\n");
