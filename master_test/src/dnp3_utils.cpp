@@ -365,7 +365,7 @@ int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
 
 const char *iotypToStr (int t)
 {
-    if (t < Type_of_Register::NumTypes)
+    if (t < Type_of_Var::NumTypes)
     {
         return reg_types[t];
     }
@@ -375,7 +375,7 @@ const char *iotypToStr (int t)
 int iotypToId (const char* t)
 {
     int i;
-    for (i = 0; i < Type_of_Register::NumTypes; i++)
+    for (i = 0; i < Type_of_Var::NumTypes; i++)
     {
         if (strcmp(t , reg_types[i] ) == 0 )
         return i;
@@ -476,7 +476,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         FPS_ERROR_PRINT("objects object is missing from file! \n");
         return false;
     }
-    for (int idx = 0; idx< Type_of_Register::NumTypes; idx++)
+    for (int idx = 0; idx< Type_of_Var::NumTypes; idx++)
         parse_object(sys, JSON_objects, idx);
     return true;
 }

@@ -32,7 +32,7 @@ struct char_cmp {
         return strcmp(a,b)<0;
     }
 };
-struct DbVar;
+
 
 typedef struct maps_t maps;
 typedef std::map<const char*, std::pair<bool*, maps**>, char_cmp> body_map;
@@ -190,7 +190,7 @@ typedef struct sdata
 //TODO use real types
 // test code for dnp3_utils
 
-enum Type_of_Register{
+enum Type_of_Var{
     AnIn16,
     AnIn32,
     AnF32,
@@ -496,8 +496,8 @@ typedef struct sysCfg_t {
 
         // new way of doing this
         dbvar_map dbMap;
-        dbix_map dbMapIx[Type_of_Register::NumTypes];
-        int numObjs[Type_of_Register::NumTypes];
+        dbix_map dbMapIx[Type_of_Var::NumTypes];
+        int numObjs[Type_of_Var::NumTypes];
 
         fims* p_fims;
         cJSON* cj;
