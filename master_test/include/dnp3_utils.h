@@ -37,8 +37,7 @@ struct char_cmp {
 typedef struct maps_t maps;
 typedef std::map<const char*, std::pair<bool*, maps**>, char_cmp> body_map;
 typedef std::map<const char*, body_map*, char_cmp> uri_map;
-typedef std::map<std::string, DbVar*> dbvar_map;
-typedef std::map<int, DbVar*>dbix_map;
+
 
 //typedef struct _modbus modbus_t;
 
@@ -232,8 +231,10 @@ typedef struct DbVar_t {
     double anF32;
     uint8_t crob;
     
-
 } DbVar;
+
+typedef std::map<std::string, DbVar*> dbvar_map;
+typedef std::map<int, DbVar*>dbix_map;
 
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(cJSON* cj, const char *dname);
