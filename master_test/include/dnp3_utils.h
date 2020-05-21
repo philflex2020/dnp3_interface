@@ -204,7 +204,7 @@ enum Type_of_Var{
 // local copy of all inputs and outputs
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
-    DbVar_t(std::string _name, int _type, int _offset, cons char* iuri):name(_name), site(""),type(_type), offset(_offset),site_offset(-1) {
+    DbVar_t(std::string _name, int _type, int _offset, const char* iuri):name(_name), site(""),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
         valueint = 0;
         anInt16 = 0;
