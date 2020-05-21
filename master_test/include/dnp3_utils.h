@@ -211,7 +211,7 @@ typedef struct DbVar_t {
         anInt32 = 0;
         anF32 = 0.0;
         crob = 0;
-        vallag = 0;
+        valflag = 0;
     };
 
     // TODO turn these into char*
