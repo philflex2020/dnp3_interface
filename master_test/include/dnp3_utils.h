@@ -471,37 +471,64 @@ typedef struct sysCfg_t {
         
         void showDbMap()
         {
-            std::cout << " show DbVars\n" ;
-            dbvar_map::iterator it_vars;
-            for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
+            FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
+
+            dbvar_map::iterator it;
+            for (it = dbMap.begin(); it != dbMap.end(); ++it)
             {
-                DbVar* db = it_vars->second;
-                std::cout << it_vars->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+                DbVar* db = it->second;
+                FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
+                            , it->first.c_str()
+                            , db->type
+                            , db->offset
+                            );
+
             }
+            FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
+
         }
 
         void addVarsToCj(cJSON* cj)
         {
-            dbvar_map::iterator it_vars;
-            for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
+            dbvar_map::iterator it;
+            for (it = dbMap.begin() ; it != dbMap.end();++it)
             {
-                DbVar* db = it_vars->second;
+                DbVar* db = it->second;
                 addVarToCj(cj, db);
-                std::cout << it_vars->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+                FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
+                            , it->first.c_str()
+                            , db->type
+                            , db->offset
+                            );  
             }
 
         }
+
         void addVarsToVec(std::vector<DbVar*>&dbs)
         {
-            dbvar_map::iterator it_vars;
-            for (it_vars = dbMap.begin() ; it_vars != dbMap.end();++it_vars)
+            dbvar_map::iterator it;
+            for (it = dbMap.begin() ; it != dbMap.end();++it)
             {
-                DbVar* db = it_vars->second;
+                DbVar* db = it->second;
                 dbs.push_back(db);
-                std::cout << "added to Vector :" <<it_vars->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+                std::cout << "added to Vector :" <<it->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
             }
 
         }
+
+        void showUris()
+        {
+            FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
+
+            duri_map::iterator it;
+            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            {
+                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first, it->second.size());
+            }
+            FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+
+        }
+        
         void addUri(const char *uri, DbVar*db)
         {
             //duri_map::iterator it_uris;

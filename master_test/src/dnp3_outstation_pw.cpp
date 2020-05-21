@@ -180,6 +180,7 @@ int main(int argc, char* argv[])
     //sys_cfg.showBinaries();
     //sys_cfg.showAnalogs();
     sys_cfg.showDbMap();
+    sys_cfg.showUris();
 
     sys_cfg.p_fims = p_fims;
     // sys_cfg.name, ip_address, port
