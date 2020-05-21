@@ -309,6 +309,7 @@ int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, const char*
         FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, valuestring);
         return -1;
     }
+    
     FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, valuestring);
 
     if (cjvalue->type == cJSON_Object)
@@ -742,7 +743,7 @@ int main(int argc, char *argv[])
                             cJSON_Delete(cj);
                             cj = NULL;
 
-                            if(msg->replyto != NULL)
+                            if((msg->replyto != NULL) && (strlen(reply) > 2))
                                 p_fims->Send("set", msg->replyto, NULL, reply);
                             free((void* )reply);
                             ok = false;  // we are done
