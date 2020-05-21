@@ -200,6 +200,13 @@ enum Type_of_Var{
 };
 
 
+struct char_cmp {
+    bool operator () (const char *a,const char *b) const
+    {
+        return strcmp(a,b)<0;
+    }
+};
+
 
 // local copy of all inputs and outputs
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
@@ -244,6 +251,7 @@ typedef struct DbVar_t {
 
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
+typedef std::map<char*,std::vector<DbVar_t*>,char_cmp>duri_map;
 
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(cJSON* cj, const char *dname);
@@ -273,7 +281,7 @@ typedef struct sysCfg_t {
 
     public:
         
-        void addDbVar(std::string name, int type, int offset, char* uri) 
+        DbVar* addDbVar(std::string name, int type, int offset, char* uri) 
         {
             DbVar* db = NULL;
 
@@ -286,13 +294,14 @@ typedef struct sysCfg_t {
                 }
                 else
                 {
-                    std::cout << __FUNCTION__<< " name [" << name <<"] already defined  in dbMapIx\n";                
+                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name);
                 }
             }
             else
             {
-                std::cout << __FUNCTION__<< " name [" << name <<"] already defined  in dbMap\n";                
+                FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name);
             }
+            return db;
         }
 
         DbVar* getDbVar(const char *name)
@@ -493,7 +502,19 @@ typedef struct sysCfg_t {
             }
 
         }
-
+        void addUri(const char *uri, DbVar*db)
+        {
+            //duri_map::iterator it_uris;
+            //if(uriMap.find(uri) == uriMap.end())
+            //{
+            uriMap[uri].push_back(db);
+            //}
+        }
+        void addDefUri(DbVar*db)
+        {
+            return addUri(id, db);
+        }
+        
         char* name;
         char* protocol;
         int version;
@@ -507,6 +528,7 @@ typedef struct sysCfg_t {
         // new way of doing this
         dbvar_map dbMap;
         dbix_map dbMapIx[Type_of_Var::NumTypes];
+        duri_map uriMap;
         int numObjs[Type_of_Var::NumTypes];
 
         fims* p_fims;
