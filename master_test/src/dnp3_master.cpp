@@ -968,7 +968,7 @@ int main(int argc, char *argv[])
                 cJSON*cj = NULL;
                 
                 if(msg->replyto != NULL)
-                    cj = CJSON_CreateObject();
+                    cj = cJSON_CreateObject();
                 while (!dbs.empty())
                 {
                     DbVar* db = dbs.back();
