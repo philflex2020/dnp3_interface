@@ -382,7 +382,7 @@ int addValueToVec(vector<DbVar*>&dbs, sysCfg*sys, /*CommandSet& commands,*/ cons
     }
 
     DbVar* db = getDbVar(sys, valuestring); 
-    if (pt == NULL)
+    if (db == NULL)
     {
         FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, valuestring);
         return -1;
@@ -453,6 +453,7 @@ int addValueToVec(vector<DbVar*>&dbs, sysCfg*cfgdb, /*CommandSet& commands,*/ cJ
 
 cJSON* parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
+    const char* uri = NULL;
     int fragptr = 1;
     bool ok = true;
     cJSON* body_JSON = cJSON_Parse(msg->body);
@@ -544,7 +545,7 @@ cJSON* parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const ch
         if(strcmp(msg->method,"get") == 0)
         {
             FPS_ERROR_PRINT("fims method [%s] almost  supported for master\n", msg->method);
-            cJSON* cj = cJSON_CreateObject();
+            //cJSON* cj = cJSON_CreateObject();
 
             // is this a singleton
             if ((int)msg->nfrags > fragptr+2)
@@ -741,9 +742,9 @@ cJSON* parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const ch
                             cjvalue = cJSON_GetObjectItem(iterator, "value");
                             int dboffset = cjoffset->valueint;
                             //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),dboffset)});
-                            sys_cfg.setDbVarIx(AnIn32, dboffset, cjvalue->valueint);
+                            sys->setDbVarIx(AnIn32, dboffset, cjvalue->valueint);
                             // TODO fix this
-                            sys->setDbVarIx(AnIn16, dboffset, cjvalue->valueint);
+                            //sys->setDbVarIx(AnIn16, dboffset, cjvalue->valueint);
                             DbVar* db = sys->getDbVar(cjoffset->valuestring);
                             if(db)
                             {
@@ -763,9 +764,9 @@ cJSON* parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const ch
                             cjvalue = cJSON_GetObjectItem(iterator, "value");
                             int dboffset = cjoffset->valueint;
                             //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),dboffset)});
-                            sys_cfg.setDbVarIx(AnF32, dboffset, cjvalue->valuedouble);
+                            sys->setDbVarIx(AnF32, dboffset, cjvalue->valuedouble);
                             // TODO fix this
-                            sys->setDbVarIx(AnIn16, dboffset, cjvalue->valueint);
+                            //sys->setDbVarIx(AnIn16, dboffset, cjvalue->valueint);
                             DbVar* db = sys->getDbVar(cjoffset->valuestring);
                             if(db)
                             {
@@ -985,7 +986,7 @@ int main(int argc, char *argv[])
                 }
                 // TODO send commands
             }
-            
+
             if (cjb != NULL)
             {
                 cJSON_Delete(cjb);
