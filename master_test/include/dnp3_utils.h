@@ -200,7 +200,7 @@ enum Type_of_Var{
 };
 
 
-struct char_cmp {
+struct char_dcmp {
     bool operator () (const char *a,const char *b) const
     {
         return strcmp(a,b)<0;
@@ -251,7 +251,7 @@ typedef struct DbVar_t {
 
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
-typedef std::map<char*,std::vector<DbVar_t*>,char_cmp>duri_map;
+typedef std::map<const char*,std::vector<DbVar_t*>,char_dcmp>duri_map;
 
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(cJSON* cj, const char *dname);
@@ -521,7 +521,7 @@ typedef struct sysCfg_t {
                 }
             }
         }
-        
+
         void addDefUri(DbVar*db)
         {
             return addUri(id, db);
