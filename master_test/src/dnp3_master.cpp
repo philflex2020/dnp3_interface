@@ -815,7 +815,7 @@ cJSON* parseTheThing( std::vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, con
     return body_JSON;//return dbs.size();
 }
 
-void addToCommands (CommandSet & commands, DbVar *db)
+void addVarToCommands (CommandSet & commands, DbVar *db)
 {
     switch (db->type) 
     {
@@ -872,22 +872,22 @@ int main(int argc, char *argv[])
     datalog data[Num_Register_Types];
     memset(data, 0, sizeof(datalog) * Num_Register_Types);
 
-    FMS_DEBUG_PRINT("Reading config file and starting setup.\n");
+    _DEBUG_PRINT("Reading config file and starting setup.\n");
     cJSON* config = get_config_json(argc, argv);
     if(config == NULL)
     {
-        FMS_ERROR_PRINT("Error reading config file\n");
+        FPS_ERROR_PRINT("Error reading config file\n");
         return 1;
     }
     if(!parse_system(config, &sys_cfg)) 
     {
-        FMS_ERROR_PRINT("Error reading system from config file.\n");
+        FPS_ERROR_PRINT("Error reading system from config file.\n");
         cJSON_Delete(config);
         return 1;
     }
     if(!parse_variables(config, &sys_cfg)) 
     {
-        FMS_ERROR_PRINT("Error reading variabled from config file.\n");
+        FPS_ERROR_PRINT("Error reading variabled from config file.\n");
         cJSON_Delete(config);
         return 1;
     }
@@ -897,7 +897,7 @@ int main(int argc, char *argv[])
 
     auto manager = setupDNP3Manager();
     if (!manager){
-        FMS_ERROR_PRINT("Error in setupDNP3Manager.\n");
+        FPS_ERROR_PRINT("Error in setupDNP3Manager.\n");
         return 1;
     }
     // now we use data from the config file
@@ -905,14 +905,14 @@ int main(int argc, char *argv[])
     //auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
     auto channel = setupDNP3channel(manager, sys_cfg.id, sys_cfg.ip_address, sys_cfg.port);
     if (!channel){
-        FMS_ERROR_PRINT("Error in setupDNP3channel.\n");
+        FPS_ERROR_PRINT("Error in setupDNP3channel.\n");
         delete manager;
         return 1;
     }
         //std::shared_ptr<IChannel> 
     auto master = setupDNP3master (channel, "master1", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
     if (!master){
-        FMS_ERROR_PRINT("Error in setupDNP3master.\n");
+        FPS_ERROR_PRINT("Error in setupDNP3master.\n");
         delete manager;
         return 1;
     }
@@ -976,8 +976,8 @@ int main(int argc, char *argv[])
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
-            std::vector<DbVar *>dbs; // collect all the vars here
-            cJSON *cjb = parseTheThing(dbs, &sys_cfg, msg, "master");
+            std::vector<DbVar*>dbs; // collect all the parsed vars here
+            cJSON* cjb = parseTheThing(dbs, &sys_cfg, msg, "master");
             if(dbs.size() > 0)
             {
                 CommandSet commands;
@@ -987,7 +987,7 @@ int main(int argc, char *argv[])
                 while (!dbs.empty())
                 {
                     DbVar* db = dbs.back();
-                    addToCommands (commands, db);
+                    addVarToCommands (commands, db);
                     addVarToCj(cj, db);
                     dbs.pop_back();
                 }
@@ -1000,9 +1000,8 @@ int main(int argc, char *argv[])
                     p_fims->Send("set", msg->replyto, NULL, reply);
                     free((void* )reply);
                 }
-                FMS_DEBUG_PRINT("      *****Running Direct Outputs \n");
+                FPS_DEBUG_PRINT("      *****Running Direct Outputs \n");
                 master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
-
             }
 
             if (cjb != NULL)
