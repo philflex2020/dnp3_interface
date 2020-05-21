@@ -451,7 +451,7 @@ int addValueToVec(vector<DbVar*>&dbs, sysCfg*cfgdb, /*CommandSet& commands,*/ cJ
     return addValueToVec(dbs, cfgdb, /*commands,*/ cjoffset->valuestring, cjvalue);
 }
 
-int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char* who)
+cJSON* parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
     int fragptr = 1;
     bool ok = true;
@@ -472,7 +472,7 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
         {
             FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted for  (%s) \n", msg->method);
             ok = false;
-            return -1;
+            return NULL;
         }
     }
     
@@ -480,7 +480,7 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
     {
         FPS_ERROR_PRINT("fims message not enough pfrags id [%s] \n", sys->id);
         ok = false;
-        return -1;
+        return body_JSON;
     }
 
     if(ok)
@@ -490,7 +490,8 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
         {
             FPS_ERROR_PRINT("fims message frag 1 [%s] not for   [%s] \n", uri, who);
             ok = false; // temp we neeed the master frag 
-            return -1;
+            return body_JSON;
+
         }
         else
         {
@@ -501,14 +502,15 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
     {
         ok = false;
         uri = msg->pfrags[fragptr+1];
-        if (strncmp(uri, sys->id,strlen(sys->id)) == 0)
+        if (strncmp(uri, sys->id, strlen(sys->id)) == 0)
         {
             ok = true;
         }
         else
         {
             FPS_ERROR_PRINT("fims message frag %d [%s] not for this master [%s] \n", fragptr+1, uri, sys->id);
-            return -1;
+             return body_JSON;
+
         }
     }
     // 
@@ -530,7 +532,7 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
         {
             FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
             ok = false;
-            return -1;
+            return body_JSON;
         }
         //-m set -u "/dnp3/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
         //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
@@ -555,13 +557,14 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
                     FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
                     //addVarToCj(cj, db);
                     dbs.push_back(db);
-                    return 1;
+                    return body_JSON;
                 }
             }
             // else get them all
             else
             {
                 sys->addVarsToVec(dbs);
+                return body_JSON;
             }
 
             // if(msg->replyto != NULL)
@@ -574,7 +577,8 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
             // cJSON_Delete(cj);
         
             ok = false;  // we are done
-            return dbs.size();
+            return body_JSON;
+            //return dbs.size();
         }
 
         if (ok) 
@@ -644,7 +648,7 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
                     //     p_fims->Send("set", msg->replyto, NULL, reply);
                     // free((void* )reply);
                     // ok = false;  // we are done
-                    return dbs.size();
+                    return body_JSON;//return dbs.size();
                 }
                 // scan the development options  -- these do not get replies
                 itypeA16 = cJSON_GetObjectItem(body_JSON, "AnOPInt16");
@@ -702,7 +706,7 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
                     //     p_fims->Send("set", msg->replyto, NULL, reply);
                     // free((void* )reply);
                     // ok = false;  // we are done
-                    return dbs.size();
+                    return body_JSON;//return dbs.size();
                 }
                 if (itypeA16 != NULL)
                 {
@@ -810,7 +814,8 @@ int parseTheThing( vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char*
         }
     //            dboffset = sys_cfg.getAnalogIdx(offset->valuestring);
     }
-    return dbs.size();
+
+    return body_JSON;//return dbs.size();
 }
 
 int main(int argc, char *argv[])
@@ -956,8 +961,8 @@ int main(int argc, char *argv[])
         if(msg != NULL)
         {
             vector<DbVar *>dbs;
-            int ret = parseTheThing(dbs, &sys_cfg, msg, "master");
-            if(ret > 0)
+            cJSON *cjb = parseTheThing(dbs, &sys_cfg, msg, "master");
+            if(dbs.size() > 0)
             {
                 cJSON*cj = NULL;
                 
@@ -980,10 +985,12 @@ int main(int argc, char *argv[])
                 }
                 // TODO send commands
             }
-            if (body_JSON != NULL)
+            
+            if (cjb != NULL)
             {
-                cJSON_Delete(body_JSON);
+                cJSON_Delete(cjb);
             }
+
             p_fims->free_message(msg);
         }
     }
