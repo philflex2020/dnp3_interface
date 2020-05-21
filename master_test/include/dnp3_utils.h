@@ -204,7 +204,7 @@ enum Type_of_Var{
 // local copy of all inputs and outputs
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
-    DbVar_t(std::string _name, int _type, int _offset):name(_name), site(""),type(_type), offset(_offset),site_offset(-1) {
+    DbVar_t(std::string _name, int _type, int _offset, cons char* iuri):name(_name), site(""),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
         valueint = 0;
         anInt16 = 0;
@@ -212,12 +212,21 @@ typedef struct DbVar_t {
         anF32 = 0.0;
         crob = 0;
         valflag = 0;
+        if(iuri)
+        {
+            uri = strdup(iuri)
+        }
+        else
+        {
+            uri = NULL;
+        }
+        
     };
 
     // TODO turn these into char*
     std::string name;
     std::string site;    // furute use for site.
-    const char *uri;
+    const char* uri;
     int valflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
     int type;
     int variant;         // space to flag different DNP3 variant like Group30var5
@@ -264,12 +273,12 @@ typedef struct sysCfg_t {
 
     public:
         
-        void addDbVar(std::string name, int type, int offset) 
+        void addDbVar(std::string name, int type, int offset, char* uri) 
         {
             DbVar* db = NULL;
 
             if (dbMap.find(name) == dbMap.end()){
-                db = new DbVar(name, type, offset);
+                db = new DbVar(name, type, offset, uri);
                 dbMap[name] = db;
                 if(dbMapIx[type].find(offset) == dbMapIx[type].end())
                 {   

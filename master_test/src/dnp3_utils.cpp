@@ -434,7 +434,7 @@ bool parse_system(cJSON* cji, sysCfg* sys)
 int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 {
 
-    cJSON *id, *offset;
+    cJSON *id, *offset, *uri;
 
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr (idx));
     if (JSON_list == NULL)
@@ -455,15 +455,14 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         }
         id = cJSON_GetObjectItem(obj, "id");
         offset = cJSON_GetObjectItem(obj, "offset");
+        uri = cJSON_GetObjectItem(obj, "uri");
         if (id == NULL || offset == NULL || id->valuestring == NULL)
         {
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             continue;
         }
-        sys->addDbVar(id->valuestring, idx, offset->valueint);
-        //sys->binaryNames[offset->valueint] = strdup(id->valuestring);   // assume this takes a copy
-        //sys->binaryIdx[strdup(id->valuestring)] = offset->valueint;   
-        std::cout << " config adding name ["<<id->valuestring<<"] id [" << offset->valueint << "]\n";
+        sys->addDbVar(id->valuestring, idx, offset->valueint uri?uri->valuestring:NULL);
+        FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         sys->numObjs[idx]++; 
     }
     return  sys->numObjs[idx]; 
