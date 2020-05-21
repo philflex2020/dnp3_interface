@@ -725,11 +725,11 @@ int main(int argc, char *argv[])
                                 while(iterator!= NULL)
                                 {   
                                     FPS_DEBUG_PRINT("Found variable name  [%s] child %p "
-                                                            , (void*)iterator->string
+                                                            , iterator->string
                                                             , iterator->child
                                                             );
                                     FPS_DEBUG_PRINT("Found variable name  [%s] child type %d next %p\n"
-                                                            , (void*)iterator->string
+                                                            , iterator->string
                                                             , iterator->child->type
                                                             , (void*)iterator->next
                                     );  
