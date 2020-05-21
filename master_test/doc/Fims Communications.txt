@@ -8,6 +8,8 @@ from the development directory
 export LD_LIBRARY_PATH=/home/vagrant/work/flexgen-power/dnp3_interface/master_test/build/release_obj:/usr/local/lib64
 build/release/dnp3_outstation_pw config/sample2.json
 
+
+TODO add url to the vars and create a map of different urls in the config
 outstation startup output.
 
 [AnOPInt16] objects missing from config!
@@ -39,7 +41,9 @@ voltage_regulator => Type:5 offset :0
 
 basic fims operation
 
-/usr/local/bin/fims/fims_send -m get -u "/components/outstation"
+/usr/local/bin/fims/fims_send -m get -r /me -u "/components/<station_id>"
+/usr/local/bin/fims/fims_send -m get -r /me -u "/components/<station_id>/<variable>"
+TODO error return
 
 fims message body is NULL or incorrectly formatted: ((null))
 fims message not enough pfrags outstation [dnp3_outstation]
@@ -62,10 +66,12 @@ fims message not enough pfrags outstation [dnp3_outstation]
 {"line_flows_mw":0}
 
 Set a value 
-[vagrant@localhost ~]$ /usr/local/bin/fims/fims_send -m set -u "/components/outstation/dnp3_outstation" '{"values":{"line_flows_mw":21}}'
+[vagrant@localhost ~]$ /usr/local/bin/fims/fims_send -m set -r /me -u "/components/outstation/dnp3_outstation" '{"line_flows_mw":21,:"voltage":234}'
+'{"line_flows_mw":21,"voltage":234}'
 
-Check result
-[vagrant@localhost ~]$ /usr/local/bin/fims/fims_send -m get -u "/components/outstation/dnp3_outstation/line_flows_mw" -r /me {"line_flows_mw":21}
+[vagrant@localhost ~]$ /usr/local/bin/fims/fims_send -m set -r /me -u "/components/outstation/dnp3_outstation" '{"line_flows_mw":{"value":21},:"voltage":{"value":234}}'
+'{"line_flows_mw":{"value":21},:"voltage":{"value":234}}'
+TODO remember the value object format
 
 
 Next run up the master 
@@ -90,19 +96,32 @@ ms(1589681444039) <-AL--  outstation - 060,001 - Class Data - Class 0 - all obje
 
 The master will start to issue pubs as it scans the outstation.
 
-
+Method: get 
 Uri:     /components/dnp3_outstation
 ReplyTo: (null)
-Body:    {
-    "binaries":{"voltage_regulator":0,"power_system_stabilizer":0,"gen_resource_switches":0,
-        "gen_resource_breaker_status":0,"gen_virtual_breaker_status":0},
-    "analogs":{"line_flows_mw":44,"line_flows_mv":0},    << these are different formats
-    "analogs":{"voltage":0,"plant_auxiliary_load_mw":0,"plant_auxiliary_load_mv":0},
+Body:   {
+    "voltage_regulator":0,
+    "voltage":0,
+    "testOP_32_22":
+    0,"testOP_32_1":23,
+    "testOP_16_8":22,
+    "testCROB_4":"NUL",
+    "power_system_stabilizer":0,
+    "plant_auxiliary_load_mw":0,
+    "plant_auxiliary_load_mv":0,
+    "line_flows_mw":0,
+    "line_flows_mv":0,
+    "gen_virtual_breaker_status":0,
+    "gen_resource_switches":0,
+    "gen_resource_breaker_status":0
+    
+    TODO 
     "Timestamp":"05-16-2020 23:07:26.161714"
     }
 
 Next setting data on the master to send to the outstation.
 // this sends to he master using the dnp3_outstation config file 
+// This is the Development mode and is deprecated
 
 /usr/local/bin/fims/fims_send -m set -u "/components/master/dnp3_outstation" 
           '{
@@ -112,7 +131,7 @@ Next setting data on the master to send to the outstation.
 
 
 In this example we use direct references to send values to the outstation
-THe config file will have to tell us what the offsets mean
+The config file will have to tell us what the offsets mean
 
 The outstation detects the master writes
 
@@ -127,7 +146,7 @@ The outstation detects the master writes
                
                Since there are no config components set up we do not do anything ( IE save in local database) with those values.
 
-               Lets fix that
+               Lets fix the config file
 
 Add the following to the config file
 
@@ -160,22 +179,40 @@ Add the following to the config file
 Then ( after the outstation restart) we get this
 
 
-/usr/local/bin/fims/fims_send -m get -r /me -u "/components/outstation/dnp3_outstation"     
+/usr/local/bin/fims/fims_send -m get -r /me -u "/components/<outstation/>dnp3_outstation"     
 {
-    "gen_resource_breaker_status":0,"gen_resource_switches":0,"gen_virtual_breaker_status":0,"line_flows_mv":0,
-    "line_flows_mw":0,"plant_auxiliary_load_mv":0,"plant_auxiliary_load_mw":0,"power_system_stabilizer":0,
-    "testOP_16_8":1234,"testOP_32_1":52,"testOP_32_22":5,"voltage":0,"voltage_regulator":0
+    "gen_resource_breaker_status":0,
+    "gen_resource_switches":0,
+    "gen_virtual_breaker_status":0,
+    "line_flows_mv":0,
+    "line_flows_mw":0,
+    "plant_auxiliary_load_mv":0,
+    "plant_auxiliary_load_mw":0,
+    "power_system_stabilizer":0,
+    "testOP_16_8":1234,
+    "testOP_32_1":52,
+    "testOP_32_22":5,
+    "voltage":0,
+    "voltage_regulator":0
 }
 
 // Note that the database tracks on both master and outstation.
 
-/usr/local/bin/fims/fims_send -m get -r /me -u "/components/master/dnp3_outstation"
+/usr/local/bin/fims/fims_send -m get -r /me -u "/components/<master/>dnp3_outstation"
 {
-    "gen_resource_breaker_status":0,"gen_resource_switches":0,"gen_virtual_breaker_status":0,
-    "line_flows_mv":0,"line_flows_mw":0,"plant_auxiliary_load_mv":0,"plant_auxiliary_load_mw":0,
+    "gen_resource_breaker_status":0,
+    "gen_resource_switches":0,
+    "gen_virtual_breaker_status":0,
+    "line_flows_mv":0,
+    "line_flows_mw":0,
+    "plant_auxiliary_load_mv":0,
+    "plant_auxiliary_load_mw":0,
     "power_system_stabilizer":0,
     "testOP_16_8":1234,
-    "testOP_32_1":52,"testOP_32_22":5,"voltage":0,"voltage_regulator":0
+    "testOP_32_1":52,
+    "testOP_32_22":5,
+    "voltage":0,
+    "voltage_regulator":0
 }
 [vagrant@localhost master_test]$ /usr/local/bin/fims/fims_send -m get -r /me -u "/components/master/dnp3_outstation/testOP_32_1"
 {"testOP_32_1":52}
