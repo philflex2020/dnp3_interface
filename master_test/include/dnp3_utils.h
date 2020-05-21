@@ -12,6 +12,7 @@
 #include <cstring>
 #include <string>
 #include <iostream>
+#include <vector>
 
 #include "opendnp3/app/AnalogOutput.h"
 #include "opendnp3/app/ControlRelayOutputBlock.h"
