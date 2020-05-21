@@ -732,7 +732,7 @@ int main(int argc, char *argv[])
                                     //                         , iterator->string
                                     //                         , iterator->child->type
                                     //                         , (void*)iterator->next
-                                    );  
+                                    //);  
                                     addValueToCommand(cj, &sys_cfg, commands, iterator->string, iterator);
                                     iterator = iterator->next;
                                 }
