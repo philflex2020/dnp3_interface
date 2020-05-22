@@ -441,19 +441,19 @@ int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
     
     DbVar* db = dbp.first;
     int flag = dbp.second;
-    retrn addVarToCj(cj, db, flag);
+    return addVarToCj(cj, db, flag);
 }
 
 int addVarToCj(cJSON* cj, DbVar* db)
 {
-    retrn addVarToCj(cj, db, 0);
+    return addVarToCj(cj, db, 0);
 }
 
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
 {
     DbVar* db = sys->getDbVar(dname);
 
-    return addVarToCj(cj, db);
+    return addVarToCj(cj, d, 0);
 }
 
 const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary",0 };
