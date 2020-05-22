@@ -645,10 +645,7 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
     cJSON* itypeF32 = NULL;
     cJSON* itypeValues = NULL;
     cJSON* itypeCROB = NULL;
-    //cJSON* cjoffset = NULL;
-    //cJSON* cjvalue = NULL;
-    cJSON* iterator = NULL;
-    //CommandSet commands;
+    cJSON* cjit = NULL;
     
     if (body_JSON == NULL)
     {
@@ -675,16 +672,17 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
     {
         fragptr = 1;
     }              
-
     uri = msg->pfrags[fragptr+1];
+
     // TODO look for the interfaces response
-    cout<<"uri: "<<uri<<endl;
+
+    FPS_DEBUG_PRINT(" %s Running with uri: [%s] \n", __FUNCTION__, uri);
     if (strncmp(uri, sys->id, strlen(sys->id)) != 0)
     {
         FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] \n", fragptr+1, uri, who, sys->id);
         return body_JSON;
     }
-    // set /components/master/dnp3_outstation '{"name1":1, "name2":}'
+    // set /components/master/dnp3_outstation '{"name1":1, "name2":23.56}'
     // or 
     // set /components/master/dnp3_outstation '{"name1":{"value":1}, "name2":{"value":2}'}
     // TODO add pubs for outstation
@@ -693,15 +691,15 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
         FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
         return body_JSON;
     }
-    //-m set -u "/dnp3/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
+    // this is the "debug" or development method
     //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
 
     // get is OK codewise..
-    if(strcmp(msg->method,"get") == 0)
+    if(strcmp(msg->method, "get") == 0)
     {
         FPS_ERROR_PRINT("fims method [%s] almost  supported for master\n", msg->method);
 
-        // is this a singleton
+        // is this a singleton ? 
         if ((int)msg->nfrags > fragptr+2)
         {
             int flag = 0;
@@ -712,7 +710,7 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
             {
                 FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
                 //addVarToCj(cj, db);
-                dbs.push_back(std::make_pair(db,flag));
+                dbs.push_back(std::make_pair(db, flag));
                 return body_JSON;
             }
         }
@@ -749,11 +747,9 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
                 {
                     if(db->type == Type_Crob)
                     {
-
                         uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
-                        
                         sys->setDbVarIx(Type_Crob, db->offset, cval);
-                        dbs.push_back(std::make_pair(db,flag));
+                        dbs.push_back(std::make_pair(db, flag));
                         // send the response
                         FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
                                         , __FUNCTION__, itypeValues->valuestring, db->offset
@@ -766,9 +762,9 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
                 // stop this being used 
                 itypeValues = NULL;
             }
-            return body_JSON;//return dbs.size();
+            return body_JSON;
         }
-        // scan the development options  -- these do not get replies
+        // scan the development options  -- these also get replies
         itypeA16 = cJSON_GetObjectItem(body_JSON, "AnOPInt16");
         itypeA32 = cJSON_GetObjectItem(body_JSON, "AnOPInt32");
         itypeF32 = cJSON_GetObjectItem(body_JSON, "AnOPF32");
@@ -782,27 +778,27 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
             // decode values may be in an array 
             if (cJSON_IsArray(itypeValues)) 
             {
-                cJSON_ArrayForEach(iterator, itypeValues) 
+                cJSON_ArrayForEach(cjit, itypeValues) 
                 {
-                    cJSON* cjo = cJSON_GetObjectItem(iterator, "offset");
-                    cJSON* cjv = cJSON_GetObjectItem(iterator, "value");
+                    cJSON* cjo = cJSON_GetObjectItem(cjit, "offset");
+                    cJSON* cjv = cJSON_GetObjectItem(cjit, "value");
                     addValueToVec(dbs, sys, /*commands,*/ cjo->valuestring, cjv, 0);
                 }
             }
             else
             {
                 // process a simple list
-                iterator = itypeValues->child;
-                FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", iterator->type);
+                cjit = itypeValues->child;
+                FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
 
-                while(iterator!= NULL)
+                while(cjit != NULL)
                 {   
                     FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
-                                            , iterator->string
-                                            , (void *)iterator->child
+                                            , cjit->string
+                                            , (void *)cjit->child
                                             );
-                    addValueToVec(dbs, sys, iterator->string, iterator, 0);
-                    iterator = iterator->next;
+                    addValueToVec(dbs, sys, cjit->string, cjit, 0);
+                    cjit = cjit->next;
                 }
                 FPS_DEBUG_PRINT("***** Done with variable list \n\n");
             }
@@ -812,7 +808,7 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
     return body_JSON;//return dbs.size();
 }
 
-int addValueToVec(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue, int flag)
+int addValueToVec(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, const char* valuestring, cJSON *cjvalue, int flag)
 {
     // cjoffset must be a name
     // cjvalue may be an object
@@ -849,26 +845,19 @@ int addValueToVec(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, /*CommandS
         //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
         sys->setDbVar(valuestring, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
-        //addVarToCj(cfgdb, cj, valuestring);
     }
     else if (db->type == AnIn32) 
     {
         //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
         sys->setDbVar(valuestring, cjvalue);
-        //addVarToCj(cfgdb, cj, valuestring);
         dbs.push_back(std::make_pair(db, flag));
-        //dbs.push_back(db);
     }
     else if (db->type == AnF32) 
     {
         //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
         sys->setDbVar(valuestring, cjvalue);
-        //dbs.push_back(db);
         dbs.push_back(std::make_pair(db, flag));
-
-        //addVarToCj(cfgdb, cj, valuestring);
     }
-
     else if (db->type == Type_Crob) 
     {
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
@@ -878,12 +867,8 @@ int addValueToVec(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, /*CommandS
                                                     , (int)StringToControlCode(valuestring)
                                                     );
 
-        //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(valuestring)),pt->offset)});
         sys->setDbVar(valuestring, cjvalue);
-        //addVarToCj(cfgdb, cj, valuestring);
-        //dbs.push_back(db);
         dbs.push_back(std::make_pair(db, flag));
-
     }
     else
     {
@@ -892,7 +877,6 @@ int addValueToVec(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, /*CommandS
     }
     return dbs.size();   
 }
-
 
 server_data* create_register_map(cJSON* registers, datalog* data)
 {
