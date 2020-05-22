@@ -504,6 +504,18 @@ typedef struct sysCfg_t {
 
         }
 
+        void addVarsToVec(std::vector<DbVar*>&dbs)
+        {
+            dbvar_map::iterator it;
+            int flag = 0;
+            for (it = dbMap.begin() ; it != dbMap.end();++it)
+            {
+                DbVar* db = it->second;
+                dbs.push_back(db);
+                std::cout << "added to Vector :" <<it->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+            }
+        }
+
         void addVarsToVec(std::vector<std::pair<DbVar*,int>>&dbs)
         {
             dbvar_map::iterator it;
@@ -514,7 +526,6 @@ typedef struct sysCfg_t {
                 dbs.push_back(std::make_pair(db,flag));
                 std::cout << "added to Vector :" <<it->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
             }
-
         }
 
         void showUris()
