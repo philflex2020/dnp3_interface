@@ -4,7 +4,6 @@
 #include <cjson/cJSON.h>
 #include <unistd.h>
 #include "dnp3_utils.h"
-#include "newCommandHander.h"
 // #include </home/vagrant/git/dnp3_interface/include/Value_Object.h>
 // #include </home/vagrant/git/dnp3_interface/include/Fims_Object.h>
 
@@ -22,6 +21,7 @@
 #include <asiodnp3/PrintingChannelListener.h>
 #include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
+#include "newCommandHander.h"
 
 using namespace std;
 using namespace opendnp3;
@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
     int rc = 0;
     int fims_connect = 0;
     p_fims = new fims();
-    char sub[] = "/components";
+    char *sub[] = {"/components","/interfaces"};
     char* subs = sub;
     bool publish_only = false;
     bool running = true;
@@ -177,6 +177,7 @@ int main(int argc, char* argv[])
 
     sys_cfg.showDbMap();
     sys_cfg.showUris();
+
     cJSON_Delete(config);
 
     // Main point of interaction with the stack. 1 thread in the pool for 1 outstation
@@ -224,13 +225,14 @@ int main(int argc, char* argv[])
     } 
     //TO dodo interfaces   
     // subs = /components
-    if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
+    if(p_fims->Subscribe((const char**)&subs, 2, (bool *)&publish_only) == false)
     {
         FPS_ERROR_PRINT("Subscription failed.\n");
         p_fims->Close();
         return 1;
     }
     // send out initial gets
+    sys_cfg.getUris();
     // set all values to inval
     // start time to complete gets
     //
