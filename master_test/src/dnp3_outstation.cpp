@@ -137,7 +137,7 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
     }
 }
 
-sysCfg * xcfgdb;
+sysCfg* xcfgdb;
 
 int main(int argc, char* argv[])
 {

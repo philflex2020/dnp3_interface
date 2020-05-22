@@ -976,8 +976,9 @@ int main(int argc, char *argv[])
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
-            std::vector<DbVar*>dbs; // collect all the parsed vars here
-            cJSON* cjb = parseTheThing(dbs, &sys_cfg, msg, "master");
+            dbs_type dbs; // collect all the parsed vars here
+            cJSON* cjb = parseBody(dbs, &sys_cfg, msg, "master");
+    
             if(dbs.size() > 0)
             {
                 CommandSet commands;
@@ -986,7 +987,8 @@ int main(int argc, char *argv[])
                     cj = cJSON_CreateObject();
                 while (!dbs.empty())
                 {
-                    DbVar* db = dbs.back();
+                    std::pair<DbVar*,int>dbp = dbs.back();
+                    DbVar* db = dbp.first;
                     addVarToCommands (commands, db);
                     addVarToCj(cj, db);
                     dbs.pop_back();
