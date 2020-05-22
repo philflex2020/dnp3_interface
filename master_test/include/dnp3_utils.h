@@ -256,6 +256,7 @@ typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed va
 
 
 int addVarToCj(cJSON* cj, DbVar*db);
+int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp);
 int addVarToCj(cJSON* cj, const char *dname);
 
 typedef struct sysCfg_t {

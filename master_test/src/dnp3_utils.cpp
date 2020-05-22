@@ -328,6 +328,115 @@ ControlCode TypeToControlCode(uint8_t arg)
 {
   return static_cast<ControlCode>(arg);
 }
+int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
+{
+    
+    DbVar* db = dbp.first;
+    int flag = dbp.second;
+
+    int rc = 0;
+    const char* dname = db->name.c_str();
+    switch (db->type)
+    {
+
+        case Type_Analog:
+        {
+            if(flag)
+            {
+                cJSON* cji = cJSON_CreateObject();
+                cJSON_AddNumberToObject(cji, "value", db->valuedouble);
+                cJSON_AddItemToObject(cj, dname, cji);
+            }
+            else
+            {
+                cJSON_AddNumberToObject(cj, dname, db->valuedouble);
+            }
+            break;
+        }
+        case Type_Binary:
+        {
+            if(flag)
+            {
+                cJSON* cji = cJSON_CreateObject();
+                cJSON_AddBoolToObject(cji, "value", db->valueint);
+                cJSON_AddItemToObject(cj, dname, cji);
+            }
+            else
+            {
+                cJSON_AddBoolToObject(cj, dname, db->valueint);
+            }
+            break;
+        }
+        case Type_Crob:
+        {
+            FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u [%s] \n"
+                    , __FUNCTION__, dname, db->type, db->crob,ControlCodeToString(TypeToControlCode(db->crob)));
+            if(flag)
+            {
+                cJSON* cji = cJSON_CreateObject();
+                cJSON_AddStringToObject(cji, "value", ControlCodeToString(TypeToControlCode(db->crob)));
+                cJSON_AddItemToObject(cj, dname, cji);
+            }
+            else
+            {
+                cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
+            }
+            break;
+        }
+        case AnIn16:
+        {
+            if(flag)
+            {
+                cJSON* cji = cJSON_CreateObject();
+                cJSON_AddNumberToObject(cji, "value", db->anInt16;
+                cJSON_AddItemToObject(cj, dname, cji);
+            }
+            else
+            {
+                cJSON_AddNumberToObject(cj, dname, db->anInt16);
+            }
+            break;
+        }
+        case AnIn32:
+        {
+            if(flag)
+            {
+                cJSON* cji = cJSON_CreateObject();
+                cJSON_AddNumberToObject(cji, "value", db->anInt32;
+                cJSON_AddItemToObject(cj, dname, cji);
+            }
+            else
+            {
+                cJSON_AddNumberToObject(cj, dname, db->anInt32);
+            }
+            break;
+        }
+        case AnF32:
+        {
+            if(flag)
+            {
+                cJSON* cji = cJSON_CreateObject();
+                cJSON_AddNumberToObject(cji, "value", db->anF32;
+                cJSON_AddItemToObject(cj, dname, cji);
+            }
+            else
+            {
+                cJSON_AddNumberToObject(cj, dname, db->anF32);
+            }
+            break;
+        }
+        default:
+        {
+            rc = -1;
+            FPS_ERROR_PRINT(("%s  unknown db_->type : %d\n"
+                            , __FUNCTION__
+                            , db->type
+                            );
+            break;
+        }
+    }
+    return rc;
+}
 
 int addVarToCj(cJSON* cj, DbVar* db)
 {
@@ -356,6 +465,7 @@ int addVarToCj(cJSON* cj, DbVar* db)
     } 
     return rc;
 }
+
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
 {
     DbVar* db = sys->getDbVar(dname);

@@ -990,7 +990,7 @@ int main(int argc, char *argv[])
                     std::pair<DbVar*,int>dbp = dbs.back();
                     DbVar* db = dbp.first;
                     addVarToCommands (commands, db);
-                    addVarToCj(cj, db);
+                    addVarToCj(cj, dbp);
                     dbs.pop_back();
                 }
 
