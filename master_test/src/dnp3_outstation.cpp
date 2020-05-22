@@ -21,7 +21,7 @@
 #include <asiodnp3/PrintingChannelListener.h>
 #include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
-#include "newCommandHander.h"
+#include "newCommandHandler.h"
 
 using namespace std;
 using namespace opendnp3;
