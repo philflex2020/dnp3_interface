@@ -501,7 +501,7 @@ int main(int argc, char* argv[])
         rc = 1;
         goto cleanup;
     } 
-    TO dodo interfaces   
+    //TO dodo interfaces   
     // subs = /components
     if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
     {
