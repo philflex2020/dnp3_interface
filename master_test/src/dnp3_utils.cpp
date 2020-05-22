@@ -328,6 +328,7 @@ ControlCode TypeToControlCode(uint8_t arg)
 {
   return static_cast<ControlCode>(arg);
 }
+
 int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
 {
     
@@ -388,7 +389,7 @@ int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
             if(flag)
             {
                 cJSON* cji = cJSON_CreateObject();
-                cJSON_AddNumberToObject(cji, "value", db->anInt16;
+                cJSON_AddNumberToObject(cji, "value", db->anInt16);
                 cJSON_AddItemToObject(cj, dname, cji);
             }
             else
@@ -402,7 +403,7 @@ int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
             if(flag)
             {
                 cJSON* cji = cJSON_CreateObject();
-                cJSON_AddNumberToObject(cji, "value", db->anInt32;
+                cJSON_AddNumberToObject(cji, "value", db->anInt32);
                 cJSON_AddItemToObject(cj, dname, cji);
             }
             else
@@ -416,7 +417,7 @@ int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
             if(flag)
             {
                 cJSON* cji = cJSON_CreateObject();
-                cJSON_AddNumberToObject(cji, "value", db->anF32;
+                cJSON_AddNumberToObject(cji, "value", db->anF32);
                 cJSON_AddItemToObject(cj, dname, cji);
             }
             else
