@@ -252,6 +252,8 @@ typedef struct DbVar_t {
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
 typedef std::map<const char*,std::vector<DbVar_t*>,char_dcmp>duri_map;
+typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed vars here
+
 
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(cJSON* cj, const char *dname);
@@ -516,7 +518,7 @@ typedef struct sysCfg_t {
             }
         }
 
-        void addVarsToVec(std::vector<std::pair<DbVar*,int>>&dbs)
+        void addVarsToVec(dbs_type& dbs)
         {
             dbvar_map::iterator it;
             int flag = 0;
@@ -624,8 +626,8 @@ int iotypToId (const char* t);
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
 
-cJSON* parseBody( std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_message*msg, const char* who);
-int addValueToVec(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue,int flag);
+cJSON* parseBody( dbs_type&dbs, sysCfg*sys, fims_message*msg, const char* who);
+int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue,int flag);
 
 
 #endif

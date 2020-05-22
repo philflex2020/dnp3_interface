@@ -635,7 +635,7 @@ int parse_system(cJSON *system, system_config *config)
 }
 
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
-cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_message*msg, const char* who)
+cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
     const char* uri = NULL;
     int fragptr = 1;
@@ -808,7 +808,7 @@ cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messag
     return body_JSON;//return dbs.size();
 }
 
-int addValueToVec(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, const char* valuestring, cJSON *cjvalue, int flag)
+int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* valuestring, cJSON *cjvalue, int flag)
 {
     // cjoffset must be a name
     // cjvalue may be an object

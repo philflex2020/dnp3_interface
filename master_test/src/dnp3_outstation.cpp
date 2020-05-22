@@ -500,7 +500,8 @@ int main(int argc, char* argv[])
         FPS_ERROR_PRINT("Failed to establish connection to FIMS server.\n");
         rc = 1;
         goto cleanup;
-    }    
+    } 
+    TO dodo interfaces   
     // subs = /components
     if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
     {
@@ -508,13 +509,16 @@ int main(int argc, char* argv[])
         p_fims->Close();
         return 1;
     }
-
+    // send out initial gets
+    // set all values to inval
+    // start time to complete gets
+    //
     while(running && p_fims->Connected())
     {
         fims_message* msg = p_fims->Receive();
         if(msg != NULL)
         {
-            std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
+            dbs_type dbs; // collect all the parsed vars here
 
             cJSON* cjb = parseBody(dbs, &sys_cfg, msg, "outstation");
             if(dbs.size() > 0)
