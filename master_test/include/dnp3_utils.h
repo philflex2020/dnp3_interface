@@ -504,13 +504,14 @@ typedef struct sysCfg_t {
 
         }
 
-        void addVarsToVec(std::vector<DbVar*>&dbs)
+        void addVarsToVec(std::vector<std::pair<DbVar*,int>>&dbs)
         {
             dbvar_map::iterator it;
+            int flag = 0;
             for (it = dbMap.begin() ; it != dbMap.end();++it)
             {
                 DbVar* db = it->second;
-                dbs.push_back(db);
+                dbs.push_back(std::make_pair(db,flag));
                 std::cout << "added to Vector :" <<it->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
             }
 
@@ -611,6 +612,9 @@ const char *iotypToStr (int t);
 int iotypToId (const char* t);
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
+
+cJSON* parseBody( std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_message*msg, const char* who);
+int addValueToVec(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue,int flag);
 
 
 #endif
