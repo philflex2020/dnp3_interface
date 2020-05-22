@@ -329,12 +329,9 @@ ControlCode TypeToControlCode(uint8_t arg)
   return static_cast<ControlCode>(arg);
 }
 
-int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
-{
-    
-    DbVar* db = dbp.first;
-    int flag = dbp.second;
 
+int addVarToCj(cJSON* cj, DbVar* db, int flag)
+{
     int rc = 0;
     const char* dname = db->name.c_str();
     switch (db->type)
@@ -439,32 +436,17 @@ int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
     return rc;
 }
 
+int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
+{
+    
+    DbVar* db = dbp.first;
+    int flag = dbp.second;
+    retrn addVarToCj(cj, db, flag);
+}
+
 int addVarToCj(cJSON* cj, DbVar* db)
 {
-    int rc = 0;
-    const char* dname = db->name.c_str();
-    if (db->type == Type_Analog)
-        cJSON_AddNumberToObject(cj, dname, db->valuedouble);
-    else if (db->type == Type_Binary)
-        cJSON_AddNumberToObject(cj, dname, db->valueint);
-    else if (db->type == Type_Crob)
-    {
-        FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u [%s] \n"
-                , __FUNCTION__, dname, db->type, db->crob,ControlCodeToString(TypeToControlCode(db->crob)));
-        cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
-    }
-    else if (db->type == AnIn16)
-        cJSON_AddNumberToObject(cj, dname, db->anInt16);
-    else if (db->type == AnIn32)
-        cJSON_AddNumberToObject(cj, dname, db->anInt32);
-    else if (db->type == AnF32)
-        cJSON_AddNumberToObject(cj, dname, db->anF32);
-    else
-    {
-        rc = -1;
-        std::cout << __FUNCTION__<<" unknown db_->type :" << db->type <<"\n";
-    } 
-    return rc;
+    retrn addVarToCj(cj, db, 0);
 }
 
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
