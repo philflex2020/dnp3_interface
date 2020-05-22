@@ -561,7 +561,6 @@ typedef struct sysCfg_t {
        // server_map->base_uri = server_map->uris[0] = uri;
         // sprintf(replyto, "%s/reply%s", server_map->base_uri, it->first);
         //server_map->p_fims->Send("get", it->first, replyto, NULL);
-
         void getUris()
         {
             FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
@@ -576,7 +575,7 @@ typedef struct sysCfg_t {
                     char replyto[1024];
                     snprintf(replyto,sizeof(replyto),"/interfaces/%s/reply/%s", it->first, db->name.c_str() );
                     char getUri[1024];
-                    snprintf(getUri,sizeof(getUri),"/query/%s/%s", it->first, db->name.c_str() );
+                    snprintf(getUri,sizeof(getUri),"/queryx/%s/%s", it->first, db->name.c_str() );
 
                     FPS_ERROR_PRINT(" uri : [%s] replyto: [%s]\n"
                                     , getUri
