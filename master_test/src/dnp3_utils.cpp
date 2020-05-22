@@ -453,7 +453,7 @@ int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
 {
     DbVar* db = sys->getDbVar(dname);
 
-    return addVarToCj(cj, d, 0);
+    return addVarToCj(cj, db, 0);
 }
 
 const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary",0 };
