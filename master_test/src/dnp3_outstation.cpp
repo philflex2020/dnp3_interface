@@ -455,6 +455,7 @@ int main(int argc, char* argv[])
     }
 
     sys_cfg.showDbMap();
+    sys_cfg.showUris();
     cJSON_Delete(config);
 
     // Main point of interaction with the stack. 1 thread in the pool for 1 outstation
