@@ -525,7 +525,7 @@ int main(int argc, char* argv[])
                 UpdateBuilder builder;
                 while (!dbs.empty())
                 {
-                    std::pair<DbVar*,int>dpb = dbs.back();
+                    std::pair<DbVar*,int>dbp = dbs.back();
                     DbVar* db = dbp.first;
                     addVarToBuilder(builder, db);
                     addVarToCj(cj, db);
