@@ -4,6 +4,7 @@
 #include <cjson/cJSON.h>
 #include <unistd.h>
 #include "dnp3_utils.h"
+#include "newCommandHander.h"
 // #include </home/vagrant/git/dnp3_interface/include/Value_Object.h>
 // #include </home/vagrant/git/dnp3_interface/include/Fims_Object.h>
 
@@ -102,7 +103,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // Create a new outstation with a log level, command handler, and
     // config info this	returns a thread-safe interface used for
     // updating the outstation's database.
-    auto outstation = channel->AddOutstation("outstation", SuccessCommandHandler::Create(),
+    auto outstation = channel->AddOutstation("outstation", newCommandHandler::Create(ourDB),
                                              DefaultOutstationApplication::Create(), config);
 
     // Enable the outstation and start communications
