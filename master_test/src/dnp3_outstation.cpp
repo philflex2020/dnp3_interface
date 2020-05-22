@@ -44,6 +44,8 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].clazz = PointClass::Class2;
     config.analog[0].svariation = StaticAnalogVariation::Group30Var5;
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
+    config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;
+    
 }
 
 struct State

@@ -552,8 +552,44 @@ typedef struct sysCfg_t {
                 }
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
-
         }
+
+        // from modbus_server server_map->base_uri
+        //todo this should be defined to a better length
+        // char uri[100];
+        //sprintf(uri,"/interfaces/%s", sys_cfg.name);
+       // server_map->base_uri = server_map->uris[0] = uri;
+        // sprintf(replyto, "%s/reply%s", server_map->base_uri, it->first);
+        //server_map->p_fims->Send("get", it->first, replyto, NULL);
+
+        void getUris()
+        {
+            FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
+
+            duri_map::iterator it;
+            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            {
+                FPS_ERROR_PRINT(" %s uri [%s] num vars %ld\n", __FUNCTION__, it->first, it->second.size());
+                for (int i = 0 ; i < (int)it->second.size(); i++ )
+                {
+                    DbVar* db = it->second[i];
+                    char replyto[1024];
+                    snprintf(replyto,sizeof(replyto),"/interfaces/%s%s/reply/%s", id, it->first, db->name.c_str() )
+                    char getUri[1024];
+                    snprintf(getUri,sizeof(getUri),"/query%s/%s", it->first, db->name.c_str() )
+
+                    FPS_ERROR_PRINT(" uri : [%s] replyto: [%s]\n"
+                                    , getUri
+                                    , replyto
+                                    );
+                    p_fims->Send("get", getUri, replyto, NULL);
+
+                }
+            }
+            FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+        }
+
+
 
         void addUri(const char *uri, DbVar*db)
         {
