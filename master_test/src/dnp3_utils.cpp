@@ -635,19 +635,18 @@ int parse_system(cJSON *system, system_config *config)
 }
 
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
-cJSON* parseBody( std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_message*msg, const char* who)
+cJSON* parseBody(std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
     const char* uri = NULL;
     int fragptr = 1;
-    bool ok = true;
     cJSON* body_JSON = cJSON_Parse(msg->body);
     cJSON* itypeA16 = NULL;
     cJSON* itypeA32 = NULL;
     cJSON* itypeF32 = NULL;
     cJSON* itypeValues = NULL;
     cJSON* itypeCROB = NULL;
-    cJSON* cjoffset = NULL;
-    cJSON* cjvalue = NULL;
+    //cJSON* cjoffset = NULL;
+    //cJSON* cjvalue = NULL;
     cJSON* iterator = NULL;
     //CommandSet commands;
     
@@ -656,7 +655,6 @@ cJSON* parseBody( std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messa
         if(strcmp(msg->method,"set") == 0)
         {
             FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted for  (%s) \n", msg->method);
-            ok = false;
             return NULL;
         }
     }
@@ -664,180 +662,151 @@ cJSON* parseBody( std::vector<std::pair<DbVar*,int>>&dbs, sysCfg*sys, fims_messa
     if (msg->nfrags < 2)
     {
         FPS_ERROR_PRINT("fims message not enough pfrags id [%s] \n", sys->id);
-        ok = false;
         return body_JSON;
     }
 
-    if(ok)
+    uri = msg->pfrags[fragptr];
+    if (strncmp(uri, who, strlen(who)) != 0)
     {
-        uri = msg->pfrags[fragptr];
-        if (strncmp(uri, who, strlen(who)) != 0)
-        {
-            FPS_ERROR_PRINT("fims message frag 1 [%s] not for   [%s] \n", uri, who);
-            ok = false; // temp we neeed the master frag 
-            return body_JSON;
-        }
-        else
-        {
-            fragptr = 1;
-        }              
+        FPS_ERROR_PRINT("fims message frag 1 [%s] not for   [%s] \n", uri, who);
+        return body_JSON;
     }
-
-    if(ok)
+    else
     {
-        ok = false;
-        uri = msg->pfrags[fragptr+1];
-        cout<<"uri: "<<uri<<endl;
-        if (strncmp(uri, sys->id, strlen(sys->id)) == 0)
-        {
-            ok = true;
-        }
-        else
-        {
-            FPS_ERROR_PRINT("fims message frag %d [%s] not for this master [%s] \n", fragptr+1, uri, sys->id);
-             return body_JSON;
-        }
+        fragptr = 1;
+    }              
+
+    uri = msg->pfrags[fragptr+1];
+    // TODO look for the interfaces response
+    cout<<"uri: "<<uri<<endl;
+    if (strncmp(uri, sys->id, strlen(sys->id)) != 0)
+    {
+        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] \n", fragptr+1, uri, who, sys->id);
+        return body_JSON;
     }
     // set /components/master/dnp3_outstation '{"name1":1, "name2":}'
     // or 
     // set /components/master/dnp3_outstation '{"name1":{"value":1}, "name2":{"value":2}'}
-    
-    if(ok)
+    // TODO add pubs for outstation
+    if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0))
     {
-        if((strcmp(msg->method,"set") == 0) || (strcmp(msg->method,"get") == 0))
-        {
-            ok = true;
-        }
-        else
-        {
-            FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
-            ok = false;
-            return body_JSON;
-        }
-        //-m set -u "/dnp3/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
-        //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
+        FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
+        return body_JSON;
     }
+    //-m set -u "/dnp3/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
+    //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
 
-    if(ok)
+    // get is OK codewise..
+    if(strcmp(msg->method,"get") == 0)
     {
-        // get is OK codewise..
-        if(strcmp(msg->method,"get") == 0)
-        {
-            FPS_ERROR_PRINT("fims method [%s] almost  supported for master\n", msg->method);
+        FPS_ERROR_PRINT("fims method [%s] almost  supported for master\n", msg->method);
 
-            // is this a singleton
-            if ((int)msg->nfrags > fragptr+2)
+        // is this a singleton
+        if ((int)msg->nfrags > fragptr+2)
+        {
+            int flag = 0;
+            uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
+            FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
+            DbVar* db = sys->getDbVar(uri);
+            if (db != NULL)
             {
-                int flag = 0;
-                uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-                FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
-                DbVar* db = sys->getDbVar(uri);
-                if (db != NULL)
-                {
-                    FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
-                    //addVarToCj(cj, db);
-                    dbs.push_back(std::make_pair(db,flag));
-                    return body_JSON;
-                }
-            }
-            // else get them all
-            else
-            {
-                sys->addVarsToVec(dbs);
+                FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
+                //addVarToCj(cj, db);
+                dbs.push_back(std::make_pair(db,flag));
                 return body_JSON;
             }
-        
-            ok = false;  // we are done
-            return body_JSON;
-            //return dbs.size();
         }
-
-        if (ok) 
+        // else get them all
+        else
         {
-            if(strcmp(msg->method,"set") == 0)
+            sys->addVarsToVec(dbs);
+            return body_JSON;
+        }
+        return body_JSON;
+    }
+
+    if(strcmp(msg->method,"set") == 0)
+    {
+        // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
+        if ((int)msg->nfrags > fragptr+2)
+        {
+            uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
+            FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
+            DbVar* db = sys->getDbVar(uri);
+            if (db != NULL)
             {
-                // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
-                if ((int)msg->nfrags > fragptr+2)
-                {
-                    uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-                    FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
-                    DbVar* db = sys->getDbVar(uri);
-                    if (db != NULL)
-                    {
-                        int flag = 0;
-                        FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
-                        itypeValues = body_JSON;
-                        // allow '"string"' OR '{"value":"string"}'
-                        if(itypeValues->type == cJSON_Object)
-                        {
-                            flag = 1;
-                            itypeValues = cJSON_GetObjectItem(itypeValues, "value");
-                        }
-                        // Only Crob gets a string 
-                        if(itypeValues && (itypeValues->type == cJSON_String))
-                        {
-                            if(db->type == Type_Crob)
-                            {
-
-                                uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
-                                
-                                sys->setDbVarIx(Type_Crob, db->offset, cval);
-                                dbs.push_back(std::make_pair(db,flag));
-                                // send the response
-                                FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
-                                                , __FUNCTION__, itypeValues->valuestring, db->offset
-                                                , cval
-                                                );
-                            }
-                            // TODO any other strings
-                            // do we have to convert strings into numbers ??
-                        }
-                        // stop this being used 
-                        itypeValues = NULL;
-                    }
-                    return body_JSON;//return dbs.size();
-                }
-                // scan the development options  -- these do not get replies
-                itypeA16 = cJSON_GetObjectItem(body_JSON, "AnOPInt16");
-                itypeA32 = cJSON_GetObjectItem(body_JSON, "AnOPInt32");
-                itypeF32 = cJSON_GetObjectItem(body_JSON, "AnOPF32");
-                itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
-                //the value list does get a reply
+                int flag = 0;
+                FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
                 itypeValues = body_JSON;
-
-                // process {"valuex":xxx,"valuey":yyy} ; xxx or yyy could be a number or {"value":val}
-                if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
+                // allow '"string"' OR '{"value":"string"}'
+                if(itypeValues->type == cJSON_Object)
                 {
-                    // decode values may be in an array 
-                    if (cJSON_IsArray(itypeValues)) 
+                    flag = 1;
+                    itypeValues = cJSON_GetObjectItem(itypeValues, "value");
+                }
+                // Only Crob gets a string 
+                if(itypeValues && (itypeValues->type == cJSON_String))
+                {
+                    if(db->type == Type_Crob)
                     {
-                        cJSON_ArrayForEach(iterator, itypeValues) 
-                        {
-                            cjoffset = cJSON_GetObjectItem(iterator, "offset");
-                            cjvalue = cJSON_GetObjectItem(iterator, "value");
-                            addValueToVec(dbs, sys, /*commands,*/ cjoffset->valuestring, cjvalue, 0);
-                        }
-                    }
-                    else
-                    {
-                        // process a simple list
-                        iterator = itypeValues->child;
-                        FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", iterator->type);
 
-                        while(iterator!= NULL)
-                        {   
-                            FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
-                                                    , iterator->string
-                                                    , (void *)iterator->child
-                                                    );
-                            addValueToVec(dbs, sys, iterator->string, iterator, 0);
-                            iterator = iterator->next;
-                        }
-                        FPS_DEBUG_PRINT("***** Done with variable list \n\n");
+                        uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
+                        
+                        sys->setDbVarIx(Type_Crob, db->offset, cval);
+                        dbs.push_back(std::make_pair(db,flag));
+                        // send the response
+                        FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
+                                        , __FUNCTION__, itypeValues->valuestring, db->offset
+                                        , cval
+                                        );
                     }
-                    return body_JSON;//return dbs.size();
+                    // TODO any other strings
+                    // do we have to convert strings into numbers ??
+                }
+                // stop this being used 
+                itypeValues = NULL;
+            }
+            return body_JSON;//return dbs.size();
+        }
+        // scan the development options  -- these do not get replies
+        itypeA16 = cJSON_GetObjectItem(body_JSON, "AnOPInt16");
+        itypeA32 = cJSON_GetObjectItem(body_JSON, "AnOPInt32");
+        itypeF32 = cJSON_GetObjectItem(body_JSON, "AnOPF32");
+        itypeCROB = cJSON_GetObjectItem(body_JSON, "CROB");
+        //the value list does get a reply
+        itypeValues = body_JSON;
+
+        // process {"valuex":xxx,"valuey":yyy} ; xxx or yyy could be a number or {"value":val}
+        if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
+        {
+            // decode values may be in an array 
+            if (cJSON_IsArray(itypeValues)) 
+            {
+                cJSON_ArrayForEach(iterator, itypeValues) 
+                {
+                    cJSON* cjo = cJSON_GetObjectItem(iterator, "offset");
+                    cJSON* cjv = cJSON_GetObjectItem(iterator, "value");
+                    addValueToVec(dbs, sys, /*commands,*/ cjo->valuestring, cjv, 0);
                 }
             }
+            else
+            {
+                // process a simple list
+                iterator = itypeValues->child;
+                FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", iterator->type);
+
+                while(iterator!= NULL)
+                {   
+                    FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
+                                            , iterator->string
+                                            , (void *)iterator->child
+                                            );
+                    addValueToVec(dbs, sys, iterator->string, iterator, 0);
+                    iterator = iterator->next;
+                }
+                FPS_DEBUG_PRINT("***** Done with variable list \n\n");
+            }
+            return body_JSON;//return dbs.size();
         }
     }
     return body_JSON;//return dbs.size();
