@@ -429,7 +429,7 @@ int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
         default:
         {
             rc = -1;
-            FPS_ERROR_PRINT(("%s  unknown db_->type : %d\n"
+            FPS_ERROR_PRINT("%s  unknown db_->type : %d\n"
                             , __FUNCTION__
                             , db->type
                             );
