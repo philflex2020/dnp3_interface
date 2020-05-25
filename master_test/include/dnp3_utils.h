@@ -414,6 +414,11 @@ typedef struct sysCfg_t {
             {
                 db->valuedouble = fval;
             } 
+            if ((db != NULL) && (db->type == Type_Analog))
+            {
+                db->valuedouble = fval;
+            } 
+            
         };
 
         void setDbVarIx(int dbtype, int idx, int ival)

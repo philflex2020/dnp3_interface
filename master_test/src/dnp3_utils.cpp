@@ -1000,9 +1000,22 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
         sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
+    else if (db->type == Type_Analog) 
+    {
+        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
+        sys->setDbVar(name, cjvalue);
+        dbs.push_back(std::make_pair(db, flag));
+    }
+    else if (db->type == Type_Binary) 
+    {
+        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
+        sys->setDbVar(name, cjvalue);
+        dbs.push_back(std::make_pair(db, flag));
+    }
+
     else
     {
-      FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, name);  
+      FPS_ERROR_PRINT( " *************** %s Var [%s] not processed \n",__FUNCTION__, name);  
       return -1;
     }
     return dbs.size();   
