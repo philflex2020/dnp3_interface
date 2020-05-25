@@ -865,6 +865,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                         uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
                         sys->setDbVarIx(Type_Crob, db->offset, cval);
                         // send the response
+                        dbs.push_back(std::make_pair(db, flag));
+
                         FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
                                         , __FUNCTION__, itypeValues->valuestring, db->offset
                                         , cval
