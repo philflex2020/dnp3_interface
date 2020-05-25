@@ -837,7 +837,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if ((int)msg->nfrags > fragptr+2)
         {
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            if(strstr(msg->uri, "/reply/") != NULL))
+            if(strstr(msg->uri, "/reply/") != NULL)
             {
                 FPS_DEBUG_PRINT("fims message reply uri ACCEPTED  [%s] \n", msg->body);
                 single = 0;
