@@ -561,8 +561,10 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
             continue;
         }
         DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL);
-        if (bf && (bf->valuebool == true) && bits && (bits->type == cJSON_Array))
+        if (bf && bits && (bits->type == cJSON_Array))
         {
+
+            //TODO bits need a value use make_pair there too 
             FPS_ERROR_PRINT("*****************Adding bitfields for %s\n", db->name.c_str());
             sys->addBits(db, bits);
 
