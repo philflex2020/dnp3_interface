@@ -650,6 +650,8 @@ typedef struct sysCfg_t {
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
+                FPS_ERROR_PRINT(" %s subscribe to uri [%s]\n", __FUNCTION__, it->first);
+
                 char replyto[1024];
                 snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
                 if(p_fims->Subscribe((const char**)&replyto, 1, (bool *)&publish_only) == false)
