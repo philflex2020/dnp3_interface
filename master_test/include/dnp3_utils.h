@@ -232,7 +232,7 @@ typedef struct DbVar_t {
 
     int addBit(const char*bit)
     {
-        dbBits.push_back(strdup(bit));
+        dbBits.push_back(bit);
         return dbBits.size();
     }
 
@@ -258,8 +258,9 @@ typedef struct DbVar_t {
 
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
-typedef std::map<const char*,std::vector<DbVar_t*>,char_dcmp>duri_map;
+typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
 typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed vars here
+typedef std::map<const char*, std::pair<DbVar_t*,int>, char_dcmp>bits_map;
 
 
 int addVarToCj(cJSON* cj, DbVar*db);
@@ -572,8 +573,10 @@ typedef struct sysCfg_t {
             for (int i = 0  ; i < asiz; i++ )
             {
                 cJSON* cji = cJSON_GetArrayItem(bits, i)
-                db->addBit(cji->valuestring);
-
+                // just use one copy of valuestring clean up will fix it.
+                const char* bs = strdup(cji->valuestring)
+                db->addBit(bs);
+                bitsMap[bs] == std::make_pair(db,i);
             }
             return asiz;
         }
@@ -722,6 +725,8 @@ typedef struct sysCfg_t {
         dbvar_map dbMap;
         dbix_map dbMapIx[Type_of_Var::NumTypes];
         duri_map uriMap;
+        bits_map bitsMap;
+
         int numObjs[Type_of_Var::NumTypes];
 
         fims* p_fims;
