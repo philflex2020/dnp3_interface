@@ -232,8 +232,45 @@ typedef struct DbVar_t {
 
     int addBit(const char*bit)
     {
-        dbBits.push_back(bit);
-        return dbBits.size();
+        dbBits.push_back(std::make_pair(bit,0));
+        return = dbBits.size();
+    }
+
+    int setBit(int idx, int val)
+    {
+        dbBits[idx].second = val;
+        return val;
+    }
+
+    int setBit(const char* var, int val)
+    {
+        for (int i = 0; i < dbBits.size(); i++)
+        {
+            if(strcmp(dbBits[i].first, var) == 0)
+            {
+                setBit(i,val);
+                return 0;
+            }
+        }
+        return -1;
+    }
+
+    int getBit(int idx)
+    {
+        int val = dbBits[idx].second;
+        return val;
+    }
+
+    int getBit(const char* var)
+    {
+        for (int i = 0; i < dbBits.size(); i++)
+        {
+            if(strcmp(dbBits[i].first, var) == 0)
+            {
+                return getBit(i);
+            }
+        }
+        return -1;
     }
 
     // TODO turn these into char*
@@ -252,7 +289,7 @@ typedef struct DbVar_t {
     uint32_t anInt32;
     double anF32;
     uint8_t crob;
-    std::vector<const char*>dbBits;
+    std::vector<std::pair<const char*,int>>dbBits;
 
 } DbVar;
 
