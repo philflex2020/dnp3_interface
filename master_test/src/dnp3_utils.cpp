@@ -795,7 +795,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // get is OK codewise..
     if(strcmp(msg->method, "get") == 0)
     {
-        FPS_ERROR_PRINT("fims method [%s] almost  supported for master\n", msg->method);
+        FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
 
         // is this a singleton ? 
         if ((int)msg->nfrags > fragptr+2)
@@ -826,10 +826,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
+        FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
+
         if ((int)msg->nfrags > fragptr+2)
         {
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            if(strncmp(uri, "/reply/", strlen("/reply/") == 0))
+            if(strncmp(uri, "reply/", strlen("reply/") == 0))
             {
                 FPS_DEBUG_PRINT("fims message reply ACCEPTED  [%s] \n", msg->body);
                 //reply = 0;
@@ -837,7 +839,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             else
             {
             
-                FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
+                FPS_DEBUG_PRINT("fims message frag %d SINGLE variable name [%s] \n", fragptr+2,  uri);
                 single = 1;
             }
         }
@@ -892,9 +894,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         // process {"valuex":xxx,"valuey":yyy} ; xxx or yyy could be a number or {"value":val}
         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
         {
+            FPS_DEBUG_PRINT("Found variable list or array \n");
+
             // decode values may be in an array 
             if (cJSON_IsArray(itypeValues)) 
             {
+                FPS_DEBUG_PRINT("Found variable array \n");
+
                 cJSON_ArrayForEach(cjit, itypeValues) 
                 {
                     cJSON* cjo = cJSON_GetObjectItem(cjit, "offset");
