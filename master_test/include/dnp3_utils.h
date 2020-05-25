@@ -658,11 +658,11 @@ typedef struct sysCfg_t {
                 //
                 if (it->first[0] == '/') 
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s", id, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/outstation/%s/reply%s", id, it->first);
                 } 
                 else
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/outstation/%s/reply/%s", id, it->first);
                 }
                 subs[0] = replyto;
 
@@ -692,12 +692,12 @@ typedef struct sysCfg_t {
                 char getUri[1024];
                 if (it->first[0] == '/') 
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s", id, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/outstation/%s/reply%s", id, it->first);
                     snprintf(getUri,sizeof(getUri),"/queryx%s", it->first);
                 } 
                 else
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/outstation/%s/reply/%s", id, it->first);
                     snprintf(getUri,sizeof(getUri),"/queryx/%s", it->first);
                 }
 
