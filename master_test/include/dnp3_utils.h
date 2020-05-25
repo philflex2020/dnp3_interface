@@ -653,10 +653,13 @@ typedef struct sysCfg_t {
                 FPS_ERROR_PRINT(" %s subscribe to uri [%s]\n", __FUNCTION__, it->first);
                 FPS_ERROR_PRINT(" %s subscribe to id [%s]\n", __FUNCTION__, id);
 
-                char replyto[1024];
+                const char replyto[1024];
+                const char* subs[1];
+                subs[0] = replyto;
+                //
                 snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s", id, it->first);
                 FPS_ERROR_PRINT(" %s subscribe to replyto [%s]\n", __FUNCTION__, replyto);
-                if(p_fims->Subscribe((const char**)replyto, 1, (bool *)&publish_only) == false)
+                if(p_fims->Subscribe((const char**)subs, 1, (bool *)&publish_only) == false)
                 {
                     FPS_ERROR_PRINT("Subscription to [%s] failed.\n", replyto);
                 }
