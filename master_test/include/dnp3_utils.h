@@ -233,7 +233,7 @@ typedef struct DbVar_t {
     int addBit(const char*bit)
     {
         dbBits.push_back(std::make_pair(bit,0));
-        return = (int)dbBits.size();
+        return (int)dbBits.size();
     }
 
     int setBit(int idx, int val)
