@@ -18,7 +18,7 @@
         "ip_address": "127.0.0.1",
         "port": 20001,
         "local_address": 1,
-		"remote_address": 10
+	"remote_address": 10
     },
     "objects": {
         "binary": [
@@ -83,7 +83,25 @@
                 "name": "Plant Auxiliary Load MV",
                 "unit": "MV",
                 "signed": true
+            },
+            {
+                "id": "plant_status",
+                "offset": 5,
+                "name": "Plant Status",
+		"bit_field": true,
+                "bit_strings": [
+                    "Self-checking",
+                    "Microgrid power supply starting",
+                    "Grid power supply starting",
+                    "Microgrid power supply running",
+                    "Grid power supply running",
+                    "Fault",
+                    "Stopping",
+                    "Stop",
+                    "Emergency Stop"
+                ]
             }
+
         ],
         "AnOPInt32": [
             {
