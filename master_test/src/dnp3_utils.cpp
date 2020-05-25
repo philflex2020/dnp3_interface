@@ -807,7 +807,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             if (db != NULL)
             {
                 FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
-                //addVarToCj(cj, db);
                 dbs.push_back(std::make_pair(db, flag));
                 return body_JSON;
             }
@@ -823,11 +822,29 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
     if(strcmp(msg->method,"set") == 0)
     {
+        int single = 0;
+        int reply = 1;
+        // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
         if ((int)msg->nfrags > fragptr+2)
         {
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
+            if(strncmp(uri, "/reply/", strlen("/reply/") == 0))
+            {
+                FPS_DEBUG_PRINT("fims message reply ACCEPTED  [%s] \n", msg->body);
+                reply = 0;
+            }
+            else
+            {
+            
+                FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
+                single = 1;
+            }
+        }
+
+        if(single == 1)
+        {
+            // process a single var
             DbVar* db = sys->getDbVar(uri);
             if (db != NULL)
             {
@@ -847,7 +864,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     {
                         uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
                         sys->setDbVarIx(Type_Crob, db->offset, cval);
-                        dbs.push_back(std::make_pair(db, flag));
                         // send the response
                         FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
                                         , __FUNCTION__, itypeValues->valuestring, db->offset
@@ -862,7 +878,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             }
             return body_JSON;
         }
-        // scan the development options  -- these also get replies
+
+        // scan the development options  -- these also get replies 
         itypeA16 = cJSON_GetObjectItem(body_JSON, "AnOPInt16");
         itypeA32 = cJSON_GetObjectItem(body_JSON, "AnOPInt32");
         itypeF32 = cJSON_GetObjectItem(body_JSON, "AnOPF32");
@@ -880,7 +897,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 {
                     cJSON* cjo = cJSON_GetObjectItem(cjit, "offset");
                     cJSON* cjv = cJSON_GetObjectItem(cjit, "value");
-                    addValueToVec(dbs, sys, /*commands,*/ cjo->valuestring, cjv, 0);
+                    addValueToVec(dbs, sys, cjo->valuestring, cjv, 0);
                 }
             }
             else
@@ -906,25 +923,26 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     return body_JSON;//return dbs.size();
 }
 
-int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* valuestring, cJSON *cjvalue, int flag)
+// need nodbs option
+int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
 {
     // cjoffset must be a name
     // cjvalue may be an object
 
-    if (valuestring == NULL)
+    if (name == NULL)
     {
         FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
         return -1;
     }
 
-    DbVar* db = getDbVar(sys, valuestring); 
+    DbVar* db = getDbVar(sys, name); 
     if (db == NULL)
     {
-        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, valuestring);
+        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, name);
         return -1;
     }
     
-    FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, valuestring);
+    FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, name);
 
     if (cjvalue->type == cJSON_Object)
     {
@@ -941,19 +959,19 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* valuestring, cJSON *cjv
     if (db->type == AnIn16) 
     {
         //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
-        sys->setDbVar(valuestring, cjvalue);
+        sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
     else if (db->type == AnIn32) 
     {
         //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
-        sys->setDbVar(valuestring, cjvalue);
+        sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
     else if (db->type == AnF32) 
     {
         //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
-        sys->setDbVar(valuestring, cjvalue);
+        sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
     else if (db->type == Type_Crob) 
@@ -961,19 +979,90 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* valuestring, cJSON *cjv
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
                                                     , db->name.c_str()
-                                                    , valuestring
-                                                    , (int)StringToControlCode(valuestring)
+                                                    , name
+                                                    , (int)StringToControlCode(cjvalue->valuestring)
                                                     );
 
-        sys->setDbVar(valuestring, cjvalue);
+        sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
     else
     {
-      FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, valuestring);  
+      FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, name);  
       return -1;
     }
     return dbs.size();   
+}
+
+// need nodbs option  or do we ??
+int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
+{
+    // cjoffset must be a name
+    // cjvalue may be an object
+
+    if (name == NULL)
+    {
+        FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
+        return -1;
+    }
+
+    DbVar* db = getDbVar(sys, name); 
+    if (db == NULL)
+    {
+        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, name);
+        return -1;
+    }
+    
+    FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, name);
+
+    if (cjvalue->type == cJSON_Object)
+    {
+        flag = 1;
+        cjvalue = cJSON_GetObjectItem(cjvalue, "value");
+    }
+
+    if (!cjvalue)
+    {
+        FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
+        return -1;
+    }
+
+    if (db->type == AnIn16) 
+    {
+        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
+        sys->setDbVar(name, cjvalue);
+        //dbs.push_back(std::make_pair(db, flag));
+    }
+    else if (db->type == AnIn32) 
+    {
+        //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
+        sys->setDbVar(name, cjvalue);
+        //dbs.push_back(std::make_pair(db, flag));
+    }
+    else if (db->type == AnF32) 
+    {
+        //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
+        sys->setDbVar(name, cjvalue);
+        //dbs.push_back(std::make_pair(db, flag));
+    }
+    else if (db->type == Type_Crob) 
+    {
+        FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
+                                                    , __FUNCTION__
+                                                    , db->name.c_str()
+                                                    , name
+                                                    , (int)StringToControlCode(cjvalue->valuestring)
+                                                    );
+
+        sys->setDbVar(name, cjvalue);
+        //dbs.push_back(std::make_pair(db, flag));
+    }
+    else
+    {
+      FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, name);  
+      return -1;
+    }
+    return 0;//dbs.size();   
 }
 
 server_data* create_register_map(cJSON* registers, datalog* data)
