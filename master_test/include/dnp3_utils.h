@@ -574,7 +574,7 @@ typedef struct sysCfg_t {
             {
                 cJSON* cji = cJSON_GetArrayItem(bits, i);
                 // just use one copy of valuestring clean up will fix it.
-                const char* bs = strdup(cji->valuestring)
+                const char* bs = strdup(cji->valuestring);
                 db->addBit(bs);
                 bitsMap[bs] == std::make_pair(db, i);
             }
