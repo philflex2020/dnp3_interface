@@ -823,7 +823,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     if(strcmp(msg->method,"set") == 0)
     {
         int single = 0;
-        int reply = 1;
+        //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
         if ((int)msg->nfrags > fragptr+2)
@@ -832,7 +832,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             if(strncmp(uri, "/reply/", strlen("/reply/") == 0))
             {
                 FPS_DEBUG_PRINT("fims message reply ACCEPTED  [%s] \n", msg->body);
-                reply = 0;
+                //reply = 0;
             }
             else
             {
