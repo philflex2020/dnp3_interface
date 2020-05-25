@@ -745,6 +745,10 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if(strcmp(msg->method,"set") == 0)
         {
             FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted for  method (%s) uri (%s) \n", msg->method, msg->uri);
+            if(msg->body != NULL)
+            {
+                FPS_ERROR_PRINT("fims message body (%s) \n", msg->body);
+            }
             return NULL;
         }
     }
