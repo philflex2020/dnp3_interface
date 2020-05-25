@@ -827,8 +827,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
         FPS_ERROR_PRINT("fims method [%s] uri [%s] almost  supported for [%s]\n", msg->method, msg->uri, who);
-        
-        if(strstr(msg->uri, "/reply/") != NULL))
+
+        if(strstr(msg->uri, "/reply/") != NULL)
         {
             FPS_DEBUG_PRINT("fims message reply uri DETECTED  [%s] \n", msg->uri);
             //single = 0;
