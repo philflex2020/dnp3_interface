@@ -719,9 +719,16 @@ typedef struct sysCfg_t {
 
         void addUri(const char *uri, DbVar*db)
         {
+            const char *mapUri;
+            // this is a pointer to the uri 
+            // if there is not one in the map then create a new one and then add it
             //duri_map::iterator it_uris;
-            //if(uriMap.find(uri) == uriMap.end())
-            //{
+            if(uriMap.find(uri) == uriMap.end())
+            {
+                mapUri = strdup(uri);
+                uri = mapUri;
+            }
+
             uriMap[uri].push_back(db);
             //}
         }
