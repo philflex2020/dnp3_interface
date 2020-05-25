@@ -644,21 +644,25 @@ typedef struct sysCfg_t {
         // sunscribe to all the uris
         int subsUris()
         {
+            FPS_ERROR_PRINT(" %s subscribe to uris===> \n\n", __FUNCTION__);
+
             bool publish_only = false;
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
                 char replyto[1024];
-                snprintf(replyto,sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
+                snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
                 if(p_fims->Subscribe((const char**)&replyto, 1, (bool *)&publish_only) == false)
                 {
                     FPS_ERROR_PRINT("Subscription to [%s] failed.\n", replyto);
                 }
                 else
                 {
-                    FPS_ERROR_PRINT("Subscription to [%s] failed.\n", replyto);
+                    FPS_ERROR_PRINT("Subscription to [%s] passed.\n", replyto);
                 }
             }
+            FPS_ERROR_PRINT(" %s subscribe to uris<== DONE \n\n", __FUNCTION__);
+
             return 0;
         }
 
@@ -709,10 +713,10 @@ typedef struct sysCfg_t {
                 // }
                 
             }
-            //FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+            FPS_ERROR_PRINT(" %s<=== get uris DONE\n\n", __FUNCTION__);
             return 0;
         }
-        
+
         void addUri(const char *uri, DbVar*db)
         {
             //duri_map::iterator it_uris;

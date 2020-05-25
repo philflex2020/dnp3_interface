@@ -232,7 +232,9 @@ int main(int argc, char* argv[])
         p_fims->Close();
         return 1;
     }
-    // send out initial gets
+    // send out initial sunscribes
+    sys_cfg.subsUris();
+    // send out intial gets
     sys_cfg.getUris();
     // set all values to inval
     // start time to complete gets
