@@ -229,7 +229,7 @@ typedef struct DbVar_t {
         }
         
     };
-    
+
     int addBit(const char*bit)
     {
         dbBits.push_back(strdup(bit));
@@ -252,7 +252,7 @@ typedef struct DbVar_t {
     uint32_t anInt32;
     double anF32;
     uint8_t crob;
-    vector<const char*>dbBits;
+    std::vector<const char*>dbBits;
 
 } DbVar;
 
