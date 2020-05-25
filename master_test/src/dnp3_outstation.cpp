@@ -115,24 +115,24 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
 {
     switch (db->type) 
     {
-        case Type_Crob:
+        // case Type_Crob:
+        // {
+        //     builder.Update(Binary(db->crob), db->offset);
+        //     break;
+        // }
+        // case AnIn16:
+        // {
+        //     builder.Update(Analog(db->anInt16), db->offset);
+        //     break;
+        // }
+        case Type_Analog:
         {
-            builder.Update(Binary(db->crob), db->offset);
+            builder.Update(Analog(db->valuedouble), db->offset);
             break;
         }
-        case AnIn16:
+        case Type_Binary:
         {
-            builder.Update(Analog(db->anInt16), db->offset);
-            break;
-        }
-        case AnIn32:
-        {
-            builder.Update(Analog(db->anInt32), db->offset);
-            break;
-        }
-        case AnF32:
-        {
-            builder.Update(Analog(db->anF32), db->offset);
+            builder.Update(Analog(db->valueint), db->offset);
             break;
         }
         default:
@@ -269,11 +269,14 @@ int main(int argc, char* argv[])
 
                 if(cj)
                 {
-                    const char* reply = cJSON_PrintUnformatted(cj);
+                    if(msg->replyto)
+                    {
+                        const char* reply = cJSON_PrintUnformatted(cj);
+                        p_fims->Send("set", msg->replyto, NULL, reply);
+                        free((void* )reply);
+                    }
                     cJSON_Delete(cj);
                     cj = NULL;
-                    p_fims->Send("set", msg->replyto, NULL, reply);
-                    free((void* )reply);
                 }
             }
 
