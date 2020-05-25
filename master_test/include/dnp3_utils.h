@@ -656,7 +656,14 @@ typedef struct sysCfg_t {
                 char replyto[1024];
                 const char* subs[1];
                 //
-                snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s", id, it->first);
+                if (id->first[0] == '/') 
+                {
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s", id, it->first);
+                } 
+                else
+                {
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
+                }
                 subs[0] = replyto;
 
                 FPS_ERROR_PRINT(" %s subscribe to replyto [%s]\n", __FUNCTION__, replyto);
@@ -682,16 +689,24 @@ typedef struct sysCfg_t {
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
                 char replyto[1024];
-                snprintf(replyto,sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
                 char getUri[1024];
-                snprintf(getUri,sizeof(getUri),"/queryx/%s", it->first);
-                //, db->name.c_str() );
+                if (id->first[0] == '/') 
+                {
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s", id, it->first);
+                    snprintf(getUri,sizeof(getUri),"/queryx%s", it->first);
+                } 
+                else
+                {
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
+                    snprintf(getUri,sizeof(getUri),"/queryx/%s", it->first);
+                }
 
                 FPS_ERROR_PRINT(" uri : [%s] replyto: [%s]\n"
                     , getUri
                     , replyto
                     );
-                // //p_fims->Send("get", getUri, replyto, NULL);
+        
+                p_fims->Send("get", getUri, replyto, NULL);
                 // cJSON* cj = NULL;
                 // if(fimsreply)
                 // {
