@@ -233,7 +233,7 @@ typedef struct DbVar_t {
     int addBit(const char*bit)
     {
         dbBits.push_back(std::make_pair(bit,0));
-        return = dbBits.size();
+        return = (int)dbBits.size();
     }
 
     int setBit(int idx, int val)
@@ -244,7 +244,7 @@ typedef struct DbVar_t {
 
     int setBit(const char* var, int val)
     {
-        for (int i = 0; i < dbBits.size(); i++)
+        for (int i = 0; i < (int)dbBits.size(); i++)
         {
             if(strcmp(dbBits[i].first, var) == 0)
             {
@@ -263,7 +263,7 @@ typedef struct DbVar_t {
 
     int getBit(const char* var)
     {
-        for (int i = 0; i < dbBits.size(); i++)
+        for (int i = 0; i < (int)dbBits.size(); i++)
         {
             if(strcmp(dbBits[i].first, var) == 0)
             {
