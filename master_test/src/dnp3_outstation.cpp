@@ -132,7 +132,7 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
         }
         case Type_Binary:
         {
-            builder.Update(Analog(db->valueint), db->offset);
+            builder.Update(Binary(db->valueint), db->offset);
             break;
         }
         default:
@@ -140,12 +140,11 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
     }
 }
 
-sysCfg* xcfgdb;
+
 
 int main(int argc, char* argv[])
 {
     sysCfg sys_cfg;
-    xcfgdb = &sys_cfg;
     int rc = 0;
     int fims_connect = 0;
     p_fims = new fims();
@@ -233,7 +232,7 @@ int main(int argc, char* argv[])
         return 1;
     }
     // send out initial sunscribes
-    sys_cfg.subsUris();
+    //ssys_cfg.subsUris();
     // send out intial gets
     sys_cfg.getUris();
     // set all values to inval

@@ -229,6 +229,12 @@ typedef struct DbVar_t {
         }
         
     };
+    
+    int addBit(const char*bit)
+    {
+        dbBits.push_back(strdup(bit));
+        return dbBits.size();
+    }
 
     // TODO turn these into char*
     std::string name;
@@ -246,6 +252,7 @@ typedef struct DbVar_t {
     uint32_t anInt32;
     double anF32;
     uint8_t crob;
+    vector<const char*>dbBits;
 
 } DbVar;
 
@@ -418,7 +425,7 @@ typedef struct sysCfg_t {
             {
                 db->valuedouble = fval;
             } 
-            
+
         };
 
         void setDbVarIx(int dbtype, int idx, int ival)
@@ -559,94 +566,18 @@ typedef struct sysCfg_t {
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
         }
 
-        // const char* getFimsReply(const char* getUri, const char* replyto, int timeMs)
-        // {
-        //     const char* freply = NULL;
+        int addBits(DbVar *db, cJSON *bits)
+        {
+            int asiz = cJSON_GetArraySize(bits);
+            for (int i = 0  ; i < asiz; i++ )
+            {
+                cJSON* cji = cJSON_GetArrayItem(bits, i)
+                db->addBit(cji->valuestring);
 
-        //     //     // could alternatively fims connect using a stored name for the server
-        //     // while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(sys_cfg.id) == false)
-        //     // {
-        //     //     fims_connect++;
-        //     //     sleep(1);
-        //     // }
-        //     // if(fims_connect >= MAX_FIMS_CONNECT)
-        //     // {
-        //     //     FPS_ERROR_PRINT("Failed to establish connection to FIMS server.\n");
-        //     //     rc = 1;
-        //     //     goto cleanup;
-        //     // }
-        //     // sprintf(replyto, "%s/reply%s", server_map->base_uri, it->first);
-        //     // fprintf(stderr,"replyto [%s]\n", replyto);
-        //     // server_map->p_fims->Send("get", it->first, replyto, NULL);
-        //     // timespec current_time, timeout;
-        //     // clock_gettime(CLOCK_MONOTONIC, &timeout);
-        //     // timeout.tv_sec += 2;
-        //     // bool found = false;
-        //     // note uses main fims system.
-        //     // while(server_map->p_fims->Connected() && found != true &&
-        //     //     (clock_gettime(CLOCK_MONOTONIC, &current_time) == 0) && (timeout.tv_sec > current_time.tv_sec ||
-        //     //     (timeout.tv_sec == current_time.tv_sec && timeout.tv_nsec > current_time.tv_nsec + 1000)))
-        //     // {
-        //     //     unsigned int us_timeout_left = (timeout.tv_sec - current_time.tv_sec) * 1000000 +
-        //     //             (timeout.tv_nsec - current_time.tv_nsec) / 1000;
-        //     //     fims_message* msg = server_map->p_fims->Receive_Timeout(us_timeout_left);
-        //     //     if(msg == NULL)
-        //     //         continue;
-        //     //     bool rc = process_fims_message(msg, server_map);
-        //     //     if(strcmp(replyto, msg->uri) == 0)
-        //     //     {
-        //     //         found = true;
-        //     //         if(rc == false)
-        //     //         {
-        //     //             fprintf(stderr, "Error, failed to find value from config file in defined uri.\n");
-        //     //             ser ver_map->p_fims->free_message(msg);
-        //     //             return false;
-        //     //         }
-        //     //     }
-        //     //     server_map->p_fims->free_message(msg);
-        //     // }
-        //     // if(found == false)
-        //     // {
-        //     //     fprintf(stderr, "Failed to find get response for %s.\n", it->first);
-        //     //     return false;
-        //     // }
-            
-        //     // subs = /components
-        //     bool publish_only = false;
-        //     if(p_fims->Subscribe((const char**)&replyto, 1, (bool *)&publish_only) == false)
-        //     {
-        //         FPS_ERROR_PRINT("Subscription to [%s] failed.\n", replyto);
-        //         //n_fims->Close();
-        //         return NULL;
-        //     }
+            }
+            return asiz;
+        }
 
-        //     p_fims->Send("get", getUri, replyto, NULL);
-
-        //     fims_message* msg = p_fims->Receive_Timeout(timeMs*1000);
-        //     if(msg)
-        //     {
-        //         freply = strdup(msg->body);
-        //         p_fims->free_message(msg);
-        //     }
-        //     return freply;
-        // }
-
-        // from modbus_server server_map->base_uri
-        //todo this should be defined to a better length
-        // char uri[100];
-        //sprintf(uri,"/interfaces/%s", sys_cfg.name);
-        // server_map->base_uri = server_map->uris[0] = uri;
-        // sprintf(replyto, "%s/reply%s", server_map->base_uri, it->first);
-        //server_map->p_fims->Send("get", it->first, replyto, NULL);
-        // finally cracked this
-        // the uri in the config file is used for a get. The mapping associated with that uri should be in the elements in the "get"
-        // so end a fims message to "get the "root" and wait for the reply . Then look for answers in the reply.
-        // The get should be in the background but modbus_server does it "in line" at start up.
-        // for now we'll do the same
-        // BTW the replyto is  /interfaces/sungrow_ess/reply/dummy/test
-        //I think we'll just issue the request and let the normal fims message processor handle the issue
-
-        // sunscribe to all the uris
         int subsUris()
         {
             FPS_ERROR_PRINT(" %s subscribe to uris===> \n\n", __FUNCTION__);

@@ -527,7 +527,7 @@ bool parse_system(cJSON* cji, sysCfg* sys)
 int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 {
 
-    cJSON *id, *offset, *uri;
+    cJSON *id, *offset, *uri, *bf, *bits;
 
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr (idx));
     if (JSON_list == NULL)
@@ -549,12 +549,24 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         id = cJSON_GetObjectItem(obj, "id");
         offset = cJSON_GetObjectItem(obj, "offset");
         uri = cJSON_GetObjectItem(obj, "uri");
+        bf = cJSON_GetObjectItem(obj, "bit_field");
+        bits = cJSON_GetObjectItem(obj, "bit_strings");
+        //"bit_field": true,
+        //"bit_strings": [
+            // "some String"
+
         if (id == NULL || offset == NULL || id->valuestring == NULL)
         {
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             continue;
         }
         DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL);
+        if (bf && (bf->valuebool == true) && bits && (bits->type == cJSON_Array))
+        {
+            FPS_ERROR_PRINT("*****************Adding bitfields for %s\n", db->name.c_str());
+            sys->addBits(db, bits);
+
+        }
         FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         sys->numObjs[idx]++; 
         if (uri) 
