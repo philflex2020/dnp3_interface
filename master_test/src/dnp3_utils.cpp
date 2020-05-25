@@ -826,15 +826,15 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
-        FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
+        FPS_ERROR_PRINT("fims method [%s] uri [%s] almost  supported for [%s]\n", msg->method, msg->uri, who);
 
         if ((int)msg->nfrags > fragptr+2)
         {
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            if(strncmp(uri, "reply/", strlen("reply/") == 0))
+            if(strncmp(msg->uri, "/reply/", strlen("/reply/") == 0))
             {
                 FPS_DEBUG_PRINT("fims message reply ACCEPTED  [%s] \n", msg->body);
-                //reply = 0;
+                single = 0;
             }
             else
             {
