@@ -8,7 +8,7 @@
           "line_flows_mv":480,
                 "voltage":48,
 "plant_auxiliary_load_mw":1134,
- "plant_auxiliary_load_mv:4800,
+ "plant_auxiliary_load_mv":4800,
      "voltage_regulator":1,
 "power_system_stabilizer":0,
   "gen_resource_switches":1,
