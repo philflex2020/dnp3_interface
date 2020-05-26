@@ -541,7 +541,7 @@ typedef struct sysCfg_t {
             {
                 DbVar* db = it->second;
                 FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
-                            , it->first.c_str()
+                            , it->first
                             , db->type
                             , db->offset
                             );
@@ -559,7 +559,7 @@ typedef struct sysCfg_t {
                 DbVar* db = it->second;
                 addVarToCj(cj, db);
                 FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
-                            , it->first.c_str()
+                            , it->first
                             , db->type
                             , db->offset
                             );  

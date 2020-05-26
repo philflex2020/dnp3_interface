@@ -565,7 +565,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         {
 
             //TODO bits need a value use make_pair there too 
-            FPS_ERROR_PRINT("*****************Adding bitfields for %s\n", db->name;
+            FPS_ERROR_PRINT("*****************Adding bitfields for %s\n", db->name);
             sys->addBits(db, bits);
 
         }
