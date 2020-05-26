@@ -327,7 +327,7 @@ typedef struct sysCfg_t {
     {
         std::cout<<" "<<__FUNCTION__<<" closing\n" ;
 
-        if(name)free(name);
+        //if(name)free(name);
         if(protocol)free(protocol);
         if(id)free(id);
         if(ip_address)free(ip_address);
@@ -371,6 +371,97 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
+        int setDb(DbVar *db, double fval)
+        {
+            if(db != NULL)
+            {
+                switch (db->type) 
+                {
+                    case Type_Analog:
+                    {
+                        // also copy valueint or the group30var5 stuff
+                        db->valuedouble = fval;
+                        db->valueint =  (int)fval;
+                        return 1;
+                    }    
+                    case AnF32:
+                    {
+                        db->valuedouble = fval;
+                        return  1;
+                    } 
+                    case Type_Binary:
+                    {
+                        db->valueint = (int)fval;
+                        return  1;
+                    } 
+                    case AnIn32:
+                    {
+                        db->valueint = (int)fval;
+                        db->anInt32 = db->valueint;
+                        return  1;
+                    }
+                   case AnIn16:
+                    {
+                        db->valueint = (int)fval;
+                        db->anInt16 = db->valueint;
+                        return  1;
+                    }
+                    case Type_Crob:
+                    {
+                    //    db->crob = ControlCodeToType(StringToControlCode(cj->valuestring));
+                       return  1;
+                    }
+                    default:
+                        return 0;
+                }
+        }
+
+        int setDb(DbVar *db, int ival)
+        {
+            if(db != NULL)
+            {
+                switch (db->type) 
+                {
+                    case Type_Analog:
+                    {
+                        // also copy valueint or the group30var5 stuff
+                        db->valuedouble = (double)ival;
+                        db->valueint =  ival;
+                        return 1;
+                    }    
+                    case AnF32:
+                    {
+                        db->valuedouble = (double)ival;
+                        return  1;
+                    } 
+                    case Type_Binary:
+                    {
+                        db->valueint = ival;
+                        return  1;
+                    } 
+                    case AnIn32:
+                    {
+                        db->valueint = ival;
+                        db->anInt32 = ival;
+                        return  1;
+                    }
+                   case AnIn16:
+                    {
+                        db->valueint = ival;
+                        db->anInt16 = ival;
+                        return  1;
+                    }
+                    case Type_Crob:
+                    {
+                        db->crob = ival;// ControlCodeToType(StringToControlCode(cj->valuestring));
+                        return  1;
+                    }
+                    default:
+                        return 0;
+                }
+ 
+        }
+
         int setDbVar(const char* name, cJSON* cj)
         {
             DbVar* db = getDbVar(name);
@@ -380,34 +471,32 @@ typedef struct sysCfg_t {
                 {
                     case Type_Analog:
                     {
-                    db->valuedouble = cj->valuedouble;
-                    return 1;
+                        setDb(db, cj->valuedouble);
+                        return 1;
                     }    
                     case AnF32:
                     {
-                        db->valuedouble = cj->valuedouble;
+                        setDb(db, cj->valuedouble);
                         return  1;
                     } 
                     case Type_Binary:
                     {
-                        db->valueint = cj->valueint;
+                        setDb(db, cj->valueint);
                         return  1;
                     } 
                     case AnIn32:
                     {
-                        db->valueint = cj->valueint;
-                        db->anInt32 = cj->valueint;
+                        setDb(db, cj->valueint);
                         return  1;
                     }
                    case AnIn16:
                     {
-                        db->valueint = cj->valueint;
-                        db->anInt16 = cj->valueint;
+                        setDb(db, cj->valueint);
                         return  1;
                     }
                     case Type_Crob:
                     {
-                        db->crob = ControlCodeToType(StringToControlCode(cj->valuestring));
+                        setDb(db, ControlCodeToType(StringToControlCode(cj->valuestring));
                         return  1;
                     }
                     default:
@@ -420,41 +509,22 @@ typedef struct sysCfg_t {
         int setDbVar(const char *name, double dval)
         {
             DbVar* db = getDbVar(name);
-            if ((db != NULL) && (db->type == Type_Analog))
+            if(db != NULL)
             {
-                db->valuedouble = dval;
-                return 1;
-            } 
-            if ((db != NULL) && (db->type == AnF32))
-            {
-                db->valuedouble = dval;
-                return  1;
-            } 
+                return setDb(db, dval);
+            }
             return 0;
         };
-
         int setDbVar(const char *name, int ival)
         {
             DbVar* db = getDbVar(name);
-            if ((db != NULL) && (db->type == Type_Binary))
+            if(db != NULL)
             {
-                db->valueint = ival;
-                return  1;
-            } 
-            if ((db != NULL) && (db->type == AnIn32))
-            {
-                db->valueint = ival;
-                db->anInt32 = ival;
-                return  1;
-            } 
-            if ((db != NULL) && (db->type == AnIn16))
-            {
-                db->valueint = ival;
-                db->anInt16 = ival;
-               return  1;
-            } 
+                return setDb(db, ival);
+            }
             return 0;
         };
+
 
         void setDbVarIx(int dbtype, int idx, double fval)
         {
@@ -463,15 +533,11 @@ typedef struct sysCfg_t {
             {   
                 db = dbMapIx[dbtype][idx];
             }
-            if ((db != NULL) && (db->type == AnF32))
+            if (db != NULL)
             {
-                db->valuedouble = fval;
-            } 
-            if ((db != NULL) && (db->type == Type_Analog))
-            {
-                db->valuedouble = fval;
-            } 
-
+                return setDb(db, fval);
+            }
+            return 0;
         };
 
         void setDbVarIx(int dbtype, int idx, int ival)
@@ -483,36 +549,9 @@ typedef struct sysCfg_t {
             }
             if (db != NULL)
             {
-                switch (db->type) 
-                {
-                    case Type_Binary:
-                    {
-                        db->valueint = ival; 
-                        break;
-                    } 
-                    case Type_Crob:
-                    {
-                        db->crob = ival; 
-                        break;
-                    } 
-                    case AnIn32:
-                    {
-                        db->valueint = ival;
-                        db->anInt32 = ival;
-                        break;
-                    } 
-                    case AnIn16:
-                    {
-                        db->valueint = ival;
-                        db->anInt16 = ival;
-                        break;
-                    }
-                    default:
-                    {
-                        break;
-                    }
-                }
-            } 
+                return setDb(db, ival);
+            }
+            return 0;
         };
 
         int getDbIdx(int dbtype, const char* name)
@@ -665,6 +704,7 @@ typedef struct sysCfg_t {
             return 0;
         }
 
+        // TODO only get the ones for vars applied to this application (outstation or master)
         int getUris()
         {
             FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
