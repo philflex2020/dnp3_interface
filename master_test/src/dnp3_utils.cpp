@@ -1006,7 +1006,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
     {
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
-                                                    , db->name.c_str
+                                                    , db->name.c_str()
                                                     , name
                                                     , (int)StringToControlCode(cjvalue->valuestring)
                                                     );
