@@ -335,11 +335,11 @@ typedef struct sysCfg_t {
 
         if (cj) cJSON_Delete(cj);
      // TODO clear out maps
-    }
+    };
 
     public:
         
-        DbVar* addDbVar(string name, int type, int offset, char* uri) 
+        DbVar* addDbVar(std::string name, int type, int offset, char* uri) 
         {
             DbVar* db = NULL;
 
@@ -603,7 +603,7 @@ typedef struct sysCfg_t {
                 {
                     DbVar* db = it->second[i];
                     FPS_ERROR_PRINT("                 [%s] %d %d\n"
-                                    , db->name 
+                                    , db->name.c_str() 
                                     , db->type
                                     , db->offset
                                     );
