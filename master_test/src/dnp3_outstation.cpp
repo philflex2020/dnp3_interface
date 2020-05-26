@@ -279,7 +279,7 @@ int main(int argc, char* argv[])
             bool ok = sys_cfg.checkUris();
             if(ok == false)
             {
-                if (tticks > MAX_SETUP_TICKS)
+                if (ttick > MAX_SETUP_TICKS)
                 {
                     // just quit here
                     FPS_DEBUG_PRINT("QUITTING TIME Timeout tick %d\n", ttick);
