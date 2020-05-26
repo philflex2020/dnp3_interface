@@ -975,6 +975,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
     if (cjvalue->type == cJSON_Object)
     {
         flag = 1;
+        FPS_DEBUG_PRINT(" ************* %s Var [%s] set flag to 1 \n", __FUNCTION__, name);
         cjvalue = cJSON_GetObjectItem(cjvalue, "value");
     }
 
