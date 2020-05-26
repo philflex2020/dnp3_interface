@@ -280,7 +280,7 @@ typedef struct DbVar_t {
     }
 
     // TODO turn these into char*
-    string name;
+    std::string name;
     const char* site;    // furute use for site.
     const char* uri;
     int valflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
