@@ -140,7 +140,7 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
     }
 }
 
-
+#define MAX_SETUP_TICKS 25
 
 int main(int argc, char* argv[])
 {
@@ -148,7 +148,12 @@ int main(int argc, char* argv[])
     int rc = 0;
     int fims_connect = 0;
     p_fims = new fims();
-    const char *sub_array[]={(const char *)"/interfaces",(const char*)"/components",(const char*)"/fooey",NULL};
+    const char *sub_array[]={
+        (const char *)"/interfaces",
+        (const char*)"/components",
+        (const char*)"/fooey",
+        NULL
+        };
     // const char **sub_array = new const char*[3];    
     // sub_array[0] = (const char *)"/components";
     // sub_array[1] = (const char *)"/interfaces";
@@ -252,14 +257,36 @@ int main(int argc, char* argv[])
     // // send out initial sunscribes
     //ssys_cfg.subsUris();
     // send out intial gets
+    // set max ticks
     sys_cfg.getUris();
     // set all values to inval
     // start time to complete gets
+    // TODO set for all the getURI responses as todo
+    // TODO only get outstation vars
     //
+    int ttick = 0;
+
     while(running && p_fims->Connected())
     {
-        fims_message* msg = p_fims->Receive();
-        if(msg != NULL)
+        // pur int a time out 
+        fims_message* msg = p_fims->Receive_Timeout(1000000);
+        if(msg == NULL)
+        { 
+            // TODO check for all the getURI resposes
+            FPS_DEBUG_PRINT("Timeout tick %d\n", ttick);
+            ttick++;
+            bool ok = sys_cfg.checkUris();
+            if(ok == false)
+            {
+                if (tticks > MAX_SETUP_TICKS)
+                {
+                    // just quit here
+                    FPS_DEBUG_PRINT("QUITTING TIME Timeout tick %d\n", ttick);
+
+                }
+            }
+        }
+        else
         {
 
             FPS_ERROR_PRINT("****** Hey %s got a message uri [%s] \n", __FUNCTION__, msg->uri);

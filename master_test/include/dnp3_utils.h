@@ -223,6 +223,7 @@ typedef struct DbVar_t {
         valflag = 0;
         bit = -1;
         parent = NULL;
+        initSet = 0;
 
         if(iuri)
         {
@@ -298,7 +299,7 @@ typedef struct DbVar_t {
     double anF32;
     uint8_t crob;
     std::vector<std::pair<const char*,int>>dbBits;
-
+    uint8_t initSet;
 } DbVar;
 
 typedef std::map<std::string, DbVar_t*> dbvar_map;
@@ -375,6 +376,8 @@ typedef struct sysCfg_t {
         {
             if(db != NULL)
             {
+                db->initSet = 1;
+
                 switch (db->type) 
                 {
                     case Type_Analog:
@@ -422,6 +425,8 @@ typedef struct sysCfg_t {
         {
             if(db != NULL)
             {
+                db->initSet = 1;
+
                 switch (db->type) 
                 {
                     case Type_Analog:
@@ -522,7 +527,6 @@ typedef struct sysCfg_t {
             }
             return 0;
         };
-
 
         int setDbVarIx(int dbtype, int idx, double fval)
         {
@@ -701,6 +705,36 @@ typedef struct sysCfg_t {
 
             return 0;
         }
+
+        bool checkUris(const char *who)
+        {
+
+            int outs =strcmp(who, "outstation");
+            duri_map::iterator it;
+            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            {
+                for (int i = 0; i < (int)it->second.size(); i++ )
+                {
+                    DbVar* db = it->second[i];
+                    if (db->initSet == 0)
+                    {
+                        if(outs)
+                        {
+                            if ((db->type == Type_Analog) || (db->type == Type_Analog))
+                            {
+                                return false;
+                            }
+                        }
+                        else // all others are on master
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        };
+
 
         // TODO only get the ones for vars applied to this application (outstation or master)
         int getUris()
