@@ -360,7 +360,7 @@ typedef struct sysCfg_t {
                 FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name.c_str());
             }
             return db;
-        }
+        };
 
         DbVar* getDbVar(const char *name)
         {
@@ -413,8 +413,9 @@ typedef struct sysCfg_t {
                     }
                     default:
                         return 0;
-                }
-        }
+               }
+            }
+        };
 
         int setDb(DbVar *db, int ival)
         {
@@ -459,8 +460,8 @@ typedef struct sysCfg_t {
                     default:
                         return 0;
                 }
- 
-        }
+            }
+        };
 
         int setDbVar(const char* name, cJSON* cj)
         {
@@ -560,7 +561,7 @@ typedef struct sysCfg_t {
             if ((db != NULL) && (db->type == dbtype))
                 return db->offset;
             return -1;
-        }
+        };
 
         DbVar* getDbVarId(int dbtype, int idx)
         {
