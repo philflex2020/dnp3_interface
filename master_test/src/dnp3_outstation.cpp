@@ -276,7 +276,7 @@ int main(int argc, char* argv[])
             // TODO check for all the getURI resposes
             FPS_DEBUG_PRINT("Timeout tick %d\n", ttick);
             ttick++;
-            bool ok = sys_cfg.checkUris();
+            bool ok = sys_cfg.checkUris("outstation");
             if(ok == false)
             {
                 if (ttick > MAX_SETUP_TICKS)
