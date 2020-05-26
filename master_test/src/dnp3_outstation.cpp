@@ -22,7 +22,7 @@
 #include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
 #include "newCommandHandler.h"
-#include "myLogger.h"
+#include "fpLogger.h"
 
 using namespace std;
 using namespace opendnp3;
@@ -60,7 +60,7 @@ void ConfigureDatabase(DatabaseConfig& config)
 
 DNP3Manager* setupDNP3Manager(void)
 {
-    auto manager = new DNP3Manager(1, myLogger::Create());
+    auto manager = new DNP3Manager(1, fpsLogger::Create());
     return manager;
 }
 
