@@ -149,9 +149,10 @@ int main(int argc, char* argv[])
     int fims_connect = 0;
     p_fims = new fims();
     //const char *sub_array[]={(const char *)"/interfaces",(const char*)"/components",(const char*)"/fooey",NULL};
-    const char **sub_array = new const char*[2];    
-    sub_array[1] = (const char *)"/components";
-    sub_array[0] = (const char *)"/interfaces";
+    const char **sub_array = new const char*[3];    
+    sub_array[0] = (const char *)"/components";
+    sub_array[1] = (const char *)"/interfaces";
+    sub_array[2] = (const char *)"/fooey";
     bool publish_only = false;
     bool running = true;
     
@@ -225,7 +226,7 @@ int main(int argc, char* argv[])
         goto cleanup;
     } 
     {
-        for (int i = 0 ; i < 2 ; i++)
+        for (int i = 0 ; i < 3 ; i++)
         {
              FPS_ERROR_PRINT(" NOTE Fims Subscribe id %d uri [%s]\n",i, sub_array[i] );
                  //TO dodo interfaces   
