@@ -231,23 +231,24 @@ int main(int argc, char* argv[])
              FPS_ERROR_PRINT(" NOTE Fims Subscribe id %d uri [%s]\n",i, sub_array[i] );
                  //TO dodo interfaces   
             // subs = /components
-            // if(p_fims->Subscribe((const char**)&sub_array[i], 1, (bool *)&publish_only) == false)
-            // {
-            //     FPS_ERROR_PRINT("Subscription failed.\n");
-            //     p_fims->Close();
-            //     return 1;
-            // }
+            publish_only = false;
+            if(p_fims->Subscribe((const char**)&sub_array[i], 1, (bool *)&publish_only) == false)
+            {
+                FPS_ERROR_PRINT("Subscription failed.\n");
+                p_fims->Close();
+                return 1;
+            }
 
         }
     }
     //TO dodo interfaces   
     // subs = /components
-    if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)&publish_only) == false)
-    {
-         FPS_ERROR_PRINT("Subscription failed.\n");
-         p_fims->Close();
-         return 1;
-    }
+    // if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)&publish_only) == false)
+    // {
+    //      FPS_ERROR_PRINT("Subscription failed.\n");
+    //      p_fims->Close();
+    //      return 1;
+    // }
     // // send out initial sunscribes
     //ssys_cfg.subsUris();
     // send out intial gets
