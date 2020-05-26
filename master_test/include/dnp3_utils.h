@@ -413,7 +413,7 @@ typedef struct sysCfg_t {
                     }
                     default:
                         return 0;
-               }
+                }    
             }
         };
 
@@ -472,33 +472,28 @@ typedef struct sysCfg_t {
                 {
                     case Type_Analog:
                     {
-                        setDb(db, cj->valuedouble);
-                        return 1;
+                        return setDb(db, cj->valuedouble);
                     }    
                     case AnF32:
                     {
-                        setDb(db, cj->valuedouble);
-                        return  1;
+                        return setDb(db, cj->valuedouble);
                     } 
                     case Type_Binary:
                     {
-                        setDb(db, cj->valueint);
-                        return  1;
+                        return setDb(db, cj->valueint);
+                        
                     } 
                     case AnIn32:
                     {
-                        setDb(db, cj->valueint);
-                        return  1;
+                        return setDb(db, cj->valueint);
                     }
                    case AnIn16:
                     {
-                        setDb(db, cj->valueint);
-                        return  1;
+                        return setDb(db, cj->valueint);
                     }
                     case Type_Crob:
                     {
-                        setDb(db, ControlCodeToType(StringToControlCode(cj->valuestring));
-                        return  1;
+                        return setDb(db, ControlCodeToType(StringToControlCode(cj->valuestring)));
                     }
                     default:
                         return 0;
