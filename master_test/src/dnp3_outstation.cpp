@@ -258,7 +258,7 @@ int main(int argc, char* argv[])
                     std::pair<DbVar*,int>dbp = dbs.back();
                     DbVar* db = dbp.first;
                     addVarToBuilder(builder, db);
-                    addVarToCj(cj, db);
+                    addVarToCj(cj, dbp);  // include flag
                     dbs.pop_back();
                 }
 
