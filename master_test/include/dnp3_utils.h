@@ -213,7 +213,7 @@ struct char_dcmp {
 // if so the "parent" slot is filled and the index refers to the bit number 
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
-    DbVar_t(const char* _name, int _type, int _offset, const char* iuri):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
+    DbVar_t(std::string &_name, int _type, int _offset, const char* iuri):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
         valueint = 0;
         anInt16 = 0;
