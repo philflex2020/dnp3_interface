@@ -147,6 +147,7 @@ int main(int argc, char* argv[])
     sysCfg sys_cfg;
     int rc = 0;
     int fims_connect = 0;
+    int ttick = 0; // timeout tick
     p_fims = new fims();
     const char *sub_array[]={
         (const char *)"/interfaces",
@@ -264,7 +265,7 @@ int main(int argc, char* argv[])
     // TODO set for all the getURI responses as todo
     // TODO only get outstation vars
     //
-    int ttick = 0;
+  
 
     while(running && p_fims->Connected())
     {
