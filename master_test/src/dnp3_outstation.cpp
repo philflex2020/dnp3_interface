@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
         if(msg != NULL)
         {
 
-            FPS_DEBUG_PRINT("****** %s got a message uri [%s] \n", __FUNCTION__, msg->uri);
+            FPS_ERROR_PRINT("****** Hey %s got a message uri [%s] \n", __FUNCTION__, msg->uri);
             dbs_type dbs; // collect all the parsed vars here
 
             cJSON* cjb = parseBody(dbs, &sys_cfg, msg, "outstation");
