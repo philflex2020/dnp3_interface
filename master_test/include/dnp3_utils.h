@@ -461,6 +461,7 @@ typedef struct sysCfg_t {
                         return 0;
                 }
             }
+            return 0;
         };
 
         int setDbVar(const char* name, cJSON* cj)
