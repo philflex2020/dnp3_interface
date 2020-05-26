@@ -415,6 +415,7 @@ typedef struct sysCfg_t {
                         return 0;
                 }    
             }
+            return 0;
         };
 
         int setDb(DbVar *db, int ival)
