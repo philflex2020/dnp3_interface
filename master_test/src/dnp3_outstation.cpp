@@ -225,7 +225,7 @@ int main(int argc, char* argv[])
     } 
     //TO dodo interfaces   
     // subs = /components
-    if(p_fims->Subscribe((const char**)sub_array, 2, (bool *)&publish_only) == false)
+    if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)&publish_only) == false)
     {
         FPS_ERROR_PRINT("Subscription failed.\n");
         p_fims->Close();
