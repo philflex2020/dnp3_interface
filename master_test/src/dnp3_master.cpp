@@ -347,7 +347,7 @@ int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, const char*
     {
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
-                                                    , pt->name.c_str()
+                                                    , pt->name
                                                     , valuestring
                                                     , (int)StringToControlCode(valuestring)
                                                     );
@@ -428,7 +428,7 @@ int addValueToVec(std::vector<DbVar*>&dbs, sysCfg*sys, /*CommandSet& commands,*/
     {
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
-                                                    , db->name.c_str()
+                                                    , db->name
                                                     , valuestring
                                                     , (int)StringToControlCode(valuestring)
                                                     );
@@ -555,7 +555,7 @@ cJSON* parseTheThing( std::vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, con
                 DbVar* db = sys->getDbVar(uri);
                 if (db != NULL)
                 {
-                    FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
+                    FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name, db->type); 
                     //addVarToCj(cj, db);
                     dbs.push_back(db);
                     return body_JSON;
