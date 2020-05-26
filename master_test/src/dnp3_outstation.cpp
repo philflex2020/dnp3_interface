@@ -224,6 +224,12 @@ int main(int argc, char* argv[])
         rc = 1;
         goto cleanup;
     } 
+    {
+        for (int i = 0 ; i < 2 ; i++)
+        {
+             FPS_ERROR_PRINT(" NOTE Fims Subscribe id %d uri [%s]\n",i, sub_array[i] );
+        }
+    }
     //TO dodo interfaces   
     // subs = /components
     if(p_fims->Subscribe((const char**)sub_array, 2, (bool *)&publish_only) == false)
