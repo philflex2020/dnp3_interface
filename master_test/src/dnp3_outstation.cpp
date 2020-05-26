@@ -22,7 +22,7 @@
 #include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
 #include "newCommandHandler.h"
-#include "fpLogger.h"
+#include "fpsLogger.h"
 
 using namespace std;
 using namespace opendnp3;
