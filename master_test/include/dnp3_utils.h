@@ -339,7 +339,7 @@ typedef struct sysCfg_t {
 
     public:
         
-        DbVar* addDbVar(std::string name, int type, int offset, char* uri) 
+        DbVar* addDbVar(const char* name, int type, int offset, char* uri) 
         {
             DbVar* db = NULL;
 
