@@ -45,7 +45,7 @@ public:
         return std::make_shared<myLogger>(printLocation);
     };
 
-    ConsoleLogger(bool printLocation) : printLocation(printLocation) {}
+    myLogger(bool printLocation) : printLocation(printLocation) {}
 
 private:
     bool printLocation;
