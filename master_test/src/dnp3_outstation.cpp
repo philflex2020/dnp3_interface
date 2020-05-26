@@ -148,11 +148,11 @@ int main(int argc, char* argv[])
     int rc = 0;
     int fims_connect = 0;
     p_fims = new fims();
-    //const char *sub_array[]={(const char *)"/interfaces",(const char*)"/components",(const char*)"/fooey",NULL};
-    const char **sub_array = new const char*[3];    
-    sub_array[0] = (const char *)"/components";
-    sub_array[1] = (const char *)"/interfaces";
-    sub_array[2] = (const char *)"/fooey";
+    const char *sub_array[]={(const char *)"/interfaces",(const char*)"/components",(const char*)"/fooey",NULL};
+    // const char **sub_array = new const char*[3];    
+    // sub_array[0] = (const char *)"/components";
+    // sub_array[1] = (const char *)"/interfaces";
+    // sub_array[2] = (const char *)"/fooey";
     bool publish_only = false;
     bool running = true;
     
@@ -242,7 +242,7 @@ int main(int argc, char* argv[])
     }
     //TO dodo interfaces   
     // subs = /components
-    if(p_fims->Subscribe((const char**)&sub_array, 3, (bool *)&publish_only) == false)
+    if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)&publish_only) == false)
     {
          FPS_ERROR_PRINT("Subscription failed.\n");
          p_fims->Close();
