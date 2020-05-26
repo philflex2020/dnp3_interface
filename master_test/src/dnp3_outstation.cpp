@@ -34,10 +34,10 @@ using namespace asiodnp3;
 
 fims *p_fims;
 
-char *binary_names[5];
-int *binary_indices[5];
-char *analog_names[5];
-int *analog_indices[5];
+// char *binary_names[5];
+// int *binary_indices[5];
+// char *analog_names[5];
+// int *analog_indices[5];
 
 void ConfigureDatabase(DatabaseConfig& config)
 {
@@ -45,18 +45,17 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].clazz = PointClass::Class2;
     config.analog[0].svariation = StaticAnalogVariation::Group30Var5;
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
-    config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;
-    
+    config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;   
 }
 
-struct State
-{
-    uint32_t count = 0;
-    double value = 0;
-    bool binary = false;
-    DoubleBit dbit = DoubleBit::DETERMINED_OFF;
-    uint8_t octetStringValue = 1;
-};
+// struct State
+// {
+//     uint32_t count = 0;
+//     double value = 0;
+//     bool binary = false;
+//     DoubleBit dbit = DoubleBit::DETERMINED_OFF;
+//     uint8_t octetStringValue = 1;
+// };
 
 DNP3Manager* setupDNP3Manager(void)
 {
@@ -67,12 +66,17 @@ DNP3Manager* setupDNP3Manager(void)
 std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, const char* addr, int port) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
-    const uint32_t FILTERS = levels::NORMAL | levels::ALL_COMMS;
+    const uint32_t FILTERS = levels::NORMAL;// | levels::ALL_COMMS;
 
     // Create a TCP server (listener)
-    auto channel = manager->AddTCPServer(cname, FILTERS, ServerAcceptMode::CloseExisting, addr, port,
-                                        PrintingChannelListener::Create());
-    cout << "channel0 set up!\n";
+    auto channel = manager->AddTCPServer(cname, 
+                                        FILTERS, 
+                                        ServerAcceptMode::CloseExisting, 
+                                        addr, 
+                                        port,
+                                        PrintingChannelListener::Create()
+                                        );
+//    cout << "channel0 set up!\n";
     return channel;
 }
 
@@ -115,16 +119,6 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
 {
     switch (db->type) 
     {
-        // case Type_Crob:
-        // {
-        //     builder.Update(Binary(db->crob), db->offset);
-        //     break;
-        // }
-        // case AnIn16:
-        // {
-        //     builder.Update(Analog(db->anInt16), db->offset);
-        //     break;
-        // }
         case Type_Analog:
         {
             builder.Update(Analog(db->valuedouble), db->offset);
@@ -231,24 +225,7 @@ int main(int argc, char* argv[])
         rc = 1;
         goto cleanup;
     } 
-    {
-        for (int i = 0 ; i < 3 ; i++)
-        {
-             FPS_ERROR_PRINT(" NOTE Fims Subscribe id %d uri [%s]\n",i, sub_array[i] );
-                 //TO dodo interfaces   
-            // subs = /components
-            // publish_only = false;
-            // if(p_fims->Subscribe((const char**)&sub_array[i], 1, (bool *)&publish_only) == false)
-            // {
-            //     FPS_ERROR_PRINT("Subscription failed.\n");
-            //     p_fims->Close();
-            //     return 1;
-            // }
 
-        }
-    }
-    //TO dodo interfaces   
-    // subs = /components
     if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
     {
          FPS_ERROR_PRINT("Subscription failed.\n");
@@ -260,10 +237,10 @@ int main(int argc, char* argv[])
     // send out intial gets
     // set max ticks
     sys_cfg.getUris();
-    // set all values to inval
+    // set all values to inval  done at the start
     // start time to complete gets
     // TODO set for all the getURI responses as todo
-    // TODO only get outstation vars
+    // done only get outstation vars 
     //
   
 
