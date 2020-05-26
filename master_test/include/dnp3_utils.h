@@ -209,9 +209,11 @@ struct char_dcmp {
 
 
 // local copy of all inputs and outputs
+// Also used with bit fields
+// if so the "parent" slot is filled and the index refers to the bit number 
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
-    DbVar_t(std::string _name, int _type, int _offset, const char* iuri):name(_name), site(""),type(_type), offset(_offset),site_offset(-1) {
+    DbVar_t(const char* _name, int _type, int _offset, const char* iuri):name(strdup(_name)), site(NULL),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
         valueint = 0;
         anInt16 = 0;
@@ -219,6 +221,9 @@ typedef struct DbVar_t {
         anF32 = 0.0;
         crob = 0;
         valflag = 0;
+        bit = -1;
+        parent = NULL;
+
         if(iuri)
         {
             uri = strdup(iuri);
@@ -232,6 +237,7 @@ typedef struct DbVar_t {
 
     int addBit(const char*bit)
     {
+        
         dbBits.push_back(std::make_pair(bit,0));
         return (int)dbBits.size();
     }
@@ -274,13 +280,15 @@ typedef struct DbVar_t {
     }
 
     // TODO turn these into char*
-    std::string name;
-    std::string site;    // furute use for site.
+    const char* name;
+    const char* site;    // furute use for site.
     const char* uri;
     int valflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
     int type;
     int variant;         // space to flag different DNP3 variant like Group30var5
     int offset;
+    int bit;              // used to indiate which bit in parent
+    DbVar_t* parent;      // I'm a bit and this is daddy 
     int site_offset;     // future use for site offset
     // values , one for each type
     double valuedouble;
@@ -293,7 +301,7 @@ typedef struct DbVar_t {
 
 } DbVar;
 
-typedef std::map<std::string, DbVar_t*> dbvar_map;
+typedef std::map<const char*, DbVar_t*, char_dcmp> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
 typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
 typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed vars here
@@ -344,12 +352,12 @@ typedef struct sysCfg_t {
                 }
                 else
                 {
-                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name.c_str());
+                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name;
                 }
             }
             else
             {
-                FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name.c_str());
+                FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name;
             }
             return db;
         }
@@ -595,7 +603,7 @@ typedef struct sysCfg_t {
                 {
                     DbVar* db = it->second[i];
                     FPS_ERROR_PRINT("                 [%s] %d %d\n"
-                                    , db->name.c_str() 
+                                    , db->name 
                                     , db->type
                                     , db->offset
                                     );
@@ -693,14 +701,14 @@ typedef struct sysCfg_t {
                 //     for (int i = 0; i < (int)it->second.size(); i++ )
                 //     {
                 //         DbVar* db = it->second[i];
-                //         cJSON *cji = cJSON_GetObjectItem(cj, db->name.c_str());
+                //         cJSON *cji = cJSON_GetObjectItem(cj, db->name;
                 //         if(cji != NULL)
                 //         {
                 //             addVarToCj(cji, db, 0);
                 //         }
                 //         else
                 //         {
-                //             FPS_ERROR_PRINT(" %s no value for [%s] in reply from uri [%s]\n", __FUNCTION__,  db->name.c_str(), it->first,);
+                //             FPS_ERROR_PRINT(" %s no value for [%s] in reply from uri [%s]\n", __FUNCTION__,  db->name, it->first,);
                 //             return -1;
                 //         }
                 //     }
