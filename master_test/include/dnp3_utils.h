@@ -213,7 +213,7 @@ struct char_dcmp {
 // if so the "parent" slot is filled and the index refers to the bit number 
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
-    DbVar_t(const char* _name, int _type, int _offset, const char* iuri):name(strdup(_name)), site(NULL),type(_type), offset(_offset),site_offset(-1) {
+    DbVar_t(const char* _name, int _type, int _offset, const char* iuri):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
         valueint = 0;
         anInt16 = 0;
@@ -280,7 +280,7 @@ typedef struct DbVar_t {
     }
 
     // TODO turn these into char*
-    const char* name;
+    string name;
     const char* site;    // furute use for site.
     const char* uri;
     int valflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
@@ -301,7 +301,7 @@ typedef struct DbVar_t {
 
 } DbVar;
 
-typedef std::map<const char*, DbVar_t*, char_dcmp> dbvar_map;
+typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
 typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
 typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed vars here
@@ -339,7 +339,7 @@ typedef struct sysCfg_t {
 
     public:
         
-        DbVar* addDbVar(const char* name, int type, int offset, char* uri) 
+        DbVar* addDbVar(string name, int type, int offset, char* uri) 
         {
             DbVar* db = NULL;
 
@@ -541,7 +541,7 @@ typedef struct sysCfg_t {
             {
                 DbVar* db = it->second;
                 FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
-                            , it->first
+                            , it->first.c_str()
                             , db->type
                             , db->offset
                             );
@@ -559,7 +559,7 @@ typedef struct sysCfg_t {
                 DbVar* db = it->second;
                 addVarToCj(cj, db);
                 FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
-                            , it->first
+                            , it->first.c_str()
                             , db->type
                             , db->offset
                             );  

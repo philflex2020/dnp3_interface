@@ -333,7 +333,7 @@ ControlCode TypeToControlCode(uint8_t arg)
 int addVarToCj(cJSON* cj, DbVar* db, int flag)
 {
     int rc = 0;
-    const char* dname = db->name;
+    const char* dname = db->name.c_str();
     switch (db->type)
     {
 
@@ -565,7 +565,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         {
 
             //TODO bits need a value use make_pair there too 
-            FPS_ERROR_PRINT("*****************Adding bitfields for %s\n", db->name);
+            FPS_ERROR_PRINT("*****************Adding bitfields for %s\n", db->name.c_str());
             sys->addBits(db, bits);
 
         }
@@ -820,7 +820,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             DbVar* db = sys->getDbVar(uri);
             if (db != NULL)
             {
-                FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name, db->type); 
+                FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
                 dbs.push_back(std::make_pair(db, flag));
                 return body_JSON;
             }
@@ -1006,7 +1006,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
     {
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
-                                                    , db->name
+                                                    , db->name.c_str
                                                     , name
                                                     , (int)StringToControlCode(cjvalue->valuestring)
                                                     );
@@ -1090,7 +1090,7 @@ int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
     {
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
-                                                    , db->name
+                                                    , db->name.c_str()
                                                     , name
                                                     , (int)StringToControlCode(cjvalue->valuestring)
                                                     );

@@ -31,8 +31,8 @@ void newSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         DbVar* db = static_cfgdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
         {
-            const char* vname = db->name;// static_cfgdb->getBinary(pair.index);
-            printf("***************************** bin idx %d name [%s] value [%d]\n", pair.index, db->name, pair.value.value);
+            const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
+            printf("***************************** bin idx %d name [%s] value [%d]\n", pair.index, db->name.c_str(), pair.value.value);
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
@@ -93,8 +93,8 @@ void newSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         DbVar* db = static_cfgdb->getDbVarId(Type_Analog, pair.index);
         if (db != NULL) 
         {
-            const char* vname = db->name;// static_cfgdb->getBinary(pair.index);
-            printf("***************************** analog idx %d name [%s] value [%f]\n", pair.index, db->name, pair.value.value);
+            const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
+            printf("***************************** analog idx %d name [%s] value [%f]\n", pair.index, db.c_str(), pair.value.value);
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
