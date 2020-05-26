@@ -16,12 +16,13 @@
 #include <opendnp3/outstation/IUpdateHandler.h>
 #include <opendnp3/outstation/SimpleCommandHandler.h>
 
-#include <asiodnp3/ConsoleLogger.h>
+//#include <asiodnp3/ConsoleLogger.h>
 #include <asiodnp3/DNP3Manager.h>
 #include <asiodnp3/PrintingChannelListener.h>
 #include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
 #include "newCommandHandler.h"
+#include "myLogger.h"
 
 using namespace std;
 using namespace opendnp3;
@@ -45,7 +46,7 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].clazz = PointClass::Class2;
     config.analog[0].svariation = StaticAnalogVariation::Group30Var5;
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
-    config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;   
+    //config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;   
 }
 
 // struct State
@@ -59,7 +60,7 @@ void ConfigureDatabase(DatabaseConfig& config)
 
 DNP3Manager* setupDNP3Manager(void)
 {
-    auto manager = new DNP3Manager(1, ConsoleLogger::Create());
+    auto manager = new DNP3Manager(1, myLogger::Create());
     return manager;
 }
 
