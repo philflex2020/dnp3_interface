@@ -298,14 +298,21 @@ typedef struct DbVar_t {
     uint32_t anInt32;
     double anF32;
     uint8_t crob;
+
+    // used for bit fields
     std::vector<std::pair<const char*,int>>dbBits;
+
     uint8_t initSet;
 } DbVar;
 
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
 typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
+
+// used in parseBody the int is a print flag to include "value"
 typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed vars here
+
+// this is for the bits
 typedef std::map<const char*, std::pair<DbVar_t*,int>, char_dcmp>bits_map;
 
 

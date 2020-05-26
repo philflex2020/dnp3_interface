@@ -149,10 +149,7 @@ int main(int argc, char* argv[])
         (const char*)"/fooey",
         NULL
         };
-    // const char **sub_array = new const char*[3];    
-    // sub_array[0] = (const char *)"/components";
-    // sub_array[1] = (const char *)"/interfaces";
-    // sub_array[2] = (const char *)"/fooey";
+    
     bool publish_only[3] = {false,false,false};
     bool running = true;
     
@@ -187,23 +184,23 @@ int main(int argc, char* argv[])
     auto manager = setupDNP3Manager();
     if (!manager)
     {
-        fprintf(stderr, "DNP3 Manger setup failed.\n");
+        FPS_ERROR_PRINT( "DNP3 Manger setup failed.\n");
         return 1;
     }
 
     auto channel = setupDNP3channel(manager, "server", sys_cfg.ip_address, sys_cfg.port);
     if (!channel){
-        fprintf(stderr, "DNP3 Channel setup failed.\n");
+       FPS_ERROR_PRINT( "DNP3 Channel setup failed.\n");
         return 1;
     }
 
     auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, sys_cfg.local_address, sys_cfg.remote_address);
     if (!outstation){
-        fprintf(stderr, "Outstation setup failed.\n");
+       FPS_ERROR_PRINT( "Outstation setup failed.\n");
         return 1;
     }
 
-    fprintf(stderr, "DNP3 Setup complete: Entering main loop.\n");
+    FPS_ERROR_PRINT( "DNP3 Setup complete: Entering main loop.\n");
 
     sys_cfg.p_fims = p_fims = new fims();
 
@@ -267,7 +264,7 @@ int main(int argc, char* argv[])
         else
         {
 
-            FPS_ERROR_PRINT("****** Hey %s got a message uri [%s] \n", __FUNCTION__, msg->uri);
+            //FPS_ERROR_PRINT("****** Hey %s got a message uri [%s] \n", __FUNCTION__, msg->uri);
             dbs_type dbs; // collect all the parsed vars here
 
             cJSON* cjb = parseBody(dbs, &sys_cfg, msg, "outstation");
