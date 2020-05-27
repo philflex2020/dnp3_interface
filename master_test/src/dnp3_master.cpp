@@ -231,7 +231,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
 
      // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below
-    const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
+    const uint32_t FILTERS = levels::NORMAL ;//| levels::ALL_APP_COMMS;
     // This is the main point of interaction with the stack
     // Connect via a TCPClient socket to a outstation
     // repeat for each outstation
