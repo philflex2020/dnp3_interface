@@ -741,7 +741,7 @@ int parse_system(cJSON *system, system_config *config)
     return 0;
 }
 
-bool checkWho(sysCfg*sys, DbVar* db, cost char *who)
+bool checkWho(sysCfg*sys, DbVar* db, const char *who)
 {
     if(db == NULL) return false;
     if (strcmp("outstation",who) == 0)
@@ -759,7 +759,7 @@ bool checkWho(sysCfg*sys, DbVar* db, cost char *who)
     return false;    
 }
 
-bool checkWho(sysCfg*sys, const char *name, cost char *who)
+bool checkWho(sysCfg*sys, const char *name, const char *who)
 {
     DbVar* db = sys->getDbVar(name);
     return checkWho(sys, db, who);
