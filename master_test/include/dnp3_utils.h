@@ -734,7 +734,15 @@ typedef struct sysCfg_t {
                         }
                         else // all others are on master
                         {
-                            return false;
+                            if (
+                                (db->type == AnIn16) 
+                                || (db->type == AnIn32)
+                                || (db->type == AnF32 )
+                                || (db->type == Type_Crob)
+                                )
+                            { 
+                                return false;
+                            }
                         }
                     }
                 }
