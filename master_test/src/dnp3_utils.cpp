@@ -746,14 +746,14 @@ bool checkWho(sysCfg*sys, DbVar* db, const char *who)
     if(db == NULL) return false;
     if (strcmp("outstation",who) == 0)
     {
-       if((db->type == Type_Analog ) || (db->Type == Type_Binary)) return true;
+       if((db->type == Type_Analog ) || (db->type == Type_Binary)) return true;
     }
     else
     {
-       if((db->type == Type_AnIn16 ) 
-            || (db->Type == Type_AnIn32)
-            || (db->Type == Type_AnF32)
-            || (db->Type == Type_Crob)
+       if((db->type == AnIn16 ) 
+            || (db->type == AnIn32)
+            || (db->type == AnF32)
+            || (db->type == Type_Crob)
             ) return true;
     }
     return false;    
