@@ -208,8 +208,8 @@ int main(int argc, char *argv[])
     sysCfg sys_cfg;
     
     //memset(&sys_cfg, 0, sizeof(sysCfg));
-    datalog data[Num_Register_Types];
-    memset(data, 0, sizeof(datalog) * Num_Register_Types);
+    //datalog data[Num_Register_Types];
+    //memset(data, 0, sizeof(datalog) * Num_Register_Types);
 
     FPS_DEBUG_PRINT("Reading config file and starting setup.\n");
     cJSON* config = get_config_json(argc, argv);
