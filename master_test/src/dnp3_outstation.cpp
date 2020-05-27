@@ -33,7 +33,7 @@ using namespace asiodnp3;
 #define MAX_FIMS_CONNECT 5
 
 fims *p_fims;
-
+//TODO fill out from system config
 void ConfigureDatabase(DatabaseConfig& config)
 {
     // example of configuring analog index 0 for Class2 with floating point variations by default
@@ -43,9 +43,9 @@ void ConfigureDatabase(DatabaseConfig& config)
     //config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;   
 }
 
-DNP3Manager* setupDNP3Manager(void)
+DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
 {
-    auto manager = new DNP3Manager(1, fpsLogger::Create());
+    auto manager = new DNP3Manager(1, fpsLogger::Create(outDB));
     return manager;
 }
 
@@ -178,7 +178,7 @@ int main(int argc, char* argv[])
 
     // Main point of interaction with the stack. 1 thread in the pool for 1 outstation
     // Manager must be in main scope
-    auto manager = setupDNP3Manager();
+    auto manager = setupDNP3Manager(&sys_cfg);
     if (!manager)
     {
         FPS_ERROR_PRINT( "DNP3 Manger setup failed.\n");

@@ -25,6 +25,8 @@
 
 #include <memory>
 #include <mutex>
+#include "dnp3_utils.h"
+
 
 namespace asiodnp3
 {
@@ -40,17 +42,18 @@ class fpsLogger final : public openpal::ILogHandler, private openpal::Uncopyable
 public:
     virtual void Log(const openpal::LogEntry& entry) override;
 
-    static std::shared_ptr<openpal::ILogHandler> Create(bool printLocation = false)
+    static std::shared_ptr<openpal::ILogHandler> Create(sysCfg *ourDB, bool printLocation = false)
     {
-        return std::make_shared<fpsLogger>(printLocation);
+        return std::make_shared<fpsLogger>(ourDB, printLocation);
     };
 
-    fpsLogger(bool printLocation) : printLocation(printLocation) {}
+    fpsLogger(sysCfg* ourDB, bool printLocation) : sysdb(ourDB), printLocation(printLocation) {}
 
 private:
     bool printLocation;
 
     std::mutex mutex;
+    sysCfg* sysdb;
 };
 
 } // namespace asiodnp3

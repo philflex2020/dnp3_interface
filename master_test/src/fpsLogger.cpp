@@ -26,6 +26,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "dnp3_utils.h"
+
 using namespace std;
 using namespace opendnp3;
 using namespace std::chrono;
