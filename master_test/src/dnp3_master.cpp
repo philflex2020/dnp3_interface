@@ -378,86 +378,86 @@ int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjof
     return addValueToCommand(cj, cfgdb, commands, cjoffset->valuestring, cjvalue);
 }
 
-int addValueToVec(std::vector<DbVar*>&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue)
-{
-    // cjoffset must be a name
-    // cjvalue may be an object
+// int addValueToVec(std::vector<DbVar*>&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue)
+// {
+//     // cjoffset must be a name
+//     // cjvalue may be an object
 
-    if (valuestring == NULL)
-    {
-        FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
-        return -1;
-    }
+//     if (valuestring == NULL)
+//     {
+//         FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
+//         return -1;
+//     }
 
-    DbVar* db = getDbVar(sys, valuestring); 
-    if (db == NULL)
-    {
-        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, valuestring);
-        return -1;
-    }
+//     DbVar* db = getDbVar(sys, valuestring); 
+//     if (db == NULL)
+//     {
+//         FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, valuestring);
+//         return -1;
+//     }
     
-    FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, valuestring);
+//     FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, valuestring);
 
-    if (cjvalue->type == cJSON_Object)
-    {
-        cjvalue = cJSON_GetObjectItem(cjvalue, "value");
-    }
+//     if (cjvalue->type == cJSON_Object)
+//     {
+//         cjvalue = cJSON_GetObjectItem(cjvalue, "value");
+//     }
 
-    if (!cjvalue)
-    {
-        FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
-        return -1;
-    }
+//     if (!cjvalue)
+//     {
+//         FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
+//         return -1;
+//     }
 
-    if (db->type == AnIn16) 
-    {
-        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
-        sys->setDbVar(valuestring, cjvalue);
-        dbs.push_back(db);
-        //addVarToCj(cfgdb, cj, valuestring);
-    }
-    else if (db->type == AnIn32) 
-    {
-        //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
-        sys->setDbVar(valuestring, cjvalue);
-        //addVarToCj(cfgdb, cj, valuestring);
-        dbs.push_back(db);
+//     if (db->type == AnIn16) 
+//     {
+//         //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
+//         sys->setDbVar(valuestring, cjvalue);
+//         dbs.push_back(db);
+//         //addVarToCj(cfgdb, cj, valuestring);
+//     }
+//     else if (db->type == AnIn32) 
+//     {
+//         //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
+//         sys->setDbVar(valuestring, cjvalue);
+//         //addVarToCj(cfgdb, cj, valuestring);
+//         dbs.push_back(db);
 
-    }
-    else if (db->type == AnF32) 
-    {
-        //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
-        sys->setDbVar(valuestring, cjvalue);
-        dbs.push_back(db);
-        //addVarToCj(cfgdb, cj, valuestring);
-    }
+//     }
+//     else if (db->type == AnF32) 
+//     {
+//         //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
+//         sys->setDbVar(valuestring, cjvalue);
+//         dbs.push_back(db);
+//         //addVarToCj(cfgdb, cj, valuestring);
+//     }
 
-    else if (db->type == Type_Crob) 
-    {
-        FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
-                                                    , __FUNCTION__
-                                                    , db->name.c_str()
-                                                    , valuestring
-                                                    , (int)StringToControlCode(valuestring)
-                                                    );
+//     else if (db->type == Type_Crob) 
+//     {
+//         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
+//                                                     , __FUNCTION__
+//                                                     , db->name.c_str()
+//                                                     , valuestring
+//                                                     , (int)StringToControlCode(valuestring)
+//                                                     );
 
-        //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(valuestring)),pt->offset)});
-        sys->setDbVar(valuestring, cjvalue);
-        //addVarToCj(cfgdb, cj, valuestring);
-        dbs.push_back(db);
-    }
-    else
-    {
-      FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, valuestring);  
-      return -1;
-    }
-    return dbs.size();   
-}
+//         //commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(valuestring)),pt->offset)});
+//         sys->setDbVar(valuestring, cjvalue);
+//         //addVarToCj(cfgdb, cj, valuestring);
+//         dbs.push_back(db);
+//     }
+//     else
+//     {
+//       FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, valuestring);  
+//       return -1;
+//     }
+//     return dbs.size();   
+// }
 
-int addValueToVec(std::vector<DbVar*>&dbs, sysCfg*cfgdb, /*CommandSet& commands,*/ cJSON *cjoffset, cJSON *cjvalue)
-{
-    return addValueToVec(dbs, cfgdb, /*commands,*/ cjoffset->valuestring, cjvalue);
-}
+// int addValueToVec(std::vector<DbVar*>&dbs, sysCfg*cfgdb, /*CommandSet& commands,*/ cJSON *cjoffset, cJSON *cjvalue)
+// {
+//     return addValueToVec(dbs, cfgdb, /*commands,*/ cjoffset->valuestring, cjvalue);
+// }
 
 // cJSON* parseTheThing( std::vector<DbVar*>&dbs, sysCfg*sys, fims_message*msg, const char* who)
 // {
