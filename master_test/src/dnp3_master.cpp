@@ -1023,7 +1023,6 @@ int main(int argc, char *argv[])
             {
                 cJSON_Delete(cjb);
             }
-
             p_fims->free_message(msg);
         }
     }
