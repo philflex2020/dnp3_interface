@@ -206,7 +206,7 @@ int main(int argc, char* argv[])
         FPS_ERROR_PRINT("Subscription failed.\n");
         p_fims->Close();
         return 1;
-        //goto cleanup;
+        if(0)goto cleanup;
     }
 
     // Main point of interaction with the stack. 1 thread in the pool for 1 outstation
