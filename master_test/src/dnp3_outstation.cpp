@@ -176,30 +176,6 @@ int main(int argc, char* argv[])
     sys_cfg.showUris();
 
     cJSON_Delete(config);
-
-    // Main point of interaction with the stack. 1 thread in the pool for 1 outstation
-    // Manager must be in main scope
-    auto manager = setupDNP3Manager(&sys_cfg);
-    if (!manager)
-    {
-        FPS_ERROR_PRINT( "DNP3 Manger setup failed.\n");
-        return 1;
-    }
-
-    auto channel = setupDNP3channel(manager, "server", &sys_cfg, sys_cfg.ip_address, sys_cfg.port);
-    if (!channel){
-        FPS_ERROR_PRINT( "DNP3 Channel setup failed.\n");
-        return 1;
-    }
-
-    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, sys_cfg.local_address, sys_cfg.remote_address);
-    if (!outstation){
-        FPS_ERROR_PRINT( "Outstation setup failed.\n");
-        return 1;
-    }
-
-    FPS_ERROR_PRINT( "DNP3 Setup complete: Entering main loop.\n");
-
     sys_cfg.p_fims = p_fims = new fims();
 
     if (p_fims == NULL)
@@ -228,6 +204,30 @@ int main(int argc, char* argv[])
         p_fims->Close();
         goto cleanup;
     }
+
+    // Main point of interaction with the stack. 1 thread in the pool for 1 outstation
+    // Manager must be in main scope
+    auto manager = setupDNP3Manager(&sys_cfg);
+    if (!manager)
+    {
+        FPS_ERROR_PRINT( "DNP3 Manger setup failed.\n");
+        return 1;
+    }
+
+    auto channel = setupDNP3channel(manager, "server", &sys_cfg, sys_cfg.ip_address, sys_cfg.port);
+    if (!channel){
+        FPS_ERROR_PRINT( "DNP3 Channel setup failed.\n");
+        return 1;
+    }
+
+    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, sys_cfg.local_address, sys_cfg.remote_address);
+    if (!outstation){
+        FPS_ERROR_PRINT( "Outstation setup failed.\n");
+        return 1;
+    }
+
+    FPS_ERROR_PRINT( "DNP3 Setup complete: Entering main loop.\n");
+
     // // send out initial sunscribes
     //ssys_cfg.subsUris();
     // send out intial gets
@@ -238,8 +238,6 @@ int main(int argc, char* argv[])
     // TODO set for all the getURI responses as todo
     // done only get outstation vars 
     //
-  
-
     while(running && p_fims->Connected())
     {
         // use a time out to detect init failure 
