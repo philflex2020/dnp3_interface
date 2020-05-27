@@ -25,6 +25,7 @@
 #include <chrono>
 #include <iostream>
 #include <sstream>
+#include <stdio.h>
 
 #include "dnp3_utils.h"
 
@@ -41,8 +42,13 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
     auto num = duration_cast<milliseconds>(time.time_since_epoch()).count();
 
     ostringstream oss;
+    string mstring = LogFlagToString(entry.filters.GetBitfield());
+    char message [1024];
+    snprintf(message, 1024, "DNP3 Outstation %s message [%s] \n", sys_cfg.id,mstring.c_str());
+    fprintf(stderr, "%s\n", message);
+    emit_event(sysdb->p_fims, "DNP3 Outstation", message, 1);
 
-    oss << "fps ms(" << num << ") " << LogFlagToString(entry.filters.GetBitfield());
+    oss << "fps Logger ms(" << num << ") " << LogFlagToString(entry.filters.GetBitfield());
     oss << " " << entry.loggerid;
     if (printLocation)
     {
