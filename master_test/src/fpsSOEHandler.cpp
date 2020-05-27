@@ -29,6 +29,8 @@ void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
             if(strcmp(vname,"Unknown")!= 0) 
             {
                 cJSON_AddBoolToObject(static_cfgdb->cj, vname, pair.value.value);
+                sys->setDbVar(vname, pair.value.value);
+
             }
         }
         else
@@ -73,6 +75,8 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
             if(strcmp(vname,"Unknown")!= 0) 
             {
                 cJSON_AddNumberToObject(static_cfgdb->cj, vname, pair.value.value);
+                sys->setDbVar(vname, pair.value.value);
+
             }
         }
         else

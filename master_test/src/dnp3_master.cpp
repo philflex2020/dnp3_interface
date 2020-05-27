@@ -463,7 +463,7 @@ int main(int argc, char *argv[])
                 while (!dbs.empty())
                 {
                     std::pair<DbVar*,int>dbp = dbs.back();
-                    addVarToCommands (commands, dbp);
+                    addVarToCommands(commands, dbp);
                     addVarToCj(cj, dbp);
                     dbs.pop_back();
                 }
