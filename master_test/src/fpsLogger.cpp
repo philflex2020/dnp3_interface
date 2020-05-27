@@ -43,11 +43,8 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
 
     ostringstream oss;
     string mstring = LogFlagToString(entry.filters.GetBitfield());
-    char message [1024];
-    snprintf(message, 1024, "DNP3 Outstation %s message [%s] \n", sysdb->id, mstring.c_str());
-    fprintf(stderr, "%s\n", message);
-    emit_event(sysdb->p_fims, "DNP3 Outstation", message, 1);
-
+    char message [2048];
+ 
     oss << "fps Logger ms(" << num << ") " << LogFlagToString(entry.filters.GetBitfield());
     oss << " " << entry.loggerid;
     if (printLocation)
@@ -55,6 +52,14 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
         oss << " - " << entry.location;
     }
     oss << " - " << entry.message;
+    snprintf(message, sizeof(message), "DNP3 Outstation %s message [%s] --[%s]\n"
+                    ,sysdb->id 
+                    ,mstring.c_str()
+                    ,oss.str().c_str());
+    fprintf(stderr, "%s\n", message);
+    
+    emit_event(sysdb->p_fims, "DNP3 Outstation", message, 1);
+
     // unique_lock creates a temp lock that goes away >>> 
     std::unique_lock<std::mutex> lock(mutex);
     FPS_DEBUG_PRINT("%s\n", oss.str().c_str());
