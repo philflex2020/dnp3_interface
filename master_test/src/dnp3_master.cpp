@@ -240,11 +240,11 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
 
     // TODO setup our own PrintingChannelListener
     std::shared_ptr<IChannel> channel = manager->AddTCPClient(cname 
-                                        FILTERS, 
-                                        ChannelRetry::Default(), 
-                                        {IPEndpoint(addr, port)},
-                                        "0.0.0.0", 
-                                        fpsChannelListener::Create(ourDB));
+                                        , FILTERS 
+                                        , ChannelRetry::Default() 
+                                        , {IPEndpoint(addr, port)}
+                                        ,"0.0.0.0" 
+                                        , fpsChannelListener::Create(ourDB));
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
     return channel;
