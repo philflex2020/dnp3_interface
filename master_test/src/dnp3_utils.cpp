@@ -898,8 +898,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                  if (!checkWho(sys, db, who))
                  {
                     FPS_DEBUG_PRINT("Found variable [%s] type  %d NOT set ON %s\n"
-                                , db->type
                                 , db->name.c_str()
+                                , db->type
                                 , who
                                 );
 
