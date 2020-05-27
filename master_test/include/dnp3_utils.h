@@ -716,7 +716,7 @@ typedef struct sysCfg_t {
         bool checkUris(const char *who)
         {
 
-            int outs =strcmp(who, "outstation");
+            int outs = strcmp(who, "outstation");
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
@@ -725,7 +725,7 @@ typedef struct sysCfg_t {
                     DbVar* db = it->second[i];
                     if (db->initSet == 0)
                     {
-                        if(outs)
+                        if(outs==0)
                         {
                             if ((db->type == Type_Analog) || (db->type == Type_Analog))
                             {
@@ -741,7 +741,6 @@ typedef struct sysCfg_t {
             }
             return true;
         };
-
 
         // TODO only get the ones for vars applied to this application (outstation or master)
         int getUris(const char *who)
