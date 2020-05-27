@@ -382,8 +382,11 @@ int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjof
 
 
 
-void addVarToCommands (CommandSet & commands, DbVar *db)
+void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
 {
+    DbVar* db = dbp.first;
+    int flag = dbp.second;
+
     switch (db->type) 
     {
         case Type_Crob:
