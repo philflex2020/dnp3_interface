@@ -26,7 +26,7 @@
 #include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
 
-#include "newCommandHandler.h"
+#include "fpsCommandHandler.h"
 #include "newOutstationApplication.h"
 
 #include "dnp3_utils.h"
@@ -118,14 +118,14 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *ma
 
     // You can optionally change the default reporting variations or class assignment prior to enabling the outstation
     ConfigureDatabase(config.dbConfig);
-    //const auto commandHandler = std::make_shared<newCommandHandler>(MyOutputs);
+    //const auto commandHandler = std::make_shared<fpsCommandHandler>(MyOutputs);
     // Create a new outstation with a log level, command handler, and
     // config info this	returns a thread-safe interface used for
     // updating the outstation's database.
     //auto outstation = channel->AddOutstation("outstation", SuccessCommandHandler::Create(),
     //                                         DefaultOutstationApplication::Create(), config);
     auto outstation = channel->AddOutstation("outstation"
-                                            , newCommandHandler::Create(ourDB)
+                                            , fpsCommandHandler::Create(ourDB)
                                             , newOutstationApplication::Create(ourDB)
                                             , config);
     printf("outstation channel created\n");
