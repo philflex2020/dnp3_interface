@@ -42,8 +42,8 @@ public:
     {
         // TODO emit events
         std::string cstate = opendnp3::ChannelStateToString(state);
-        //std::cout << "channel state change: " << opendnp3::ChannelStateToString(state) << std::endl;
-        FPS_DEBUG_PRINT("fps channel state change: [%s]\n",cstate.c_str());
+        std::cout << "ORIG channel state change: " << opendnp3::ChannelStateToString(state) << std::endl;
+        FPS_DEBUG_PRINT("fps channel state change: [%s]\n", cstate.c_str());
     }
 
     static std::shared_ptr<IChannelListener> Create(sysCfg* ourDB)
