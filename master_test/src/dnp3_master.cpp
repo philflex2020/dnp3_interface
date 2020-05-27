@@ -48,6 +48,8 @@
 
 #include "fpsLogger.h"
 
+#include "fpsChannelListener.h"
+
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
 
@@ -226,7 +228,7 @@ DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
 }
 
 // I think we can have several channels under one manager
-std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, const char* addr, int port)
+std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* ourDB, const char* addr, int port)
 {
 
      // Specify what log levels to use. NORMAL is warning and above
@@ -237,8 +239,12 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     // repeat for each outstation
 
     // TODO setup our own PrintingChannelListener
-    std::shared_ptr<IChannel> channel = manager->AddTCPClient(cname, FILTERS, ChannelRetry::Default(), {IPEndpoint(addr, port)},
-                                        "0.0.0.0", PrintingChannelListener::Create());
+    std::shared_ptr<IChannel> channel = manager->AddTCPClient(cname 
+                                        FILTERS, 
+                                        ChannelRetry::Default(), 
+                                        {IPEndpoint(addr, port)},
+                                        "0.0.0.0", 
+                                        fpsChannelListener::Create(ourDB));
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
     return channel;
@@ -937,7 +943,7 @@ int main(int argc, char *argv[])
     // now we use data from the config file
     //std::shared_ptr<IChannel> 
     //auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
-    auto channel = setupDNP3channel(manager, sys_cfg.id, sys_cfg.ip_address, sys_cfg.port);
+    auto channel = setupDNP3channel(manager, sys_cfg.id, &sys_cfg, sys_cfg.ip_address, sys_cfg.port);
     if (!channel){
         FPS_ERROR_PRINT("Error in setupDNP3channel.\n");
         delete manager;
