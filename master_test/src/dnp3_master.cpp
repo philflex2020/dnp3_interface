@@ -929,7 +929,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    auto manager = setupDNP3Manager(*sys_cfg);
+    auto manager = setupDNP3Manager(&sys_cfg);
     if (!manager){
         FPS_ERROR_PRINT("Error in setupDNP3Manager.\n");
         return 1;
