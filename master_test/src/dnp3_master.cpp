@@ -73,103 +73,103 @@ void signal_handler (int sig)
     signal(sig, SIG_DFL);
 }
 
-// Deprecated
-bool process_fims_message(fims_message* msg, server_data* server_map)
-{
+// // Deprecated
+// bool process_fims_message(fims_message* msg, server_data* server_map)
+// {
 
-    char* uri = msg->uri;
-    // uri was sent to this processes URI so it needs to handle it
-    if(strncmp(uri, server_map->base_uri, strlen(server_map->base_uri)) == 0)
-    {
-        if(strcmp("set", msg->method) == 0)
-        {
-            uri = msg->pfrags[2];
-            if(msg->nfrags > 2 && strncmp("reply", uri, strlen("reply")) == 0)
-            {
-                uri = msg->pfrags[3] - 1;
-                uri_map::iterator uri_it = server_map->uri_to_register.find(uri);
-                if(uri_it == server_map->uri_to_register.end())
-                {
-                    // failed to find in map
-                    FPS_ERROR_PRINT( "Fims reply for unrequested uri: %s.\n", uri);
-                    return false;
-                }
-                body_map* body = uri_it->second;
-                cJSON* body_obj = cJSON_Parse(msg->body);
-                //check for valid json
-                if(body_obj == NULL)
-                {
-                    FPS_ERROR_PRINT(" Received invalid json object for set %s. \"%s\"\n", uri, msg->body);
-                    return false;
-                }
-                for(body_map::iterator body_it = body->begin(); body_it != body->end(); ++body_it)
-                {
-                    cJSON* cur_obj = cJSON_GetObjectItem(body_obj, body_it->first);
-                    if(cur_obj == NULL)
-                    {
-                        FPS_ERROR_PRINT("Failed to find %s in %s.\n", body_it->first, uri);
-                        return false;
-                    }
-                    update_register_value(server_map->mb_mapping, body_it->second.first, body_it->second.second, cur_obj);
-                }
-            }
-            else
-            {
-                if(msg->replyto != NULL)
-                    server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
-                return true;
-            }
-        }
-        else if(strcmp("get", msg->method) == 0)
-        {
-            //don't know when we would receive a get
-            if(msg->replyto != NULL)
-                server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
-            return true;
-        }
-        else
-        {
-            if(msg->replyto != NULL)
-                server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
-            return true;
-        }
-    }
-    else // Check to see if this is a publish we care about
-    {
-        if(strcmp("pub", msg->method) == 0)
-        {
-            uri_map::iterator uri_it = server_map->uri_to_register.find(msg->uri);
-            if(uri_it == server_map->uri_to_register.end())
-            {
-                //failed to find uri in devices we care about.
-                FPS_ERROR_PRINT("Received pub not in uri list: %s.\n", msg->uri);
-                return false;
-            }
-            cJSON* body_obj = cJSON_Parse(msg->body);
-            if(body_obj == NULL || body_obj->child == NULL)
-            {
-                if(body_obj != NULL)
-                    cJSON_Delete(body_obj);
-                return false;
-            }
-            for(cJSON* id_obj = body_obj->child; id_obj != NULL; id_obj = id_obj->next)
-            {
-                body_map::iterator body_it = uri_it->second->find(id_obj->string);
-                if(body_it == uri_it->second->end())
-                {
-                    // Value not in our array ignore
-                    continue;
-                }
-                update_register_value(server_map->mb_mapping, body_it->second.first, body_it->second.second, id_obj);
-            }
-            cJSON_Delete(body_obj);
-        }
-        else
-            // Not our message so ignore
-            return true;
-    }
-    return true;
-}
+//     char* uri = msg->uri;
+//     // uri was sent to this processes URI so it needs to handle it
+//     if(strncmp(uri, server_map->base_uri, strlen(server_map->base_uri)) == 0)
+//     {
+//         if(strcmp("set", msg->method) == 0)
+//         {
+//             uri = msg->pfrags[2];
+//             if(msg->nfrags > 2 && strncmp("reply", uri, strlen("reply")) == 0)
+//             {
+//                 uri = msg->pfrags[3] - 1;
+//                 uri_map::iterator uri_it = server_map->uri_to_register.find(uri);
+//                 if(uri_it == server_map->uri_to_register.end())
+//                 {
+//                     // failed to find in map
+//                     FPS_ERROR_PRINT( "Fims reply for unrequested uri: %s.\n", uri);
+//                     return false;
+//                 }
+//                 body_map* body = uri_it->second;
+//                 cJSON* body_obj = cJSON_Parse(msg->body);
+//                 //check for valid json
+//                 if(body_obj == NULL)
+//                 {
+//                     FPS_ERROR_PRINT(" Received invalid json object for set %s. \"%s\"\n", uri, msg->body);
+//                     return false;
+//                 }
+//                 for(body_map::iterator body_it = body->begin(); body_it != body->end(); ++body_it)
+//                 {
+//                     cJSON* cur_obj = cJSON_GetObjectItem(body_obj, body_it->first);
+//                     if(cur_obj == NULL)
+//                     {
+//                         FPS_ERROR_PRINT("Failed to find %s in %s.\n", body_it->first, uri);
+//                         return false;
+//                     }
+//                     update_register_value(server_map->mb_mapping, body_it->second.first, body_it->second.second, cur_obj);
+//                 }
+//             }
+//             else
+//             {
+//                 if(msg->replyto != NULL)
+//                     server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
+//                 return true;
+//             }
+//         }
+//         else if(strcmp("get", msg->method) == 0)
+//         {
+//             //don't know when we would receive a get
+//             if(msg->replyto != NULL)
+//                 server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
+//             return true;
+//         }
+//         else
+//         {
+//             if(msg->replyto != NULL)
+//                 server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
+//             return true;
+//         }
+//     }
+//     else // Check to see if this is a publish we care about
+//     {
+//         if(strcmp("pub", msg->method) == 0)
+//         {
+//             uri_map::iterator uri_it = server_map->uri_to_register.find(msg->uri);
+//             if(uri_it == server_map->uri_to_register.end())
+//             {
+//                 //failed to find uri in devices we care about.
+//                 FPS_ERROR_PRINT("Received pub not in uri list: %s.\n", msg->uri);
+//                 return false;
+//             }
+//             cJSON* body_obj = cJSON_Parse(msg->body);
+//             if(body_obj == NULL || body_obj->child == NULL)
+//             {
+//                 if(body_obj != NULL)
+//                     cJSON_Delete(body_obj);
+//                 return false;
+//             }
+//             for(cJSON* id_obj = body_obj->child; id_obj != NULL; id_obj = id_obj->next)
+//             {
+//                 body_map::iterator body_it = uri_it->second->find(id_obj->string);
+//                 if(body_it == uri_it->second->end())
+//                 {
+//                     // Value not in our array ignore
+//                     continue;
+//                 }
+//                 update_register_value(server_map->mb_mapping, body_it->second.first, body_it->second.second, id_obj);
+//             }
+//             cJSON_Delete(body_obj);
+//         }
+//         else
+//             // Not our message so ignore
+//             return true;
+//     }
+//     return true;
+// }
 
 
 DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
@@ -221,7 +221,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                 //                     stackConfig // stack configuration
     auto master = channel->AddMaster("master", // id for logging
                                      fpsSOEHandler::Create(ourDB), // callback for data processing  this generates the pub elements when we get data
-                                     newMasterApplication::Create(ourDB), // master application instance this manages the collection of al the pub elements 
+                                     fpsMasterApplication::Create(ourDB), // master application instance this manages the collection of al the pub elements 
                                      stackConfig // stack configuration
                                     );
 
