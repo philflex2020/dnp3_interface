@@ -52,13 +52,13 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
         oss << " - " << entry.location;
     }
     oss << " - " << entry.message;
-    snprintf(message, sizeof(message), "DNP3 Outstation %s message [%s] --[%s]\n"
+    snprintf(message, sizeof(message), "DNP3  %s message [%s] --[%s]\n"
                     ,sysdb->id 
                     ,mstring.c_str()
                     ,oss.str().c_str());
     fprintf(stderr, "%s\n", message);
-    
-    emit_event(sysdb->p_fims, "DNP3 Outstation", message, 1);
+
+    emit_event(sysdb->p_fims, "DNP3", message, 1);
 
     // unique_lock creates a temp lock that goes away >>> 
     std::unique_lock<std::mutex> lock(mutex);
