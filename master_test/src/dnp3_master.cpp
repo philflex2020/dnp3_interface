@@ -61,8 +61,10 @@ using namespace opendnp3;
 #define MICROSECOND_TO_MILLISECOND 1000
 #define NANOSECOND_TO_MILLISECOND  1000000
 #define MAX_FIMS_CONNECT 5
+#define MAX_SETUP_TICKS  50
 
 volatile bool running = true;
+int ttick = 0;  // timeout ticks for replies to initial gets
 
 void signal_handler (int sig)
 {
@@ -171,54 +173,54 @@ bool process_fims_message(fims_message* msg, server_data* server_map)
 
 // this subscribes to a number of uris which has been set up from reading the config file.
 // TODO review this
-bool initialize_map(server_data* server_map)
-{
-    if(server_map->p_fims->Subscribe((const char**)server_map->uris, server_map->num_uris + 1) == false)
-    {
-        FPS_ERROR_PRINT("Failed to subscribe to URI.\n");
-        return false;
-    }
+// bool initialize_map(server_data* server_map)
+// {
+//     if(server_map->p_fims->Subscribe((const char**)server_map->uris, server_map->num_uris + 1) == false)
+//     {
+//         FPS_ERROR_PRINT("Failed to subscribe to URI.\n");
+//         return false;
+//     }
 
-    char replyto[256];
-    for(uri_map::iterator it = server_map->uri_to_register.begin(); it != server_map->uri_to_register.end(); ++it)
-    {
-        snprintf(replyto, 256 , "%s/reply%s", server_map->base_uri, it->first);
-        server_map->p_fims->Send("get", it->first, replyto, NULL);
-        timespec current_time, timeout;
-        clock_gettime(CLOCK_MONOTONIC, &timeout);
-        timeout.tv_sec += 2;
-        bool found = false;
+//     char replyto[256];
+//     for(uri_map::iterator it = server_map->uri_to_register.begin(); it != server_map->uri_to_register.end(); ++it)
+//     {
+//         snprintf(replyto, 256 , "%s/reply%s", server_map->base_uri, it->first);
+//         server_map->p_fims->Send("get", it->first, replyto, NULL);
+//         timespec current_time, timeout;
+//         clock_gettime(CLOCK_MONOTONIC, &timeout);
+//         timeout.tv_sec += 2;
+//         bool found = false;
 
-        while(server_map->p_fims->Connected() && found != true &&
-             (clock_gettime(CLOCK_MONOTONIC, &current_time) == 0) && (timeout.tv_sec > current_time.tv_sec ||
-             (timeout.tv_sec == current_time.tv_sec && timeout.tv_nsec > current_time.tv_nsec + 1000)))
-        {
-            unsigned int us_timeout_left = (timeout.tv_sec - current_time.tv_sec) * 1000000 +
-                    (timeout.tv_nsec - current_time.tv_nsec) / 1000;
-            fims_message* msg = server_map->p_fims->Receive_Timeout(us_timeout_left);
-            if(msg == NULL)
-                continue;
-            bool rc = process_fims_message(msg, server_map);
-            if(strcmp(replyto, msg->uri) == 0)
-            {
-                found = true;
-                if(rc == false)
-                {
-                    FPS_ERROR_PRINT("Error, failed to find value from config file in defined uri.\n");
-                    server_map->p_fims->free_message(msg);
-                    return false;
-                }
-            }
-            server_map->p_fims->free_message(msg);
-        }
-        if(found == false)
-        {
-            FPS_ERROR_PRINT("Failed to find get response for %s.\n", it->first);
-            return false;
-        }
-    }
-    return true;
-}
+//         while(server_map->p_fims->Connected() && found != true &&
+//              (clock_gettime(CLOCK_MONOTONIC, &current_time) == 0) && (timeout.tv_sec > current_time.tv_sec ||
+//              (timeout.tv_sec == current_time.tv_sec && timeout.tv_nsec > current_time.tv_nsec + 1000)))
+//         {
+//             unsigned int us_timeout_left = (timeout.tv_sec - current_time.tv_sec) * 1000000 +
+//                     (timeout.tv_nsec - current_time.tv_nsec) / 1000;
+//             fims_message* msg = server_map->p_fims->Receive_Timeout(us_timeout_left);
+//             if(msg == NULL)
+//                 continue;
+//             bool rc = process_fims_message(msg, server_map);
+//             if(strcmp(replyto, msg->uri) == 0)
+//             {
+//                 found = true;
+//                 if(rc == false)
+//                 {
+//                     FPS_ERROR_PRINT("Error, failed to find value from config file in defined uri.\n");
+//                     server_map->p_fims->free_message(msg);
+//                     return false;
+//                 }
+//             }
+//             server_map->p_fims->free_message(msg);
+//         }
+//         if(found == false)
+//         {
+//             FPS_ERROR_PRINT("Failed to find get response for %s.\n", it->first);
+//             return false;
+//         }
+//     }
+//     return true;
+// }
 
 
 DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
@@ -463,6 +465,10 @@ int main(int argc, char *argv[])
     }
 
     cJSON_Delete(config);
+   
+    sys_cfg.showDbMap();
+    sys_cfg.showUris();
+
     sys_cfg.p_fims = p_fims;// = new fims();
     if (p_fims == NULL)
     {
@@ -522,6 +528,15 @@ int main(int argc, char *argv[])
     //sys_cfg.p_fims = new fims();
 
     
+    // send out initial sunscribes
+    //ssys_cfg.subsUris();
+    // send out intial gets
+    // set max ticks
+    sys_cfg.getUris();
+    // set all values to inval  done at the start
+    // start time to complete gets
+    // TODO set for all the getURI responses as todo
+    // done only get outstation vars 
 
     //build/release/fims_send -m set -u "/dnp3/master" '{"type":"analog32","offset":4,"value":38}'
     //fims_send -m set -u "/components/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
@@ -544,8 +559,25 @@ int main(int argc, char *argv[])
 
     while(running && p_fims->Connected())
     {
-        fims_message* msg = p_fims->Receive();
-        if(msg != NULL)
+        // once a second
+        fims_message* msg = p_fims->Receive_Timeout(1000000);
+        if(msg == NULL)
+        { 
+            // TODO check for all the getURI resposes
+            FPS_DEBUG_PRINT("Timeout tick2 %d\n", ttick);
+            ttick++;
+            bool ok = sys_cfg.checkUris("master");
+            if(ok == false)
+            {
+                if (ttick > MAX_SETUP_TICKS)
+                {
+                    // just quit here
+                    FPS_DEBUG_PRINT("QUITTING TIME Timeout tick %d\n", ttick);
+
+                }
+            }
+        }
+        else //if(msg != NULL)
         {
             dbs_type dbs; // collect all the parsed vars here
             cJSON* cjb = parseBody(dbs, &sys_cfg, msg, "master");
@@ -559,8 +591,7 @@ int main(int argc, char *argv[])
                 while (!dbs.empty())
                 {
                     std::pair<DbVar*,int>dbp = dbs.back();
-                    DbVar* db = dbp.first;
-                    addVarToCommands (commands, db);
+                    addVarToCommands (commands, dbp);
                     addVarToCj(cj, dbp);
                     dbs.pop_back();
                 }
