@@ -616,65 +616,65 @@ int main(int argc, char *argv[])
         }
     }
        
-    if (0)
-    {
-        fd_set connections_with_data;
-        fims_socket = sys_cfg.p_fims->get_socket();
+    // if (0)
+    // {
+    //     fd_set connections_with_data;
+    //     fims_socket = sys_cfg.p_fims->get_socket();
 
-        if(fims_socket != -1)
-            FD_SET(fims_socket, &all_connections);
-        else
-        {
-            FPS_ERROR_PRINT("Failed to get fims socket.\n");
-            rc = 1;
-            goto cleanup;
-        }
+    //     if(fims_socket != -1)
+    //         FD_SET(fims_socket, &all_connections);
+    //     else
+    //     {
+    //         FPS_ERROR_PRINT("Failed to get fims socket.\n");
+    //         rc = 1;
+    //         goto cleanup;
+    //     }
 
-        fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
-        FPS_DEBUG_PRINT("Fims Setup complete: now for DNP3\n");
+    //     fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
+    //     FPS_DEBUG_PRINT("Fims Setup complete: now for DNP3\n");
 
-        while(running)
-        {
-            connections_with_data = all_connections;
-            // Select will block until one of the file descriptors has data
-            if(-1 == select(fd_max+1, &connections_with_data, NULL, NULL, NULL))
-            {
-                FPS_ERROR_PRINT("server select() failure: %s.\n", strerror(errno));
-                break;
-            }
-            //Loop through file descriptors to see which have data to read
-            for(int current_fd = 0; current_fd <= fd_max; current_fd++)
-            {
-                // if no data on this file descriptor skip to the next one
-                if(!FD_ISSET(current_fd, &connections_with_data))
-                    continue;
-                if(current_fd == fims_socket)
-                {
-                    // Fims message received
-                    fims_message* msg = server_map->p_fims->Receive_Timeout(1*MICROSECOND_TO_MILLISECOND);
-                    if(msg == NULL)
-                    {
-                        if(server_map->p_fims->Connected() == false)
-                        {
-                            // fims connection closed
-                            FPS_ERROR_PRINT("Fims connection closed.\n");
-                            FD_CLR(current_fd, &all_connections);
-                            break;
-                        }
-                        else
-                            FPS_ERROR_PRINT("No fims message. Select led us to a bad place.\n");
-                    }
-                    else
-                    {
-                        process_fims_message(msg, server_map);
-                        server_map->p_fims->free_message(msg);
-                    }
-                }
-            }
-        }
+    //     while(running)
+    //     {
+    //         connections_with_data = all_connections;
+    //         // Select will block until one of the file descriptors has data
+    //         if(-1 == select(fd_max+1, &connections_with_data, NULL, NULL, NULL))
+    //         {
+    //             FPS_ERROR_PRINT("server select() failure: %s.\n", strerror(errno));
+    //             break;
+    //         }
+    //         //Loop through file descriptors to see which have data to read
+    //         for(int current_fd = 0; current_fd <= fd_max; current_fd++)
+    //         {
+    //             // if no data on this file descriptor skip to the next one
+    //             if(!FD_ISSET(current_fd, &connections_with_data))
+    //                 continue;
+    //             if(current_fd == fims_socket)
+    //             {
+    //                 // Fims message received
+    //                 fims_message* msg = server_map->p_fims->Receive_Timeout(1*MICROSECOND_TO_MILLISECOND);
+    //                 if(msg == NULL)
+    //                 {
+    //                     if(server_map->p_fims->Connected() == false)
+    //                     {
+    //                         // fims connection closed
+    //                         FPS_ERROR_PRINT("Fims connection closed.\n");
+    //                         FD_CLR(current_fd, &all_connections);
+    //                         break;
+    //                     }
+    //                     else
+    //                         FPS_ERROR_PRINT("No fims message. Select led us to a bad place.\n");
+    //                 }
+    //                 else
+    //                 {
+    //                     process_fims_message(msg, server_map);
+    //                     server_map->p_fims->free_message(msg);
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        FPS_DEBUG_PRINT("Main loop complete: Entering clean up.\n");
-    }
+    //     FPS_DEBUG_PRINT("Main loop complete: Entering clean up.\n");
+    // }
 
     cleanup:
     if (manager) delete manager;
