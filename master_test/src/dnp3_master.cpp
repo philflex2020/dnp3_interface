@@ -57,7 +57,7 @@ using namespace opendnp3;
 #define MICROSECOND_TO_MILLISECOND 1000
 #define NANOSECOND_TO_MILLISECOND  1000000
 #define MAX_FIMS_CONNECT 5
-#define MAX_SETUP_TICKS  50
+
 
 volatile bool running = true;
 int ttick = 0;  // timeout ticks for replies to initial gets
@@ -259,7 +259,7 @@ int main(int argc, char *argv[])
     }
 
     FPS_DEBUG_PRINT("Map configured: Initializing data.\n");
-     if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
+    if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
     {
         FPS_ERROR_PRINT("Subscription failed.\n");
         p_fims->Close();
@@ -291,12 +291,7 @@ int main(int argc, char *argv[])
     //auto master2 = setupDNP3master (channel2, "master2", ourDB , 2 /*localAddr*/ , 10 /*RemoteAddr*/);
 
     FPS_DEBUG_PRINT("DNP3 Setup complete: Entering main loop.\n");
-
-    //sys_cfg.p_fims = new fims();
-
     
-    // send out initial sunscribes
-    //ssys_cfg.subsUris();
     // send out intial gets
     // set max ticks
     sys_cfg.getUris("master");
@@ -304,7 +299,6 @@ int main(int argc, char *argv[])
     // start time to complete gets
     // TODO set for all the getURI responses as todo
     // done only get outstation vars 
-
 
     while(running && p_fims->Connected())
     {
@@ -337,11 +331,12 @@ int main(int argc, char *argv[])
                 cJSON*cj = NULL;                
                 if(msg->replyto != NULL)
                     cj = cJSON_CreateObject();
+
                 while (!dbs.empty())
                 {
                     std::pair<DbVar*,int>dbp = dbs.back();
                     addVarToCommands(commands, dbp);
-                    addVarToCj(cj, dbp);
+                    if(cj) addVarToCj(cj, dbp);
                     dbs.pop_back();
                 }
 
@@ -353,6 +348,7 @@ int main(int argc, char *argv[])
                     p_fims->Send("set", msg->replyto, NULL, reply);
                     free((void* )reply);
                 }
+
                 FPS_DEBUG_PRINT("      *****Running Direct Outputs \n");
                 master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
             }

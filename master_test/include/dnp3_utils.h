@@ -23,6 +23,7 @@ using namespace opendnp3;
 #define FPS_ERROR_PRINT printf
 #define FPS_DEBUG_PRINT printf
 #endif
+#define MAX_SETUP_TICKS  50
 
 const ControlCode StringToControlCode(const char* codeWord);
 

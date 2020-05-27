@@ -4,8 +4,6 @@
 #include <cjson/cJSON.h>
 #include <unistd.h>
 #include "dnp3_utils.h"
-// #include </home/vagrant/git/dnp3_interface/include/Value_Object.h>
-// #include </home/vagrant/git/dnp3_interface/include/Fims_Object.h>
 
 #include <iostream>
 #include <string>
@@ -14,11 +12,8 @@
 
 #include <opendnp3/LogLevels.h>
 #include <opendnp3/outstation/IUpdateHandler.h>
-//#include <opendnp3/outstation/SimpleCommandHandler.h>
-//#include <asiodnp3/ConsoleLogger.h>
+
 #include <asiodnp3/DNP3Manager.h>
-#include <asiodnp3/PrintingChannelListener.h>
-#include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
 #include "fpsCommandHandler.h"
 #include "fpsLogger.h"
@@ -67,12 +62,12 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
-std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB , int localAddr , int remoteAddr)
+std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB, int localAddr, int remoteAddr)
 {
     // The main object for a outstation. The defaults are useable,
     // but understanding the options are important.
     //OutstationStackConfig config(DatabaseSizes::AllTypes(10));
-    // OutstationStackConfig config(DatabaseSizes::AllTypes(10));
+    //OutstationStackConfig config(DatabaseSizes::AllTypes(10));
     cout<<"Binaries: "<<ourDB->dbMapIx[Type_Binary].size()<<" Analogs: "<<ourDB->dbMapIx[Type_Analog].size()<<endl;
     OutstationStackConfig config(DatabaseSizes(ourDB->dbMapIx[Type_Binary].size(),
                                                 0,
@@ -104,6 +99,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // Create a new outstation with a log level, command handler, and
     // config info this	returns a thread-safe interface used for
     // updating the outstation's database.
+    // TODO fpsOutStationApplication
     auto outstation = channel->AddOutstation("outstation", 
                                             fpsCommandHandler::Create(ourDB),
                                             DefaultOutstationApplication::Create(), config);
@@ -131,8 +127,6 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
             break;
     }
 }
-
-#define MAX_SETUP_TICKS 25
 
 int main(int argc, char* argv[])
 {
