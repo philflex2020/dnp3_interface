@@ -176,13 +176,15 @@ int main(int argc, char* argv[])
     sys_cfg.showUris();
 
     cJSON_Delete(config);
+
     sys_cfg.p_fims = p_fims = new fims();
 
     if (p_fims == NULL)
     {
         FPS_ERROR_PRINT("Failed to allocate connection to FIMS server.\n");
         rc = 1;
-        goto cleanup;
+        return 1;
+        //goto cleanup;
     }
     // could alternatively fims connect using a stored name for the server
     while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(sys_cfg.id) == false)
@@ -195,14 +197,16 @@ int main(int argc, char* argv[])
     {
         FPS_ERROR_PRINT("Failed to establish connection to FIMS server.\n");
         rc = 1;
-        goto cleanup;
+        return 1;
+        //goto cleanup;
     } 
 
     if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
     {
         FPS_ERROR_PRINT("Subscription failed.\n");
         p_fims->Close();
-        goto cleanup;
+        return 1;
+        //goto cleanup;
     }
 
     // Main point of interaction with the stack. 1 thread in the pool for 1 outstation
