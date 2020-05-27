@@ -22,6 +22,7 @@
 #include <asiodnp3/UpdateBuilder.h>
 #include "fpsCommandHandler.h"
 #include "fpsLogger.h"
+#include "fpsChannelListener.h"
 
 using namespace std;
 using namespace opendnp3;
@@ -49,7 +50,7 @@ DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
     return manager;
 }
 
-std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, const char* addr, int port) {
+std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* ourDB, const char* addr, int port) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
     const uint32_t FILTERS = levels::NORMAL;// | levels::ALL_COMMS;
@@ -60,7 +61,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
                                         ServerAcceptMode::CloseExisting, 
                                         addr, 
                                         port,
-                                        PrintingChannelListener::Create()
+                                        fpsChannelListener::Create(ourDB)
                                         );
 //    cout << "channel0 set up!\n";
     return channel;
@@ -185,15 +186,15 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    auto channel = setupDNP3channel(manager, "server", sys_cfg.ip_address, sys_cfg.port);
+    auto channel = setupDNP3channel(manager, "server", &sys_cfg, sys_cfg.ip_address, sys_cfg.port);
     if (!channel){
-       FPS_ERROR_PRINT( "DNP3 Channel setup failed.\n");
+        FPS_ERROR_PRINT( "DNP3 Channel setup failed.\n");
         return 1;
     }
 
     auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, sys_cfg.local_address, sys_cfg.remote_address);
     if (!outstation){
-       FPS_ERROR_PRINT( "Outstation setup failed.\n");
+        FPS_ERROR_PRINT( "Outstation setup failed.\n");
         return 1;
     }
 
