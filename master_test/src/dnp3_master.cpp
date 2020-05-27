@@ -69,103 +69,6 @@ void signal_handler (int sig)
     signal(sig, SIG_DFL);
 }
 
-// // Deprecated
-// bool process_fims_message(fims_message* msg, server_data* server_map)
-// {
-
-//     char* uri = msg->uri;
-//     // uri was sent to this processes URI so it needs to handle it
-//     if(strncmp(uri, server_map->base_uri, strlen(server_map->base_uri)) == 0)
-//     {
-//         if(strcmp("set", msg->method) == 0)
-//         {
-//             uri = msg->pfrags[2];
-//             if(msg->nfrags > 2 && strncmp("reply", uri, strlen("reply")) == 0)
-//             {
-//                 uri = msg->pfrags[3] - 1;
-//                 uri_map::iterator uri_it = server_map->uri_to_register.find(uri);
-//                 if(uri_it == server_map->uri_to_register.end())
-//                 {
-//                     // failed to find in map
-//                     FPS_ERROR_PRINT( "Fims reply for unrequested uri: %s.\n", uri);
-//                     return false;
-//                 }
-//                 body_map* body = uri_it->second;
-//                 cJSON* body_obj = cJSON_Parse(msg->body);
-//                 //check for valid json
-//                 if(body_obj == NULL)
-//                 {
-//                     FPS_ERROR_PRINT(" Received invalid json object for set %s. \"%s\"\n", uri, msg->body);
-//                     return false;
-//                 }
-//                 for(body_map::iterator body_it = body->begin(); body_it != body->end(); ++body_it)
-//                 {
-//                     cJSON* cur_obj = cJSON_GetObjectItem(body_obj, body_it->first);
-//                     if(cur_obj == NULL)
-//                     {
-//                         FPS_ERROR_PRINT("Failed to find %s in %s.\n", body_it->first, uri);
-//                         return false;
-//                     }
-//                     update_register_value(server_map->mb_mapping, body_it->second.first, body_it->second.second, cur_obj);
-//                 }
-//             }
-//             else
-//             {
-//                 if(msg->replyto != NULL)
-//                     server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
-//                 return true;
-//             }
-//         }
-//         else if(strcmp("get", msg->method) == 0)
-//         {
-//             //don't know when we would receive a get
-//             if(msg->replyto != NULL)
-//                 server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
-//             return true;
-//         }
-//         else
-//         {
-//             if(msg->replyto != NULL)
-//                 server_map->p_fims->Send("set", msg->replyto, NULL, "Error: Method not implemented for that URI.");
-//             return true;
-//         }
-//     }
-//     else // Check to see if this is a publish we care about
-//     {
-//         if(strcmp("pub", msg->method) == 0)
-//         {
-//             uri_map::iterator uri_it = server_map->uri_to_register.find(msg->uri);
-//             if(uri_it == server_map->uri_to_register.end())
-//             {
-//                 //failed to find uri in devices we care about.
-//                 FPS_ERROR_PRINT("Received pub not in uri list: %s.\n", msg->uri);
-//                 return false;
-//             }
-//             cJSON* body_obj = cJSON_Parse(msg->body);
-//             if(body_obj == NULL || body_obj->child == NULL)
-//             {
-//                 if(body_obj != NULL)
-//                     cJSON_Delete(body_obj);
-//                 return false;
-//             }
-//             for(cJSON* id_obj = body_obj->child; id_obj != NULL; id_obj = id_obj->next)
-//             {
-//                 body_map::iterator body_it = uri_it->second->find(id_obj->string);
-//                 if(body_it == uri_it->second->end())
-//                 {
-//                     // Value not in our array ignore
-//                     continue;
-//                 }
-//                 update_register_value(server_map->mb_mapping, body_it->second.first, body_it->second.second, id_obj);
-//             }
-//             cJSON_Delete(body_obj);
-//         }
-//         else
-//             // Not our message so ignore
-//             return true;
-//     }
-//     return true;
-// }
 
 
 DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
@@ -296,10 +199,6 @@ int main(int argc, char *argv[])
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
 
-    //server_data *server_map = NULL;
-    //int header_length,;
-    //int serial_fd;
-    //int fims_socket;
     int fd_max = 0;
     int rc = 0;
     //int server_socket = -1;
@@ -406,24 +305,6 @@ int main(int argc, char *argv[])
     // TODO set for all the getURI responses as todo
     // done only get outstation vars 
 
-    //build/release/fims_send -m set -u "/dnp3/master" '{"type":"analog32","offset":4,"value":38}'
-    //fims_send -m set -u "/components/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
-    // AnalogOutputInt16 ao(100);
-    // AnalogOutputInt16 a1(101);
-    // AnalogOutputInt16 a2(102);
-    // AnalogOutputInt16 a3(103);
-    // master->DirectOperate(CommandSet(
-    //             {WithIndex(ao, 2),
-    //             WithIndex(a1, 3),
-    //             WithIndex(a2, 4),
-    //             WithIndex(a3, 5)}
-    //             ), PrintingCommandCallback::Get());
-    // master->SelectAndOperate(CommandSet(
-    //             {WithIndex(ao, 2),
-    //             WithIndex(a1, 3),
-    //             WithIndex(a2, 4),
-    //             WithIndex(a3, 5)}
-    //             ), PrintingCommandCallback::Get());
 
     while(running && p_fims->Connected())
     {
@@ -483,66 +364,6 @@ int main(int argc, char *argv[])
             p_fims->free_message(msg);
         }
     }
-       
-    // if (0)
-    // {
-    //     fd_set connections_with_data;
-    //     fims_socket = sys_cfg.p_fims->get_socket();
-
-    //     if(fims_socket != -1)
-    //         FD_SET(fims_socket, &all_connections);
-    //     else
-    //     {
-    //         FPS_ERROR_PRINT("Failed to get fims socket.\n");
-    //         rc = 1;
-    //         goto cleanup;
-    //     }
-
-    //     fd_max = (fd_max > fims_socket) ? fd_max: fims_socket;
-    //     FPS_DEBUG_PRINT("Fims Setup complete: now for DNP3\n");
-
-    //     while(running)
-    //     {
-    //         connections_with_data = all_connections;
-    //         // Select will block until one of the file descriptors has data
-    //         if(-1 == select(fd_max+1, &connections_with_data, NULL, NULL, NULL))
-    //         {
-    //             FPS_ERROR_PRINT("server select() failure: %s.\n", strerror(errno));
-    //             break;
-    //         }
-    //         //Loop through file descriptors to see which have data to read
-    //         for(int current_fd = 0; current_fd <= fd_max; current_fd++)
-    //         {
-    //             // if no data on this file descriptor skip to the next one
-    //             if(!FD_ISSET(current_fd, &connections_with_data))
-    //                 continue;
-    //             if(current_fd == fims_socket)
-    //             {
-    //                 // Fims message received
-    //                 fims_message* msg = server_map->p_fims->Receive_Timeout(1*MICROSECOND_TO_MILLISECOND);
-    //                 if(msg == NULL)
-    //                 {
-    //                     if(server_map->p_fims->Connected() == false)
-    //                     {
-    //                         // fims connection closed
-    //                         FPS_ERROR_PRINT("Fims connection closed.\n");
-    //                         FD_CLR(current_fd, &all_connections);
-    //                         break;
-    //                     }
-    //                     else
-    //                         FPS_ERROR_PRINT("No fims message. Select led us to a bad place.\n");
-    //                 }
-    //                 else
-    //                 {
-    //                     process_fims_message(msg, server_map);
-    //                     server_map->p_fims->free_message(msg);
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     FPS_DEBUG_PRINT("Main loop complete: Entering clean up.\n");
-    // }
 
     //cleanup:
     if (manager) delete manager;
