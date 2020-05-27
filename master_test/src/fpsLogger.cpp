@@ -51,7 +51,7 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
     oss << " - " << entry.message;
     // unique_lock creates a temp lock that goes away >>> 
     std::unique_lock<std::mutex> lock(mutex);
-    FPS_DEBUG_PRINT("%s\n", oss.str.c_str());
+    FPS_DEBUG_PRINT("%s\n", oss.str().c_str());
     //std::cout << oss.str() << std::endl;
     // <<< here
 }
