@@ -47,7 +47,7 @@ public:
         return std::make_shared<fpsLogger>(ourDB, printLocation);
     };
 
-    fpsLogger(sysCfg* ourDB, bool printLocation) :  printLocation(printLocation), sysdb(ourDB) {}
+    fpsLogger(sysCfg* ourDB, bool printLocation) :  printLocation(printLocation) {sysdb = ourDB;};
 
 private:
     sysCfg* sysdb;
