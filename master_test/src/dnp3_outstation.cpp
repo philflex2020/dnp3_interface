@@ -45,7 +45,7 @@ void ConfigureDatabase(DatabaseConfig& config)
 
 DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
 {
-    auto manager = new DNP3Manager(1, fpsLogger::Create(outDB));
+    auto manager = new DNP3Manager(1, fpsLogger::Create(ourDB));
     return manager;
 }
 
