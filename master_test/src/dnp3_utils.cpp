@@ -741,6 +741,30 @@ int parse_system(cJSON *system, system_config *config)
     return 0;
 }
 
+bool checkWho(sysCfg*sys, DbVar* db, cost char *who)
+{
+    if(db == NULL) return false;
+    if (strcmp("outstation",who) == 0)
+    {
+       if((db->type == Type_Analog ) || (db->Type == Type_Binary)) return true;
+    }
+    else
+    {
+       if((db->type == Type_AnIn16 ) 
+            || (db->Type == Type_AnIn32)
+            || (db->Type == Type_AnF32)
+            || (db->Type == Type_Crob)
+            ) return true;
+    }
+    return false;    
+}
+
+bool checkWho(sysCfg*sys, const char *name, cost char *who)
+{
+    DbVar* db = sys->getDbVar(name);
+    return checkWho(sys, db, who);
+}
+
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
 cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
@@ -836,6 +860,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
     if(strcmp(msg->method,"set") == 0)
     {
+        // todo need to ignore sets on the outstation for master vars ans vice versa 
         int single = 0;
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
@@ -870,6 +895,16 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             DbVar* db = sys->getDbVar(uri);
             if (db != NULL)
             {
+                 if (!checkWho(sys, db, who))
+                 {
+                    FPS_DEBUG_PRINT("Found variable [%s] type  %d NOT set ON %s\n"
+                                , db->type
+                                , db->name.c_str()
+                                , who
+                                );
+
+                    return body_JSON;
+                 } 
                 int flag = 0;
                 FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
                 itypeValues = body_JSON;
@@ -940,7 +975,17 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                                             , cjit->string
                                             , (void *)cjit->child
                                             );
-                    addValueToVec(dbs, sys, cjit->string, cjit, 0);
+                    if (!checkWho(sys, cjit->string, who))
+                    {
+                        FPS_DEBUG_PRINT("variable [%s] NOT set ON %s\n"
+                                        , cjit->string
+                                        , who
+                                        );
+                    }
+                    else
+                    {
+                        addValueToVec(dbs, sys, cjit->string, cjit, 0);
+                    }
                     cjit = cjit->next;
                 }
                 FPS_DEBUG_PRINT("***** Done with variable list \n\n");

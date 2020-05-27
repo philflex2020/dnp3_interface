@@ -525,6 +525,7 @@ typedef struct sysCfg_t {
             }
             return 0;
         };
+
         int setDbVar(const char *name, int ival)
         {
             DbVar* db = getDbVar(name);
@@ -709,13 +710,11 @@ typedef struct sysCfg_t {
                 }
             }
             FPS_ERROR_PRINT(" %s subscribe to uris<== DONE \n\n", __FUNCTION__);
-
             return 0;
         }
 
         bool checkUris(const char *who)
         {
-
             int outs = strcmp(who, "outstation");
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
@@ -896,5 +895,6 @@ int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
 cJSON* parseBody( dbs_type&dbs, sysCfg*sys, fims_message*msg, const char* who);
 int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue,int flag);
 int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag);
-
+bool checkWho(sysCfg*sys, const char *name, cost char *who);
+bool checkWho(sysCfg*sys, DbVar *db, cost char *who);
 #endif
