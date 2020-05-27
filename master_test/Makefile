@@ -43,10 +43,10 @@ $(OBJ_DIR)libdmap.so:	$(OBJ_DIR)libdmap.o
 $(OBJ_DIR)libdmap.o:	$(PROJECT_ROOT)src/dnp3_utils.cpp $(PROJECT_ROOT)include/dnp3_utils.h
 	$(CXX) -c $(CPPFLAGS) -fpic -o $@ $< $(INCLUDES_BUILD)
 
-$(BUILD_DIR)dnp3_outstation: $(OBJ_DIR)dnp3_outstation.o $(OBJ_DIR)newCommandHandler.o $(OBJ_DIR)newOutstationApplication.o $(OBJ_DIR)fpsLogger.o $(OBJ_DIR)libdmap.so 
+$(BUILD_DIR)dnp3_outstation: $(OBJ_DIR)dnp3_outstation.o $(OBJ_DIR)fpsCommandHandler.o $(OBJ_DIR)newOutstationApplication.o $(OBJ_DIR)fpsLogger.o $(OBJ_DIR)libdmap.so 
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS) -ldmap
 
-$(BUILD_DIR)dnp3_outstation_pw: $(OBJ_DIR)dnp3_outstation_pw.o $(OBJ_DIR)newCommandHandler.o $(OBJ_DIR)newOutstationApplication.o $(OBJ_DIR)libdmap.so
+$(BUILD_DIR)dnp3_outstation_pw: $(OBJ_DIR)dnp3_outstation_pw.o $(OBJ_DIR)fpsCommandHandler.o $(OBJ_DIR)newOutstationApplication.o $(OBJ_DIR)libdmap.so
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS) -ldmap
  
 $(BUILD_DIR)dnp3_master: $(OBJ_DIR)dnp3_master.o $(OBJ_DIR)newSOEHandler.o $(OBJ_DIR)newMasterApplication.o $(OBJ_DIR)libdmap.so

@@ -14,14 +14,13 @@
 
 #include <opendnp3/LogLevels.h>
 #include <opendnp3/outstation/IUpdateHandler.h>
-#include <opendnp3/outstation/SimpleCommandHandler.h>
-
+//#include <opendnp3/outstation/SimpleCommandHandler.h>
 //#include <asiodnp3/ConsoleLogger.h>
 #include <asiodnp3/DNP3Manager.h>
 #include <asiodnp3/PrintingChannelListener.h>
 #include <asiodnp3/PrintingSOEHandler.h>
 #include <asiodnp3/UpdateBuilder.h>
-#include "newCommandHandler.h"
+#include "fpsCommandHandler.h"
 #include "fpsLogger.h"
 
 using namespace std;
@@ -35,11 +34,6 @@ using namespace asiodnp3;
 
 fims *p_fims;
 
-// char *binary_names[5];
-// int *binary_indices[5];
-// char *analog_names[5];
-// int *analog_indices[5];
-
 void ConfigureDatabase(DatabaseConfig& config)
 {
     // example of configuring analog index 0 for Class2 with floating point variations by default
@@ -48,15 +42,6 @@ void ConfigureDatabase(DatabaseConfig& config)
     config.analog[0].evariation = EventAnalogVariation::Group32Var7;
     //config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;   
 }
-
-// struct State
-// {
-//     uint32_t count = 0;
-//     double value = 0;
-//     bool binary = false;
-//     DoubleBit dbit = DoubleBit::DETERMINED_OFF;
-//     uint8_t octetStringValue = 1;
-// };
 
 DNP3Manager* setupDNP3Manager(void)
 {
@@ -85,10 +70,20 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
 {
     // The main object for a outstation. The defaults are useable,
     // but understanding the options are important.
-    OutstationStackConfig config(DatabaseSizes::AllTypes(10));
+    //OutstationStackConfig config(DatabaseSizes::AllTypes(10));
+    // OutstationStackConfig config(DatabaseSizes::AllTypes(10));
+    cout<<"Binaries: "<<ourDB->dbMapIx[Type_Binary].size()<<" Analogs: "<<ourDB->dbMapIx[Type_Analog].size()<<endl;
+    OutstationStackConfig config(DatabaseSizes(ourDB->dbMapIx[Type_Binary].size(),
+                                                0,
+                                                ourDB->dbMapIx[Type_Analog].size(),
+                                                0,0,0,0,0,0));
 
+    // Specify the maximum size of the event buffers. Defaults to 0
+    // config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
+    config.outstation.eventBufferConfig.maxBinaryEvents = ourDB->dbMapIx[Type_Binary].size(),
+    config.outstation.eventBufferConfig.maxAnalogEvents = ourDB->dbMapIx[Type_Analog].size(),
     // Specify the maximum size of the event buffers
-    config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
+    //config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
 
     // you can override an default outstation parameters here
     // in this example, we've enabled the oustation to use unsolicted reporting
@@ -108,8 +103,9 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // Create a new outstation with a log level, command handler, and
     // config info this	returns a thread-safe interface used for
     // updating the outstation's database.
-    auto outstation = channel->AddOutstation("outstation", newCommandHandler::Create(ourDB),
-                                             DefaultOutstationApplication::Create(), config);
+    auto outstation = channel->AddOutstation("outstation", 
+                                            fpsCommandHandler::Create(ourDB),
+                                            DefaultOutstationApplication::Create(), config);
 
     // Enable the outstation and start communications
     outstation->Enable();
@@ -217,6 +213,7 @@ int main(int argc, char* argv[])
         fims_connect++;
         sleep(1);
     }
+
     if(fims_connect >= MAX_FIMS_CONNECT)
     {
         FPS_ERROR_PRINT("Failed to establish connection to FIMS server.\n");
@@ -226,9 +223,9 @@ int main(int argc, char* argv[])
 
     if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
     {
-         FPS_ERROR_PRINT("Subscription failed.\n");
-         p_fims->Close();
-         return 1;
+        FPS_ERROR_PRINT("Subscription failed.\n");
+        p_fims->Close();
+        goto cleanup;
     }
     // // send out initial sunscribes
     //ssys_cfg.subsUris();
@@ -244,7 +241,7 @@ int main(int argc, char* argv[])
 
     while(running && p_fims->Connected())
     {
-        // pur int a time out 
+        // use a time out to detect init failure 
         fims_message* msg = p_fims->Receive_Timeout(1000000);
         if(msg == NULL)
         { 
