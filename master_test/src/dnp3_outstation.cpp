@@ -235,7 +235,7 @@ int main(int argc, char* argv[])
     //ssys_cfg.subsUris();
     // send out intial gets
     // set max ticks
-    sys_cfg.getUris();
+    sys_cfg.getUris("outstation");
     // set all values to inval  done at the start
     // start time to complete gets
     // TODO set for all the getURI responses as todo

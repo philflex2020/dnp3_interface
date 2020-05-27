@@ -744,9 +744,9 @@ typedef struct sysCfg_t {
 
 
         // TODO only get the ones for vars applied to this application (outstation or master)
-        int getUris()
+        int getUris(const char *who)
         {
-            FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
+            FPS_ERROR_PRINT(" %s uris===>%s<=== \n\n", __FUNCTION__, who);
 
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
@@ -755,12 +755,12 @@ typedef struct sysCfg_t {
                 char getUri[1024];
                 if (it->first[0] == '/') 
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/outstation/%s/reply%s", id, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply%s", id, who, it->first);
                     snprintf(getUri,sizeof(getUri),"/queryx%s", it->first);
                 } 
                 else
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/outstation/%s/reply/%s", id, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply/%s", id, who, it->first);
                     snprintf(getUri,sizeof(getUri),"/queryx/%s", it->first);
                 }
 
