@@ -46,8 +46,11 @@
 #include "newSOEHandler.h"
 #include "newMasterApplication.h"
 
+#include "fpsLogger.h"
+
 //#include <modbus/modbus.h>
 #include "dnp3_utils.h"
+
 using namespace std; 
 using namespace openpal; 
 using namespace asiopal; 
@@ -66,8 +69,7 @@ void signal_handler (int sig)
     signal(sig, SIG_DFL);
 }
 
-
-
+// Deprecated
 bool process_fims_message(fims_message* msg, server_data* server_map)
 {
 
@@ -217,9 +219,9 @@ bool initialize_map(server_data* server_map)
 }
 
 
-DNP3Manager* setupDNP3Manager(void)
+DNP3Manager* setupDNP3Manager(sysCfg * ourDB)
 {
-    auto manager = new DNP3Manager(1, ConsoleLogger::Create());
+    auto manager = new DNP3Manager(1, fpsLogger::Create(ourDB));
     return manager;
 }
 
@@ -848,10 +850,15 @@ void addVarToCommands (CommandSet & commands, DbVar *db)
 int main(int argc, char *argv[])
 {
     fims* p_fims;
-    char sub[] = "/components";
-    char* subs = sub;
+\    p_fims = new fims();
+    const char *sub_array[]={
+        (const char *)"/interfaces",
+        (const char*)"/components",
+        (const char*)"/fooey",
+        NULL
+        };
     //char* uri;
-    bool publish_only = false;
+    bool publish_only[3] = {false,false,false};
     bool running = true;
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
@@ -893,9 +900,36 @@ int main(int argc, char *argv[])
     }
 
     cJSON_Delete(config);
-    sys_cfg.p_fims = p_fims = new fims();
+    sys_cfg.p_fims = p_fims;// = new fims();
+    if (p_fims == NULL)
+    {
+        FPS_ERROR_PRINT("Failed to allocate connection to FIMS server.\n");
+        rc = 1;
+        return 1;//goto cleanup;
+    }
+    // could alternatively fims connect using a stored name for the server
+    while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(sys_cfg.id) == false)
+    {
+        fims_connect++;
+        sleep(1);
+    }
+    if(fims_connect >= MAX_FIMS_CONNECT)
+    {
+        FPS_ERROR_PRINT("Failed to establish connection to FIMS server.\n");
+        rc = 1;
+        return 1;
+        //goto cleanup;
+    }
 
-    auto manager = setupDNP3Manager();
+    FPS_DEBUG_PRINT("Map configured: Initializing data.\n");
+     if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
+    {
+        FPS_ERROR_PRINT("Subscription failed.\n");
+        p_fims->Close();
+        return 1;
+    }
+
+    auto manager = setupDNP3Manager(*sys_cfg);
     if (!manager){
         FPS_ERROR_PRINT("Error in setupDNP3Manager.\n");
         return 1;
@@ -923,34 +957,7 @@ int main(int argc, char *argv[])
 
     //sys_cfg.p_fims = new fims();
 
-    if (p_fims == NULL)
-    {
-        FPS_ERROR_PRINT("Failed to allocate connection to FIMS server.\n");
-        rc = 1;
-        goto cleanup;
-    }
-    // could alternatively fims connect using a stored name for the server
-    while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(sys_cfg.id) == false)
-    {
-        fims_connect++;
-        sleep(1);
-    }
-    if(fims_connect >= MAX_FIMS_CONNECT)
-    {
-        FPS_ERROR_PRINT("Failed to establish connection to FIMS server.\n");
-        rc = 1;
-        goto cleanup;
-    }
-
-    FPS_DEBUG_PRINT("Map configured: Initializing data.\n");
     
-    // subs = /components
-    if(p_fims->Subscribe((const char**)&subs, 1, (bool *)&publish_only) == false)
-    {
-        FPS_ERROR_PRINT("Subscription failed.\n");
-        p_fims->Close();
-        return 1;
-    }
 
     //build/release/fims_send -m set -u "/dnp3/master" '{"type":"analog32","offset":4,"value":38}'
     //fims_send -m set -u "/components/<some_master_id>/<some_outstation_id> '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
