@@ -385,7 +385,7 @@ int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjof
 void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
 {
     DbVar* db = dbp.first;
-    int flag = dbp.second;
+    //int flag = dbp.second;
 
     switch (db->type) 
     {
@@ -434,7 +434,7 @@ int main(int argc, char *argv[])
     //server_data *server_map = NULL;
     //int header_length,;
     //int serial_fd;
-    int fims_socket;
+    //int fims_socket;
     int fd_max = 0;
     int rc = 0;
     //int server_socket = -1;
@@ -679,7 +679,7 @@ int main(int argc, char *argv[])
     //     FPS_DEBUG_PRINT("Main loop complete: Entering clean up.\n");
     // }
 
-    cleanup:
+    //cleanup:
     if (manager) delete manager;
     // sys_cfg should clean itself up
  
