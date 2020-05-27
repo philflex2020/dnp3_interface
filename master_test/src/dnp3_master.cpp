@@ -44,13 +44,9 @@
 
 
 #include "fpsSOEHandler.h"
-#include "newMasterApplication.h"
-
+#include "fpsMasterApplication.h"
 #include "fpsLogger.h"
-
 #include "fpsChannelListener.h"
-
-
 #include "dnp3_utils.h"
 
 using namespace std; 
