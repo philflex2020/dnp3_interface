@@ -50,10 +50,10 @@ public:
     fpsLogger(sysCfg* ourDB, bool printLocation) :  printLocation(printLocation), sysdb(ourDB) {}
 
 private:
+    sysCfg* sysdb;
     bool printLocation;
 
     std::mutex mutex;
-    sysCfg* sysdb;
 };
 
 } // namespace asiodnp3
