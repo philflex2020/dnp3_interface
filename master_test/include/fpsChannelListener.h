@@ -48,7 +48,7 @@ public:
 
     static std::shared_ptr<IChannelListener> Create(sysCfg* ourDB)
     {
-        return std::make_shared<fpsChannelListener>(sysCfg* ourDB);
+        return std::make_shared<fpsChannelListener>(ourDB);
     }
 
     fpsChannelListener(sysCfg* ourDB) {sysdb = ourDB;};
