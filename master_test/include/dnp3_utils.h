@@ -755,12 +755,12 @@ typedef struct sysCfg_t {
                 char getUri[1024];
                 if (it->first[0] == '/') 
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply%s", id, who, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply%s", who, id, it->first);
                     snprintf(getUri,sizeof(getUri),"/queryx%s", it->first);
                 } 
                 else
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply/%s", id, who, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply/%s", who, id, it->first);
                     snprintf(getUri,sizeof(getUri),"/queryx/%s", it->first);
                 }
 
