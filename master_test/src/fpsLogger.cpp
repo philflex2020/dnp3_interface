@@ -42,7 +42,7 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
 
     ostringstream oss;
 
-    oss << "ms(" << num << ") " << LogFlagToString(entry.filters.GetBitfield());
+    oss << "fps ms(" << num << ") " << LogFlagToString(entry.filters.GetBitfield());
     oss << " " << entry.loggerid;
     if (printLocation)
     {
