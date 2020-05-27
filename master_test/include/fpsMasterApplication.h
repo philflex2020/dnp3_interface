@@ -85,7 +85,7 @@ public:
         //pubWithTimeStamp(cj, cfgdb,"StateChange");
         //cJSON_Delete(cj);
         //cj = NULL;
-        std::string cstate = LinkStatusToString(value));
+        std::string cstate = LinkStatusToString(value);
         char message[1024];
         snprintf(message, sizeof(message), "DNP3  %s Link Status Change [%s]\n"
                     , cfgdb->id 
