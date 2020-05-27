@@ -41,7 +41,7 @@
 #include <asiodnp3/PrintingChannelListener.h> 
 #include <asiodnp3/PrintingCommandCallback.h> 
 #include <asiopal/ChannelRetry.h>
-//#include <asiodnp3/UpdateBuilder.h>
+
 
 #include "fpsSOEHandler.h"
 #include "newMasterApplication.h"
@@ -50,7 +50,7 @@
 
 #include "fpsChannelListener.h"
 
-//#include <modbus/modbus.h>
+
 #include "dnp3_utils.h"
 
 using namespace std; 
@@ -171,57 +171,6 @@ bool process_fims_message(fims_message* msg, server_data* server_map)
     return true;
 }
 
-// this subscribes to a number of uris which has been set up from reading the config file.
-// TODO review this
-// bool initialize_map(server_data* server_map)
-// {
-//     if(server_map->p_fims->Subscribe((const char**)server_map->uris, server_map->num_uris + 1) == false)
-//     {
-//         FPS_ERROR_PRINT("Failed to subscribe to URI.\n");
-//         return false;
-//     }
-
-//     char replyto[256];
-//     for(uri_map::iterator it = server_map->uri_to_register.begin(); it != server_map->uri_to_register.end(); ++it)
-//     {
-//         snprintf(replyto, 256 , "%s/reply%s", server_map->base_uri, it->first);
-//         server_map->p_fims->Send("get", it->first, replyto, NULL);
-//         timespec current_time, timeout;
-//         clock_gettime(CLOCK_MONOTONIC, &timeout);
-//         timeout.tv_sec += 2;
-//         bool found = false;
-
-//         while(server_map->p_fims->Connected() && found != true &&
-//              (clock_gettime(CLOCK_MONOTONIC, &current_time) == 0) && (timeout.tv_sec > current_time.tv_sec ||
-//              (timeout.tv_sec == current_time.tv_sec && timeout.tv_nsec > current_time.tv_nsec + 1000)))
-//         {
-//             unsigned int us_timeout_left = (timeout.tv_sec - current_time.tv_sec) * 1000000 +
-//                     (timeout.tv_nsec - current_time.tv_nsec) / 1000;
-//             fims_message* msg = server_map->p_fims->Receive_Timeout(us_timeout_left);
-//             if(msg == NULL)
-//                 continue;
-//             bool rc = process_fims_message(msg, server_map);
-//             if(strcmp(replyto, msg->uri) == 0)
-//             {
-//                 found = true;
-//                 if(rc == false)
-//                 {
-//                     FPS_ERROR_PRINT("Error, failed to find value from config file in defined uri.\n");
-//                     server_map->p_fims->free_message(msg);
-//                     return false;
-//                 }
-//             }
-//             server_map->p_fims->free_message(msg);
-//         }
-//         if(found == false)
-//         {
-//             FPS_ERROR_PRINT("Failed to find get response for %s.\n", it->first);
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-
 
 DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
 {
@@ -301,86 +250,6 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     //
     return master;
 }
-//
-// int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, const char* valuestring, cJSON *cjvalue)
-// {
-//     // cjoffset must be a name
-//     // cjvalue may be an object
-
-//     if (valuestring == NULL)
-//     {
-//         FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
-//         return -1;
-//     }
-
-//     DbVar* pt = getDbVar(cfgdb, valuestring); 
-//     if (pt == NULL)
-//     {
-//         FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, valuestring);
-//         return -1;
-//     }
-    
-//     FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, valuestring);
-
-//     if (cjvalue->type == cJSON_Object)
-//     {
-//         cjvalue = cJSON_GetObjectItem(cjvalue, "value");
-//     }
-
-//     if (!cjvalue)
-//     {
-//         FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
-//         return -1;
-//     }
-
-//     if (pt->type == AnIn16) 
-//     {
-//         commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint),pt->offset)});
-//         cfgdb->setDbVar(valuestring, cjvalue);
-//         addVarToCj(cfgdb, cj, valuestring);
-//     }
-//     else if (pt->type == AnIn32) 
-//     {
-//         commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
-//         cfgdb->setDbVar(valuestring, cjvalue);
-//         addVarToCj(cfgdb, cj, valuestring);
-
-//     }
-//     else if (pt->type == AnF32) 
-//     {
-//         commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
-//         cfgdb->setDbVar(valuestring, cjvalue);
-//         addVarToCj(cfgdb, cj, valuestring);
-
-//     }
-//     else if (pt->type == Type_Crob) 
-//     {
-//         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
-//                                                     , __FUNCTION__
-//                                                     , pt->name.c_str()
-//                                                     , valuestring
-//                                                     , (int)StringToControlCode(valuestring)
-//                                                     );
-
-//         commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(StringToControlCode(valuestring)),pt->offset)});
-//         cfgdb->setDbVar(valuestring, cjvalue);
-//         addVarToCj(cfgdb, cj, valuestring);
-
-//     }
-//     else
-//     {
-//       FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, valuestring);  
-//       return -1;
-//     }
-//     return 0;   
-// }
-
-// int addValueToCommand(cJSON *cj, sysCfg*cfgdb, CommandSet& commands, cJSON *cjoffset, cJSON *cjvalue)
-// {
-//     return addValueToCommand(cj, cfgdb, commands, cjoffset->valuestring, cjvalue);
-// }
-
-
 
 void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
 {
@@ -567,11 +436,12 @@ int main(int argc, char *argv[])
         if(msg == NULL)
         { 
             // TODO check for all the getURI resposes
-            FPS_DEBUG_PRINT("Timeout tick2 %d\n", ttick);
             ttick++;
             bool ok = sys_cfg.checkUris("master");
             if(ok == false)
             {
+                FPS_DEBUG_PRINT("Timeout tick2 %d\n", ttick);
+
                 if (ttick > MAX_SETUP_TICKS)
                 {
                     // just quit here
