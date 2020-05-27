@@ -219,7 +219,7 @@ bool initialize_map(server_data* server_map)
 }
 
 
-DNP3Manager* setupDNP3Manager(sysCfg * ourDB)
+DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
 {
     auto manager = new DNP3Manager(1, fpsLogger::Create(ourDB));
     return manager;
