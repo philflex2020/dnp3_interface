@@ -850,7 +850,7 @@ void addVarToCommands (CommandSet & commands, DbVar *db)
 int main(int argc, char *argv[])
 {
     fims* p_fims;
-\    p_fims = new fims();
+    p_fims = new fims();
     const char *sub_array[]={
         (const char *)"/interfaces",
         (const char*)"/components",
