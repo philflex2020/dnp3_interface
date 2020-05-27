@@ -44,7 +44,7 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
     ostringstream oss;
     string mstring = LogFlagToString(entry.filters.GetBitfield());
     char message [1024];
-    snprintf(message, 1024, "DNP3 Outstation %s message [%s] \n", sys_cfg.id,mstring.c_str());
+    snprintf(message, 1024, "DNP3 Outstation %s message [%s] \n", sysdb->id, mstring.c_str());
     fprintf(stderr, "%s\n", message);
     emit_event(sysdb->p_fims, "DNP3 Outstation", message, 1);
 
