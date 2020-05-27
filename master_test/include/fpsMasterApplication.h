@@ -88,7 +88,7 @@ public:
         std::string cstate = LinkStatusToString(value));
         char message[1024];
         snprintf(message, sizeof(message), "DNP3  %s Link Status Change [%s]\n"
-                    , sysdb->id 
+                    , cfgdb->id 
                     , cstate.c_str()
                     );
         emit_event(cfgdb->p_fims, "DNP3", message, 1);
