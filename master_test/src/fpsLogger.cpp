@@ -49,9 +49,11 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
         oss << " - " << entry.location;
     }
     oss << " - " << entry.message;
-
+    // unique_lock creates a temp lock that goes away >>> 
     std::unique_lock<std::mutex> lock(mutex);
-    std::cout << oss.str() << std::endl;
+    FPS_DEBUG_PRINT("%s\n", oss.str.c_str());
+    //std::cout << oss.str() << std::endl;
+    // <<< here
 }
 
 } // namespace asiodnp3
