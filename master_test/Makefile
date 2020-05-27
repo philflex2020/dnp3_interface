@@ -49,7 +49,7 @@ $(BUILD_DIR)dnp3_outstation: $(OBJ_DIR)dnp3_outstation.o $(OBJ_DIR)fpsCommandHan
 $(BUILD_DIR)dnp3_outstation_pw: $(OBJ_DIR)dnp3_outstation_pw.o $(OBJ_DIR)fpsCommandHandler.o $(OBJ_DIR)newOutstationApplication.o $(OBJ_DIR)libdmap.so
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS) -ldmap
  
-$(BUILD_DIR)dnp3_master: $(OBJ_DIR)dnp3_master.o $(OBJ_DIR)newSOEHandler.o $(OBJ_DIR)newMasterApplication.o $(OBJ_DIR)fpsLogger.o $(OBJ_DIR)libdmap.so
+$(BUILD_DIR)dnp3_master: $(OBJ_DIR)dnp3_master.o $(OBJ_DIR)fpsSOEHandler.o $(OBJ_DIR)newMasterApplication.o $(OBJ_DIR)fpsLogger.o $(OBJ_DIR)libdmap.so
 	$(CXX) -o $@ $^ $(INCLUDES) $(LIBS) -ldmap
 
 $(OBJ_DIR)%.o: $(PROJECT_ROOT)src/%.cpp
