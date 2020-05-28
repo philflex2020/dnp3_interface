@@ -803,12 +803,12 @@ typedef struct sysCfg_t {
 
 DbVar* getDbVar(sysCfg *cfgdb, const char *name);
 
-bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);
-bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value);
+//bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);
+//bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value);
 void emit_event(fims* pFims, const char* source, const char* message, int severity);
 cJSON* get_config_json(int argc, char* argv[]);
-server_data* create_register_map(cJSON* registers, datalog* data);
-int parse_system(cJSON *system, system_config *config);
+//server_data* create_register_map(cJSON* registers, datalog* data);
+//int parse_system(cJSON *system, system_config *config);
 
 // new mapping
 bool parse_system(cJSON* object, sysCfg* sys);
