@@ -16,19 +16,5 @@
   "gen_virtual_breaker_status":23
                  }' &
 
-/usr/local/bin/fims/fims_echo -u /queryx/dnp3_master -b '{
-             "testCROB_4":"LATCH_OFF",
-          "line_flows_mw":23456,
-          "line_flows_mv":480,
-                "voltage":48,
-"plant_auxiliary_load_mw":1134,
- "plant_auxiliary_load_mv":4800,
-     "voltage_regulator":1,
-"power_system_stabilizer":0,
-  "gen_resource_switches":1,
-"gen_resource_breaker_status":12,
-  "gen_virtual_breaker_status":23
-                 }' &
-
 
 
