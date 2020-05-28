@@ -229,8 +229,7 @@ typedef struct DbVar_t {
         {
             uri = NULL;
         }
-        varaint = variant_decode(ivariant);
-
+        variant = variant_decode(ivariant);
     };
 
     int addBit(const char*bit)
