@@ -857,6 +857,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         }
         return body_JSON;
     }
+
+    // TODO check this out and clean it up
     // Allow "pub" to "set" outstation
     if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && strcmp(who,"outstation") == 0))
     {
@@ -864,14 +866,14 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         int single = 0;
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
-        // handle a single item set  crappy code for now, we'll get a better plan in a day or so 
+        // handle a single item set  it crappy code for now, we'll get a better plan in a day or so 
         FPS_ERROR_PRINT("fims method [%s] uri [%s] almost  supported for [%s]\n", msg->method, msg->uri, who);
 
-        if(strstr(msg->uri, "/reply/") != NULL)
-        {
-            FPS_DEBUG_PRINT("fims message reply uri DETECTED  [%s] \n", msg->uri);
-            //single = 0;
-        }
+        // if(strstr(msg->uri, "/reply/") != NULL)
+        // {
+        //     FPS_DEBUG_PRINT("fims message reply uri DETECTED  [%s] \n", msg->uri);
+        //     //single = 0;
+        // }
 
         if ((int)msg->nfrags > fragptr+2)
         {
@@ -882,8 +884,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 single = 0;
             }
             else
-            {
-            
+            {          
                 FPS_DEBUG_PRINT("fims message frag %d SINGLE variable name [%s] \n", fragptr+2,  uri);
                 single = 1;
             }
@@ -895,8 +896,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             DbVar* db = sys->getDbVar(uri);
             if (db != NULL)
             {
-                 if (!checkWho(sys, db, who))
-                 {
+                if (!checkWho(sys, db, who))
+                {
                     FPS_DEBUG_PRINT("Found variable [%s] type  %d NOT set ON %s\n"
                                 , db->name.c_str()
                                 , db->type
@@ -904,7 +905,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                                 );
 
                     return body_JSON;
-                 } 
+                } 
                 int flag = 0;
                 FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
                 itypeValues = body_JSON;
@@ -924,7 +925,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                         // send the response
                         dbs.push_back(std::make_pair(db, flag));
 
-                        FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval2 0x%02x\n"
+                        FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval 0x%02x\n"
                                         , __FUNCTION__, itypeValues->valuestring, db->offset
                                         , cval
                                         );
@@ -932,8 +933,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     // TODO any other strings
                     // do we have to convert strings into numbers ??
                 }
-                // stop this being used 
-                itypeValues = NULL;
             }
             return body_JSON;
         }
@@ -950,11 +949,10 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
         {
             FPS_DEBUG_PRINT("Found variable list or array \n");
-
-            // decode values may be in an array 
+            // decode values may be in an array , TODO arrays are DEPRECATED
             if (cJSON_IsArray(itypeValues)) 
             {
-                FPS_DEBUG_PRINT("Found variable array \n");
+                FPS_DEBUG_PRINT("Found array of variables  \n");
 
                 cJSON_ArrayForEach(cjit, itypeValues) 
                 {
@@ -996,7 +994,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     return body_JSON;//return dbs.size();
 }
 
-// need nodbs option
+// TODO need no dbs option
 int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
 {
     // cjoffset must be a name
@@ -1030,25 +1028,25 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
         return -1;
     }
 
-    if (db->type == AnIn16) 
-    {
-        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
-        sys->setDbVar(name, cjvalue);
-        dbs.push_back(std::make_pair(db, flag));
-    }
-    else if (db->type == AnIn32) 
-    {
-        //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
-        sys->setDbVar(name, cjvalue);
-        dbs.push_back(std::make_pair(db, flag));
-    }
-    else if (db->type == AnF32) 
-    {
-        //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
-        sys->setDbVar(name, cjvalue);
-        dbs.push_back(std::make_pair(db, flag));
-    }
-    else if (db->type == Type_Crob) 
+    // if (db->type == AnIn16) 
+    // {
+    //     //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
+    //     sys->setDbVar(name, cjvalue);
+    //     dbs.push_back(std::make_pair(db, flag));
+    // }
+    // else if (db->type == AnIn32) 
+    // {
+    //     //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
+    //     sys->setDbVar(name, cjvalue);
+    //     dbs.push_back(std::make_pair(db, flag));
+    // }
+    // else if (db->type == AnF32) 
+    // {
+    //     //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
+    //     sys->setDbVar(name, cjvalue);
+    //     dbs.push_back(std::make_pair(db, flag));
+    // }
+    if (db->type == Type_Crob) 
     {
         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                     , __FUNCTION__
@@ -1060,19 +1058,17 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
         sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
-    else if (db->type == Type_Analog) 
+    else if (
+            (db->type == Type_Analog) ||
+            (db->type == Type_Binary  ||
+            (db->type == Type_AnIn16) ||
+            (db->type == Type_AnIn32) ||
+            (db->type == Type_AnF32)
+            )
     {
-        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
         sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
-    else if (db->type == Type_Binary) 
-    {
-        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
-        sys->setDbVar(name, cjvalue);
-        dbs.push_back(std::make_pair(db, flag));
-    }
-
     else
     {
       FPS_ERROR_PRINT( " *************** %s Var [%s] not processed \n",__FUNCTION__, name);  
@@ -1082,7 +1078,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
 }
 
 // need nodbs option  or do we ??
-int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
+int xaddValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
 {
     // cjoffset must be a name
     // cjvalue may be an object
