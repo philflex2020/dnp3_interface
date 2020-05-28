@@ -108,7 +108,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // TODO fpsOutStationApplication
     auto outstation = channel->AddOutstation("outstation", 
                                             fpsCommandHandler::Create(ourDB),
-                                            fpsOutstationApplication::Create(ourDb), config);
+                                            fpsOutstationApplication::Create(ourDB), config);
 
     // Enable the outstation and start communications
     outstation->Enable();
