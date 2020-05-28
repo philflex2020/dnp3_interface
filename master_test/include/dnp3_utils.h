@@ -465,9 +465,8 @@ typedef struct sysCfg_t {
             return 0;
         };
 
-        int setDbVar(const char* name, cJSON* cj)
+        int setDbVar(DbVar* db, cJSON* cj)
         {
-            DbVar* db = getDbVar(name);
             if(db != NULL)
             {
                 switch (db->type) 
@@ -492,6 +491,11 @@ typedef struct sysCfg_t {
                 }
             }
             return 0;
+        };
+
+        int setDbVar(const char* name, cJSON* cj)
+        {
+            return (getDbVar(name),cj);
         };
 
         int setDbVar(const char *name, double dval)

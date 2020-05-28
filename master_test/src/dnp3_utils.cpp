@@ -965,7 +965,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     }
                     else
                     {
-                        sys->setDbVarIx(db->type, db->offset, itypeValues);
+                        sys->setDbVar(db, itypeValues);
                         dbs.push_back(std::make_pair(db, flag));
                     }     
                 }
