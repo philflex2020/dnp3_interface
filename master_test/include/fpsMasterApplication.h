@@ -48,14 +48,14 @@ public:
     // TODO find a way to detect the scan result. I dont think we'll have more that one of these running at a time
     // newSOEHandler populates the cJSON object
     virtual void OnTaskStart(opendnp3::MasterTaskType type, opendnp3::TaskId id) override final {
-        std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
+        //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
         cfgdb->cj = cJSON_CreateObject();
         cfgdb->cjloaded = 0; 
     }
 
     virtual void OnTaskComplete(const opendnp3::TaskInfo& info) override final {
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
-        std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
+        //std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
         if(cfgdb->cj)
         {
             if (cfgdb->cjloaded > 0) 
