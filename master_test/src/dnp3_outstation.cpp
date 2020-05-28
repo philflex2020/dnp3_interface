@@ -64,7 +64,7 @@ DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
     return manager;
 }
 
-std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* ourDB, const char* addr, int port) {
+std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* ourDB) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
     const uint32_t FILTERS = levels::NORMAL;// | levels::ALL_COMMS;
@@ -73,15 +73,14 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     auto channel = manager->AddTCPServer(cname, 
                                         FILTERS, 
                                         ServerAcceptMode::CloseExisting, 
-                                        addr, 
-                                        port,
+                                        ourDB->ip_address, 
+                                        ourDB->port,
                                         fpsChannelListener::Create(ourDB)
                                         );
-//    cout << "channel0 set up!\n";
     return channel;
 }
-
-std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB, int localAddr, int remoteAddr)
+//auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, sys_cfg.local_address, sys_cfg.remote_address);
+std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB)
 {
     // The main object for a outstation. The defaults are useable,
     // but understanding the options are important.
@@ -107,8 +106,9 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
 
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
-    config.link.LocalAddr = 10;//localAddr;
-    config.link.RemoteAddr = 1;//remoteAddr;
+    // 
+    config.link.LocalAddr = ourDB->local_address;   // was 10
+    config.link.RemoteAddr = ourDB->remote_address;//  was 1;
 
     config.link.KeepAliveTimeout = openpal::TimeDuration::Max();
 
@@ -230,13 +230,13 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    auto channel = setupDNP3channel(manager, "server", &sys_cfg, sys_cfg.ip_address, sys_cfg.port);
+    auto channel = setupDNP3channel(manager, "server", &sys_cfg);
     if (!channel){
         FPS_ERROR_PRINT( "DNP3 Channel setup failed.\n");
         return 1;
     }
 
-    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, sys_cfg.local_address, sys_cfg.remote_address);
+    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg);
     if (!outstation){
         FPS_ERROR_PRINT( "Outstation setup failed.\n");
         return 1;
