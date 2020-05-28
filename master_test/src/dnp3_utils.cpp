@@ -1061,9 +1061,9 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
     else if (
             (db->type == Type_Analog) ||
             (db->type == Type_Binary) ||
-            (db->type == Type_AnIn16) ||
-            (db->type == Type_AnIn32) ||
-            (db->type == Type_AnF32)
+            (db->type == AnIn16) ||
+            (db->type == AnIn32) ||
+            (db->type == AnF32)
             )
     {
         sys->setDbVar(name, cjvalue);
