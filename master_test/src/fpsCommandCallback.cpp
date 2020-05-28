@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-#include "asiodnp3/fpsCommandCalback.h"
+#include "fpsCommandCalback.h"
 
 #include <iostream>
 
