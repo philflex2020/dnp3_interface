@@ -349,6 +349,8 @@ int main(int argc, char *argv[])
                     const char* reply = cJSON_PrintUnformatted(cj);
                     cJSON_Delete(cj);
                     cj = NULL;
+                    // TODO check that SET is the correct thing to do in MODBUS_CLIENT
+                    // probably OK since this is a reply
                     p_fims->Send("set", msg->replyto, NULL, reply);
                     free((void* )reply);
                 }
