@@ -822,7 +822,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // or 
     // set /components/master/dnp3_outstation '{"name1":{"value":1}, "name2":{"value":2}'}
     // TODO add pubs for outstation
-    if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0))
+    if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0))
     {
         FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
         return body_JSON;
@@ -838,7 +838,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         // is this a singleton ? 
         if ((int)msg->nfrags > fragptr+2)
         {
-            int flag = 0;
+            int flag = 0;  // dont set extra value field
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
             FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
             DbVar* db = sys->getDbVar(uri);
@@ -857,8 +857,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         }
         return body_JSON;
     }
-
-    if(strcmp(msg->method,"set") == 0)
+    // Allow "pub" to "set" outstation
+    if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && strcmp(who,"outstation") == 0))
     {
         // todo need to ignore sets on the outstation for master vars ans vice versa 
         int single = 0;
