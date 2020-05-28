@@ -1077,370 +1077,370 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
     return dbs.size();   
 }
 
-// need nodbs option  or do we ??
-int xaddValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
-{
-    // cjoffset must be a name
-    // cjvalue may be an object
+// // need nodbs option  or do we ??
+// int xaddValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
+// {
+//     // cjoffset must be a name
+//     // cjvalue may be an object
 
-    if (name == NULL)
-    {
-        FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
-        return -1;
-    }
+//     if (name == NULL)
+//     {
+//         FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
+//         return -1;
+//     }
 
-    DbVar* db = getDbVar(sys, name); 
-    if (db == NULL)
-    {
-        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, name);
-        return -1;
-    }
+//     DbVar* db = getDbVar(sys, name); 
+//     if (db == NULL)
+//     {
+//         FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, name);
+//         return -1;
+//     }
     
-    FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, name);
+//     FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, name);
 
-    if (cjvalue->type == cJSON_Object)
-    {
-        flag = 1;
-        cjvalue = cJSON_GetObjectItem(cjvalue, "value");
-    }
+//     if (cjvalue->type == cJSON_Object)
+//     {
+//         flag = 1;
+//         cjvalue = cJSON_GetObjectItem(cjvalue, "value");
+//     }
 
-    if (!cjvalue)
-    {
-        FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
-        return -1;
-    }
+//     if (!cjvalue)
+//     {
+//         FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
+//         return -1;
+//     }
 
-    if (db->type == AnIn16) 
-    {
-        //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
-        sys->setDbVar(name, cjvalue);
-        //dbs.push_back(std::make_pair(db, flag));
-    }
-    else if (db->type == AnIn32) 
-    {
-        //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
-        sys->setDbVar(name, cjvalue);
-        //dbs.push_back(std::make_pair(db, flag));
-    }
-    else if (db->type == AnF32) 
-    {
-        //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
-        sys->setDbVar(name, cjvalue);
-        //dbs.push_back(std::make_pair(db, flag));
-    }
-    else if (db->type == Type_Crob) 
-    {
-        FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
-                                                    , __FUNCTION__
-                                                    , db->name.c_str()
-                                                    , name
-                                                    , (int)StringToControlCode(cjvalue->valuestring)
-                                                    );
+//     if (db->type == AnIn16) 
+//     {
+//         //commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(cjvalue->valueint), db->offset)});
+//         sys->setDbVar(name, cjvalue);
+//         //dbs.push_back(std::make_pair(db, flag));
+//     }
+//     else if (db->type == AnIn32) 
+//     {
+//         //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(cjvalue->valueint),pt->offset)});
+//         sys->setDbVar(name, cjvalue);
+//         //dbs.push_back(std::make_pair(db, flag));
+//     }
+//     else if (db->type == AnF32) 
+//     {
+//         //commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(cjvalue->valuedouble),pt->offset)});
+//         sys->setDbVar(name, cjvalue);
+//         //dbs.push_back(std::make_pair(db, flag));
+//     }
+//     else if (db->type == Type_Crob) 
+//     {
+//         FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
+//                                                     , __FUNCTION__
+//                                                     , db->name.c_str()
+//                                                     , name
+//                                                     , (int)StringToControlCode(cjvalue->valuestring)
+//                                                     );
 
-        sys->setDbVar(name, cjvalue);
-        //dbs.push_back(std::make_pair(db, flag));
-    }
-    else
-    {
-      FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, name);  
-      return -1;
-    }
-    return 0;//dbs.size();   
-}
+//         sys->setDbVar(name, cjvalue);
+//         //dbs.push_back(std::make_pair(db, flag));
+//     }
+//     else
+//     {
+//       FPS_ERROR_PRINT( " *************** %s Var [%s] not found in dbMap\n",__FUNCTION__, name);  
+//       return -1;
+//     }
+//     return 0;//dbs.size();   
+// }
 
-server_data* create_register_map(cJSON* registers, datalog* data)
-{
-    int i, j;
-    unsigned int k;
-    uri_map::iterator it;
-    body_map::iterator body_it;
-    const char* reg_types[] = { "coils", "discrete_inputs", "input_registers", "holding_registers", 0 };
-    memset(data, 0, sizeof(datalog)*Num_Register_Types);
-    server_data* srv_data = new server_data;
-    if(srv_data == NULL)
-    {
-        fprintf(stderr,"Allocation error.\n");
-        return NULL;
-    }
-    for(i = 0; i < Num_Register_Types; i++)
-    { 
-        fprintf(stdout, "Seeking registers included in [%s] config object.\n", reg_types[i]);
-        cJSON* reg_set = cJSON_GetObjectItem(registers, reg_types[i]);
-        if(reg_set != NULL)
-        {
-            fprintf(stdout, ">>>>Found registers included in [%s] config object.\n", reg_types[i]);
+// server_data* create_register_map(cJSON* registers, datalog* data)
+// {
+//     int i, j;
+//     unsigned int k;
+//     uri_map::iterator it;
+//     body_map::iterator body_it;
+//     const char* reg_types[] = { "coils", "discrete_inputs", "input_registers", "holding_registers", 0 };
+//     memset(data, 0, sizeof(datalog)*Num_Register_Types);
+//     server_data* srv_data = new server_data;
+//     if(srv_data == NULL)
+//     {
+//         fprintf(stderr,"Allocation error.\n");
+//         return NULL;
+//     }
+//     for(i = 0; i < Num_Register_Types; i++)
+//     { 
+//         fprintf(stdout, "Seeking registers included in [%s] config object.\n", reg_types[i]);
+//         cJSON* reg_set = cJSON_GetObjectItem(registers, reg_types[i]);
+//         if(reg_set != NULL)
+//         {
+//             fprintf(stdout, ">>>>Found registers included in [%s] config object.\n", reg_types[i]);
 
-            data[i].reg_type = (Type_of_Register)i;
-            int reg_cnt = data[i].map_size = cJSON_GetArraySize(reg_set);
-            if(reg_cnt == 0)
-            {
-                fprintf(stderr, "No registers included in %s config object.\n", reg_types[i]);
-                continue;
-            }
-            data[i].register_map = new maps[reg_cnt];
-            int min_offset, max_offset;
-            min_offset = max_offset = -1;
-            for(j = 0; j < reg_cnt; j++)
-            {
-                int offset, num_regs;
-                cJSON* cur_reg = cJSON_GetArrayItem(reg_set, j);
-                if(cur_reg == NULL ||cur_reg->type != cJSON_Object)
-                {
-                    fprintf(stderr, "Error: Failed to read or in invalid format: %s register entry %d.\n", reg_types[i], i);
-                    goto cleanup;
-                }
-                char* spreg = cJSON_Print(cur_reg);
-                fprintf(stderr, "Working with %s array item %d.\n", spreg, j);
+//             data[i].reg_type = (Type_of_Register)i;
+//             int reg_cnt = data[i].map_size = cJSON_GetArraySize(reg_set);
+//             if(reg_cnt == 0)
+//             {
+//                 fprintf(stderr, "No registers included in %s config object.\n", reg_types[i]);
+//                 continue;
+//             }
+//             data[i].register_map = new maps[reg_cnt];
+//             int min_offset, max_offset;
+//             min_offset = max_offset = -1;
+//             for(j = 0; j < reg_cnt; j++)
+//             {
+//                 int offset, num_regs;
+//                 cJSON* cur_reg = cJSON_GetArrayItem(reg_set, j);
+//                 if(cur_reg == NULL ||cur_reg->type != cJSON_Object)
+//                 {
+//                     fprintf(stderr, "Error: Failed to read or in invalid format: %s register entry %d.\n", reg_types[i], i);
+//                     goto cleanup;
+//                 }
+//                 char* spreg = cJSON_Print(cur_reg);
+//                 fprintf(stderr, "Working with %s array item %d.\n", spreg, j);
 
-                cJSON* cur_off = cJSON_GetObjectItem(cur_reg, "offset");
-                cJSON* cur_uri = cJSON_GetObjectItem(cur_reg, "uri");
-                cJSON* cur_id  = cJSON_GetObjectItem(cur_reg, "id");
-                // hack for now
-                if(cur_uri == NULL) cur_uri = cur_id;
+//                 cJSON* cur_off = cJSON_GetObjectItem(cur_reg, "offset");
+//                 cJSON* cur_uri = cJSON_GetObjectItem(cur_reg, "uri");
+//                 cJSON* cur_id  = cJSON_GetObjectItem(cur_reg, "id");
+//                 // hack for now
+//                 if(cur_uri == NULL) cur_uri = cur_id;
 
-                if(cur_off == NULL || cur_off->type != cJSON_Number ||
-                   cur_uri == NULL || cur_uri->type != cJSON_String ||
-                   cur_id  == NULL || cur_id->type  != cJSON_String  )
-                {
-                    fprintf(stderr, "Error: Missing required field for %s register j %d entry %d.\n", reg_types[i], j, i);
-                    goto cleanup;
-                }
+//                 if(cur_off == NULL || cur_off->type != cJSON_Number ||
+//                    cur_uri == NULL || cur_uri->type != cJSON_String ||
+//                    cur_id  == NULL || cur_id->type  != cJSON_String  )
+//                 {
+//                     fprintf(stderr, "Error: Missing required field for %s register j %d entry %d.\n", reg_types[i], j, i);
+//                     goto cleanup;
+//                 }
 
-                data[i].register_map[j].uri      = strdup(cur_uri->valuestring);
-                data[i].register_map[j].reg_name = strdup(cur_id->valuestring);
-                data[i].register_map[j].reg_off  = offset = cur_off->valueint;
+//                 data[i].register_map[j].uri      = strdup(cur_uri->valuestring);
+//                 data[i].register_map[j].reg_name = strdup(cur_id->valuestring);
+//                 data[i].register_map[j].reg_off  = offset = cur_off->valueint;
 
-                it = srv_data->uri_to_register.find(data[i].register_map[j].uri);
-                if(it == srv_data->uri_to_register.end())
-                {
-                    // first time uri is used insert new map
-                    std::pair<uri_map::iterator, bool> rtn_pair = srv_data->uri_to_register.insert(std::pair<const char*, body_map*>(data[i].register_map[j].uri, new body_map));
-                    it = rtn_pair.first;
-                    if(rtn_pair.second == false || it->second == NULL)
-                    {
-                        fprintf(stderr, "Failed to insert map entry for new uri.\n");
-                        goto cleanup;
-                    }
-                }
-                body_it = it->second->find(data[i].register_map[j].reg_name);
-                if(body_it == it->second->end())
-                {
-                    maps** reg_info = new maps*[Num_Register_Types];
-                    bool* reg_type = new bool[Num_Register_Types];
-                    memset(reg_info, 0, sizeof(maps*) * Num_Register_Types);
-                    memset(reg_type, 0, sizeof(bool) * Num_Register_Types);
-                    reg_info[i] = &(data[i].register_map[j]);
-                    reg_type[i] = true;
-                    std::pair<body_map::iterator, bool> rtn_pair = it->second->insert(std::pair<const char*, std::pair<bool*, maps**> >(data[i].register_map[j].reg_name, std::pair<bool*, maps**> (reg_type, reg_info)));
-                    if(rtn_pair.second == false)
-                    {
-                        fprintf(stderr, "Failed to insert map entry for new %s: %s.\n", reg_types[i], data[i].register_map[j].reg_name);
-                        goto cleanup;
-                    }
-                }
-                else
-                {
-                    if(body_it->second.first[i] == true || body_it->second.second[i] != NULL)
-                    {
-                        //Already taken
-                        fprintf(stderr, "Failed to insert map entry for new %s: %s. Base URI and Id already used in the map.\n", reg_types[i], data[i].register_map[j].reg_name);
-                        goto cleanup;
-                    }
-                    body_it->second.first[i] = true;
-                    body_it->second.second[i] = &(data[i].register_map[j]);
-                }
+//                 it = srv_data->uri_to_register.find(data[i].register_map[j].uri);
+//                 if(it == srv_data->uri_to_register.end())
+//                 {
+//                     // first time uri is used insert new map
+//                     std::pair<uri_map::iterator, bool> rtn_pair = srv_data->uri_to_register.insert(std::pair<const char*, body_map*>(data[i].register_map[j].uri, new body_map));
+//                     it = rtn_pair.first;
+//                     if(rtn_pair.second == false || it->second == NULL)
+//                     {
+//                         fprintf(stderr, "Failed to insert map entry for new uri.\n");
+//                         goto cleanup;
+//                     }
+//                 }
+//                 body_it = it->second->find(data[i].register_map[j].reg_name);
+//                 if(body_it == it->second->end())
+//                 {
+//                     maps** reg_info = new maps*[Num_Register_Types];
+//                     bool* reg_type = new bool[Num_Register_Types];
+//                     memset(reg_info, 0, sizeof(maps*) * Num_Register_Types);
+//                     memset(reg_type, 0, sizeof(bool) * Num_Register_Types);
+//                     reg_info[i] = &(data[i].register_map[j]);
+//                     reg_type[i] = true;
+//                     std::pair<body_map::iterator, bool> rtn_pair = it->second->insert(std::pair<const char*, std::pair<bool*, maps**> >(data[i].register_map[j].reg_name, std::pair<bool*, maps**> (reg_type, reg_info)));
+//                     if(rtn_pair.second == false)
+//                     {
+//                         fprintf(stderr, "Failed to insert map entry for new %s: %s.\n", reg_types[i], data[i].register_map[j].reg_name);
+//                         goto cleanup;
+//                     }
+//                 }
+//                 else
+//                 {
+//                     if(body_it->second.first[i] == true || body_it->second.second[i] != NULL)
+//                     {
+//                         //Already taken
+//                         fprintf(stderr, "Failed to insert map entry for new %s: %s. Base URI and Id already used in the map.\n", reg_types[i], data[i].register_map[j].reg_name);
+//                         goto cleanup;
+//                     }
+//                     body_it->second.first[i] = true;
+//                     body_it->second.second[i] = &(data[i].register_map[j]);
+//                 }
 
-                cJSON* multi_reg = cJSON_GetObjectItem(cur_reg,"size");
-                data[i].register_map[j].num_regs = num_regs =
-                    (multi_reg != NULL && multi_reg->type == cJSON_Number) ? multi_reg->valueint : 1;
+//                 cJSON* multi_reg = cJSON_GetObjectItem(cur_reg,"size");
+//                 data[i].register_map[j].num_regs = num_regs =
+//                     (multi_reg != NULL && multi_reg->type == cJSON_Number) ? multi_reg->valueint : 1;
 
-                cJSON* bit_field = cJSON_GetObjectItem(cur_reg, "bit_field");
-                data[i].register_map[j].bit_field = (bit_field != NULL && bit_field->type == cJSON_True);
+//                 cJSON* bit_field = cJSON_GetObjectItem(cur_reg, "bit_field");
+//                 data[i].register_map[j].bit_field = (bit_field != NULL && bit_field->type == cJSON_True);
 
-                cJSON* is_signed = cJSON_GetObjectItem(cur_reg,"signed");
-                data[i].register_map[j].sign = (is_signed != NULL && is_signed->type == cJSON_True);
+//                 cJSON* is_signed = cJSON_GetObjectItem(cur_reg,"signed");
+//                 data[i].register_map[j].sign = (is_signed != NULL && is_signed->type == cJSON_True);
 
-                cJSON* is_bool = cJSON_GetObjectItem(cur_reg, "bool");
-                data[i].register_map[j].is_bool = (is_bool != NULL && is_bool->type == cJSON_True);
+//                 cJSON* is_bool = cJSON_GetObjectItem(cur_reg, "bool");
+//                 data[i].register_map[j].is_bool = (is_bool != NULL && is_bool->type == cJSON_True);
 
-                cJSON* scale_value = cJSON_GetObjectItem(cur_reg,"scale");
-                data[i].register_map[j].scale = (scale_value != NULL) ? (scale_value->valuedouble) : 0.0;
+//                 cJSON* scale_value = cJSON_GetObjectItem(cur_reg,"scale");
+//                 data[i].register_map[j].scale = (scale_value != NULL) ? (scale_value->valuedouble) : 0.0;
 
-                min_offset = (min_offset > offset || min_offset == -1) ? offset : min_offset;
-                max_offset = (max_offset < (offset + num_regs)) ? (offset + num_regs) : max_offset;
-            }
-            // store size of register map
-            data[i].start_offset = min_offset;
-            data[i].num_regs = max_offset - min_offset;
-            srv_data->regs_to_map[i] = new maps*[data[i].num_regs];
-            memset(srv_data->regs_to_map[i], 0, sizeof(maps*) * data[i].num_regs);
-            // building hash lookup for register
-            // this has to be done in a second pass because
-            // we don't know how big the register map will be until we
-            // have read all the registers and got the min and max offsets
-            for(j = 0; j < reg_cnt; j++)
-            {
-                data[i].register_map[j].reg_off -= min_offset;
-                for(k = data[i].register_map[j].reg_off; k < data[i].register_map[j].reg_off + data[i].register_map[j].num_regs; k++)
-                {
-                    if(srv_data->regs_to_map[i][k] != NULL)
-                    {
-                        fprintf(stderr, "Error in json config: Collision, %s at offset %u is defined to multiple variables %s and %s.\n",
-                                reg_types[i], k + min_offset, srv_data->regs_to_map[i][k]->reg_name, data[i].register_map[j].reg_name);
-                        goto cleanup;
-                    }
-                    srv_data->regs_to_map[i][k] = data[i].register_map + j;
-                }
-            }
-        }
-    }
-    //TODO this does not check if redundant URIs are added, IE a base and a child
-    // copy URIs that are needed to subscribe to
-    srv_data->num_uris = srv_data->uri_to_register.size();
-    srv_data->uris = new const char*[srv_data->num_uris + 1];
-    i = 1; // start with 1 because 0 is used for this processes uri
-    for(it = srv_data->uri_to_register.begin(); it != srv_data->uri_to_register.end(); ++it, i++)
-        srv_data->uris[i] = it->first;
-#if 0
-    srv_data->mb_mapping = modbus_mapping_new_start_address(data[Coil].start_offset, data[Coil].num_regs,
-                                     data[Discrete_Input].start_offset,   data[Discrete_Input].num_regs,
-                                     data[Holding_Register].start_offset, data[Holding_Register].num_regs,
-                                     data[Input_Register].start_offset,   data[Input_Register].num_regs);
+//                 min_offset = (min_offset > offset || min_offset == -1) ? offset : min_offset;
+//                 max_offset = (max_offset < (offset + num_regs)) ? (offset + num_regs) : max_offset;
+//             }
+//             // store size of register map
+//             data[i].start_offset = min_offset;
+//             data[i].num_regs = max_offset - min_offset;
+//             srv_data->regs_to_map[i] = new maps*[data[i].num_regs];
+//             memset(srv_data->regs_to_map[i], 0, sizeof(maps*) * data[i].num_regs);
+//             // building hash lookup for register
+//             // this has to be done in a second pass because
+//             // we don't know how big the register map will be until we
+//             // have read all the registers and got the min and max offsets
+//             for(j = 0; j < reg_cnt; j++)
+//             {
+//                 data[i].register_map[j].reg_off -= min_offset;
+//                 for(k = data[i].register_map[j].reg_off; k < data[i].register_map[j].reg_off + data[i].register_map[j].num_regs; k++)
+//                 {
+//                     if(srv_data->regs_to_map[i][k] != NULL)
+//                     {
+//                         fprintf(stderr, "Error in json config: Collision, %s at offset %u is defined to multiple variables %s and %s.\n",
+//                                 reg_types[i], k + min_offset, srv_data->regs_to_map[i][k]->reg_name, data[i].register_map[j].reg_name);
+//                         goto cleanup;
+//                     }
+//                     srv_data->regs_to_map[i][k] = data[i].register_map + j;
+//                 }
+//             }
+//         }
+//     }
+//     //TODO this does not check if redundant URIs are added, IE a base and a child
+//     // copy URIs that are needed to subscribe to
+//     srv_data->num_uris = srv_data->uri_to_register.size();
+//     srv_data->uris = new const char*[srv_data->num_uris + 1];
+//     i = 1; // start with 1 because 0 is used for this processes uri
+//     for(it = srv_data->uri_to_register.begin(); it != srv_data->uri_to_register.end(); ++it, i++)
+//         srv_data->uris[i] = it->first;
+// #if 0
+//     srv_data->mb_mapping = modbus_mapping_new_start_address(data[Coil].start_offset, data[Coil].num_regs,
+//                                      data[Discrete_Input].start_offset,   data[Discrete_Input].num_regs,
+//                                      data[Holding_Register].start_offset, data[Holding_Register].num_regs,
+//                                      data[Input_Register].start_offset,   data[Input_Register].num_regs);
 
-    if (srv_data->mb_mapping == NULL)
-    {
-        fprintf(stderr, "Failed to allocate the mapping: %s\n", modbus_strerror(errno));
-        goto cleanup;
-    }
-#endif
+//     if (srv_data->mb_mapping == NULL)
+//     {
+//         fprintf(stderr, "Failed to allocate the mapping: %s\n", modbus_strerror(errno));
+//         goto cleanup;
+//     }
+// #endif
     
-    return srv_data;
+//     return srv_data;
 
-    cleanup:
-    for (it = srv_data->uri_to_register.begin(); it != srv_data->uri_to_register.end(); ++it)
-    {
-        for (body_it = it->second->begin(); body_it != it->second->end(); ++body_it)
-        {
-            delete []body_it->second.first;
-            delete []body_it->second.second;
-        }
-        it->second->clear();
-        delete(it->second);
-    }
-    srv_data->uri_to_register.clear();
-    for (i = 0; i < Num_Register_Types; i++)
-    {
-        if(data[i].register_map != NULL)     delete [] data[i].register_map;
-        if(srv_data->regs_to_map[i] != NULL) delete [] srv_data->regs_to_map[i];
-    }
-    if (srv_data->uris != NULL) delete []srv_data->uris;
-    delete srv_data;
-    return NULL;
-}
+//     cleanup:
+//     for (it = srv_data->uri_to_register.begin(); it != srv_data->uri_to_register.end(); ++it)
+//     {
+//         for (body_it = it->second->begin(); body_it != it->second->end(); ++body_it)
+//         {
+//             delete []body_it->second.first;
+//             delete []body_it->second.second;
+//         }
+//         it->second->clear();
+//         delete(it->second);
+//     }
+//     srv_data->uri_to_register.clear();
+//     for (i = 0; i < Num_Register_Types; i++)
+//     {
+//         if(data[i].register_map != NULL)     delete [] data[i].register_map;
+//         if(srv_data->regs_to_map[i] != NULL) delete [] srv_data->regs_to_map[i];
+//     }
+//     if (srv_data->uris != NULL) delete []srv_data->uris;
+//     delete srv_data;
+//     return NULL;
+// }
 
-bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value)
-{
-    // Handle value objects
-    cJSON* obj = cJSON_GetObjectItem(value, "value");
-    if (obj == NULL)
-        obj = value;
+// bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value)
+// {
+//     // Handle value objects
+//     cJSON* obj = cJSON_GetObjectItem(value, "value");
+//     if (obj == NULL)
+//         obj = value;
 
-    for(int i = 0; i < Num_Register_Types; i++)
-    {
-        if(reg_type[i] == false)
-            continue;
-        if((i == Coil) || (i == Discrete_Input))
-        {
-            uint8_t* regs = (i == Coil) ? map->tab_bits : map->tab_input_bits;
-            regs[settings[i]->reg_off] = (obj->type == cJSON_True);
-        }
-        else if((i == Input_Register) || (i == Holding_Register))
-        {
-            uint16_t* regs = (i == Holding_Register) ? map->tab_registers : map->tab_input_registers;
-            if(settings[i]->num_regs == 1)
-            {
-                uint16_t val;
-                if(settings[i]->is_bool)
-                {
-                    val = static_cast<uint16_t> (obj->type == cJSON_True);
-                }
-                else if(settings[i]->bit_field)
-                {
-                    int size = cJSON_GetArraySize(value);
-                    if(size != 0)
-                    {
-                        //get last item in array
-                        cJSON* item = cJSON_GetArrayItem(value, size-1);
-                        if (item != NULL)
-                        {
-                            obj = cJSON_GetObjectItem(item, "value");
-                            val = (obj == NULL) ? 0 : obj->valueint;
-                        }
-                        else
-                            val = 0;
-                    }
-                    else
-                        val = 0;
-                }
-                else if(settings[i]->scale != 0.0)
-                {
-                    if(settings[i]->sign == true)
-                        val = static_cast<int32_t> (obj->valuedouble * settings[i]->scale);
-                    else
-                        val = static_cast<uint16_t> (obj->valuedouble * settings[i]->scale);
-                }
-                else
-                {
-                    if(settings[i]->sign == true)
-                        val = static_cast<int16_t> (obj->valueint);
-                    else
-                        val = static_cast<uint16_t> (obj->valueint);
-                }
-                regs[settings[i]->reg_off] = val;
-            }
-            else if(settings[i]->num_regs == 2)
-            {
-                uint32_t val;
-                if(settings[i]->bit_field)
-                {
-                    int size = cJSON_GetArraySize(value);
-                    if(size != 0)
-                    {
-                        //get last item in array
-                        cJSON* item = cJSON_GetArrayItem(value, size-1);
-                        if (item != NULL)
-                        {
-                            obj = cJSON_GetObjectItem(item, "value");
-                            val = (obj == NULL) ? 0 : obj->valueint;
-                        }
-                        else
-                            val = 0;
-                    }
-                    else
-                        val = 0;
-                }
-                else if(settings[i]->scale != 0.0)
-                {
-                    if(settings[i]->sign == true)
-                        val = static_cast<int32_t> (obj->valuedouble * settings[i]->scale);
-                    else
-                        val = static_cast<uint32_t> (obj->valuedouble * settings[i]->scale);
-                }
-                else
-                {
-                    if(settings[i]->sign == true)
-                        val = static_cast<int32_t> (obj->valueint);
-                    else
-                        val = static_cast<uint32_t> (obj->valueint);
-                }
-                //TODO need to do byte swap here if we want to support
-                regs[settings[i]->reg_off]     = static_cast<uint16_t> (val >> 16);
-                regs[settings[i]->reg_off + 1] = static_cast<uint16_t> (val & 0x0000ffff);
-            }
-        }
-    }
-    return true;
-}
+//     for(int i = 0; i < Num_Register_Types; i++)
+//     {
+//         if(reg_type[i] == false)
+//             continue;
+//         if((i == Coil) || (i == Discrete_Input))
+//         {
+//             uint8_t* regs = (i == Coil) ? map->tab_bits : map->tab_input_bits;
+//             regs[settings[i]->reg_off] = (obj->type == cJSON_True);
+//         }
+//         else if((i == Input_Register) || (i == Holding_Register))
+//         {
+//             uint16_t* regs = (i == Holding_Register) ? map->tab_registers : map->tab_input_registers;
+//             if(settings[i]->num_regs == 1)
+//             {
+//                 uint16_t val;
+//                 if(settings[i]->is_bool)
+//                 {
+//                     val = static_cast<uint16_t> (obj->type == cJSON_True);
+//                 }
+//                 else if(settings[i]->bit_field)
+//                 {
+//                     int size = cJSON_GetArraySize(value);
+//                     if(size != 0)
+//                     {
+//                         //get last item in array
+//                         cJSON* item = cJSON_GetArrayItem(value, size-1);
+//                         if (item != NULL)
+//                         {
+//                             obj = cJSON_GetObjectItem(item, "value");
+//                             val = (obj == NULL) ? 0 : obj->valueint;
+//                         }
+//                         else
+//                             val = 0;
+//                     }
+//                     else
+//                         val = 0;
+//                 }
+//                 else if(settings[i]->scale != 0.0)
+//                 {
+//                     if(settings[i]->sign == true)
+//                         val = static_cast<int32_t> (obj->valuedouble * settings[i]->scale);
+//                     else
+//                         val = static_cast<uint16_t> (obj->valuedouble * settings[i]->scale);
+//                 }
+//                 else
+//                 {
+//                     if(settings[i]->sign == true)
+//                         val = static_cast<int16_t> (obj->valueint);
+//                     else
+//                         val = static_cast<uint16_t> (obj->valueint);
+//                 }
+//                 regs[settings[i]->reg_off] = val;
+//             }
+//             else if(settings[i]->num_regs == 2)
+//             {
+//                 uint32_t val;
+//                 if(settings[i]->bit_field)
+//                 {
+//                     int size = cJSON_GetArraySize(value);
+//                     if(size != 0)
+//                     {
+//                         //get last item in array
+//                         cJSON* item = cJSON_GetArrayItem(value, size-1);
+//                         if (item != NULL)
+//                         {
+//                             obj = cJSON_GetObjectItem(item, "value");
+//                             val = (obj == NULL) ? 0 : obj->valueint;
+//                         }
+//                         else
+//                             val = 0;
+//                     }
+//                     else
+//                         val = 0;
+//                 }
+//                 else if(settings[i]->scale != 0.0)
+//                 {
+//                     if(settings[i]->sign == true)
+//                         val = static_cast<int32_t> (obj->valuedouble * settings[i]->scale);
+//                     else
+//                         val = static_cast<uint32_t> (obj->valuedouble * settings[i]->scale);
+//                 }
+//                 else
+//                 {
+//                     if(settings[i]->sign == true)
+//                         val = static_cast<int32_t> (obj->valueint);
+//                     else
+//                         val = static_cast<uint32_t> (obj->valueint);
+//                 }
+//                 //TODO need to do byte swap here if we want to support
+//                 regs[settings[i]->reg_off]     = static_cast<uint16_t> (val >> 16);
+//                 regs[settings[i]->reg_off + 1] = static_cast<uint16_t> (val & 0x0000ffff);
+//             }
+//         }
+//     }
+//     return true;
+// }
 
 cJSON* cfgdbFindAddArray(sysCfg* cfgdb, const char* field)
 {
@@ -1455,61 +1455,61 @@ cJSON* cfgdbFindAddArray(sysCfg* cfgdb, const char* field)
     return cjf;
 }
 
-// possibly used in outstation comand handler to publish changes
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
-{
-    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON* cji = cJSON_CreateObject();
-    // todo resolve name
-    cJSON_AddNumberToObject(cji,"offset",index);
-    //const char* indexName = cfgindextoName(AOP16,index);
-    //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd.value);
-    cJSON_AddItemToArray(cjf, cji);
-    cfgdb->cjloaded++;
-}
+// // possibly used in outstation comand handler to publish changes
+// void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
+// {
+//     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+//     cJSON* cji = cJSON_CreateObject();
+//     // todo resolve name
+//     cJSON_AddNumberToObject(cji,"offset",index);
+//     //const char* indexName = cfgindextoName(AOP16,index);
+//     //cJSON_AddStringToObject(cji,"offset",indexName);
+//     cJSON_AddNumberToObject(cji,"value", cmd.value);
+//     cJSON_AddItemToArray(cjf, cji);
+//     cfgdb->cjloaded++;
+// }
 
 
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
-{
-    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON* cji = cJSON_CreateObject();
-    // todo resolve name
-    cJSON_AddNumberToObject(cji,"offset",index);
-    //const char* indexName = cfgindextoName(AOP32,index);
-    //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd.value);
-    cJSON_AddItemToArray(cjf,cji);
-    cfgdb->cjloaded++;
-}
+// void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
+// {
+//     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+//     cJSON* cji = cJSON_CreateObject();
+//     // todo resolve name
+//     cJSON_AddNumberToObject(cji,"offset",index);
+//     //const char* indexName = cfgindextoName(AOP32,index);
+//     //cJSON_AddStringToObject(cji,"offset",indexName);
+//     cJSON_AddNumberToObject(cji,"value", cmd.value);
+//     cJSON_AddItemToArray(cjf,cji);
+//     cfgdb->cjloaded++;
+// }
 
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
-{
-    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON* cji = cJSON_CreateObject();
-    // todo resolve name
-    cJSON_AddNumberToObject(cji,"offset",index);
-    //const char* indexName = cfgindextoName(Float32,index);
-    //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd.value);
-    cJSON_AddItemToArray(cjf,cji);
-    cfgdb->cjloaded++;
-}
+// void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
+// {
+//     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+//     cJSON* cji = cJSON_CreateObject();
+//     // todo resolve name
+//     cJSON_AddNumberToObject(cji,"offset",index);
+//     //const char* indexName = cfgindextoName(Float32,index);
+//     //cJSON_AddStringToObject(cji,"offset",indexName);
+//     cJSON_AddNumberToObject(cji,"value", cmd.value);
+//     cJSON_AddItemToArray(cjf,cji);
+//     cfgdb->cjloaded++;
+// }
 
-// TODO fix up CROB
-void cfgdbAddtoRecord(sysCfg* cfgdb, const char* field, const char* cmd, uint16_t index)
-{
-    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON* cji = cJSON_CreateObject();
-    // todo resolve name
-    cJSON_AddNumberToObject(cji,"offset",index);
-    //const char* indexName = cfgindextoName(CROB,index);
-    //cJSON_AddStringToObject(cji,"offset",indexName);
-    // ??
-    cJSON_AddStringToObject(cji,"value", cmd);
-    cJSON_AddItemToArray(cjf, cji);
-    cfgdb->cjloaded++;
-}
+// // TODO fix up CROB
+// void cfgdbAddtoRecord(sysCfg* cfgdb, const char* field, const char* cmd, uint16_t index)
+// {
+//     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+//     cJSON* cji = cJSON_CreateObject();
+//     // todo resolve name
+//     cJSON_AddNumberToObject(cji,"offset",index);
+//     //const char* indexName = cfgindextoName(CROB,index);
+//     //cJSON_AddStringToObject(cji,"offset",indexName);
+//     // ??
+//     cJSON_AddStringToObject(cji,"value", cmd);
+//     cJSON_AddItemToArray(cjf, cji);
+//     cfgdb->cjloaded++;
+// }
 
 // TODO allow a setup option in the config file to supply the SOEname
 const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname)
