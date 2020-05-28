@@ -1539,267 +1539,266 @@ const ControlCode StringToControlCode(const char* codeWord)
     return ControlCode::UNDEFINED;
 }
 
+// bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query)
+// {
+// #if 0
+//     uint8_t  function = query[header_length];
+//     uint16_t offset = MODBUS_GET_INT16_FROM_INT8(query, header_length + 1);
+//     uint16_t num_regs = MODBUS_GET_INT16_FROM_INT8(query, header_length + 3);
 
-bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query)
-{
-#if 0
-    uint8_t  function = query[header_length];
-    uint16_t offset = MODBUS_GET_INT16_FROM_INT8(query, header_length + 1);
-    uint16_t num_regs = MODBUS_GET_INT16_FROM_INT8(query, header_length + 3);
+//     if(function == MODBUS_FC_WRITE_SINGLE_COIL)
+//     {
+//         if(bytes_read != header_length + (serial ? 7 : 5))
+//         {
+//             fprintf(stderr,"Modbus body length less than expected.\n");
+//             return false;
+//         }
+//         uint16_t value = num_regs;
+//         if( offset >= data[Coil].start_offset &&
+//             offset <  data[Coil].start_offset + data[Coil].num_regs)
+//         {
+//             offset -= data[Coil].start_offset;
+//             maps* reg = server_map->regs_to_map[Coil][offset];
+//             if(reg == NULL)
+//             {
+//                 fprintf(stderr, "Wrote to undefined coil.\n");
+//                  return false;
+//             }
+//             cJSON* send_body = cJSON_CreateObject();
+//             if(send_body != NULL)
+//             {
+//                 if(value == 0 || value == 0xFF00)
+//                 {
+//                     char uri[512];
+//                     sprintf(uri, "%s/%s", reg->uri, reg->reg_name);
+//                     cJSON_AddBoolToObject(send_body, "value", (value == 0xFF00) ? cJSON_True : cJSON_False);
+//                     char* body_msg = cJSON_PrintUnformatted(send_body);
+//                     server_map->p_fims->Send("set", uri, NULL, body_msg);
+//                     free(body_msg);
+//                     cJSON_Delete(send_body);
+//                 }
+//                 else
+//                 {
+//                     fprintf(stderr, "Invalid value sent to coil.\n");
+//                     cJSON_Delete(send_body);
+//                     return false;
+//                 }
+//             }
+//         }
+//         // Let the modbus_reply handle error message
+//     }
+//     else if(function == MODBUS_FC_WRITE_MULTIPLE_COILS)
+//     {
+//         uint8_t data_bytes = query[header_length + 5];
 
-    if(function == MODBUS_FC_WRITE_SINGLE_COIL)
-    {
-        if(bytes_read != header_length + (serial ? 7 : 5))
-        {
-            fprintf(stderr,"Modbus body length less than expected.\n");
-            return false;
-        }
-        uint16_t value = num_regs;
-        if( offset >= data[Coil].start_offset &&
-            offset <  data[Coil].start_offset + data[Coil].num_regs)
-        {
-            offset -= data[Coil].start_offset;
-            maps* reg = server_map->regs_to_map[Coil][offset];
-            if(reg == NULL)
-            {
-                fprintf(stderr, "Wrote to undefined coil.\n");
-                 return false;
-            }
-            cJSON* send_body = cJSON_CreateObject();
-            if(send_body != NULL)
-            {
-                if(value == 0 || value == 0xFF00)
-                {
-                    char uri[512];
-                    sprintf(uri, "%s/%s", reg->uri, reg->reg_name);
-                    cJSON_AddBoolToObject(send_body, "value", (value == 0xFF00) ? cJSON_True : cJSON_False);
-                    char* body_msg = cJSON_PrintUnformatted(send_body);
-                    server_map->p_fims->Send("set", uri, NULL, body_msg);
-                    free(body_msg);
-                    cJSON_Delete(send_body);
-                }
-                else
-                {
-                    fprintf(stderr, "Invalid value sent to coil.\n");
-                    cJSON_Delete(send_body);
-                    return false;
-                }
-            }
-        }
-        // Let the modbus_reply handle error message
-    }
-    else if(function == MODBUS_FC_WRITE_MULTIPLE_COILS)
-    {
-        uint8_t data_bytes = query[header_length + 5];
+//         if(bytes_read != header_length + data_bytes + (serial ? 8 : 6) ||
+//            data_bytes != ((num_regs / 8) + ((num_regs % 8 > 0) ? 1 : 0)))
+//         {
+//             //error incorrect amount of data reported
+//             fprintf(stderr,"Modbus bytes of data does not match number of coils requested to write.\n");
+//             return false;
+//         }
+//         if( offset >= data[Coil].start_offset &&
+//             offset + num_regs <=  data[Coil].start_offset + data[Coil].num_regs)
+//         {
+//             offset -= data[Coil].start_offset;
+//             for(int i = 0 ; i < data_bytes; i++)
+//             {
+//                 for(int j = 0; j < ((i != data_bytes -1) ? 8 : ((num_regs % 8 == 0) ? 8 : num_regs % 8)); j++)
+//                 {
+//                     maps* reg = server_map->regs_to_map[Coil][(offset + i * 8 + j)];
+//                     if(reg == NULL)
+//                         //undefined coil
+//                         continue;
+//                     cJSON* send_body = cJSON_CreateObject();
+//                     if(send_body != NULL)
+//                     {
+//                         char uri[512];
+//                         sprintf(uri, "%s/%s", reg->uri, reg->reg_name);
+//                         uint8_t value = (query[header_length + 6 + i] >> j) & 0x01;
+//                         cJSON_AddBoolToObject(send_body, "value", (value == 1) ? cJSON_True : cJSON_False);
+//                         char* body_msg = cJSON_PrintUnformatted(send_body);
+//                         server_map->p_fims->Send("set", uri, NULL, body_msg);
+//                         free(body_msg);
+//                         cJSON_Delete(send_body);
+//                     }
+//                 }
+//             }
+//         }
+//         // Let the modbus_reply handle error message
+//     }
+//     else if(function == MODBUS_FC_WRITE_SINGLE_REGISTER)
+//     {
+//         if(bytes_read != header_length + (serial ? 7 : 5))
+//         {
+//             fprintf(stderr,"Modbus body length less than expected, bytes read %d, header %d.\n", bytes_read, header_length);
+//             return false;
+//         }
+//         if( offset >= data[Holding_Register].start_offset &&
+//             offset <  data[Holding_Register].start_offset + data[Holding_Register].num_regs)
+//         {
+//             offset -= data[Holding_Register].start_offset;
+//             maps* reg = server_map->regs_to_map[Holding_Register][offset];
+//             if(reg == NULL)
+//             {
+//                 fprintf(stderr, "Wrote to undefined register.\n");
+//             }
+//             else
+//             {
+//                 if(reg->num_regs != 1)
+//                 {
+//                     fprintf(stderr, "Wrote single register of Multi Register variable %s.\n", reg->reg_name);
+//                     //TODO either need to set the value or return error code
+//                 }
+//                 else
+//                 {
+//                     cJSON* send_body = cJSON_CreateObject();
+//                     if(send_body != NULL)
+//                     {
+//                         char uri[512];
+//                         sprintf(uri, "%s/%s", reg->uri, reg->reg_name);
 
-        if(bytes_read != header_length + data_bytes + (serial ? 8 : 6) ||
-           data_bytes != ((num_regs / 8) + ((num_regs % 8 > 0) ? 1 : 0)))
-        {
-            //error incorrect amount of data reported
-            fprintf(stderr,"Modbus bytes of data does not match number of coils requested to write.\n");
-            return false;
-        }
-        if( offset >= data[Coil].start_offset &&
-            offset + num_regs <=  data[Coil].start_offset + data[Coil].num_regs)
-        {
-            offset -= data[Coil].start_offset;
-            for(int i = 0 ; i < data_bytes; i++)
-            {
-                for(int j = 0; j < ((i != data_bytes -1) ? 8 : ((num_regs % 8 == 0) ? 8 : num_regs % 8)); j++)
-                {
-                    maps* reg = server_map->regs_to_map[Coil][(offset + i * 8 + j)];
-                    if(reg == NULL)
-                        //undefined coil
-                        continue;
-                    cJSON* send_body = cJSON_CreateObject();
-                    if(send_body != NULL)
-                    {
-                        char uri[512];
-                        sprintf(uri, "%s/%s", reg->uri, reg->reg_name);
-                        uint8_t value = (query[header_length + 6 + i] >> j) & 0x01;
-                        cJSON_AddBoolToObject(send_body, "value", (value == 1) ? cJSON_True : cJSON_False);
-                        char* body_msg = cJSON_PrintUnformatted(send_body);
-                        server_map->p_fims->Send("set", uri, NULL, body_msg);
-                        free(body_msg);
-                        cJSON_Delete(send_body);
-                    }
-                }
-            }
-        }
-        // Let the modbus_reply handle error message
-    }
-    else if(function == MODBUS_FC_WRITE_SINGLE_REGISTER)
-    {
-        if(bytes_read != header_length + (serial ? 7 : 5))
-        {
-            fprintf(stderr,"Modbus body length less than expected, bytes read %d, header %d.\n", bytes_read, header_length);
-            return false;
-        }
-        if( offset >= data[Holding_Register].start_offset &&
-            offset <  data[Holding_Register].start_offset + data[Holding_Register].num_regs)
-        {
-            offset -= data[Holding_Register].start_offset;
-            maps* reg = server_map->regs_to_map[Holding_Register][offset];
-            if(reg == NULL)
-            {
-                fprintf(stderr, "Wrote to undefined register.\n");
-            }
-            else
-            {
-                if(reg->num_regs != 1)
-                {
-                    fprintf(stderr, "Wrote single register of Multi Register variable %s.\n", reg->reg_name);
-                    //TODO either need to set the value or return error code
-                }
-                else
-                {
-                    cJSON* send_body = cJSON_CreateObject();
-                    if(send_body != NULL)
-                    {
-                        char uri[512];
-                        sprintf(uri, "%s/%s", reg->uri, reg->reg_name);
+//                         if(reg->is_bool)
+//                         {
+//                             bool temp_reg;
+//                             temp_reg = (num_regs == 1);
+//                             cJSON_AddBoolToObject(send_body, "value", temp_reg);
+//                         }
+//                         else
+//                         {
+//                             double temp_reg;
+//                             if(reg->sign == true)
+//                                 temp_reg = static_cast<double>(static_cast<int16_t>(num_regs));
+//                             else
+//                                 temp_reg = static_cast<double>(num_regs);
 
-                        if(reg->is_bool)
-                        {
-                            bool temp_reg;
-                            temp_reg = (num_regs == 1);
-                            cJSON_AddBoolToObject(send_body, "value", temp_reg);
-                        }
-                        else
-                        {
-                            double temp_reg;
-                            if(reg->sign == true)
-                                temp_reg = static_cast<double>(static_cast<int16_t>(num_regs));
-                            else
-                                temp_reg = static_cast<double>(num_regs);
+//                             if(reg->scale != 0.0)
+//                                 temp_reg /= reg->scale;
+//                             cJSON_AddNumberToObject(send_body, "value", temp_reg);
+//                         }
+//                         char* body_msg = cJSON_PrintUnformatted(send_body);
+//                         server_map->p_fims->Send("set", uri, NULL, body_msg);
+//                         free(body_msg);
+//                         cJSON_Delete(send_body);
+//                     }
+//                 }
+//             }
+//         }
+//         // Let the modbus_reply handle error message
+//     }
+//     else if(function == MODBUS_FC_WRITE_MULTIPLE_REGISTERS)
+//     {
+//         uint8_t data_bytes =  query[header_length + 5];
+//         if(bytes_read != header_length + data_bytes + (serial ? 8 : 6) ||
+//            data_bytes != num_regs * 2)
+//         {
+//             fprintf(stderr,"Modbus bytes of data does not match number of holding registers requested to write.\n");
+//             return false;
+//         }
+//         if( offset >= data[Holding_Register].start_offset &&
+//             offset + num_regs <=  data[Holding_Register].start_offset + data[Holding_Register].num_regs)
+//         {
+//             offset -= data[Holding_Register].start_offset;
+//             for(unsigned int i = 0; i < num_regs;)
+//             {
+//                 uint32_t byte_offset = header_length + 6 + i * 2;
+//                 maps* reg = server_map->regs_to_map[Holding_Register][offset + i];
+//                 if(reg == NULL)
+//                 {
+//                     i++;
+//                     continue;
+//                 }
 
-                            if(reg->scale != 0.0)
-                                temp_reg /= reg->scale;
-                            cJSON_AddNumberToObject(send_body, "value", temp_reg);
-                        }
-                        char* body_msg = cJSON_PrintUnformatted(send_body);
-                        server_map->p_fims->Send("set", uri, NULL, body_msg);
-                        free(body_msg);
-                        cJSON_Delete(send_body);
-                    }
-                }
-            }
-        }
-        // Let the modbus_reply handle error message
-    }
-    else if(function == MODBUS_FC_WRITE_MULTIPLE_REGISTERS)
-    {
-        uint8_t data_bytes =  query[header_length + 5];
-        if(bytes_read != header_length + data_bytes + (serial ? 8 : 6) ||
-           data_bytes != num_regs * 2)
-        {
-            fprintf(stderr,"Modbus bytes of data does not match number of holding registers requested to write.\n");
-            return false;
-        }
-        if( offset >= data[Holding_Register].start_offset &&
-            offset + num_regs <=  data[Holding_Register].start_offset + data[Holding_Register].num_regs)
-        {
-            offset -= data[Holding_Register].start_offset;
-            for(unsigned int i = 0; i < num_regs;)
-            {
-                uint32_t byte_offset = header_length + 6 + i * 2;
-                maps* reg = server_map->regs_to_map[Holding_Register][offset + i];
-                if(reg == NULL)
-                {
-                    i++;
-                    continue;
-                }
+//                 if(reg->reg_off != offset + i || reg->reg_off + reg->num_regs > offset + num_regs)
+//                 {
+//                     fprintf(stderr, "Write does not include all registers of Multi Register variable %s.\n", reg->reg_name);
+//                     i++;
+//                     continue;
+//                 }
+//                 double temp_reg;
+//                 if (reg->num_regs == 1)
+//                 {
+//                     uint16_t temp_reg_int = MODBUS_GET_INT16_FROM_INT8(query, byte_offset);
+//                     // single register 16-bit short
+//                     if (reg->sign == true)
+//                         temp_reg = static_cast<double>(static_cast<int16_t>(temp_reg_int));
+//                     else
+//                         temp_reg = static_cast<double>(temp_reg_int);
+//                 }
+//                 else if(reg->num_regs == 2)
+//                 {
+//                     //Combine 2 registers into 32-bit value
+//                     uint32_t temp_reg_int;
+//                     if (config->byte_swap == true)
+//                         temp_reg_int = ((static_cast<uint32_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset)    )      ) +
+//                                         (static_cast<uint32_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 2)) << 16) );
+//                     else
+//                     {
+//                         //TODO more debug is needed but byte order appears to be swapped on system so changing query
+//                         temp_reg_int = ((static_cast<uint32_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset)    )       ) +
+//                                         (static_cast<uint32_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 2)) << 16 ) );
+//                         query[byte_offset]     = static_cast<uint8_t>(temp_reg_int >> 24);
+//                         query[byte_offset + 1] = static_cast<uint8_t>((temp_reg_int & 0x00ff0000) >> 16);
+//                         query[byte_offset + 2] = static_cast<uint8_t>((temp_reg_int & 0x0000ff00) >> 8);
+//                         query[byte_offset + 3] = static_cast<uint8_t>(temp_reg_int & 0x000000ff);
+//                     }
 
-                if(reg->reg_off != offset + i || reg->reg_off + reg->num_regs > offset + num_regs)
-                {
-                    fprintf(stderr, "Write does not include all registers of Multi Register variable %s.\n", reg->reg_name);
-                    i++;
-                    continue;
-                }
-                double temp_reg;
-                if (reg->num_regs == 1)
-                {
-                    uint16_t temp_reg_int = MODBUS_GET_INT16_FROM_INT8(query, byte_offset);
-                    // single register 16-bit short
-                    if (reg->sign == true)
-                        temp_reg = static_cast<double>(static_cast<int16_t>(temp_reg_int));
-                    else
-                        temp_reg = static_cast<double>(temp_reg_int);
-                }
-                else if(reg->num_regs == 2)
-                {
-                    //Combine 2 registers into 32-bit value
-                    uint32_t temp_reg_int;
-                    if (config->byte_swap == true)
-                        temp_reg_int = ((static_cast<uint32_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset)    )      ) +
-                                        (static_cast<uint32_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 2)) << 16) );
-                    else
-                    {
-                        //TODO more debug is needed but byte order appears to be swapped on system so changing query
-                        temp_reg_int = ((static_cast<uint32_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset)    )       ) +
-                                        (static_cast<uint32_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 2)) << 16 ) );
-                        query[byte_offset]     = static_cast<uint8_t>(temp_reg_int >> 24);
-                        query[byte_offset + 1] = static_cast<uint8_t>((temp_reg_int & 0x00ff0000) >> 16);
-                        query[byte_offset + 2] = static_cast<uint8_t>((temp_reg_int & 0x0000ff00) >> 8);
-                        query[byte_offset + 3] = static_cast<uint8_t>(temp_reg_int & 0x000000ff);
-                    }
+//                     if(reg->sign == true)
+//                         temp_reg = static_cast<double>(static_cast<int32_t>(temp_reg_int));
+//                     else
+//                         temp_reg = static_cast<double>(temp_reg_int);
+//                 }
+//                 else if(reg->num_regs == 4)
+//                 {
+//                     uint64_t temp_reg_int;
+//                     if (config->byte_swap == true)
+//                         temp_reg_int = ((static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset)    )      ) +
+//                                         (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 2)) << 16) +
+//                                         (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 4)) << 32) +
+//                                         (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 6)) << 48) );
+//                     else
+//                         temp_reg_int = ((static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset)    ) << 48) +
+//                                         (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 2)) << 32) +
+//                                         (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 4)) << 16) +
+//                                         (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 6))      ) );
 
-                    if(reg->sign == true)
-                        temp_reg = static_cast<double>(static_cast<int32_t>(temp_reg_int));
-                    else
-                        temp_reg = static_cast<double>(temp_reg_int);
-                }
-                else if(reg->num_regs == 4)
-                {
-                    uint64_t temp_reg_int;
-                    if (config->byte_swap == true)
-                        temp_reg_int = ((static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset)    )      ) +
-                                        (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 2)) << 16) +
-                                        (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 4)) << 32) +
-                                        (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 6)) << 48) );
-                    else
-                        temp_reg_int = ((static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset)    ) << 48) +
-                                        (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 2)) << 32) +
-                                        (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 4)) << 16) +
-                                        (static_cast<uint64_t>(MODBUS_GET_INT16_FROM_INT8(query, byte_offset + 6))      ) );
+//                     if(reg->sign == true)
+//                         temp_reg = static_cast<double>(static_cast<int64_t>(temp_reg_int));
+//                     else
+//                         temp_reg = static_cast<double>(temp_reg_int);
+//                 }
+//                 else
+//                 {
+//                     //not currently supported register count
+//                     fprintf(stderr, "Invalid Number of Registers defined for %s.\n", reg->reg_name);
+//                     i += reg->num_regs;
+//                     continue;
+//                 }
+//                 //Only want to scale if scale value is present and not == 0.0
+//                 if (reg->scale != 0.0)
+//                     temp_reg /= reg->scale;
 
-                    if(reg->sign == true)
-                        temp_reg = static_cast<double>(static_cast<int64_t>(temp_reg_int));
-                    else
-                        temp_reg = static_cast<double>(temp_reg_int);
-                }
-                else
-                {
-                    //not currently supported register count
-                    fprintf(stderr, "Invalid Number of Registers defined for %s.\n", reg->reg_name);
-                    i += reg->num_regs;
-                    continue;
-                }
-                //Only want to scale if scale value is present and not == 0.0
-                if (reg->scale != 0.0)
-                    temp_reg /= reg->scale;
-
-                cJSON* send_body = cJSON_CreateObject();
-                if(send_body != NULL)
-                {
-                    char uri[512];
-                    sprintf(uri, "%s/%s", reg->uri, reg->reg_name);
-                    if(reg->is_bool)
-                        cJSON_AddBoolToObject(send_body, "value", (temp_reg == 1));
-                    else
-                        cJSON_AddNumberToObject(send_body, "value", temp_reg);
-                    char* body_msg = cJSON_PrintUnformatted(send_body);
-                    server_map->p_fims->Send("set", uri, NULL, body_msg);
-                    free(body_msg);
-                    cJSON_Delete(send_body);
-                }
-                i += reg->num_regs;
-            }
-        }
-        // Let the modbus_reply handle error message
-    }
-    // else no extra work to be done let standard reply handle
-#endif
+//                 cJSON* send_body = cJSON_CreateObject();
+//                 if(send_body != NULL)
+//                 {
+//                     char uri[512];
+//                     sprintf(uri, "%s/%s", reg->uri, reg->reg_name);
+//                     if(reg->is_bool)
+//                         cJSON_AddBoolToObject(send_body, "value", (temp_reg == 1));
+//                     else
+//                         cJSON_AddNumberToObject(send_body, "value", temp_reg);
+//                     char* body_msg = cJSON_PrintUnformatted(send_body);
+//                     server_map->p_fims->Send("set", uri, NULL, body_msg);
+//                     free(body_msg);
+//                     cJSON_Delete(send_body);
+//                 }
+//                 i += reg->num_regs;
+//             }
+//         }
+//         // Let the modbus_reply handle error message
+//     }
+//     // else no extra work to be done let standard reply handle
+// #endif
     
-    return true;
-}
+//     return true;
+// }
