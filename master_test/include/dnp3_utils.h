@@ -341,13 +341,13 @@ typedef struct sysCfg_t {
         if(id)free(id);
         if(ip_address)free(ip_address);
         if (pub) free(pub);
+        if (name) free(name);
 
         if (cj) cJSON_Delete(cj);
      // TODO clear out maps
     };
 
     public:
-        
         DbVar* addDbVar(std::string name, int type, int offset, char* uri) 
         {
             DbVar* db = NULL;
@@ -676,7 +676,8 @@ typedef struct sysCfg_t {
             return asiz;
         }
 
-        int subsUris()
+        // TODO this will not work if we need it do t another way.
+        int xsubsUris(const char *who)
         {
             FPS_ERROR_PRINT(" %s subscribe to uris===> \n\n", __FUNCTION__);
 
@@ -692,11 +693,11 @@ typedef struct sysCfg_t {
                 //
                 if (it->first[0] == '/') 
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/outstation/%s/reply%s", id, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply%s", id, who, it->first);
                 } 
                 else
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/outstation/%s/reply/%s", id, it->first);
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply/%s", id, who, it->first);
                 }
                 subs[0] = replyto;
 
@@ -777,34 +778,6 @@ typedef struct sysCfg_t {
                     );
         
                 p_fims->Send("get", getUri, replyto, NULL);
-                // cJSON* cj = NULL;
-                // if(fimsreply)
-                // {
-                //     cj = cJSON_Parse(fimsreply);
-                // }
-                // if(cj != NULL)
-                // {
-                //     for (int i = 0; i < (int)it->second.size(); i++ )
-                //     {
-                //         DbVar* db = it->second[i];
-                //         cJSON *cji = cJSON_GetObjectItem(cj, db->name;
-                //         if(cji != NULL)
-                //         {
-                //             addVarToCj(cji, db, 0);
-                //         }
-                //         else
-                //         {
-                //             FPS_ERROR_PRINT(" %s no value for [%s] in reply from uri [%s]\n", __FUNCTION__,  db->name, it->first,);
-                //             return -1;
-                //         }
-                //     }
-                // }
-                // else
-                // {
-                //     FPS_ERROR_PRINT(" %s no  reply from uri [%s]\n", __FUNCTION__ , it->first,);
-                //     return -1;
-                // }
-                
             }
             FPS_ERROR_PRINT(" %s<=== get uris DONE\n\n", __FUNCTION__);
             return 0;
@@ -821,19 +794,14 @@ typedef struct sysCfg_t {
                 mapUri = strdup(uri);
                 uri = mapUri;
             }
-
             uriMap[uri].push_back(db);
-            //}
         }
 
         void addUri(cJSON* uri, DbVar*db)
         {
-            if(uri)
+            if(uri && (uri->valuestring))
             {
-                if(uri->valuestring)
-                {
-                    return addUri(uri->valuestring, db);
-                }
+                return addUri(uri->valuestring, db);
             }
         }
 
@@ -844,13 +812,14 @@ typedef struct sysCfg_t {
         
         char* name;
         char* protocol;
-        int version;
         char* id;
         char* ip_address;
         char* pub;
+        int version;
         int port;
         int local_address;
         int remote_address;
+        int frequency;
 
         // new way of doing this
         dbvar_map dbMap;
@@ -861,7 +830,7 @@ typedef struct sysCfg_t {
         int numObjs[Type_of_Var::NumTypes];
 
         fims* p_fims;
-        cJSON* cj;
+        cJSON* cj;  
         int cjloaded;
 
 } sysCfg;

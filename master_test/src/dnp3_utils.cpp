@@ -511,16 +511,18 @@ bool parse_system(cJSON* cji, sysCfg* sys)
         FPS_ERROR_PRINT("system  missing from file! \n");
         ret = false;
     }
-    
-    if(ret) ret = getCJint(cj,"version",         sys->version       ,true );
-    if(ret) ret = getCJint(cj,"port",            sys->port          ,true);
-    if(ret) ret = getCJint(cj,"local_address",   sys->local_address ,true);
-    if(ret) ret = getCJint(cj,"remote_address",  sys->remote_address,true);
-    if(ret) ret = getCJstr(cj,"id",              sys->id            ,true);
-    if(ret) ret = getCJstr(cj,"protocol",        sys->protocol      ,true);
-    if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address    ,true);
-    if(ret) ret = getCJstr(cj,"pub",             sys->pub           ,false);
-    // config file has "objects" with children groups "binary" and "analog"
+    // todo add different frequencies for each zone
+    sys->frequency  = 1000; // default once a second
+    if(ret) ret = getCJint(cj,"version",         sys->version,        true );
+    if(ret) ret = getCJint(cj,"frequency",       sys->frequency,      false);
+    if(ret) ret = getCJint(cj,"port",            sys->port,           true);
+    if(ret) ret = getCJint(cj,"local_address",   sys->local_address,  true);
+    if(ret) ret = getCJint(cj,"remote_address",  sys->remote_address, true);
+    if(ret) ret = getCJstr(cj,"id",              sys->id,             true);
+    if(ret) ret = getCJstr(cj,"protocol",        sys->protocol,       true);
+    if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address,     true);
+    if(ret) ret = getCJstr(cj,"pub",             sys->pub,            false);
+    if(ret) ret = getCJstr(cj,"name",            sys->name,           false);
     return ret;
 }
 
