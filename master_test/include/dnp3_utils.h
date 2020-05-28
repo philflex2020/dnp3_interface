@@ -628,7 +628,7 @@ typedef struct sysCfg_t {
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
-                FPS_ERROR_PRINT(" %s uri [%s] num vars %ld\n", __FUNCTION__, it->first, it->second.size());
+                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first, (int)it->second.size());
                 for (int i = 0 ; i < (int)it->second.size(); i++ )
                 {
                     DbVar* db = it->second[i];
