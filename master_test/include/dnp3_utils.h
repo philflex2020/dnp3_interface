@@ -202,7 +202,7 @@ int variant_decode(const char* ivar)
         return Group30Var5;
     }
     return GroupUndef;
-};
+}
 
 // local copy of all inputs and outputs
 // Also used with bit fields
