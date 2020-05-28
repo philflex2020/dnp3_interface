@@ -27,7 +27,7 @@
 #include <asiodnp3/UpdateBuilder.h>
 
 #include "fpsCommandHandler.h"
-#include "newOutstationApplication.h"
+#include "fpsOutstationApplication.h"
 
 #include "dnp3_utils.h"
 
@@ -126,7 +126,7 @@ std::shared_ptr<asiodnp3::IOutstation> outstation_init(asiodnp3::DNP3Manager *ma
     //                                         DefaultOutstationApplication::Create(), config);
     auto outstation = channel->AddOutstation("outstation"
                                             , fpsCommandHandler::Create(ourDB)
-                                            , newOutstationApplication::Create(ourDB)
+                                            , fpsOutstationApplication::Create(ourDB)
                                             , config);
     printf("outstation channel created\n");
 
