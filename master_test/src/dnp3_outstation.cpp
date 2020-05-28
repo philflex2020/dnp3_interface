@@ -47,7 +47,7 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* ourDB)
         {
             if(db->variation == Group30Var5)
             {
-                if(0)config.analog[i].svariation = StaticAnalogVariation::Group30Var5;
+                config.analog[i].svariation = StaticAnalogVariation::Group30Var5;
             }
         }
     }   
