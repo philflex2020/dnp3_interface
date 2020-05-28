@@ -42,141 +42,123 @@ typedef std::map<const char*, body_map*, char_cmp> uri_map;
 
 //typedef struct _modbus modbus_t;
 
-typedef struct _dnp3_mapping_t {
-    int nb_bits;
-    int start_bits;
-    int nb_input_bits;
-    int start_input_bits;
-    int nb_input_registers;
-    int start_input_registers;
-    int nb_registers;
-    int start_registers;
-    uint8_t *tab_bits;
-    uint8_t *tab_input_bits;
-    uint16_t *tab_input_registers;
-    uint16_t *tab_registers;
-} dnp3_mapping_t;
+// typedef struct _dnp3_mapping_t {
+//     int nb_bits;
+//     int start_bits;
+//     int nb_input_bits;
+//     int start_input_bits;
+//     int nb_input_registers;
+//     int start_input_registers;
+//     int nb_registers;
+//     int start_registers;
+//     uint8_t *tab_bits;
+//     uint8_t *tab_input_bits;
+//     uint16_t *tab_input_registers;
+//     uint16_t *tab_registers;
+// } dnp3_mapping_t;
 
-enum Type_of_Register {
-    Coil, Discrete_Input, Input_Register, Holding_Register, AnalogIP, AnalogOP, BinaryIP, BinaryOP, Num_Register_Types
-};
+// enum Type_of_Register {
+//     Coil, Discrete_Input, Input_Register, Holding_Register, AnalogIP, AnalogOP, BinaryIP, BinaryOP, Num_Register_Types
+// };
 
-typedef struct {
-    char* name;
-    char* ip_address;
-    char* serial_device;
-    char* eth_dev;
-    bool byte_swap;
-    bool off_by_one;
-    char parity;
-    int frequency;
-    int port;
-    int baud;
-    int data;
-    int stop;
-    int device_id;
-    int reg_cnt;
-    //modbus_t *mb;
-    void *mb;
-} system_config;
+/
+// // one of these for each register ??
+// typedef struct maps_t{
+//     unsigned int    reg_off;
+//     unsigned int    num_regs;
+//     unsigned int    num_strings;
+//     int    shift;
+//     double scale;
+//     char*  reg_name;
+//     char*  uri;
+//     bool   sign;
+//     bool   floating_pt;
+//     bool   is_bool;
+//     bool   bit_field;
+//     bool   individual_bits;
+//     uint64_t data; // used only for individual_bits, read-modify-write construct
+//     bool   enum_type;
+//     bool   random_enum_type;
+//     char ** bit_strings;
+//     std::map<int,char*> random_enum;
+//     maps_t()
+//     {
+//         reg_name = uri = NULL;
+//         bit_strings = NULL;
+//         reg_off = num_regs = num_strings = 0;
+//         scale = 0.0;
+//         shift = 0;
+//         sign = floating_pt = is_bool = false;
+//         bit_field = individual_bits = enum_type = random_enum_type = false;
+//     }
+//     ~maps_t()
+//     {
+//         if(reg_name != NULL)
+//             free (reg_name);
+//         if(uri != NULL)
+//             free (uri);
+//         if(bit_strings != NULL)
+//         {
+//             for(unsigned int i = 0; i < num_regs * 16; i++)
+//                 if(bit_strings[i] != NULL) free(bit_strings[i]);
+//             delete [] bit_strings;
+//         }
+//     }
+// } maps;
 
-// one of these for each register ??
-typedef struct maps_t{
-    unsigned int    reg_off;
-    unsigned int    num_regs;
-    unsigned int    num_strings;
-    int    shift;
-    double scale;
-    char*  reg_name;
-    char*  uri;
-    bool   sign;
-    bool   floating_pt;
-    bool   is_bool;
-    bool   bit_field;
-    bool   individual_bits;
-    uint64_t data; // used only for individual_bits, read-modify-write construct
-    bool   enum_type;
-    bool   random_enum_type;
-    char ** bit_strings;
-    std::map<int,char*> random_enum;
-    maps_t()
-    {
-        reg_name = uri = NULL;
-        bit_strings = NULL;
-        reg_off = num_regs = num_strings = 0;
-        scale = 0.0;
-        shift = 0;
-        sign = floating_pt = is_bool = false;
-        bit_field = individual_bits = enum_type = random_enum_type = false;
-    }
-    ~maps_t()
-    {
-        if(reg_name != NULL)
-            free (reg_name);
-        if(uri != NULL)
-            free (uri);
-        if(bit_strings != NULL)
-        {
-            for(unsigned int i = 0; i < num_regs * 16; i++)
-                if(bit_strings[i] != NULL) free(bit_strings[i]);
-            delete [] bit_strings;
-        }
-    }
-} maps;
+// //Holds all the information related to registers whose value needs to be read
+// typedef struct {
+//     Type_of_Register reg_type;
+//     unsigned int start_offset;
+//     unsigned int num_regs;
+//     unsigned int map_size;
+//     maps *register_map;
+// } datalog;
 
-//Holds all the information related to registers whose value needs to be read
-typedef struct {
-    Type_of_Register reg_type;
-    unsigned int start_offset;
-    unsigned int num_regs;
-    unsigned int map_size;
-    maps *register_map;
-} datalog;
-
-// an inividual mapping register
-typedef struct smapr {
-    bool bvalue;
-    float avalue;
-    unsigned int ivalue;
-    int type;
-    smapr(int _type) {
-        avalue = 0.0;
-        bvalue = false;
-        ivalue = 0;
-        type = _type;
-    }
-    ~smapr(){};
+// // an inividual mapping register
+// typedef struct smapr {
+//     bool bvalue;
+//     float avalue;
+//     unsigned int ivalue;
+//     int type;
+//     smapr(int _type) {
+//         avalue = 0.0;
+//         bvalue = false;
+//         ivalue = 0;
+//         type = _type;
+//     }
+//     ~smapr(){};
     
-} mapr;
+// } mapr;
 
 // the server data type is given to the dnp3 process
 // the dnp3 will load  data items by value type and index and then trigger a send
-typedef struct sdata
-{
-    uri_map uri_to_register;
-    maps** regs_to_map[Num_Register_Types];
-    dnp3_mapping_t* mb_mapping;
-    //void* mb_mapping;
-    fims* p_fims;
-    const char** uris;
-    const char* base_uri;
-    int num_uris;
-    sdata()
-    {
-        memset(regs_to_map, 0, Num_Register_Types * sizeof(maps**));
-        mb_mapping = NULL;
-        p_fims = NULL;
-        uris = NULL;
-        base_uri = NULL;
-        num_uris = 0;
-    }
+// typedef struct sdata
+// {
+//     uri_map uri_to_register;
+//     maps** regs_to_map[Num_Register_Types];
+//     dnp3_mapping_t* mb_mapping;
+//     //void* mb_mapping;
+//     fims* p_fims;
+//     const char** uris;
+//     const char* base_uri;
+//     int num_uris;
+//     sdata()
+//     {
+//         memset(regs_to_map, 0, Num_Register_Types * sizeof(maps**));
+//         mb_mapping = NULL;
+//         p_fims = NULL;
+//         uris = NULL;
+//         base_uri = NULL;
+//         num_uris = 0;
+//     }
   
-    int datasendAdd( mapr * mr)
-    {
-        return 0;
-    }
+//     int datasendAdd( mapr * mr)
+//     {
+//         return 0;
+//     }
 
-} server_data;
+// } server_data;
 
 // "system": {
 //        "protocol": "DNP3",
@@ -200,14 +182,13 @@ enum Type_of_Var{
     NumTypes
 };
 
-
+// used to manage char* compares in maps
 struct char_dcmp {
     bool operator () (const char *a,const char *b) const
     {
         return strcmp(a,b)<0;
     }
 };
-
 
 // local copy of all inputs and outputs
 // Also used with bit fields
@@ -233,13 +214,11 @@ typedef struct DbVar_t {
         else
         {
             uri = NULL;
-        }
-        
+        }   
     };
 
     int addBit(const char*bit)
     {
-        
         dbBits.push_back(std::make_pair(bit,0));
         return (int)dbBits.size();
     }
@@ -281,7 +260,7 @@ typedef struct DbVar_t {
         return -1;
     }
 
-    // TODO turn these into char*
+    // TODO turn these into char* no point the extra strcmp uses more resources
     std::string name;
     const char* site;    // furute use for site.
     const char* uri;
@@ -371,7 +350,7 @@ typedef struct sysCfg_t {
             return db;
         };
 
-        DbVar* getDbVar(const char *name)
+        DbVar* getDbVar(const char* name)
         {
             if (dbMap.find(name) != dbMap.end() )
             {   
@@ -380,12 +359,11 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
-        int setDb(DbVar *db, double fval)
+        int setDb(DbVar* db, double fval)
         {
             if(db != NULL)
             {
                 db->initSet = 1;
-
                 switch (db->type) 
                 {
                     case Type_Analog:
@@ -429,12 +407,11 @@ typedef struct sysCfg_t {
             return 0;
         };
 
-        int setDb(DbVar *db, int ival)
+        int setDb(DbVar* db, int ival)
         {
             if(db != NULL)
             {
                 db->initSet = 1;
-
                 switch (db->type) 
                 {
                     case Type_Analog:
@@ -486,26 +463,16 @@ typedef struct sysCfg_t {
                 switch (db->type) 
                 {
                     case Type_Analog:
-                    {
-                        return setDb(db, cj->valuedouble);
-                    }    
                     case AnF32:
                     {
                         return setDb(db, cj->valuedouble);
-                    } 
+                    }    
                     case Type_Binary:
-                    {
-                        return setDb(db, cj->valueint);
-                        
-                    } 
                     case AnIn32:
+                    case AnIn16:
                     {
                         return setDb(db, cj->valueint);
-                    }
-                   case AnIn16:
-                    {
-                        return setDb(db, cj->valueint);
-                    }
+                    } 
                     case Type_Crob:
                     {
                         return setDb(db, ControlCodeToType(StringToControlCode(cj->valuestring)));
@@ -598,7 +565,6 @@ typedef struct sysCfg_t {
 
             }
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
-
         }
 
         void addVarsToCj(cJSON* cj)
@@ -676,44 +642,44 @@ typedef struct sysCfg_t {
             return asiz;
         }
 
-        // TODO this will not work if we need it do t another way.
-        int xsubsUris(const char *who)
-        {
-            FPS_ERROR_PRINT(" %s subscribe to uris===> \n\n", __FUNCTION__);
+        // TODO this will not work if we need it we'll  it another way.
+        // int subsUris(const char *who)
+        // {
+        //     FPS_ERROR_PRINT(" %s subscribe to uris===> \n\n", __FUNCTION__);
 
-            bool publish_only = false;
-            duri_map::iterator it;
-            for (it = uriMap.begin(); it != uriMap.end(); ++it)
-            {
-                FPS_ERROR_PRINT(" %s subscribe to uri [%s]\n", __FUNCTION__, it->first);
-                FPS_ERROR_PRINT(" %s subscribe to id [%s]\n", __FUNCTION__, id);
+        //     bool publish_only = false;
+        //     duri_map::iterator it;
+        //     for (it = uriMap.begin(); it != uriMap.end(); ++it)
+        //     {
+        //         FPS_ERROR_PRINT(" %s subscribe to uri [%s]\n", __FUNCTION__, it->first);
+        //         FPS_ERROR_PRINT(" %s subscribe to id [%s]\n", __FUNCTION__, id);
 
-                char replyto[1024];
-                const char* subs[1];
-                //
-                if (it->first[0] == '/') 
-                {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply%s", id, who, it->first);
-                } 
-                else
-                {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply/%s", id, who, it->first);
-                }
-                subs[0] = replyto;
+        //         char replyto[1024];
+        //         const char* subs[1];
+        //         //
+        //         if (it->first[0] == '/') 
+        //         {
+        //             snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply%s", id, who, it->first);
+        //         } 
+        //         else
+        //         {
+        //             snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply/%s", id, who, it->first);
+        //         }
+        //         subs[0] = replyto;
 
-                FPS_ERROR_PRINT(" %s subscribe to replyto [%s]\n", __FUNCTION__, replyto);
-                if(p_fims->Subscribe((const char**)subs, 1, (bool *)&publish_only) == false)
-                {
-                    FPS_ERROR_PRINT("Subscription to [%s] failed.\n", replyto);
-                }
-                else
-                {
-                    FPS_ERROR_PRINT("Subscription to [%s] passed.\n", replyto);
-                }
-            }
-            FPS_ERROR_PRINT(" %s subscribe to uris<== DONE \n\n", __FUNCTION__);
-            return 0;
-        }
+        //         FPS_ERROR_PRINT(" %s subscribe to replyto [%s]\n", __FUNCTION__, replyto);
+        //         if(p_fims->Subscribe((const char**)subs, 1, (bool *)&publish_only) == false)
+        //         {
+        //             FPS_ERROR_PRINT("Subscription to [%s] failed.\n", replyto);
+        //         }
+        //         else
+        //         {
+        //             FPS_ERROR_PRINT("Subscription to [%s] passed.\n", replyto);
+        //         }
+        //     }
+        //     FPS_ERROR_PRINT(" %s subscribe to uris<== DONE \n\n", __FUNCTION__);
+        //     return 0;
+        // }
 
         bool checkUris(const char *who)
         {
