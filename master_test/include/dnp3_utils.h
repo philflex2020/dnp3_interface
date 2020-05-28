@@ -188,13 +188,28 @@ struct char_dcmp {
         return strcmp(a,b)<0;
     }
 };
+// only allow 1 type for now
+enum {
+    GroupUndef,
+    Group30Var5,
+    NumVars
+};
+
+int variant_decode(const char* ivar)
+{
+    if(ivar && (strcmp(ivar,"Group30Var5")== 0))
+    {
+        return Group30Var5;
+    }
+    return GroupUndef;
+};
 
 // local copy of all inputs and outputs
 // Also used with bit fields
 // if so the "parent" slot is filled and the index refers to the bit number 
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
-    DbVar_t(std::string &_name, int _type, int _offset, const char* iuri):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
+    DbVar_t(std::string &_name, int _type, int _offset, const char* iuri, const char*ivariant):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
         valueint = 0;
         anInt16 = 0;
@@ -213,7 +228,9 @@ typedef struct DbVar_t {
         else
         {
             uri = NULL;
-        }   
+        }
+        varaint = variant_decode(ivariant);
+
     };
 
     int addBit(const char*bit)
@@ -278,6 +295,7 @@ typedef struct DbVar_t {
     double anF32;
     uint8_t crob;
 
+
     // used for bit fields
     std::vector<std::pair<const char*,int>>dbBits;
 
@@ -326,12 +344,12 @@ typedef struct sysCfg_t {
     };
 
     public:
-        DbVar* addDbVar(std::string name, int type, int offset, char* uri) 
+        DbVar* addDbVar(std::string name, int type, int offset, char* uri, char* variant) 
         {
             DbVar* db = NULL;
 
             if (dbMap.find(name) == dbMap.end()){
-                db = new DbVar(name, type, offset, uri);
+                db = new DbVar(name, type, offset, uri, variant);
                 dbMap[name] = db;
                 if(dbMapIx[type].find(offset) == dbMapIx[type].end())
                 {   

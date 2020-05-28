@@ -329,14 +329,12 @@ ControlCode TypeToControlCode(uint8_t arg)
   return static_cast<ControlCode>(arg);
 }
 
-
 int addVarToCj(cJSON* cj, DbVar* db, int flag)
 {
     int rc = 0;
     const char* dname = db->name.c_str();
     switch (db->type)
     {
-
         case Type_Analog:
         {
             if(flag)
@@ -437,8 +435,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
 }
 
 int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp)
-{
-    
+{   
     DbVar* db = dbp.first;
     int flag = dbp.second;
     return addVarToCj(cj, db, flag);
@@ -529,7 +526,7 @@ bool parse_system(cJSON* cji, sysCfg* sys)
 int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 {
 
-    cJSON *id, *offset, *uri, *bf, *bits;
+    cJSON *id, *offset, *uri, *bf, *bits, *variant;
 
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr (idx));
     if (JSON_list == NULL)
@@ -548,11 +545,12 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
             FPS_ERROR_PRINT("Invalid or NULL binary at %d\n", i);
             continue;
         }
-        id = cJSON_GetObjectItem(obj, "id");
-        offset = cJSON_GetObjectItem(obj, "offset");
-        uri = cJSON_GetObjectItem(obj, "uri");
-        bf = cJSON_GetObjectItem(obj, "bit_field");
-        bits = cJSON_GetObjectItem(obj, "bit_strings");
+        id      = cJSON_GetObjectItem(obj, "id");
+        offset  = cJSON_GetObjectItem(obj, "offset");
+        variant = cJSON_GetObjectItem(obj, "variant");
+        uri     = cJSON_GetObjectItem(obj, "uri");
+        bf      = cJSON_GetObjectItem(obj, "bit_field");
+        bits    = cJSON_GetObjectItem(obj, "bit_strings");
         //"bit_field": true,
         //"bit_strings": [
             // "some String"
@@ -562,7 +560,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             continue;
         }
-        DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL);
+        DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL, variant?variant->valuestring:NULL);
         if (bf && bits && (bits->type == cJSON_Array))
         {
 
