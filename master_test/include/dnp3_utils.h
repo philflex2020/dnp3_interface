@@ -61,7 +61,6 @@ typedef std::map<const char*, body_map*, char_cmp> uri_map;
 //     Coil, Discrete_Input, Input_Register, Holding_Register, AnalogIP, AnalogOP, BinaryIP, BinaryOP, Num_Register_Types
 // };
 
-/
 // // one of these for each register ??
 // typedef struct maps_t{
 //     unsigned int    reg_off;
