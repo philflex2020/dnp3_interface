@@ -40,7 +40,7 @@ using namespace opendnp3;
 //}
 void fpsCommandHandler::Start()
 {
-  std::cout << "               ************" <<__FUNCTION__ << " called " << std::endl;
+  //std::cout << "               ************" <<__FUNCTION__ << " called " << std::endl;
   if(cfgdb->cj)
   {
       cJSON_Delete(cfgdb->cj);
@@ -55,9 +55,9 @@ void fpsCommandHandler::Start()
 // Met
 void fpsCommandHandler::End()
 {
-  std::cout << "               ************" <<__FUNCTION__ << " called loaded = "<< cfgdb->cjloaded << std::endl;
-   if(cfgdb->cjloaded) 
-   {
+    //std::cout << "               ************" <<__FUNCTION__ << " called loaded = "<< cfgdb->cjloaded << std::endl;
+    if(cfgdb->cjloaded) 
+    {
       if(cfgdb->cj)
         {
             pubWithTimeStamp2(cfgdb->cj, cfgdb, "components");
@@ -72,19 +72,7 @@ CommandStatus fpsCommandHandler::Select(const ControlRelayOutputBlock& command, 
 {
     uint8_t io = 0;
     bool state = false;
-    std::cout << "               ************" <<__FUNCTION__ << " called index:" <<index << std::endl;
-    CommandStatus cs = GetPinAndState(index, command.functionCode, io, state);
-    //TODO decode index
-    //TODO add other command states
-    if (command.functionCode == ControlCode::LATCH_ON)
-    {
-        cfgdbAddtoRecord(cfgdb,"CROB_SELECT","LATCH_ON", index);
-    }
-    else
-    {
-        cfgdbAddtoRecord(cfgdb,"CROB_SELECT","LATCH_OFF", index);
-    }
-    
+    cfgdbAddtoRecord(cfgdb,"CROB_SELECT",(const char*)ControlCodeToString(code).c_str(), index);
     return cs;
 }
 
@@ -94,162 +82,121 @@ CommandStatus fpsCommandHandler::Operate(const ControlRelayOutputBlock& command,
     bool state = false;
     std::cout << "                     ************" << __FUNCTION__ << " called index:" <<index << std::endl;
 
-    auto ret = GetPinAndState(index, command.functionCode, io, state);
-
-    if(ret == CommandStatus::SUCCESS)
-    {
-         std::cout <<" operate on pin " << (int)io <<std::endl;
-        //digitalWrite(gpio, state);
-    }
-    //ControlCodeToString(ControlCodeFromType(uint8_t arg))
     const char* cmd = ControlCodeToString(command.functionCode);
 
-    cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", cmd , index);
-
-    // if (command.functionCode == ControlCode::LATCH_ON)
-    // {
-    //     cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", "LATCH_ON", index);
-    // }
-    // else
-    // {
-    //     cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", "LATCH_OFF", index);
-    // }
+    cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", cmd, index);
     cfgdb->setDbVarIx(Type_Crob, index, ControlCodeToType(command.functionCode));
     return ret;
 }
 
 CommandStatus fpsCommandHandler::Select(const AnalogOutputInt16& command, uint16_t index)
 { 
-    std::cout << "              ************ int16 " << __FUNCTION__ 
+    //std::cout << "              ************ int16 " << __FUNCTION__ 
     //<< " called, code:" <<(int)code
-    << " index:" <<index
+    //<< " index:" <<index
     //<< " io:" <<(int)io
-    << std::endl;
-    cfgdbAddtoRecord(cfgdb,"AnalogInt16_SELECT",command, index);
+    //<< std::endl;
+    cfgdbAddtoRecord(cfgdb, "AnalogInt16_SELECT", command, index);
     return CommandStatus::SUCCESS; 
 }
  
 CommandStatus fpsCommandHandler::Operate(const AnalogOutputInt16& command, uint16_t index, OperateType opType)
 { 
-    std::cout << "              ************ int16 " << __FUNCTION__ 
+    //std::cout << "              ************ int16 " << __FUNCTION__ 
     //<< " called, code:" <<(int)code
-    << " index:" <<index
-    << " value:" << (int)command.value
-    << " opType:" <<(int)opType
-    << std::endl;
-    cfgdbAddtoRecord(cfgdb,"AnOPInt16",command, index);
+    //<< " index:" <<index
+    //<< " value:" << (int)command.value
+    //<< " opType:" <<(int)opType
+    //<< std::endl;
+    cfgdbAddtoRecord(cfgdb,"AnOPInt16", command, index);
     cfgdb->setDbVarIx(AnIn16, index, command.value);
 
     return CommandStatus::SUCCESS; 
 }
 CommandStatus fpsCommandHandler::Select(const AnalogOutputInt32& command, uint16_t index)
 { 
-    std::cout << "              ************ int32 " << __FUNCTION__ 
+    //std::cout << "              ************ int32 " << __FUNCTION__ 
     //<< " called, code:" <<(int)code
-    << " index:" <<index
+    //<< " index:" <<index
     //<< " io:" <<(int)io
-    << std::endl;
-    cfgdbAddtoRecord(cfgdb,"AnalogInt32_SELECT",command, index);
+    //<< std::endl;
+    cfgdbAddtoRecord(cfgdb, "AnalogInt32_SELECT", command, index);
 
     return CommandStatus::SUCCESS; 
 }
 
 CommandStatus fpsCommandHandler::Operate(const AnalogOutputInt32& command, uint16_t index, OperateType opType)
 { 
-    std::cout << "              ************ int32" << __FUNCTION__ 
+    //std::cout << "              ************ int32" << __FUNCTION__ 
     //<< " called, code:" <<(int)code
-    << " index:" <<index
-    << " value:" << (int)command.value
-    << " opType:" <<(int)opType
-    << std::endl;
-    cfgdbAddtoRecord(cfgdb,"AnOPInt32", command, index);
+    //<< " index:" <<index
+    //<< " value:" << (int)command.value
+    //<< " opType:" <<(int)opType
+    //<< std::endl;
+    cfgdbAddtoRecord(cfgdb, "AnOPInt32", command, index);
     cfgdb->setDbVarIx(AnIn32, index, command.value);
     return CommandStatus::SUCCESS; 
 }
 
 CommandStatus fpsCommandHandler::Select(const AnalogOutputFloat32& command, uint16_t index)
 { 
-    std::cout << "              ************ float32 " << __FUNCTION__ 
+    //std::cout << "              ************ float32 " << __FUNCTION__ 
     //<< " called, code:" <<(int)code
-    << " index:" <<index
+    //<< " index:" <<index
     //<< " io:" <<(int)io
-    << std::endl;
-    cfgdbAddtoRecord(cfgdb,"AnalogFloat32_SELECT",command, index);
+    //<< std::endl;
+    cfgdbAddtoRecord(cfgdb, "AnalogFloat32_SELECT", command, index);
     return CommandStatus::SUCCESS; 
 }
 
 CommandStatus fpsCommandHandler::Operate(const AnalogOutputFloat32& command, uint16_t index, OperateType opType)
 { 
-    std::cout << "              ************ float32" << __FUNCTION__ 
+    //std::cout << "              ************ float32" << __FUNCTION__ 
     //<< " called, code:" <<(int)code
-    << " index:" <<index
-    << " value:" << (int)command.value
-    << " opType:" <<(int)opType
-    << std::endl;
-    cfgdbAddtoRecord(cfgdb,"AnOPF32",command, index);
+    //<< " index:" <<index
+    //<< " value:" << (int)command.value
+    //<< " opType:" <<(int)opType
+    //<< std::endl;
+    cfgdbAddtoRecord(cfgdb, "AnOPF32", command, index);
     cfgdb->setDbVarIx(AnF32, index, command.value);    
     return CommandStatus::SUCCESS; 
 }
 
-CommandStatus fpsCommandHandler::GetPinAndState(uint16_t index, opendnp3::ControlCode code, uint8_t& io, bool& state)
-{
-    std::cout << "              ************" << __FUNCTION__ 
-    << " called, code:" <<(int)code
-    << " index:" <<index
-    << " io:" <<(int)io
-    << std::endl;
-   switch(code)
-    {
-        case(ControlCode::LATCH_ON):
-            std::cout << "              ************" << __FUNCTION__ 
-            << " called, code:" <<(int)code
-            << " index:" <<index
-            << " io:" <<(int)io
-            << " LATCH_ON" 
-            << std::endl;
-            state = true;
-            break;
+// CommandStatus fpsCommandHandler::GetPinAndState(uint16_t index, opendnp3::ControlCode code, uint8_t& io, bool& state)
+// {
+//     // std::cout << "              ************" << __FUNCTION__ 
+//     // << " called, code:" <<(int)code
+//     // << " index:" <<index
+//     // << " io:" <<(int)io
+//     // << std::endl;
 
-        case(ControlCode::LATCH_OFF):
-            std::cout << "              ************" << __FUNCTION__ 
-            << " called, code:" <<(int)code
-            << " index:" <<index
-            << " io:" <<(int)io
-            << " LATCH_OFF" 
-            << std::endl;
-            state = false;
-            break;
+//     std::cout << "              ************" << __FUNCTION__ 
+//     << " called, code:" <<(int)code
+//     << " index:" <<index
+//     << " io:" <<(int)io
+//     << ControlCodeToString(code)
+//     << std::endl;
+//     state = true;
 
-        default:
-            std::cout << "              ************" << __FUNCTION__ 
-            << " called, code:" <<(int)code
-            << " index:" <<index
-            << " io:" <<(int)io
-            << " NOT_SUPPORTED" 
-            << std::endl;
-            
-            return CommandStatus::NOT_SUPPORTED;
-    }
-
-    //auto iter = dnp2io.find(index);
-    //if(iter == dnp2io.end()) {
-    //        std::cout << "              ************" << __FUNCTION__ 
-    //        << " called, code:" <<(int)code
-    //        << " index:" <<index
-    //        << " io:" <<(int)io
-    //        << " INDEX NOT_SUPPORTED" 
-    //        << std::endl;
+//     //auto iter = dnp2io.find(index);
+//     //if(iter == dnp2io.end()) {
+//     //        std::cout << "              ************" << __FUNCTION__ 
+//     //        << " called, code:" <<(int)code
+//     //        << " index:" <<index
+//     //        << " io:" <<(int)io
+//     //        << " INDEX NOT_SUPPORTED" 
+//     //        << std::endl;
  
-    //    return CommandStatus::NOT_SUPPORTED;
-    //}
-    //io = iter->second;
+//     //    return CommandStatus::NOT_SUPPORTED;
+//     //}
+//     //io = iter->second;
 
-    std::cout << "              ************" << __FUNCTION__ 
-    << " called, code:" <<(int)code
-    << " index:" <<index
-    << " io:" <<(int)io
-    << " INDEX FOUND" 
-    << std::endl;
+//     //std::cout << "              ************" << __FUNCTION__ 
+//     //<< " called, code:" <<(int)code
+//     //<< " index:" <<index
+//     //<< " io:" <<(int)io
+//     //<< " INDEX FOUND" 
+//     //<< std::endl;
 
-    return CommandStatus::SUCCESS;
-}
+//     return CommandStatus::SUCCESS;
+// }
