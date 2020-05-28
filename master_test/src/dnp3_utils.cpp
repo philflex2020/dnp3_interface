@@ -340,7 +340,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
             if(flag)
             {
                 cJSON* cji = cJSON_CreateObject();
-                if(db->variant == Group30Var5)
+                if(db->variation == Group30Var5)
                 {
                     cJSON_AddNumberToObject(cji, "value", db->valuedouble);
                 }
@@ -352,7 +352,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
             }
             else
             {
-                if(db->variant == Group30Var5)
+                if(db->variation == Group30Var5)
                 {
                     cJSON_AddNumberToObject(cj, dname, db->valuedouble);
                 }
