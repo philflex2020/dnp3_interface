@@ -823,17 +823,17 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     uri = msg->pfrags[fragptr];
     if (strncmp(uri, sys->id, strlen(sys->id)) == 0)
     {
-        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] Not DEVEL ACCEPTED  [%s] \n", msg->uri, uri, sys->id);
+        FPS_DEBUG_PRINT("fims message msg->uri [%s] frag 1 [%s] Not DEVEL ACCEPTED  [%s] \n", msg->uri, uri, sys->id);
         fragptr = 0;
     }
     else if (strncmp(uri, who, strlen(who)) != 0)
     {
-        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] \n", msg->uri, uri, who);
+        FPS_DEBUG_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] \n", msg->uri, uri, who);
         return body_JSON;
     }
     else
     {
-        FPS_ERROR_PRINT("fims message ACCEPTED msg->uri [%s] body [%s] \n", msg->uri, msg->body);
+        FPS_DEBUG_PRINT("fims message ACCEPTED msg->uri [%s] body [%s] \n", msg->uri, msg->body);
         fragptr = 1;
     }              
     uri = msg->pfrags[fragptr+1];
