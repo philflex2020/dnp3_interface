@@ -389,7 +389,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
             }
             else
             {
-                cJSON_AddStringToObject(cj, dname, (TypeToControlCode(db->crob)));ControlCodeToString
+                cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
             }
             break;
         }
