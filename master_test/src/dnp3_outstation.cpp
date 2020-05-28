@@ -36,12 +36,25 @@ using namespace asiodnp3;
 
 fims *p_fims;
 //TODO fill out from system config
-void ConfigureDatabase(DatabaseConfig& config)
+void ConfigureDatabase(DatabaseConfig& config, sysCg* ourDB)
 {
+    // just deal with analog vars and Group30Var5, this allows floating point numbers through the system
+    auto dsize = ourDB->dbMapIx[Type_Analog].size();
+    for (auto i = 0; i < dsize; i++)
+    {
+        DbVar* db = ourDB->getDbVarId(Type_Analog, i);
+        if(db != NULL)
+        {
+            if(db->variation == Group30Var5)
+            {
+                config.analog[i].svariation = StaticAnalogVariation::Group30Var5;
+            }
+        }
+    }   
     // example of configuring analog index 0 for Class2 with floating point variations by default
-    config.analog[0].clazz = PointClass::Class2;
-    config.analog[0].svariation = StaticAnalogVariation::Group30Var5;
-    config.analog[0].evariation = EventAnalogVariation::Group32Var7;
+    //config.analog[0].clazz = PointClass::Class2;
+    //config.analog[0].svariation = StaticAnalogVariation::Group30Var5;
+    //config.analog[0].evariation = EventAnalogVariation::Group32Var7;
     //config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;   
 }
 
@@ -100,7 +113,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     config.link.KeepAliveTimeout = openpal::TimeDuration::Max();
 
     // You can optionally change the default reporting variations or class assignment prior to enabling the outstation
-    ConfigureDatabase(config.dbConfig);
+    ConfigureDatabase(config.dbConfig, ourDB);
 
     // Create a new outstation with a log level, command handler, and
     // config info this	returns a thread-safe interface used for
