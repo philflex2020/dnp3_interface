@@ -29,6 +29,7 @@
 #include <signal.h>
 
 #include <arpa/inet.h>
+#include <stdint.h>
 #include <cjson/cJSON.h>
 #include <fims/libfims.h>
 

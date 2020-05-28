@@ -4,6 +4,8 @@
 
 #include <fims/libfims.h>
 #include <string.h>
+#include <stdint.h>
+
 #include <fims/fps_utils.h>
 #include <cjson/cJSON.h>
 #include <unistd.h>
