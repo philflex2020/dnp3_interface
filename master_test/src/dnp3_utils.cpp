@@ -475,6 +475,15 @@ int iotypToId (const char* t)
     return -1;
 }
 
+int variant_decode(const char* ivar)
+{
+    if(ivar && (strcmp(ivar,"Group30Var5")== 0))
+    {
+        return Group30Var5;
+    }
+    return GroupUndef;
+}
+
 bool getCJint (cJSON *cj, const char *name, int& val, bool required)
 {
     bool ok = !required;

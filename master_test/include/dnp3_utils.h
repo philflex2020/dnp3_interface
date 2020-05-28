@@ -39,6 +39,7 @@ typedef struct maps_t maps;
 typedef std::map<const char*, std::pair<bool*, maps**>, char_cmp> body_map;
 typedef std::map<const char*, body_map*, char_cmp> uri_map;
 
+int variant_decode(const char* ivar);
 
 //typedef struct _modbus modbus_t;
 
@@ -195,14 +196,7 @@ enum {
     NumVars
 };
 
-int variant_decode(const char* ivar)
-{
-    if(ivar && (strcmp(ivar,"Group30Var5")== 0))
-    {
-        return Group30Var5;
-    }
-    return GroupUndef;
-}
+
 
 // local copy of all inputs and outputs
 // Also used with bit fields
