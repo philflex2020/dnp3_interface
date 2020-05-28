@@ -79,7 +79,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
                                         );
     return channel;
 }
-//auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, sys_cfg.local_address, sys_cfg.remote_address);
+
 std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB)
 {
     // The main object for a outstation. The defaults are useable,
@@ -119,9 +119,10 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // config info this	returns a thread-safe interface used for
     // updating the outstation's database.
     // TODO fpsOutStationApplication
-    auto outstation = channel->AddOutstation("outstation", 
-                                            fpsCommandHandler::Create(ourDB),
-                                            fpsOutstationApplication::Create(ourDB), config);
+    auto outstation = channel->AddOutstation("outstation" 
+                                            , fpsCommandHandler::Create(ourDB)
+                                            , fpsOutstationApplication::Create(ourDB)
+                                            , config);
 
     // Enable the outstation and start communications
     outstation->Enable();
