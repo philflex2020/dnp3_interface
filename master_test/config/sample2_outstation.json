@@ -10,15 +10,15 @@
         "outputFileCreated": "2020-05-05T16:29:13.344Z"
     },
     "system": {
-        "name":"dnp3_test_master",
+        "name":"dnp3_test_outstation",
         "protocol": "DNP3",
         "version": 1,
-        "id": "dnp3_master",
+        "id": "dnp3_outstatio",
         "ip_address2": "192.168.1.50",
-        "ip_address": "127.0.0.1",
+        "ip_address": "0.0.0.0",
         "port": 20001,
-        "local_address": 1,
-	"remote_address": 10
+        "local_address": 10,
+	"remote_address": 1
     },
     "objects": {
         "binary": [
@@ -56,6 +56,7 @@
                 "unit": "MW",
 		"variation":"Group30Var5",
                 "signed": true
+
             },
             {
                 "id": "line_flows_mv",
