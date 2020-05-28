@@ -56,13 +56,13 @@ void fpsLogger::Log(const openpal::LogEntry& entry)
                     ,sysdb->id 
                     ,mstring.c_str()
                     ,oss.str().c_str());
-    fprintf(stderr, "%s\n", message);
+    //fprintf(stderr, "%s\n", message);
 
     emit_event(sysdb->p_fims, "DNP3", message, 1);
 
     // unique_lock creates a temp lock that goes away >>> 
     std::unique_lock<std::mutex> lock(mutex);
-    FPS_DEBUG_PRINT("%s\n", oss.str().c_str());
+    //FPS_DEBUG_PRINT("%s\n", oss.str().c_str());
     //std::cout << oss.str() << std::endl;
     // <<< here
 }
