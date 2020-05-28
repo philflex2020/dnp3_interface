@@ -40,7 +40,7 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* ourDB)
 {
     // just deal with analog vars and Group30Var5, this allows floating point numbers through the system
     auto dsize = ourDB->dbMapIx[Type_Analog].size();
-    for (auto i = 0; i < dsize; i++)
+    for (int i = 0; i < (int)dsize; i++)
     {
         DbVar* db = ourDB->getDbVarId(Type_Analog, i);
         if(db != NULL)
