@@ -99,7 +99,8 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
-std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB , int localAddr , int remoteAddr)
+ //auto master = setupDNP3master (channel, "master", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
+std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB )
 {
     MasterStackConfig stackConfig;
     // you can override application layer settings for the master here
@@ -108,8 +109,8 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     stackConfig.master.disableUnsolOnStartup = true;
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
-    stackConfig.link.LocalAddr = localAddr; // 1
-    stackConfig.link.RemoteAddr = remoteAddr; //10;
+    stackConfig.link.LocalAddr = ourDB->local_address;//localAddr; // 1
+    stackConfig.link.RemoteAddr = ourDB->remote_address;//remoteAddr; //10;
     // Create a new master on a previously declared port, with a
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
@@ -126,9 +127,10 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
     // TODO we need a way to demand this via FIMS
-    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Seconds(20));
+    // ourDB->frequency
+    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Milliseconds(ourDB->frequency));
     // do a Class 1 exception poll every 5 seconds
-    auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(60));
+    //auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(60));
     
     //auto binscan = master->AddAllObjectsScan(GroupVariationID(1,1),
     //                                                               TimeDuration::Seconds(5));
@@ -138,8 +140,11 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     //                                                               TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
     master->Enable();
-    bool channelCommsLoggingEnabled = true;
-    bool masterCommsLoggingEnabled = true;
+    // bool channelCommsLoggingEnabled = true;
+    // bool masterCommsLoggingEnabled = true;
+    bool channelCommsLoggingEnabled = false;
+    bool masterCommsLoggingEnabled = false;
+
     auto levels = channelCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
     channel->SetLogFilters(levels);
     levels = masterCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
@@ -198,12 +203,12 @@ int main(int argc, char *argv[])
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
 
-    int fd_max = 0;
-    int rc = 0;
+    //int fd_max = 0;
+    //int rc = 0;
     //int server_socket = -1;
     int fims_connect = 0;
-    fd_set all_connections;
-    FD_ZERO(&all_connections);
+    //fd_set all_connections;
+    //FD_ZERO(&all_connections);
     sysCfg sys_cfg;
     
     //memset(&sys_cfg, 0, sizeof(sysCfg));
@@ -239,7 +244,7 @@ int main(int argc, char *argv[])
     if (p_fims == NULL)
     {
         FPS_ERROR_PRINT("Failed to allocate connection to FIMS server.\n");
-        rc = 1;
+        //rc = 1;
         return 1;//goto cleanup;
     }
     // could alternatively fims connect using a stored name for the server
@@ -252,7 +257,7 @@ int main(int argc, char *argv[])
     if(fims_connect >= MAX_FIMS_CONNECT)
     {
         FPS_ERROR_PRINT("Failed to establish connection to FIMS server.\n");
-        rc = 1;
+        //rc = 1;
         return 1;
         //goto cleanup;
     }
@@ -280,7 +285,7 @@ int main(int argc, char *argv[])
         return 1;
     }
         //std::shared_ptr<IChannel> 
-    auto master = setupDNP3master (channel, "master", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
+    auto master = setupDNP3master (channel, "master", &sys_cfg );
     if (!master){
         FPS_ERROR_PRINT("Error in setupDNP3master.\n");
         delete manager;
@@ -369,10 +374,10 @@ int main(int argc, char *argv[])
     //if(sys_cfg.name          != NULL) free(sys_cfg.name);
     //if(sys_cfg.serial_device != NULL) free(sys_cfg.serial_device);
     //if(sys_cfg.mb != NULL)             modbus_free(sys_cfg.mb);
-    for(int fd = 0; fd < fd_max; fd++)
-        if(FD_ISSET(fd, &all_connections))
-            close(fd);
-    return rc;
+    // for(int fd = 0; fd < fd_max; fd++)
+    //     if(FD_ISSET(fd, &all_connections))
+    //         close(fd);
+    return 0;
 }
 
 
