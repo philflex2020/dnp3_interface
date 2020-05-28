@@ -1455,61 +1455,61 @@ cJSON* cfgdbFindAddArray(sysCfg* cfgdb, const char* field)
     return cjf;
 }
 
-// // possibly used in outstation comand handler to publish changes
-// void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
-// {
-//     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-//     cJSON* cji = cJSON_CreateObject();
-//     // todo resolve name
-//     cJSON_AddNumberToObject(cji,"offset",index);
-//     //const char* indexName = cfgindextoName(AOP16,index);
-//     //cJSON_AddStringToObject(cji,"offset",indexName);
-//     cJSON_AddNumberToObject(cji,"value", cmd.value);
-//     cJSON_AddItemToArray(cjf, cji);
-//     cfgdb->cjloaded++;
-// }
+// possibly used in outstation comand handler to publish changes
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
+{
+    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+    cJSON* cji = cJSON_CreateObject();
+    // todo resolve name
+    cJSON_AddNumberToObject(cji,"offset",index);
+    //const char* indexName = cfgindextoName(AOP16,index);
+    //cJSON_AddStringToObject(cji,"offset",indexName);
+    cJSON_AddNumberToObject(cji,"value", cmd.value);
+    cJSON_AddItemToArray(cjf, cji);
+    cfgdb->cjloaded++;
+}
 
 
-// void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
-// {
-//     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-//     cJSON* cji = cJSON_CreateObject();
-//     // todo resolve name
-//     cJSON_AddNumberToObject(cji,"offset",index);
-//     //const char* indexName = cfgindextoName(AOP32,index);
-//     //cJSON_AddStringToObject(cji,"offset",indexName);
-//     cJSON_AddNumberToObject(cji,"value", cmd.value);
-//     cJSON_AddItemToArray(cjf,cji);
-//     cfgdb->cjloaded++;
-// }
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
+{
+    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+    cJSON* cji = cJSON_CreateObject();
+    // todo resolve name
+    cJSON_AddNumberToObject(cji,"offset",index);
+    //const char* indexName = cfgindextoName(AOP32,index);
+    //cJSON_AddStringToObject(cji,"offset",indexName);
+    cJSON_AddNumberToObject(cji,"value", cmd.value);
+    cJSON_AddItemToArray(cjf,cji);
+    cfgdb->cjloaded++;
+}
 
-// void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
-// {
-//     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-//     cJSON* cji = cJSON_CreateObject();
-//     // todo resolve name
-//     cJSON_AddNumberToObject(cji,"offset",index);
-//     //const char* indexName = cfgindextoName(Float32,index);
-//     //cJSON_AddStringToObject(cji,"offset",indexName);
-//     cJSON_AddNumberToObject(cji,"value", cmd.value);
-//     cJSON_AddItemToArray(cjf,cji);
-//     cfgdb->cjloaded++;
-// }
+void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
+{
+    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+    cJSON* cji = cJSON_CreateObject();
+    // todo resolve name
+    cJSON_AddNumberToObject(cji,"offset",index);
+    //const char* indexName = cfgindextoName(Float32,index);
+    //cJSON_AddStringToObject(cji,"offset",indexName);
+    cJSON_AddNumberToObject(cji,"value", cmd.value);
+    cJSON_AddItemToArray(cjf,cji);
+    cfgdb->cjloaded++;
+}
 
-// // TODO fix up CROB
-// void cfgdbAddtoRecord(sysCfg* cfgdb, const char* field, const char* cmd, uint16_t index)
-// {
-//     cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-//     cJSON* cji = cJSON_CreateObject();
-//     // todo resolve name
-//     cJSON_AddNumberToObject(cji,"offset",index);
-//     //const char* indexName = cfgindextoName(CROB,index);
-//     //cJSON_AddStringToObject(cji,"offset",indexName);
-//     // ??
-//     cJSON_AddStringToObject(cji,"value", cmd);
-//     cJSON_AddItemToArray(cjf, cji);
-//     cfgdb->cjloaded++;
-// }
+// TODO fix up CROB
+void cfgdbAddtoRecord(sysCfg* cfgdb, const char* field, const char* cmd, uint16_t index)
+{
+    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
+    cJSON* cji = cJSON_CreateObject();
+    // todo resolve name
+    cJSON_AddNumberToObject(cji,"offset",index);
+    //const char* indexName = cfgindextoName(CROB,index);
+    //cJSON_AddStringToObject(cji,"offset",indexName);
+    // ??
+    cJSON_AddStringToObject(cji,"value", cmd);
+    cJSON_AddItemToArray(cjf, cji);
+    cfgdb->cjloaded++;
+}
 
 // TODO allow a setup option in the config file to supply the SOEname
 const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname)
