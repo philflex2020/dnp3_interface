@@ -22,6 +22,8 @@
 #include "fpsCommandHandler.h"
 #include "fpsLogger.h"
 #include "fpsChannelListener.h"
+#include "fpsOutstationApplication.h"
+
 
 using namespace std;
 using namespace opendnp3;
@@ -106,7 +108,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // TODO fpsOutStationApplication
     auto outstation = channel->AddOutstation("outstation", 
                                             fpsCommandHandler::Create(ourDB),
-                                            DefaultOutstationApplication::Create(), config);
+                                            fpsOutstationApplication::Create(ourDb), config);
 
     // Enable the outstation and start communications
     outstation->Enable();

@@ -69,8 +69,6 @@ void signal_handler (int sig)
     signal(sig, SIG_DFL);
 }
 
-
-
 DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
 {
     auto manager = new DNP3Manager(1, fpsLogger::Create(ourDB));
@@ -281,7 +279,7 @@ int main(int argc, char *argv[])
         return 1;
     }
         //std::shared_ptr<IChannel> 
-    auto master = setupDNP3master (channel, "master1", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
+    auto master = setupDNP3master (channel, "master", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
     if (!master){
         FPS_ERROR_PRINT("Error in setupDNP3master.\n");
         delete manager;
