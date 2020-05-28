@@ -75,7 +75,7 @@ CommandStatus fpsCommandHandler::Select(const ControlRelayOutputBlock& command, 
     const char* cmd = ControlCodeToString(command.functionCode);
 
     cfgdbAddtoRecord(cfgdb,"CROB_SELECT", cmd, index);
-    return cs;
+    return CommandStatus::SUCCESS; 
 }
 
 CommandStatus fpsCommandHandler::Operate(const ControlRelayOutputBlock& command, uint16_t index, OperateType opType)
@@ -88,7 +88,7 @@ CommandStatus fpsCommandHandler::Operate(const ControlRelayOutputBlock& command,
 
     cfgdbAddtoRecord(cfgdb, "CROB_DIRECT", cmd, index);
     cfgdb->setDbVarIx(Type_Crob, index, ControlCodeToType(command.functionCode));
-    return ret;
+    return CommandStatus::SUCCESS; 
 }
 
 CommandStatus fpsCommandHandler::Select(const AnalogOutputInt16& command, uint16_t index)
