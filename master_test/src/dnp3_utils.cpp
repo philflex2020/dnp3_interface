@@ -475,7 +475,7 @@ int iotypToId (const char* t)
     return -1;
 }
 
-int variant_decode(const char* ivar)
+int variation_decode(const char* ivar)
 {
     if(ivar && (strcmp(ivar,"Group30Var5")== 0))
     {
@@ -535,7 +535,7 @@ bool parse_system(cJSON* cji, sysCfg* sys)
 int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 {
 
-    cJSON *id, *offset, *uri, *bf, *bits, *variant;
+    cJSON *id, *offset, *uri, *bf, *bits, *variation;
 
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr (idx));
     if (JSON_list == NULL)
@@ -556,7 +556,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         }
         id      = cJSON_GetObjectItem(obj, "id");
         offset  = cJSON_GetObjectItem(obj, "offset");
-        variant = cJSON_GetObjectItem(obj, "variant");
+        variation = cJSON_GetObjectItem(obj, "variation");
         uri     = cJSON_GetObjectItem(obj, "uri");
         bf      = cJSON_GetObjectItem(obj, "bit_field");
         bits    = cJSON_GetObjectItem(obj, "bit_strings");
@@ -569,7 +569,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
             FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
             continue;
         }
-        DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL, variant?variant->valuestring:NULL);
+        DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
         if (bf && bits && (bits->type == cJSON_Array))
         {
 

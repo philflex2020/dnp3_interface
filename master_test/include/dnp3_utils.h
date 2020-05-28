@@ -39,7 +39,7 @@ typedef struct maps_t maps;
 typedef std::map<const char*, std::pair<bool*, maps**>, char_cmp> body_map;
 typedef std::map<const char*, body_map*, char_cmp> uri_map;
 
-int variant_decode(const char* ivar);
+int variation_decode(const char* ivar);
 
 //typedef struct _modbus modbus_t;
 
@@ -203,7 +203,7 @@ enum {
 // if so the "parent" slot is filled and the index refers to the bit number 
 //see https://groups.google.com/forum/#!topic/automatak-dnp3/RvrrCaGM8-8
 typedef struct DbVar_t {
-    DbVar_t(std::string &_name, int _type, int _offset, const char* iuri, const char*ivariant):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
+    DbVar_t(std::string &_name, int _type, int _offset, const char* iuri, const char*ivariation):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
         valueint = 0;
         anInt16 = 0;
@@ -223,7 +223,7 @@ typedef struct DbVar_t {
         {
             uri = NULL;
         }
-        variant = variant_decode(ivariant);
+        variation = variation_decode(ivariation);
     };
 
     int addBit(const char*bit)
@@ -275,7 +275,7 @@ typedef struct DbVar_t {
     const char* uri;
     int valflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
     int type;
-    int variant;         // space to flag different DNP3 variant like Group30var5
+    int variation;         // space to flag different DNP3 variation like Group30var5
     int offset;
     int bit;              // used to indiate which bit in parent
     DbVar_t* parent;      // I'm a bit and this is daddy 
@@ -337,12 +337,12 @@ typedef struct sysCfg_t {
     };
 
     public:
-        DbVar* addDbVar(std::string name, int type, int offset, char* uri, char* variant) 
+        DbVar* addDbVar(std::string name, int type, int offset, char* uri, char* variation) 
         {
             DbVar* db = NULL;
 
             if (dbMap.find(name) == dbMap.end()){
-                db = new DbVar(name, type, offset, uri, variant);
+                db = new DbVar(name, type, offset, uri, variation);
                 dbMap[name] = db;
                 if(dbMapIx[type].find(offset) == dbMapIx[type].end())
                 {   
