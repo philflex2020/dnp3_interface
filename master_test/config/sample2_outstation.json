@@ -13,7 +13,7 @@
         "name":"dnp3_test_outstation",
         "protocol": "DNP3",
         "version": 1,
-        "id": "dnp3_outstatio",
+        "id": "dnp3_outstation",
         "ip_address2": "192.168.1.50",
         "ip_address": "0.0.0.0",
         "port": 20001,
