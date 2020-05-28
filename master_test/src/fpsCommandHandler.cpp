@@ -70,16 +70,18 @@ void fpsCommandHandler::End()
 
 CommandStatus fpsCommandHandler::Select(const ControlRelayOutputBlock& command, uint16_t index)
 {
-    uint8_t io = 0;
-    bool state = false;
-    cfgdbAddtoRecord(cfgdb,"CROB_SELECT",(const char*)ControlCodeToString(code).c_str(), index);
+    //uint8_t io = 0;
+    //bool state = false;
+    const char* cmd = ControlCodeToString(command.functionCode);
+
+    cfgdbAddtoRecord(cfgdb,"CROB_SELECT", cmd, index);
     return cs;
 }
 
 CommandStatus fpsCommandHandler::Operate(const ControlRelayOutputBlock& command, uint16_t index, OperateType opType)
 {
-    uint8_t io = 0;
-    bool state = false;
+    //uint8_t io = 0;
+    //bool state = false;
     std::cout << "                     ************" << __FUNCTION__ << " called index:" <<index << std::endl;
 
     const char* cmd = ControlCodeToString(command.functionCode);
