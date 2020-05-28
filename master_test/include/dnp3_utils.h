@@ -495,7 +495,7 @@ typedef struct sysCfg_t {
 
         int setDbVar(const char* name, cJSON* cj)
         {
-            return (getDbVar(name),cj);
+            return setDbVar(getDbVar(name),cj);
         };
 
         int setDbVar(const char *name, double dval)
