@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-#include "fpsCommandCalback.h"
+#include "fpsCommandCallback.h"
 
 #include <iostream>
 
