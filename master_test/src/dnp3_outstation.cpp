@@ -36,7 +36,7 @@ using namespace asiodnp3;
 
 fims *p_fims;
 //TODO fill out from system config
-void ConfigureDatabase(DatabaseConfig& config, sysCg* ourDB)
+void ConfigureDatabase(DatabaseConfig& config, sysCfg* ourDB)
 {
     // just deal with analog vars and Group30Var5, this allows floating point numbers through the system
     auto dsize = ourDB->dbMapIx[Type_Analog].size();
