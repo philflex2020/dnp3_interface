@@ -662,13 +662,15 @@ typedef struct sysCfg_t {
                 char getUri[1024];
                 if (it->first[0] == '/') 
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply%s", who, id, it->first);
-                    snprintf(getUri,sizeof(getUri),"/queryx%s", it->first);
+                    // TODO fixup getUris
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s",  id, it->first);
+                    snprintf(getUri,sizeof(getUri),"/getUris/%s", it->first);
                 } 
                 else
                 {
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply/%s", who, id, it->first);
-                    snprintf(getUri,sizeof(getUri),"/queryx/%s", it->first);
+                    // TODO fixup getUris
+                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
+                    snprintf(getUri,sizeof(getUri),"/getUris/%s", it->first);
                 }
 
                 FPS_ERROR_PRINT(" uri : [%s] replyto: [%s]\n"
