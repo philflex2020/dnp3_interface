@@ -663,7 +663,7 @@ typedef struct sysCfg_t {
                 {
                     // TODO fixup getUris
                     snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s",  id, it->first);
-                    snprintf(getUri,sizeof(getUri),"/getUris/%s", it->first);
+                    snprintf(getUri,sizeof(getUri),"/getUris%s", it->first);
                 } 
                 else
                 {
