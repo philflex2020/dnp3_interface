@@ -562,7 +562,37 @@ typedef struct sysCfg_t {
             }
             return NULL;
         };
-        
+
+        // dbvar_map dbMap;
+        // dbix_map dbMapIx[Type_of_Var::NumTypes];
+        // duri_map uriMap;  it->first is from a strdup
+        // bits_map bitsMap;
+        void cleanUpDbMaps()
+        {
+            FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
+            dbvar_map::iterator it;
+            for (it = dbMap.begin(); it != dbMap.end(); ++it)
+            {
+                DbVar* db = it->second;
+                FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
+                            , it->first.c_str()
+                            , db->type
+                            , db->offset
+                            );
+                delete db;
+            }
+            FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
+            dbMap.clear();
+            for (int i = 0; i < (int)Type_of_Var::NumTypes; i++)
+            {
+                for (int j = 0; j < (int)dbMapIx[i].size(); j++)
+                {
+                    free((void *)dbMapIx[i][j].first);
+                }
+                dbMapIx[i].clear();
+            }
+        }
+
         void showDbMap()
         {
             FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
