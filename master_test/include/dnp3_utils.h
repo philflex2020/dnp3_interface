@@ -719,10 +719,12 @@ typedef struct sysCfg_t {
                 return addUri(uri->valuestring, db);
             }
         }
-
+        // TODO set this up as an object
         void addDefUri(DbVar*db)
         {
-            return addUri(id, db);
+            char tmp[1024];
+            snprintf(tmp, sizeof(tmp),"/components/%s",id);
+            return addUri(tmp, db);
         }
         
         char* name;

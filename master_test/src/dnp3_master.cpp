@@ -190,7 +190,6 @@ int main(int argc, char *argv[])
     p_fims = new fims();
     const char *sub_array[]={
         (const char *)"/interfaces",
-        (const char*)"/components",
         (const char*)"/fooey",
         NULL
         };
@@ -251,7 +250,7 @@ int main(int argc, char *argv[])
     num = sys_cfg.getSubs(subs, num, "master");
     subs[num++] = sub_array[0];
     subs[num++] = sub_array[1];
-    subs[num++] = sub_array[2];
+    //subs[num++] = sub_array[2];
 
 
     sys_cfg.p_fims = p_fims;// = new fims();
