@@ -1120,7 +1120,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     }
     else
     {
-        snprintf(turi,sizeof(turi),"/components/%s", sys->id );
+        snprintf(turi, sizeof(turi), "/components/%s", sys->id );
         uri = (const char *)turi;
     }
     
@@ -1128,11 +1128,11 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     if (out) 
     {
         char tmp[1024];
-        snprintf(tmp,sizeof(tmp),"/%s/%s", uri, db->name );
+        snprintf(tmp, sizeof(tmp), "/%s/%s", uri, db->name );
 
-        if(sys->p_fims)
+        if(sysdb->p_fims)
         {
-            sys->p_fims->Send("set", tmp, NULL, out);
+            sysdb->p_fims->Send("set", tmp, NULL, out);
         }
         else
         {
