@@ -236,6 +236,22 @@ int main(int argc, char *argv[])
    
     sys_cfg.showDbMap();
     sys_cfg.showUris();
+    // this needs to go into dnp3_utils
+    int num = sys_cfg.getSubs(NULL, 0, "master");
+    const char **subs= (const char *) malloc((num+3) * sizeof(char *));
+    if(subs == NULL)
+    {
+        FPS_ERROR_PRINT("Failed to creae subs array.\n");
+        //rc = 1;
+        return 1;
+    }
+    bool bpubs[num+3];
+    memset(bpubs, (num+3) *sizeof(bool),0)
+    num = sys_cfg.getSubs(subs, num, "master");
+    subs[num++] = sub_array[0];
+    subs[num++] = sub_array[1];
+    subs[num++] = sub_array[2];
+
 
     sys_cfg.p_fims = p_fims;// = new fims();
     if (p_fims == NULL)
@@ -260,12 +276,15 @@ int main(int argc, char *argv[])
     }
 
     FPS_DEBUG_PRINT("Map configured: Initializing data.\n");
-    if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
+    //if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
+    if(p_fims->Subscribe((const char**)subs, num, (bool *)pubs) == false)
     {
         FPS_ERROR_PRINT("Subscription failed.\n");
         p_fims->Close();
         return 1;
     }
+
+    free((void *)subs);
 
     auto manager = setupDNP3Manager(&sys_cfg);
     if (!manager){

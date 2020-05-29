@@ -649,6 +649,21 @@ typedef struct sysCfg_t {
             return true;
         };
 
+        int getSubs(const char**subs, int num, const char *who)
+        {
+            if (num < uriMap.size())
+            {
+                return uriMap.size();
+            }
+            int idx = 0;
+            duri_map::iterator it;
+            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            {
+                subs[idx++]=it->first;
+            }
+            return idx;
+        }
+        
         // TODO only get the ones for vars applied to this application (outstation or master)
         int getUris(const char *who)
         {
