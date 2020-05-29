@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     bool *bpubs = (bool *) malloc((num+3) * sizeof(bool));
-    memset(bpubs, (num+3) *sizeof(bool),0)
+    memset(bpubs, (num+3) * sizeof(bool),false); // all false
 
     num = sys_cfg.getSubs(subs, num, "master");
     subs[num++] = sub_array[0];
