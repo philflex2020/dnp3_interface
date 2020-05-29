@@ -38,13 +38,13 @@ using namespace asiodnp3;
 
 fims *p_fims;
 //TODO fill out from system config
-void ConfigureDatabase(DatabaseConfig& config, sysCfg* ourDB)
+void ConfigureDatabase(DatabaseConfig& config, sysCfg* fpsDB)
 {
     // just deal with analog vars and Group30Var5, this allows floating point numbers through the system
-    auto dsize = ourDB->dbMapIx[Type_Analog].size();
+    auto dsize = fpsDB->dbMapIx[Type_Analog].size();
     for (int i = 0; i < (int)dsize; i++)
     {
-        DbVar* db = ourDB->getDbVarId(Type_Analog, i);
+        DbVar* db = fpsDB->getDbVarId(Type_Analog, i);
         if(db != NULL)
         {
             if(db->variation == Group30Var5)
@@ -60,13 +60,13 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* ourDB)
     //config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;   
 }
 
-DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
+DNP3Manager* setupDNP3Manager(sysCfg* fpsDB)
 {
-    auto manager = new DNP3Manager(1, fpsLogger::Create(ourDB));
+    auto manager = new DNP3Manager(1, fpsLogger::Create(fpsDB));
     return manager;
 }
 
-std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* ourDB) {
+std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* fpsDB) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
     const uint32_t FILTERS = levels::NORMAL;// | levels::ALL_COMMS;
@@ -75,29 +75,29 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     auto channel = manager->AddTCPServer(cname, 
                                         FILTERS, 
                                         ServerAcceptMode::CloseExisting, 
-                                        ourDB->ip_address, 
-                                        ourDB->port,
-                                        fpsChannelListener::Create(ourDB)
+                                        fpsDB->ip_address, 
+                                        fpsDB->port,
+                                        fpsChannelListener::Create(fpsDB)
                                         );
     return channel;
 }
 
-std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB)
+std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* fpsDB)
 {
     // The main object for a outstation. The defaults are useable,
     // but understanding the options are important.
     //OutstationStackConfig config(DatabaseSizes::AllTypes(10));
     //OutstationStackConfig config(DatabaseSizes::AllTypes(10));
-    cout<<"Binaries: "<<ourDB->dbMapIx[Type_Binary].size()<<" Analogs: "<<ourDB->dbMapIx[Type_Analog].size()<<endl;
-    OutstationStackConfig config(DatabaseSizes(ourDB->dbMapIx[Type_Binary].size(),
+    cout<<"Binaries: "<<fpsDB->dbMapIx[Type_Binary].size()<<" Analogs: "<<fpsDB->dbMapIx[Type_Analog].size()<<endl;
+    OutstationStackConfig config(DatabaseSizes(fpsDB->dbMapIx[Type_Binary].size(),
                                                 0,
-                                                ourDB->dbMapIx[Type_Analog].size(),
+                                                fpsDB->dbMapIx[Type_Analog].size(),
                                                 0,0,0,0,0,0));
 
     // Specify the maximum size of the event buffers. Defaults to 0
     // config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
-    config.outstation.eventBufferConfig.maxBinaryEvents = ourDB->dbMapIx[Type_Binary].size(),
-    config.outstation.eventBufferConfig.maxAnalogEvents = ourDB->dbMapIx[Type_Analog].size(),
+    config.outstation.eventBufferConfig.maxBinaryEvents = fpsDB->dbMapIx[Type_Binary].size(),
+    config.outstation.eventBufferConfig.maxAnalogEvents = fpsDB->dbMapIx[Type_Analog].size(),
     // Specify the maximum size of the event buffers
     //config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
 
@@ -109,21 +109,21 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
     // 
-    config.link.LocalAddr = ourDB->local_address;   // was 10
-    config.link.RemoteAddr = ourDB->remote_address;//  was 1;
+    config.link.LocalAddr = fpsDB->local_address;   // was 10
+    config.link.RemoteAddr = fpsDB->remote_address;//  was 1;
 
     config.link.KeepAliveTimeout = openpal::TimeDuration::Max();
 
     // You can optionally change the default reporting variations or class assignment prior to enabling the outstation
-    ConfigureDatabase(config.dbConfig, ourDB);
+    ConfigureDatabase(config.dbConfig, fpsDB);
 
     // Create a new outstation with a log level, command handler, and
     // config info this	returns a thread-safe interface used for
     // updating the outstation's database.
     // TODO fpsOutStationApplication
     auto outstation = channel->AddOutstation("outstation" 
-                                            , fpsCommandHandler::Create(ourDB)
-                                            , fpsOutstationApplication::Create(ourDB)
+                                            , fpsCommandHandler::Create(fpsDB)
+                                            , fpsOutstationApplication::Create(fpsDB)
                                             , config);
 
     // Enable the outstation and start communications
@@ -273,13 +273,11 @@ int main(int argc, char* argv[])
                 {
                     // just quit here
                     FPS_DEBUG_PRINT("QUITTING TIME Timeout tick %d\n", ttick);
-
                 }
             }
         }
         else
         {
-
             //FPS_ERROR_PRINT("****** Hey %s got a message uri [%s] \n", __FUNCTION__, msg->uri);
             dbs_type dbs; // collect all the parsed vars here
 
@@ -327,6 +325,7 @@ int main(int argc, char* argv[])
     }
 
     //cleanup:
+
     if (manager) delete manager;
 
     if(sys_cfg.ip_address    != NULL) free(sys_cfg.ip_address);
