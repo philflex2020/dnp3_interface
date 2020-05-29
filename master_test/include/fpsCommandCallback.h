@@ -27,7 +27,7 @@
 namespace asiodnp3
 {
 
-class fpsCommandCalback : public openpal::StaticOnly
+class fpsCommandCallback : public openpal::StaticOnly
 {
 
 public:
