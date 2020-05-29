@@ -784,4 +784,6 @@ int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char
 // int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag);
 bool checkWho(sysCfg*sys, const char *name, const char *who);
 bool checkWho(sysCfg*sys, DbVar *db, const char *who);
+int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, const char **slogs, int snum);
+
 #endif

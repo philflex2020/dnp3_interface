@@ -235,23 +235,17 @@ int main(int argc, char *argv[])
    
     sys_cfg.showDbMap();
     sys_cfg.showUris();
-    // this needs to go into dnp3_utils
-    int num = sys_cfg.getSubs(NULL, 0, "master");
-    const char **subs= (const char **) malloc((num+3) * sizeof(char *));
-    if(subs == NULL)
+    const char **subs = NULL;
+    bool *bpubs = NULL;
+    
+    int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 2);
+
+    if(num < 0)
     {
         FPS_ERROR_PRINT("Failed to creae subs array.\n");
         //rc = 1;
         return 1;
     }
-    bool *bpubs = (bool *) malloc((num+3) * sizeof(bool));
-    memset(bpubs, false, (num+3) * sizeof(bool)); // all false we hope
-
-    num = sys_cfg.getSubs(subs, num, "master");
-    subs[num++] = sub_array[0];
-    subs[num++] = sub_array[1];
-    //subs[num++] = sub_array[2];
-
 
     sys_cfg.p_fims = p_fims;// = new fims();
     if (p_fims == NULL)
