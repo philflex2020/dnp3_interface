@@ -585,10 +585,10 @@ typedef struct sysCfg_t {
             dbMap.clear();
             for (int i = 0; i < (int)Type_of_Var::NumTypes; i++)
             {
-                for (int j = 0; j < (int)dbMapIx[i].size(); j++)
-                {
-                    free((void *)dbMapIx[i][j].first);
-                }
+                // for (int j = 0; j < (int)dbMapIx[i].size(); j++)
+                // {
+                //     free((void *)dbMapIx[i][j].first);
+                // }
                 dbMapIx[i].clear();
             }
         }
