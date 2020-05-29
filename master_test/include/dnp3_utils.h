@@ -47,9 +47,9 @@ enum Type_of_Var{
     AnIn16,
     AnIn32,
     AnF32,
-    Type_Crob,
-    Type_Analog,
-    Type_Binary,
+    Type_Crob,     // write master
+    Type_Analog,  // write outstation
+    Type_Binary,  //write outstation
     NumTypes
 };
 
