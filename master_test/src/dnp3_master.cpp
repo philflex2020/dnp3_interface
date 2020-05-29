@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
         NULL
         };
     //char* uri;
-    bool publish_only[3] = {false,false,false};
+    //bool publish_only[3] = {false,false,false};
     bool running = true;
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
