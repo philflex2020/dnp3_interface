@@ -1164,8 +1164,12 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOu
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
         sendCmdSet(sysdb, db, cjv);
-
     }
+    else
+    {
+        FPS_ERROR_PRINT("%s unable to find AnIn16 at index %d\n", __FUNCTION__, (int)index );
+    }
+    
 }
 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
@@ -1181,6 +1185,10 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
         sendCmdSet(sysdb, db, cjv);
+    }
+    else
+    {
+        FPS_ERROR_PRINT("%s unable to find AnIn32 at index %d\n", __FUNCTION__, (int)index );
     }
 
 }
@@ -1199,11 +1207,16 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         sysdb->cjloaded++;
         sendCmdSet(sysdb, db, cjv);
     }
+    else
+    {
+        FPS_ERROR_PRINT("%s unable to find AnF32 at index %d\n", __FUNCTION__, (int)index );
+    }
+
 }
 
 void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_t index)
 {
-    DbVar* db = sysdb->getDbVarId(AnF32 , index);
+    DbVar* db = sysdb->getDbVarId(Type_Crob , index);
     if (db)
     {
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
@@ -1215,6 +1228,11 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_
         sysdb->cjloaded++;
         sendCmdSet(sysdb, db, cjv);
     }
+    else
+    {
+        FPS_ERROR_PRINT("%s unable to find CROB at index %d\n", __FUNCTION__, (int)index );
+    }
+
 }
 
 // TODO allow a setup option in the config file to supply the SOEname
