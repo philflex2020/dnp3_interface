@@ -1117,7 +1117,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     if (db->uri)
     {
         uri = db->uri;
-        if (uri[0] == '//')
+        if (uri[0] == '/')
         {
             uri = &db->uri[1];
         }
