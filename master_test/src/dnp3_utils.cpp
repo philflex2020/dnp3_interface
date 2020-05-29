@@ -1117,6 +1117,10 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     if (db->uri)
     {
         uri = db->uri;
+        if (uri[0] == '//')
+        {
+            uri = &db->uri[1];
+        }
     }
     else
     {
@@ -1140,6 +1144,11 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
         }    
         free(out);
     }
+    else
+    {
+        FPS_ERROR_PRINT("%s Error in cJSON object\n", __FUNCTION__ );
+    }
+    
 }
 // possibly used in outstation comand handler to publish changes
 void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
