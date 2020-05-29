@@ -17,14 +17,14 @@ using namespace opendnp3;
 namespace asiodnp3 { 
 
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
-    FPS_DEBUG_PRINT("\n******************************Bin: \n");
+    FPS_DEBUG_PRINT("******************************Bin: \n");
     static sysCfg *static_sysdb = sysdb;
     auto print = [](const Indexed<Binary>& pair) {
         DbVar* db = static_sysdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
         {
             const char* vname = db->name.c_str();// static_sysdb->getBinary(pair.index);
-            printf("***************************** bin idx %d name [%s] value [%d]\n", pair.index, db->name.c_str(), pair.value.value);
+            FPS_DEBUG_PRINT("***************************** bin idx %d name [%s] value [%d]\n", pair.index, db->name.c_str(), pair.value.value);
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
@@ -43,7 +43,7 @@ void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
         //cJSON_AddItemToObject(static_sysdb->cj, cfgGetSOEName(static_sysdb,"binaries"), cj);
         static_sysdb->cjloaded++;
     }
-    FPS_DEBUG_PRINT("\n******************************Bin: <<\n" );
+    FPS_DEBUG_PRINT("******************************Bin: <<\n" );
 }
 
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<DoubleBitBinary>>& values) {
@@ -85,7 +85,7 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     {
         static_sysdb->cjloaded++;
     }
-    FPS_DEBUG_PRINT("\n******************************An: <<\n");
+    FPS_DEBUG_PRINT("******************************An: <<\n");
     return;
 }
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Counter>>& values) {
