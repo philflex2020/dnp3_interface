@@ -815,7 +815,7 @@ typedef struct sysCfg_t {
 
 } sysCfg;
 
-DbVar* getDbVar(sysCfg *cfgdb, const char *name);
+DbVar* getDbVar(sysCfg *sysdb, const char *name);
 
 //bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);
 //bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value);
@@ -832,11 +832,11 @@ void addCjTimestamp(cJSON *cj, const char * ts);
 void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev);
 void pubWithTimeStamp2(cJSON *cj, sysCfg* sys, const char* ev);
 
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index);
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const AnalogOutputFloat32& cmd, uint16_t index);
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const char* cmd, uint16_t index);
-const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname);
+void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);
+void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index);
+void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputFloat32& cmd, uint16_t index);
+void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const char* cmd, uint16_t index);
+const char* cfgGetSOEName(sysCfg* sysdb, const char* fname);
 const char *iotypToStr (int t);
 int iotypToId (const char* t);
 int addVarToCj(cJSON* cj, DbVar*db);

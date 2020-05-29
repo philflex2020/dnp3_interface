@@ -42,12 +42,12 @@ class fpsLogger final : public openpal::ILogHandler, private openpal::Uncopyable
 public:
     virtual void Log(const openpal::LogEntry& entry) override;
 
-    static std::shared_ptr<openpal::ILogHandler> Create(sysCfg *ourDB, bool printLocation = false)
+    static std::shared_ptr<openpal::ILogHandler> Create(sysCfg *fpsDB, bool printLocation = false)
     {
-        return std::make_shared<fpsLogger>(ourDB, printLocation);
+        return std::make_shared<fpsLogger>(fpsDB, printLocation);
     };
 
-    fpsLogger(sysCfg* ourDB, bool printLocation) :  printLocation(printLocation) {sysdb = ourDB;};
+    fpsLogger(sysCfg* fpsDB, bool printLocation) :  printLocation(printLocation) {sysdb = fpsDB;};
 
 private:
     sysCfg* sysdb;

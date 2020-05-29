@@ -29,7 +29,7 @@ namespace asiodnp3
 opendnp3::CommandCallbackT fpsCommandCalback::Get()
 {
     return [](const ICommandTaskResult& result) -> void {
-        std::cout << "Received command result w/ summary: " << TaskCompletionToString(result.summary) << std::endl;
+        //std::cout << "Received command result w/ summary: " << TaskCompletionToString(result.summary) << std::endl;
         auto print = [](const CommandPointResult& res) {
             std::cout << "Header: " << res.headerIndex << " Index: " << res.index
                       << " State: " << CommandPointStateToString(res.state)

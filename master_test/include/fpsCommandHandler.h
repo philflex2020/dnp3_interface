@@ -17,13 +17,17 @@
 
 class fpsCommandHandler final : public opendnp3::ICommandHandler
 {
-
+// this is where the template class turns into type based code.
+// each one of these calls is a reaction to the select and operate commands.
+// if used, the select must return success to allow the operate to proceed
+// the use of select and operate s determined by the master  ith either direct operate or select and operate.
+// see dnp3_master.cpp master->DirectOperate(std::move(commands), fpsCommandCallback::Get()); 
 public:
-    fpsCommandHandler(sysCfg* myDB){cfgdb = myDB;};
+    fpsCommandHandler(sysCfg* fpsDB){sysdb = fpsDB;};
 
-    static std::shared_ptr<ICommandHandler> Create(sysCfg* db)
+    static std::shared_ptr<ICommandHandler> Create(sysCfg* fpsDB)
     {
-        return std::make_shared<fpsCommandHandler>(db);
+        return std::make_shared<fpsCommandHandler>(fpsDB);
     }
 
     void Start() override;
@@ -61,7 +65,7 @@ private:
 
     opendnp3::CommandStatus GetPinAndState(uint16_t index, opendnp3::ControlCode code, uint8_t& gpio, bool& state);
 
-    sysCfg* cfgdb;
+    sysCfg* sysdb;
     //int cjloaded;  // tells us if this command resulted in cJSON material for a publish;
     //std::map<uint16_t, uint8_t> dnp2io;
 };

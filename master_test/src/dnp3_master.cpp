@@ -38,9 +38,9 @@
 #include <opendnp3/LogLevels.h> 
 #include <asiodnp3/ConsoleLogger.h> 
 #include <asiodnp3/DNP3Manager.h> 
-#include <asiodnp3/DefaultMasterApplication.h> 
-#include <asiodnp3/PrintingChannelListener.h> 
-#include <asiodnp3/PrintingCommandCallback.h> 
+//#include <asiodnp3/DefaultMasterApplication.h> 
+//#include <asiodnp3/PrintingChannelListener.h> 
+//#include <asiodnp3/PrintingCommandCallback.h> 
 #include <asiopal/ChannelRetry.h>
 
 
@@ -48,6 +48,7 @@
 #include "fpsMasterApplication.h"
 #include "fpsLogger.h"
 #include "fpsChannelListener.h"
+#include "fpsCommandCallback.h"
 #include "dnp3_utils.h"
 
 using namespace std; 
@@ -58,7 +59,6 @@ using namespace opendnp3;
 #define MICROSECOND_TO_MILLISECOND 1000
 #define NANOSECOND_TO_MILLISECOND  1000000
 #define MAX_FIMS_CONNECT 5
-
 
 volatile bool running = true;
 int ttick = 0;  // timeout ticks for replies to initial gets
@@ -114,10 +114,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     // Create a new master on a previously declared port, with a
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
-    //auto master = channel->AddMaster("master", // id for logging
-                //                     newSOEHandler::Create(ourDB), // callback for data processing
-                //                     asiodnp3::DefaultMasterApplication::Create(), // master application instance
-                //                     stackConfig // stack configuration
+    
     auto master = channel->AddMaster("master", // id for logging
                                      fpsSOEHandler::Create(ourDB), // callback for data processing  this generates the pub elements when we get data
                                      fpsMasterApplication::Create(ourDB), // master application instance this manages the collection of al the pub elements 
@@ -356,7 +353,7 @@ int main(int argc, char *argv[])
                 }
 
                 FPS_DEBUG_PRINT("      *****Running Direct Outputs \n");
-                master->DirectOperate(std::move(commands), PrintingCommandCallback::Get());
+                master->DirectOperate(std::move(commands), fpsCommandCallback::Get());
             }
 
             if (cjb != NULL)

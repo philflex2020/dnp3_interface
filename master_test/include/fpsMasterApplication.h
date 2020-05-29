@@ -36,35 +36,37 @@
 class fpsMasterApplication : public opendnp3::IMasterApplication
 {
 public:
-    fpsMasterApplication(sysCfg* myDB){cfgdb = myDB;};
+    fpsMasterApplication(sysCfg* fpsDB){sysdb = fpsDB;};
 
-    static std::shared_ptr<IMasterApplication> Create(sysCfg* myDB)
+    static std::shared_ptr<IMasterApplication> Create(sysCfg* fpsDB)
     {
-        return std::make_shared<fpsMasterApplication>(myDB);
+        return std::make_shared<fpsMasterApplication>(fpsDB);
     }
 
     virtual void OnReceiveIIN(const opendnp3::IINField& iin) override final {}
-    // start the pub object.
+    // start the pub object for the master.
+    // 
     // TODO find a way to detect the scan result. I dont think we'll have more that one of these running at a time
     // newSOEHandler populates the cJSON object
-    virtual void OnTaskStart(opendnp3::MasterTaskType type, opendnp3::TaskId id) override final {
+    virtual void OnTaskStart(opendnp3::MasterTaskType type, opendnp3::TaskId id) override final 
+    {
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
-        cfgdb->cj = cJSON_CreateObject();
-        cfgdb->cjloaded = 0; 
+        sysdb->cj = cJSON_CreateObject();
+        sysdb->cjloaded = 0; 
     }
-
+    // if cjloaded is well loaded then send out the pub
     virtual void OnTaskComplete(const opendnp3::TaskInfo& info) override final {
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
         //std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
-        if(cfgdb->cj)
+        if(sysdb->cj)
         {
-            if (cfgdb->cjloaded > 0) 
+            if (sysdb->cjloaded > 0) 
             {
-                pubWithTimeStamp2(cfgdb->cj, cfgdb, "components");
-                cfgdb->cjloaded = 0;
+                pubWithTimeStamp2(sysdb->cj, sysdb, "components");
+                sysdb->cjloaded = 0;
             }
-            cJSON_Delete(cfgdb->cj);
-            cfgdb->cj = NULL;
+            cJSON_Delete(sysdb->cj);
+            sysdb->cj = NULL;
         }  
     }
 
@@ -79,22 +81,22 @@ public:
 
     virtual void OnStateChange(opendnp3::LinkStatus value) override final 
     {  
-        std::cout << "Running ["<<__FUNCTION__<<"] status ["<<LinkStatusToString(value)<<"]\n";
+        //std::cout << "Running ["<<__FUNCTION__<<"] status ["<<LinkStatusToString(value)<<"]\n";
         //cJSON* cj = cJSON_CreateObject();
         //cJSON_AddStringToObject(cj, "LinkStatus", LinkStatusToString(value));
-        //pubWithTimeStamp(cj, cfgdb,"StateChange");
+        //pubWithTimeStamp(cj, sysdb,"StateChange");
         //cJSON_Delete(cj);
         //cj = NULL;
         std::string cstate = LinkStatusToString(value);
         char message[1024];
         snprintf(message, sizeof(message), "DNP3  %s Link Status Change [%s]\n"
-                    , cfgdb->id 
+                    , sysdb->id 
                     , cstate.c_str()
                     );
-        emit_event(cfgdb->p_fims, "DNP3", message, 1);
+        emit_event(sysdb->p_fims, "DNP3", message, 1);
     }    
     
-    sysCfg* cfgdb;
+    sysCfg* sysdb;
 
 };
 

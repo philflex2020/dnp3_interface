@@ -42,8 +42,8 @@ public:
     {
         // TODO emit events
         std::string cstate = opendnp3::ChannelStateToString(state);
-        std::cout << "ORIG channel state change: " << opendnp3::ChannelStateToString(state) << std::endl;
-        FPS_DEBUG_PRINT("fps channel state change: [%s]\n", cstate.c_str());
+        //std::cout << "ORIG channel state change: " << opendnp3::ChannelStateToString(state) << std::endl;
+        //FPS_DEBUG_PRINT("fps channel state change: [%s]\n", cstate.c_str());
         char message[1024];
         snprintf(message, sizeof(message), "DNP3  %s state change [%s]\n"
                     , sysdb->id 
@@ -53,12 +53,12 @@ public:
         emit_event(sysdb->p_fims, "DNP3", message, 1);
     }
 
-    static std::shared_ptr<IChannelListener> Create(sysCfg* ourDB)
+    static std::shared_ptr<IChannelListener> Create(sysCfg* fpsDB)
     {
-        return std::make_shared<fpsChannelListener>(ourDB);
+        return std::make_shared<fpsChannelListener>(fpsDB);
     }
 
-    fpsChannelListener(sysCfg* ourDB) {sysdb = ourDB;};
+    fpsChannelListener(sysCfg* fpsDB) {sysdb = fpsDB;};
     sysCfg* sysdb;
 };
 

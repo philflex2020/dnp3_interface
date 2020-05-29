@@ -3,7 +3,7 @@
  *     11 May, 2020
  * This code provides the details for a pub from the master of the componets returned in an outstation scan.
  * This pub is returned to the customer facing Fleet Manager Outstation
- * NOTE only analogs and binaries are reported at this stage.
+ * NOTE only analogs and binaries are handled at this stage.
  * 
  */
 #include <cjson/cJSON.h>
@@ -17,39 +17,37 @@ using namespace opendnp3;
 namespace asiodnp3 { 
 
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
-    std::cout << "******************************Bin: " <<std::endl;
-    static sysCfg *static_cfgdb = cfgdb;
+    FPS_DEBUG_PRINT("\n******************************Bin: \n");
+    static sysCfg *static_sysdb = sysdb;
     auto print = [](const Indexed<Binary>& pair) {
-        DbVar* db = static_cfgdb->getDbVarId(Type_Binary, pair.index);
+        DbVar* db = static_sysdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
         {
-            const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
+            const char* vname = db->name.c_str();// static_sysdb->getBinary(pair.index);
             printf("***************************** bin idx %d name [%s] value [%d]\n", pair.index, db->name.c_str(), pair.value.value);
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
-                cJSON_AddBoolToObject(static_cfgdb->cj, vname, pair.value.value);
-                static_cfgdb->setDbVar(vname, pair.value.value);
-
+                cJSON_AddBoolToObject(static_sysdb->cj, vname, pair.value.value);
+                static_sysdb->setDbVar(vname, pair.value.value);
             }
         }
         else
         {
-            printf("***************************** bin idx %d No Var Found\n", pair.index);
-        }
-        
+            FPS_ERROR_PRINT("***************************** bin idx %d No Var Found\n", pair.index);
+        }        
     };
     values.ForeachItem(print);
-    if(static_cfgdb->cj)
+    if(static_sysdb->cj)
     {
-        //cJSON_AddItemToObject(static_cfgdb->cj, cfgGetSOEName(static_cfgdb,"binaries"), cj);
-        static_cfgdb->cjloaded++;
+        //cJSON_AddItemToObject(static_sysdb->cj, cfgGetSOEName(static_sysdb,"binaries"), cj);
+        static_sysdb->cjloaded++;
     }
-    std::cout << "******************************Bin: <<" <<std::endl;
+    FPS_DEBUG_PRINT("\n******************************Bin: <<\n" );
 }
 
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<DoubleBitBinary>>& values) {
-    std::cout << "******************************DBin: " <<std::endl;
+    FPS_DEBUG_PRINT("******************************DBin: \n");
     return PrintAll(info, values);
 }
 
@@ -64,49 +62,46 @@ void fpsSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
 
 void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     // magic static
-    static sysCfg *static_cfgdb = cfgdb;
+    static sysCfg *static_sysdb = sysdb;
     auto print = [](const Indexed<Analog>& pair) {
-        DbVar* db = static_cfgdb->getDbVarId(Type_Analog, pair.index);
+        DbVar* db = static_sysdb->getDbVarId(Type_Analog, pair.index);
         if (db != NULL) 
         {
-            const char* vname = db->name.c_str();// static_cfgdb->getBinary(pair.index);
-            printf("***************************** analog idx %d name [%s] value [%f]\n", pair.index, db->name.c_str(), pair.value.value);
-
+            const char* vname = db->name.c_str();// static_sysdb->getBinary(pair.index);
+            FPS_DEBUG_PRINT("***************************** analog idx %d name [%s] value [%f]\n", pair.index, db->name.c_str(), pair.value.value);
             if(strcmp(vname,"Unknown")!= 0) 
             {
-                cJSON_AddNumberToObject(static_cfgdb->cj, vname, pair.value.value);
-                static_cfgdb->setDbVar(vname, pair.value.value);
-
+                cJSON_AddNumberToObject(static_sysdb->cj, vname, pair.value.value);
+                static_sysdb->setDbVar(vname, pair.value.value);
             }
         }
         else
         {
-            printf("***************************** analog idx %d No Var Found\n", pair.index);
+            FPS_ERROR_PRINT("***************************** analog idx %d No Var Found\n", pair.index);
         }
     };
     values.ForeachItem(print);
-    if(static_cfgdb->cj)
+    if(static_sysdb->cj)
     {
-        //cJSON_AddItemToObject(static_cfgdb->cj, cfgGetSOEName(static_cfgdb,"analogs"), cj);
-        static_cfgdb->cjloaded++;
+        static_sysdb->cjloaded++;
     }
-    std::cout << "******************************An: <<" <<std::endl;
+    FPS_DEBUG_PRINT("\n******************************An: <<\n");
     return;
 }
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Counter>>& values) {
-    std::cout << "******************************Cnt: " <<std::endl;
+    FPS_DEBUG_PRINT("******************************Cnt: \n");
     return PrintAll(info, values);
 }
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<FrozenCounter>>& values) {
-    std::cout << "******************************CntFz: " <<std::endl;
+    FPS_DEBUG_PRINT("******************************CntFz: \n");
     return PrintAll(info, values);
 }
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<BinaryOutputStatus>>& values) {
-    std::cout << "******************************BiOpSta: " <<std::endl;
+    FPS_DEBUG_PRINT("******************************BiOpSta: \n");
     return PrintAll(info, values);
 }
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<AnalogOutputStatus>>& values) {
-    std::cout << "******************************AnOpSta: " <<std::endl;
+    FPS_DEBUG_PRINT("******************************AnOpSta: \n");
     return PrintAll(info, values);
 }
 void fpsSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexed<OctetString>>& values) {

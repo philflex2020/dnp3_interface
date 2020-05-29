@@ -29,7 +29,7 @@
 // {
 
 // public:
-//     newCommandHandler(sysCfg* myDB){cfgdb = myDB;};
+//     newCommandHandler(sysCfg* myDB){sysdb = myDB;};
 
 //     static std::shared_ptr<ICommandHandler> Create(sysCfg* db)
 //     {
@@ -45,11 +45,11 @@
 class fpsOutstationApplication final : public opendnp3::IOutstationApplication
 {
 public:
-    fpsOutstationApplication(sysCfg* db) {cfgdb=db;};
+    fpsOutstationApplication(sysCfg* fpsDB) {sysdb=fpsDB;};
 
-    static std::shared_ptr<fpsOutstationApplication> Create(sysCfg* db)
+    static std::shared_ptr<fpsOutstationApplication> Create(sysCfg* fpsDB)
     {
-        return std::make_shared<fpsOutstationApplication>(db);
+        return std::make_shared<fpsOutstationApplication>(fpsDB);
     }
 
     bool SupportsWriteAbsoluteTime()
@@ -57,7 +57,7 @@ public:
         std::cout << " fpsOutstationApplication -<"<< __FUNCTION__<<" called \n";
         return false;
     }
-    sysCfg* cfgdb;
+    sysCfg* sysdb;
 
 };
 #endif

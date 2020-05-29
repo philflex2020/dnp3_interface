@@ -126,9 +126,9 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
     cJSON_Delete(body_object);
 }
 
-DbVar* getDbVar(sysCfg *cfgdb, const char *name)
+DbVar* getDbVar(sysCfg *sysdb, const char *name)
 {
-    return cfgdb->getDbVar(name);
+    return sysdb->getDbVar(name);
 }
 
 //old version deprecated
@@ -1095,66 +1095,121 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, 
     return dbs.size();   
 }
 
-cJSON* cfgdbFindAddArray(sysCfg* cfgdb, const char* field)
+cJSON* sysdbFindAddArray(sysCfg* sysdb, const char* field)
 {
     // look for cJSON Object called field
-    cJSON* cjf = cJSON_GetObjectItem(cfgdb->cj, field);
+    cJSON* cjf = cJSON_GetObjectItem(sysdb->cj, field);
     if(!cjf)
     {
         cJSON* cja =cJSON_CreateArray();
-        cJSON_AddItemToObject(cfgdb->cj,field,cja);
-        cjf = cJSON_GetObjectItem(cfgdb->cj, field);
+        cJSON_AddItemToObject(sysdb->cj,field,cja);
+        cjf = cJSON_GetObjectItem(sysdb->cj, field);
     }
     return cjf;
 }
 
+// this sends out sets for ech command received.
+void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
+{
+    const char *uri;
+    char turi[1024];
+
+    if (db->uri)
+    {
+        uri = db->uri
+    }
+    else
+    {
+        snprintf(turi,sizeof(turi),"/components/%s", sys->id );
+        uri = (const char *)turi;
+    }
+    
+    char *out = cJSON_PrintUnformatted(cj);
+    if (out) 
+    {
+        char tmp[1024];
+        snprintf(tmp,sizeof(tmp),"/%s/%s", uri, db->name );
+
+        if(sys->p_fims)
+        {
+            sys->p_fims->Send("set", tmp, NULL, out);
+        }
+        else
+        {
+            FPS_ERROR_PRINT("%s Error in sys->p_fims\n", __FUNCTION__ );
+        }    
+        free(out);
+    }
+}
 // possibly used in outstation comand handler to publish changes
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
+void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
 {
-    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON* cji = cJSON_CreateObject();
-    // todo resolve name
-    cJSON_AddNumberToObject(cji,"offset",index);
-    //const char* indexName = cfgindextoName(AOP16,index);
-    //cJSON_AddStringToObject(cji,"offset",indexName);
-    cJSON_AddNumberToObject(cji,"value", cmd.value);
-    cJSON_AddItemToArray(cjf, cji);
-    cfgdb->cjloaded++;
+    DbVar* db = getDbVarId(AnIn16 , index)
+    if (db)
+    {
+        cJSON* cjf = sysdbFindAddArray(sysdb, field);
+        cJSON* cjv = cJSON_CreateObject();
+        cJSON* cji = cJSON_CreateObject();
+        cJSON_AddNumberToObject(cji,"value", cmd.value);
+        cJSON_AddItemToObject(cji,db->name,cji);
+        cJSON_AddItemToArray(cjf, cji);
+        sysdb->cjloaded++;
+        sendCmdSet(sysdb, db, cji);
+
+    }
 }
 
-
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
+void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
 {
-    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON* cji = cJSON_CreateObject();
-    cJSON_AddNumberToObject(cji,"offset",index);
-    cJSON_AddNumberToObject(cji,"value", cmd.value);
-    cJSON_AddItemToArray(cjf,cji);
-    cfgdb->cjloaded++;
+    DbVar* db = getDbVarId(AnIn32 , index)
+    if (db)
+    {
+        cJSON* cjf = sysdbFindAddArray(sysdb, field);
+        cJSON* cjv = cJSON_CreateObject();
+        cJSON* cji = cJSON_CreateObject();
+        cJSON_AddNumberToObject(cji,"value", cmd.value);
+        cJSON_AddItemToObject(cji,db->name,cji);
+        cJSON_AddItemToArray(cjf, cji);
+        sysdb->cjloaded++;
+        sendCmdSet(sysdb, db, cji);
+    }
+
 }
 
-void cfgdbAddtoRecord(sysCfg* cfgdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
+void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
 {
-    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON* cji = cJSON_CreateObject();
-    cJSON_AddNumberToObject(cji,"offset",index);
-    cJSON_AddNumberToObject(cji,"value", cmd.value);
-    cJSON_AddItemToArray(cjf,cji);
-    cfgdb->cjloaded++;
+    DbVar* db = getDbVarId(AnF32 , index)
+    if (db)
+    {
+        cJSON* cjf = sysdbFindAddArray(sysdb, field);
+        cJSON* cjv = cJSON_CreateObject();
+        cJSON* cji = cJSON_CreateObject();
+        cJSON_AddNumberToObject(cji,"value", cmd.value);
+        cJSON_AddItemToObject(cji,db->name,cji);
+        cJSON_AddItemToArray(cjf, cji);
+        sysdb->cjloaded++;
+        sendCmdSet(sysdb, db, cji);
+    }
 }
 
-void cfgdbAddtoRecord(sysCfg* cfgdb, const char* field, const char* cmd, uint16_t index)
+void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_t index)
 {
-    cJSON* cjf = cfgdbFindAddArray(cfgdb, field);
-    cJSON* cji = cJSON_CreateObject();
-    cJSON_AddNumberToObject(cji,"offset",index);
-    cJSON_AddStringToObject(cji,"value", cmd);
-    cJSON_AddItemToArray(cjf, cji);
-    cfgdb->cjloaded++;
+    DbVar* db = getDbVarId(AnF32 , index)
+    if (db)
+    {
+        cJSON* cjf = sysdbFindAddArray(sysdb, field);
+        cJSON* cjv = cJSON_CreateObject();
+        cJSON* cji = cJSON_CreateObject();
+        cJSON_AddStringToObject(cji,"value", cmd);
+        cJSON_AddItemToObject(cji,db->name,cji);
+        cJSON_AddItemToArray(cjf, cji);
+        sysdb->cjloaded++;
+        sendCmdSet(sysdb, db, cji);
+    }
 }
 
 // TODO allow a setup option in the config file to supply the SOEname
-const char* cfgGetSOEName(sysCfg* cfgdb, const char* fname)
+const char* cfgGetSOEName(sysCfg* sysdb, const char* fname)
 {
     return fname;
 }
