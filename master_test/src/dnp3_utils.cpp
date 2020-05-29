@@ -620,6 +620,28 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         parse_object(sys, JSON_objects, idx);
     return true;
 }
+// this needs to go into dnp3_utils
+int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, const char **slogs, int snum)
+{
+    int num = sys->getSubs(NULL, 0, who);
+    subs= (const char **) malloc((num+3) * sizeof(char *));
+    if(subs == NULL)
+    {
+        FPS_ERROR_PRINT("Failed to creae subs array.\n");
+        //rc = 1;
+        return -1;
+    }
+    bpubs = (bool *) malloc((num+3) * sizeof(bool));
+    memset(bpubs, false, (num+3) * sizeof(bool)); // all false we hope
+
+    num = sys->getSubs(subs, num, who);
+    for (int i = 0;  < snum; i++)
+    {
+        subs[num++] = slogs[i];
+    }
+    return num;
+}
+    //subs[num++] = sub_array[2];
 
 // int xparse_system(cJSON *system, system_config *config)
 // {
