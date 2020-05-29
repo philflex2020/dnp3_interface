@@ -26,7 +26,7 @@ using namespace opendnp3;
 
 namespace asiodnp3
 {
-opendnp3::CommandCallbackT fpsCommandCalback::Get()
+opendnp3::CommandCallbackT fpsCommandCallback::Get()
 {
     return [](const ICommandTaskResult& result) -> void {
         //std::cout << "Received command result w/ summary: " << TaskCompletionToString(result.summary) << std::endl;
