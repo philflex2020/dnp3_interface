@@ -98,7 +98,7 @@ typedef struct DbVar_t {
 
     ~DbVar_t()
     {
-        if(uri)free(uri);
+        if(uri)free((void *)uri);
     }
 
     int addBit(const char*bit)
@@ -198,7 +198,7 @@ typedef struct sysCfg_t {
     }
     ~sysCfg_t()
     {
-        FPS_DEBUG_PRINT" %s closing \n", __FUNCTION__);
+        FPS_DEBUG_PRINT(" %s closing \n", __FUNCTION__);
 
         //if(name)free(name);
         if(protocol)free(protocol);
