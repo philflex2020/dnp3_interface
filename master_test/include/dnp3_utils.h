@@ -41,136 +41,6 @@ typedef std::map<const char*, body_map*, char_cmp> uri_map;
 
 int variation_decode(const char* ivar);
 
-//typedef struct _modbus modbus_t;
-
-// typedef struct _dnp3_mapping_t {
-//     int nb_bits;
-//     int start_bits;
-//     int nb_input_bits;
-//     int start_input_bits;
-//     int nb_input_registers;
-//     int start_input_registers;
-//     int nb_registers;
-//     int start_registers;
-//     uint8_t *tab_bits;
-//     uint8_t *tab_input_bits;
-//     uint16_t *tab_input_registers;
-//     uint16_t *tab_registers;
-// } dnp3_mapping_t;
-
-// enum Type_of_Register {
-//     Coil, Discrete_Input, Input_Register, Holding_Register, AnalogIP, AnalogOP, BinaryIP, BinaryOP, Num_Register_Types
-// };
-
-// // one of these for each register ??
-// typedef struct maps_t{
-//     unsigned int    reg_off;
-//     unsigned int    num_regs;
-//     unsigned int    num_strings;
-//     int    shift;
-//     double scale;
-//     char*  reg_name;
-//     char*  uri;
-//     bool   sign;
-//     bool   floating_pt;
-//     bool   is_bool;
-//     bool   bit_field;
-//     bool   individual_bits;
-//     uint64_t data; // used only for individual_bits, read-modify-write construct
-//     bool   enum_type;
-//     bool   random_enum_type;
-//     char ** bit_strings;
-//     std::map<int,char*> random_enum;
-//     maps_t()
-//     {
-//         reg_name = uri = NULL;
-//         bit_strings = NULL;
-//         reg_off = num_regs = num_strings = 0;
-//         scale = 0.0;
-//         shift = 0;
-//         sign = floating_pt = is_bool = false;
-//         bit_field = individual_bits = enum_type = random_enum_type = false;
-//     }
-//     ~maps_t()
-//     {
-//         if(reg_name != NULL)
-//             free (reg_name);
-//         if(uri != NULL)
-//             free (uri);
-//         if(bit_strings != NULL)
-//         {
-//             for(unsigned int i = 0; i < num_regs * 16; i++)
-//                 if(bit_strings[i] != NULL) free(bit_strings[i]);
-//             delete [] bit_strings;
-//         }
-//     }
-// } maps;
-
-// //Holds all the information related to registers whose value needs to be read
-// typedef struct {
-//     Type_of_Register reg_type;
-//     unsigned int start_offset;
-//     unsigned int num_regs;
-//     unsigned int map_size;
-//     maps *register_map;
-// } datalog;
-
-// // an inividual mapping register
-// typedef struct smapr {
-//     bool bvalue;
-//     float avalue;
-//     unsigned int ivalue;
-//     int type;
-//     smapr(int _type) {
-//         avalue = 0.0;
-//         bvalue = false;
-//         ivalue = 0;
-//         type = _type;
-//     }
-//     ~smapr(){};
-    
-// } mapr;
-
-// the server data type is given to the dnp3 process
-// the dnp3 will load  data items by value type and index and then trigger a send
-// typedef struct sdata
-// {
-//     uri_map uri_to_register;
-//     maps** regs_to_map[Num_Register_Types];
-//     dnp3_mapping_t* mb_mapping;
-//     //void* mb_mapping;
-//     fims* p_fims;
-//     const char** uris;
-//     const char* base_uri;
-//     int num_uris;
-//     sdata()
-//     {
-//         memset(regs_to_map, 0, Num_Register_Types * sizeof(maps**));
-//         mb_mapping = NULL;
-//         p_fims = NULL;
-//         uris = NULL;
-//         base_uri = NULL;
-//         num_uris = 0;
-//     }
-  
-//     int datasendAdd( mapr * mr)
-//     {
-//         return 0;
-//     }
-
-// } server_data;
-
-// "system": {
-//        "protocol": "DNP3",
-//        "version": 1,
-//        "id": "dnp3_outstation",
-//        "ip_address": "192.168.1.50",
-//        "port": 502,
-//        "local_address": 1,
-//		"remote_address": 0
-//    },
-//TODO use real types
-// test code for dnp3_utils
 
 enum Type_of_Var{
     AnIn16,
@@ -225,6 +95,11 @@ typedef struct DbVar_t {
         }
         variation = variation_decode(ivariation);
     };
+
+    ~DbVar_t()
+    {
+        if(uri)free(uri);
+    }
 
     int addBit(const char*bit)
     {
@@ -323,7 +198,7 @@ typedef struct sysCfg_t {
     }
     ~sysCfg_t()
     {
-        std::cout<<" "<<__FUNCTION__<<" closing\n" ;
+        FPS_DEBUG_PRINT" %s closing \n", __FUNCTION__);
 
         //if(name)free(name);
         if(protocol)free(protocol);
@@ -333,7 +208,7 @@ typedef struct sysCfg_t {
         if (name) free(name);
 
         if (cj) cJSON_Delete(cj);
-     // TODO clear out maps
+        cleanUpDbMaps();
     };
 
     public:
