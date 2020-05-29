@@ -1127,7 +1127,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     char *out = cJSON_PrintUnformatted(cj);
     if (out) 
     {
-        char tmp[1024];
+        char tmp[2048];
         snprintf(tmp, sizeof(tmp), "/%s/%s", uri, db->name.c_str() );
 
         if(sysdb->p_fims)
