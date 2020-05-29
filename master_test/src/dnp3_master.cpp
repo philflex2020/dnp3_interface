@@ -278,7 +278,7 @@ int main(int argc, char *argv[])
 
     FPS_DEBUG_PRINT("Map configured: Initializing data.\n");
     //if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
-    if(p_fims->Subscribe((const char**)subs, num, (bool *bpubs) == false)
+    if(p_fims->Subscribe((const char**)subs, num, (bool *)bpubs) == false)
     {
         FPS_ERROR_PRINT("Subscription failed.\n");
         p_fims->Close();
