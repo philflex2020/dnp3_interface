@@ -635,7 +635,7 @@ int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, c
     memset(bpubs, false, (num+3) * sizeof(bool)); // all false we hope
 
     num = sys->getSubs(subs, num, who);
-    for (int i = 0;  < snum; i++)
+    for (int i = 0; i < snum; i++)
     {
         subs[num++] = slogs[i];
     }
