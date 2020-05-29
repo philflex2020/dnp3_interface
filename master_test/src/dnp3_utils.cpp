@@ -1150,11 +1150,11 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOu
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
-        cJSON_AddNumberToObject(cji,"value", cmd.value);
-        cJSON_AddItemToObject(cji,db->name,cji);
+        cJSON_AddNumberToObject(cjv,"value", cmd.value);
+        cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
-        sendCmdSet(sysdb, db, cji);
+        sendCmdSet(sysdb, db, cjv);
 
     }
 }
@@ -1167,11 +1167,11 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
-        cJSON_AddNumberToObject(cji,"value", cmd.value);
-        cJSON_AddItemToObject(cji,db->name,cji);
+        cJSON_AddNumberToObject(cjv,"value", cmd.value);
+        cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
-        sendCmdSet(sysdb, db, cji);
+        sendCmdSet(sysdb, db, cjv);
     }
 
 }
@@ -1184,11 +1184,11 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
-        cJSON_AddNumberToObject(cji,"value", cmd.value);
-        cJSON_AddItemToObject(cji,db->name,cji);
+        cJSON_AddNumberToObject(cjv,"value", cmd.value);
+        cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
-        sendCmdSet(sysdb, db, cji);
+        sendCmdSet(sysdb, db, cjv);
     }
 }
 
@@ -1200,11 +1200,11 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
-        cJSON_AddStringToObject(cji,"value", cmd);
-        cJSON_AddItemToObject(cji,db->name,cji);
+        cJSON_AddStringToObject(cjv,"value", cmd);
+        cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
-        sendCmdSet(sysdb, db, cji);
+        sendCmdSet(sysdb, db, cjv);
     }
 }
 
