@@ -651,7 +651,7 @@ typedef struct sysCfg_t {
 
         int getSubs(const char**subs, int num, const char *who)
         {
-            if (num < uriMap.size())
+            if (num < (int)uriMap.size())
             {
                 return uriMap.size();
             }
@@ -663,7 +663,7 @@ typedef struct sysCfg_t {
             }
             return idx;
         }
-        
+
         // TODO only get the ones for vars applied to this application (outstation or master)
         int getUris(const char *who)
         {
