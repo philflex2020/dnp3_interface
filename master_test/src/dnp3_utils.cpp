@@ -1124,7 +1124,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     }
     else
     {
-        snprintf(turi, sizeof(turi), "/components/%s", sysdb->id );
+        snprintf(turi, sizeof(turi), "components/%s", sysdb->id );
         uri = (const char *)turi;
     }
     
