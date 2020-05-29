@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
     sys_cfg.showUris();
     // this needs to go into dnp3_utils
     int num = sys_cfg.getSubs(NULL, 0, "master");
-    const char **subs= (const char *) malloc((num+3) * sizeof(char *));
+    const char **subs= (const char **) malloc((num+3) * sizeof(char *));
     if(subs == NULL)
     {
         FPS_ERROR_PRINT("Failed to creae subs array.\n");
