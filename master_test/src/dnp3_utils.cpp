@@ -1120,7 +1120,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     }
     else
     {
-        snprintf(turi, sizeof(turi), "/components/%s", sys->id );
+        snprintf(turi, sizeof(turi), "/components/%s", sysdb->id );
         uri = (const char *)turi;
     }
     
@@ -1128,7 +1128,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     if (out) 
     {
         char tmp[1024];
-        snprintf(tmp, sizeof(tmp), "/%s/%s", uri, db->name );
+        snprintf(tmp, sizeof(tmp), "/%s/%s", uri, db->name.c_str() );
 
         if(sysdb->p_fims)
         {
@@ -1136,7 +1136,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
         }
         else
         {
-            FPS_ERROR_PRINT("%s Error in sys->p_fims\n", __FUNCTION__ );
+            FPS_ERROR_PRINT("%s Error in sysdb->p_fims\n", __FUNCTION__ );
         }    
         free(out);
     }
