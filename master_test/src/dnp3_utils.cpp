@@ -1144,7 +1144,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
 // possibly used in outstation comand handler to publish changes
 void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
 {
-    DbVar* db = getDbVarId(AnIn16 , index)
+    DbVar* db = sysdb->getDbVarId(AnIn16 , index)
     if (db)
     {
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
@@ -1161,7 +1161,7 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOu
 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
 {
-    DbVar* db = getDbVarId(AnIn32 , index)
+    DbVar* db = sysdb->getDbVarId(AnIn32 , index)
     if (db)
     {
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
@@ -1178,7 +1178,7 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
 {
-    DbVar* db = getDbVarId(AnF32 , index)
+    DbVar* db = sysdb->getDbVarId(AnF32 , index)
     if (db)
     {
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
@@ -1194,7 +1194,7 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
 
 void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_t index)
 {
-    DbVar* db = getDbVarId(AnF32 , index)
+    DbVar* db = sysdb->getDbVarId(AnF32 , index)
     if (db)
     {
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
