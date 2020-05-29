@@ -157,14 +157,7 @@ int main(int argc, char* argv[])
     int fims_connect = 0;
     int ttick = 0; // timeout tick
     p_fims = new fims();
-    const char *sub_array[]={
-        (const char *)"/interfaces",
-        (const char*)"/components",
-        (const char*)"/fooey",
-        NULL
-        };
     
-    bool publish_only[3] = {false,false,false};
     bool running = true;
     
     cJSON* config = get_config_json(argc, argv);
@@ -193,6 +186,19 @@ int main(int argc, char* argv[])
 
     cJSON_Delete(config);
 
+    const char *sub_array[]={
+        (const char *)"/interfaces",
+        (const char*)"/fooey",
+        NULL
+        };
+    const char **subs = NULL;
+    bool *bpubs = NULL;
+    int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 2);
+    if(num < 0)
+    {
+        FPS_ERROR_PRINT("Failed to create subs array.\n");
+        return 1;
+    }
     sys_cfg.p_fims = p_fims = new fims();
 
     if (p_fims == NULL)
@@ -217,7 +223,7 @@ int main(int argc, char* argv[])
         //goto cleanup;
     } 
 
-    if(p_fims->Subscribe((const char**)sub_array, 3, (bool *)publish_only) == false)
+    if(p_fims->Subscribe(subs, num, bpubs) == false)
     {
         FPS_ERROR_PRINT("Subscription failed.\n");
         p_fims->Close();
