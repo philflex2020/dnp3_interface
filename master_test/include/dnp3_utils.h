@@ -565,21 +565,23 @@ typedef struct sysCfg_t {
 
         // dbvar_map dbMap;
         // dbix_map dbMapIx[Type_of_Var::NumTypes];
-        // duri_map uriMap;  it->first is from a strdup
+        // duri_map uriMap;  it->first is from a strdup it->second is a vector
         // bits_map bitsMap;
         void cleanUpDbMaps()
         {
             FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
-            dbvar_map::iterator it;
-            for (it = dbMap.begin(); it != dbMap.end(); ++it)
             {
-                DbVar* db = it->second;
-                FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
-                            , it->first.c_str()
-                            , db->type
-                            , db->offset
-                            );
-                delete db;
+                dbvar_map::iterator it;
+                for (it = dbMap.begin(); it != dbMap.end(); ++it)
+                {
+                    DbVar* db = it->second;
+                    FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
+                                , it->first.c_str()
+                                , db->type
+                                , db->offset
+                                );
+                    delete db;
+                }
             }
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
             dbMap.clear();
@@ -591,6 +593,16 @@ typedef struct sysCfg_t {
                 // }
                 dbMapIx[i].clear();
             }
+            {
+                duri_map::iterator it;
+                for (it = uriMap.begin(); it != uriMap.end(); ++it)
+                {
+                    free((void *)it->first);
+                    it->second.clear();
+                }
+                uriMap.clear();
+            }
+
         }
 
         void showDbMap()
