@@ -38,6 +38,7 @@ struct char_cmp {
 typedef struct maps_t maps;
 typedef std::map<const char*, std::pair<bool*, maps**>, char_cmp> body_map;
 typedef std::map<const char*, body_map*, char_cmp> uri_map;
+typedef std::vector<std::pair<const char*,int>> bits_map;
 
 int variation_decode(const char* ivar);
 
@@ -165,7 +166,8 @@ typedef struct DbVar_t {
 
 
     // used for bit fields
-    std::vector<std::pair<const char*,int>>dbBits;
+    //std::vector<std::pair<const char*,int>>
+    bits_map dbBits;
 
     uint8_t initSet;
 } DbVar;
@@ -178,11 +180,11 @@ typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
 typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed vars here
 
 // this is for the bits
-typedef std::map<const char*, std::pair<DbVar_t*,int>, char_dcmp>bits_map;
+//typedef std::map<const char*, std::pair<DbVar_t*,int>, char_dcmp>bits_map;
 
 
 int addVarToCj(cJSON* cj, DbVar*db);
-int addVarToCj(cJSON* cj,std::pair<DbVar*,int>dbp);
+int addVarToCj(cJSON* cj, std::pair<DbVar*,int>dbp);
 int addVarToCj(cJSON* cj, const char *dname);
 int addVarToCj(cJSON* cj, DbVar* db, int flag);
 
