@@ -88,11 +88,25 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // but understanding the options are important.
     //OutstationStackConfig config(DatabaseSizes::AllTypes(10));
     //OutstationStackConfig config(DatabaseSizes::AllTypes(10));
+    // cfgdb.binary.size(),  // binary input
+	// 	0,                     // double binary input
+	// 	cgdb.analog.size(),    // analog  input
+	// 	0,                     // counter input
+	// 	0,                     // frozen counter
+	// 	cfgdb.binaryop.size(), // binary output status 
+	// 	0,                     // analog output status
+	// 	0,                     // time and intervat
+	// 	0                      // octet string
     cout<<"Binaries: "<<fpsDB->dbMapIx[Type_Binary].size()<<" Analogs: "<<fpsDB->dbMapIx[Type_Analog].size()<<endl;
-    OutstationStackConfig config(DatabaseSizes(fpsDB->dbMapIx[Type_Binary].size(),
+    OutstationStackConfig config(DatabaseSizes( fpsDB->dbMapIx[Type_Binary].size(),
                                                 0,
                                                 fpsDB->dbMapIx[Type_Analog].size(),
-                                                0,0,0,0,0,0));
+                                                0,
+                                                0,
+                                                fpsdb->dbMapIx[Type_BinaryOS].size(),
+                                                fpsdb->dbMapIx[Type_AnalogOS].size(),
+                                                0,
+                                                0));
 
     // Specify the maximum size of the event buffers. Defaults to 0
     // config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);

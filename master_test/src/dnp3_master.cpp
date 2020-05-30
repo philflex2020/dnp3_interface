@@ -188,11 +188,7 @@ int main(int argc, char *argv[])
 {
     fims* p_fims;
     p_fims = new fims();
-    const char *sub_array[]={
-        (const char *)"/interfaces",
-        (const char*)"/fooey",
-        NULL
-        };
+    
     //char* uri;
     //bool publish_only[3] = {false,false,false};
     bool running = true;
@@ -235,15 +231,18 @@ int main(int argc, char *argv[])
    
     sys_cfg.showDbMap();
     sys_cfg.showUris();
+
+    const char *sub_array[]={
+        (const char *)"/interfaces",
+        (const char*)"/fooey",
+        NULL
+        };
     const char **subs = NULL;
     bool *bpubs = NULL;
-    
     int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 2);
-
     if(num < 0)
     {
-        FPS_ERROR_PRINT("Failed to creae subs array.\n");
-        //rc = 1;
+        FPS_ERROR_PRINT("Failed to create subs array.\n");
         return 1;
     }
 

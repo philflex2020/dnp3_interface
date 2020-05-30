@@ -499,8 +499,8 @@ OutstationStackConfig stack(
 		cgdb.analog.size(),    // analog  input
 		0,                     // counter input
 		0,                     // frozen counter
-		cfgdb.binaryop.size(), // binary output status
-		0,                     // analog output
+		cfgdb.binaryop.size(), // binary output status 
+		0,                     // analog output status
 		0,                     // time and intervat
 		0                      // octet string
 		)

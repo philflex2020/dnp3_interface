@@ -27,7 +27,7 @@ The key is tellig the master which var is associated with the index of the retur
 Luckily both master ad outstation use the same var mapping.
 A var tagged for a response is simply marked as such in its data def and now both sides know about it.
 "response":"analog"  will do the trick.
- 
+Having done this both master and outstation will be able to track the var.
 
 
 
