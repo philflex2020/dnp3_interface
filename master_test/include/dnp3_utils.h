@@ -455,7 +455,7 @@ typedef struct sysCfg_t {
 
         void setupResp(const char* who)
         {
-            if (strcmp(who,(const char*)"ouststion") == 0 )
+            if (strcmp(who,(const char*)"outstation") == 0 )
             {
                useResp[AnF32] = true;
                useResp[AnIn16] = true;
