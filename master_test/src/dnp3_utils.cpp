@@ -335,6 +335,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
     const char* dname = db->name.c_str();
     switch (db->type)
     {
+        case Type_AnalogOS:
         case Type_Analog:
         {
             if(flag)
@@ -363,6 +364,8 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
             }
             break;
         }
+
+        case Type_BinaryOS:
         case Type_Binary:
         {
             if(flag)
