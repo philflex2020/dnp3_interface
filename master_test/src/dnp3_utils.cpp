@@ -466,8 +466,9 @@ int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname)
 
     return addVarToCj(cj, db, 0);
 }
-
-const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary",0 };
+// these are the types decoded from the config file
+// must match the typedef sequence
+const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary", 0 };
 
 const char *iotypToStr (int t)
 {
@@ -605,7 +606,15 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         }
         if(response)
         {
-            FPS_DEBUG_PRINT(" config adding response for [%s] id [%d]\n", id->valuestring, offset->valueint);
+            FPS_DEBUG_PRINT(" config adding response [%s] for [%s] id [%d]\n", response->valuestring,id->valuestring, offset->valueint);
+            if (strcmp(response->valuestring., "analog")== 0)
+            {
+                char tmp[1024];
+                snprintf(tmp, sizeof(tmp),"%s_OS", id->valuestring);
+                // thats it tie it down NOW
+                db->resp = sys->addDbVar(tmp, Type_AnalogOS, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+                dp->resp->parent = db;  // link it back
+            }
 
         }
         //if we see a response, decode the response type and add that to the status vars
@@ -799,7 +808,10 @@ bool checkWho(sysCfg*sys, DbVar* db, const char *who)
     if (strcmp("outstation",who) == 0)
     {
        if((db->type == Type_Analog ) || (db->type == Type_Binary)) return true;
+       // if we have a resp registers then we can set it
+       if(db->resp != NULL) return true;
     }
+
     else
     {
        if((db->type == AnIn16 ) 
@@ -878,7 +890,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // set /components/master/dnp3_outstation '{"name1":1, "name2":23.56}'
     // or 
     // set /components/master/dnp3_outstation '{"name1":{"value":1}, "name2":{"value":2}'}
-    // TODO add pubs for outstation
+    // TODO are posts OK
     if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0))
     {
         FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
@@ -994,6 +1006,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     }
                     else
                     {
+                        // TODO handle resp
                         sys->setDbVar(db, itypeValues);
                         dbs.push_back(std::make_pair(db, flag));
                     }     
@@ -1047,6 +1060,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     }
                     else
                     {
+                        // TODO make this work for resp vars
                         addValueToVec(dbs, sys, cjit->string, cjit, 0);
                     }
                     cjit = cjit->next;
@@ -1060,7 +1074,9 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 }
 
 // TODO need no dbs option
-int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name , cJSON *cjvalue, int flag)
+// TODO handle resp code
+// add who to sys
+int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, int flag)
 {
     // cjoffset must be a name
     // cjvalue may be an object

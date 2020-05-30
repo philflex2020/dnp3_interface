@@ -87,6 +87,7 @@ typedef struct DbVar_t {
         bit = -1;
         parent = NULL;
         initSet = 0;
+        resp = NULL;
 
         if(iuri)
         {
@@ -171,6 +172,8 @@ typedef struct DbVar_t {
     std::vector<std::pair<const char*,int>>/*bits_map*/dbBits;
 
     uint8_t initSet;
+    DbVar_t* resp;      // we have a resp linked to this  
+
 } DbVar;
 
 typedef std::map<std::string, DbVar_t*> dbvar_map;

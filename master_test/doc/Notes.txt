@@ -1,8 +1,8 @@
 pwilshire
-  may 29, 2020
+May 29, 2020
 
 problem ... we stup an output from the master station 
-it gets delivered to the outstation as an ANINT16, AnInt32 , an AnF32 anF64 or a crob.
+it gets delivered to the outstation as an ANINT16, AnInt32, AnF32 or a crob.
 There seem to be no other types.
 
 Now the outstation will attemp to set a setpoint at the outstation . A set will be sent to cause the periperal to be given a taget.
