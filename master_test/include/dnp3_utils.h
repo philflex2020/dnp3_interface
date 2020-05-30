@@ -200,7 +200,10 @@ typedef struct sysCfg_t {
         cj = NULL;
         cjloaded = 0;
         pub = strdup("MyPubs");  // TODO remove this
-
+        for (int i = 0; i < (int)Type_of_Var::NumTypes ; i++)
+        {
+            useResp[i] = false;
+        }
     }
     ~sysCfg_t()
     {
@@ -258,6 +261,7 @@ typedef struct sysCfg_t {
                 switch (db->type) 
                 {
                     case Type_Analog:
+                    case Type_AnalogOS:
                     {
                         // also copy valueint or the group30var5 stuff
                         db->valuedouble = fval;
@@ -270,6 +274,7 @@ typedef struct sysCfg_t {
                         return  1;
                     } 
                     case Type_Binary:
+                    case Type_BinaryOS:
                     {
                         db->valueint = (int)fval;
                         return  1;
@@ -306,6 +311,7 @@ typedef struct sysCfg_t {
                 switch (db->type) 
                 {
                     case Type_Analog:
+                    case Type_AnalogOS:
                     {
                         // also copy valueint or the group30var5 stuff
                         db->valuedouble = (double)ival;
@@ -318,6 +324,7 @@ typedef struct sysCfg_t {
                         return  1;
                     } 
                     case Type_Binary:
+                    case Type_BinaryOS:
                     {
                         db->valueint = ival;
                         return  1;
@@ -352,11 +359,13 @@ typedef struct sysCfg_t {
             {
                 switch (db->type) 
                 {
+                    case Type_AnalogOS:
                     case Type_Analog:
                     case AnF32:
                     {
                         return setDb(db, cj->valuedouble);
                     }    
+                    case Type_BinaryOS:
                     case Type_Binary:
                     case AnIn32:
                     case AnIn16:
@@ -444,6 +453,22 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
+        void setupResp(const char* who)
+        {
+            if (strcmp(who,(const char*)"ouststion") == 0 )
+            {
+               useResp[AnF32] = true;
+               useResp[AnIn16] = true;
+               useResp[AnIn32] = true;
+               useResp[Type_Crob] = true;
+            }
+            else // master
+            {
+                useResp[Type_Analog] = true;
+                useResp[Type_Binary] = true;
+            }
+            
+        }
         // dbvar_map dbMap;
         // dbix_map dbMapIx[Type_of_Var::NumTypes];
         // duri_map uriMap;  it->first is from a strdup it->second is a vector
@@ -750,6 +775,7 @@ typedef struct sysCfg_t {
         bits_map bitsMap;
 
         int numObjs[Type_of_Var::NumTypes];
+        bool useResp[Type_of_Var::NumTypes]; // set true if writes to this type should be diverted to resp if setup
 
         fims* p_fims;
         cJSON* cj;  

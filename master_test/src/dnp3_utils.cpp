@@ -900,6 +900,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
 
     // get is OK codewise..
+    // TODO watch for resp vars 
     if(strcmp(msg->method, "get") == 0)
     {
         FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
@@ -989,6 +990,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 {
                     if (itypeValues->type == cJSON_String)
                     {
+                        // TODO manage RESP
                         if(db->type == Type_Crob)
                         {
                             uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
@@ -1006,7 +1008,17 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     }
                     else
                     {
-                        // TODO handle resp
+                        // handle resp
+                        if(sys->useResp[db->type] && (db->resp != NULL))
+                        {
+                            FPS_ERROR_PRINT(" ***** %s using resp [%s] for a set to [%s]\n"
+                                            , __FUNCTION__
+                                            , db->resp->name.c_str()
+                                            , db->name.c_str()
+                                            );
+                            db = db->resp;
+                        }
+
                         sys->setDbVar(db, itypeValues);
                         dbs.push_back(std::make_pair(db, flag));
                     }     
@@ -1117,7 +1129,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
                                                     , name
                                                     , (int)StringToControlCode(cjvalue->valuestring)
                                                     );
-
+        // TODO resp
         sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
@@ -1129,6 +1141,16 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
             (db->type == AnF32)
             )
     {
+        if(sys->useResp[db->type] && (db->resp != NULL))
+        {
+            FPS_ERROR_PRINT(" ***** %s using resp [%s] for a set to [%s]\n"
+                            , __FUNCTION__
+                            , db->resp->name.c_str()
+                            , db->name.c_str()
+                            );
+            db = db->resp;
+        }
+
         sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
