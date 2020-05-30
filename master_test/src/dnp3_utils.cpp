@@ -968,7 +968,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             {
                 if (!checkWho(sys, db, who))
                 {
-                    FPS_DEBUG_PRINT("Found variable [%s] type  %d NOT set ON %s\n"
+                    FPS_ERROR_PRINT("Found variable [%s] type  %d NOT set ON %s\n"
                                 , db->name.c_str()
                                 , db->type
                                 , who
@@ -1009,14 +1009,17 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     else
                     {
                         // handle resp
-                        if(sys->useResp[db->type] && (db->resp != NULL))
+                        //if(sys->useResp[db->type] && (db->resp != NULL))
+                        if(db->resp != NULL)
                         {
-                            FPS_ERROR_PRINT(" ***** %s using resp [%s] for a set to [%s]\n"
+                            FPS_ERROR_PRINT(" ***** %s using resp (%s) as [%s] for a set to [%s]\n"
                                             , __FUNCTION__
+                                            , sys->useResp[db_type]?"true":"false"
                                             , db->resp->name.c_str()
                                             , db->name.c_str()
                                             );
-                            db = db->resp;
+                            if(sys->useResp[db->type])
+                                db = db->resp;
                         }
 
                         sys->setDbVar(db, itypeValues);
