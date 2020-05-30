@@ -607,13 +607,13 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         if(response)
         {
             FPS_DEBUG_PRINT(" config adding response [%s] for [%s] id [%d]\n", response->valuestring,id->valuestring, offset->valueint);
-            if (strcmp(response->valuestring., "analog")== 0)
+            if (strcmp(response->valuestring, "analog")== 0)
             {
                 char tmp[1024];
                 snprintf(tmp, sizeof(tmp),"%s_OS", id->valuestring);
                 // thats it tie it down NOW
                 db->resp = sys->addDbVar(tmp, Type_AnalogOS, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
-                dp->resp->parent = db;  // link it back
+                db->resp->parent = db;  // link it back
             }
 
         }
