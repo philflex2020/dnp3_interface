@@ -603,6 +603,11 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         {
             sys->addDefUri(db);
         }
+        if(response)
+        {
+            FPS_DEBUG_PRINT(" config adding response for [%s] id [%d]\n", id->valuestring, offset->valueint);
+
+        }
         //if we see a response, decode the response type and add that to the status vars
         // if respidx == analog then resptype =  Type_AnalogOS
         //db = sys->addDbVar(id->valuestring+"_OS", resptype, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
