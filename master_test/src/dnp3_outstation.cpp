@@ -103,8 +103,8 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
                                                 fpsDB->dbMapIx[Type_Analog].size(),
                                                 0,
                                                 0,
-                                                fpsdb->dbMapIx[Type_BinaryOS].size(),
-                                                fpsdb->dbMapIx[Type_AnalogOS].size(),
+                                                fpsDB->dbMapIx[Type_BinaryOS].size(),
+                                                fpsDB->dbMapIx[Type_AnalogOS].size(),
                                                 0,
                                                 0));
 
