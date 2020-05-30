@@ -1,3 +1,35 @@
+pwilshire
+  may 29, 2020
+
+problem ... we stup an output from the master station 
+it gets delivered to the outstation as an ANINT16, AnInt32 , an AnF32 anF64 or a crob.
+There seem to be no other types.
+
+Now the outstation will attemp to set a setpoint at the outstation . A set will be sent to cause the periperal to be given a taget.
+The peripheral will then provide feedack on the actual value in use.
+master send value .. outstation set target (set <uri> <value>)
+This means that a value must have been declared as a master friendly variable AnInt32 or something else.
+The wish is for selected variable to have an automatic feedback path.
+There are special variables called AnalogutputStatus bytes.
+
+THe outstation will respond to a pub function but will normally reject variables that are designated as master origin variables.
+an attempt to set or pub those on an outstation are normally rejected.
+However if an outstation output var is desired to be automatically linked to a status variable.
+
+Follow this sequence
+master set to a holding register.
+master sends this to outstation  outstation issues a set to process via the uri associated with the variable.
+The process issues a Pub to the same uri/var with a response value.
+Te outstation sees that such a pub has to be returned to the master and sets an analogOutputStatus var.
+   1+++> flag the var to return a status.
+The outstation will return the value in an AnalogOutputStatus var Whic is simply an index into the AnalogOutputStatus list.
+The key is tellig the master which var is associated with the index of the return value.
+Luckily both master ad outstation use the same var mapping.
+A var tagged for a response is simply marked as such in its data def and now both sides know about it.
+"response":"analog"  will do the trick.
+ 
+
+
 
 
 pwilshire
