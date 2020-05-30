@@ -1014,7 +1014,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                         {
                             FPS_ERROR_PRINT(" ***** %s using resp (%s) as [%s] for a set to [%s]\n"
                                             , __FUNCTION__
-                                            , sys->useResp[db_type]?"true":"false"
+                                            , sys->useResp[db->type]?"true":"false"
                                             , db->resp->name.c_str()
                                             , db->name.c_str()
                                             );
