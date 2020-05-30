@@ -545,13 +545,13 @@ bool parse_system(cJSON* cji, sysCfg* sys)
     if(ret) ret = getCJstr(cj,"name",            sys->name,           false);
     return ret;
 }
-
+// parse an individual variable
 int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 {
 
-    cJSON *id, *offset, *uri, *bf, *bits, *variation;
+    cJSON *id, *offset, *uri, *bf, *bits, *variation, *response;
 
-    cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr (idx));
+    cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr(idx));
     if (JSON_list == NULL)
     {
         FPS_ERROR_PRINT("[%s] objects missing from config! \n",iotypToStr (idx));
@@ -568,12 +568,13 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
             FPS_ERROR_PRINT("Invalid or NULL binary at %d\n", i);
             continue;
         }
-        id      = cJSON_GetObjectItem(obj, "id");
-        offset  = cJSON_GetObjectItem(obj, "offset");
+        id        = cJSON_GetObjectItem(obj, "id");
+        offset    = cJSON_GetObjectItem(obj, "offset");
         variation = cJSON_GetObjectItem(obj, "variation");
-        uri     = cJSON_GetObjectItem(obj, "uri");
-        bf      = cJSON_GetObjectItem(obj, "bit_field");
-        bits    = cJSON_GetObjectItem(obj, "bit_strings");
+        uri       = cJSON_GetObjectItem(obj, "uri");
+        bf        = cJSON_GetObjectItem(obj, "bit_field");
+        bits      = cJSON_GetObjectItem(obj, "bit_strings");
+        response  = cJSON_GetObjectItem(obj, "response");
         //"bit_field": true,
         //"bit_strings": [
             // "some String"
@@ -602,7 +603,9 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         {
             sys->addDefUri(db);
         }
-        
+        //if we see a response, decode the response type and add that to the status vars
+        // if respidx == analog then resptype =  Type_AnalogOS
+        //db = sys->addDbVar(id->valuestring+"_OS", resptype, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
     }
     return  sys->numObjs[idx]; 
 }
@@ -641,7 +644,6 @@ int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, c
     }
     return num;
 }
-    //subs[num++] = sub_array[2];
 
 // int xparse_system(cJSON *system, system_config *config)
 // {
