@@ -476,7 +476,7 @@ const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analo
 const char *iotypToStr (int t)
 {
 //    if (t < Type_of_Var::NumTypes)
-    if (t < (int) sizeof(dreg_types)/sizeof(dreg_types[0]))
+    if (t < (int) sizeof(dreg_types)/(int)sizeof(dreg_types[0]))
     {
         return dreg_types[t];
     }
