@@ -613,9 +613,17 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
             if (strcmp(response->valuestring, "analog")== 0)
             {
                 char tmp[1024];
-                snprintf(tmp, sizeof(tmp),"%s_OS", id->valuestring);
+                snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
                 // thats it tie it down NOW
-                db->resp = sys->addDbVar(tmp, Type_AnalogOS, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+                db->resp = sys->addDbVar(tmp, Type_Analog, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+                db->resp->parent = db;  // link it back
+            }
+            else if (strcmp(response->valuestring, "binary")== 0)
+            {
+                char tmp[1024];
+                snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
+                // thats it tie it down NOW
+                db->resp = sys->addDbVar(tmp, Type_Binary, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
                 db->resp->parent = db;  // link it back
             }
 
