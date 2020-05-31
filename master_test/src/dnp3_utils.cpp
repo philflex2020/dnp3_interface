@@ -553,7 +553,7 @@ bool parse_system(cJSON* cji, sysCfg* sys)
 int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 {
 
-    cJSON *id, *offset, *uri, *bf, *bits, *variation, *response;
+    cJSON *id, *offset, *uri, *bf, *bits, *variation, *readback;
 
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr(idx));
     if (JSON_list == NULL)
@@ -578,7 +578,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         uri       = cJSON_GetObjectItem(obj, "uri");
         bf        = cJSON_GetObjectItem(obj, "bit_field");
         bits      = cJSON_GetObjectItem(obj, "bit_strings");
-        response  = cJSON_GetObjectItem(obj, "response");
+        readback  = cJSON_GetObjectItem(obj, "readback");
         //"bit_field": true,
         //"bit_strings": [
             // "some String"
@@ -607,30 +607,30 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         {
             sys->addDefUri(db);
         }
-        if(response)
+        if(readback)
         {
-            FPS_DEBUG_PRINT(" config adding response [%s] for [%s] id [%d]\n", response->valuestring,id->valuestring, offset->valueint);
-            if (strcmp(response->valuestring, "analog")== 0)
+            FPS_DEBUG_PRINT(" config adding readback [%s] for [%s] id [%d]\n", readback->valuestring,id->valuestring, offset->valueint);
+            if (strcmp(readback->valuestring, "analog")== 0)
             {
                 char tmp[1024];
                 snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
                 // thats it tie it down NOW
-                db->resp = sys->addDbVar(tmp, Type_Analog, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
-                db->resp->parent = db;  // link it back
+                db->readb = sys->addDbVar(tmp, Type_Analog, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+                db->readb->parent = db;  // link it back
             }
-            else if (strcmp(response->valuestring, "binary")== 0)
+            else if (strcmp(readback->valuestring, "binary")== 0)
             {
                 char tmp[1024];
                 snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
                 // thats it tie it down NOW
-                db->resp = sys->addDbVar(tmp, Type_Binary, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
-                db->resp->parent = db;  // link it back
+                db->readb = sys->addDbVar(tmp, Type_Binary, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+                db->readb->parent = db;  // link it back
             }
 
         }
-        //if we see a response, decode the response type and add that to the status vars
-        // if respidx == analog then resptype =  Type_AnalogOS
-        //db = sys->addDbVar(id->valuestring+"_OS", resptype, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+        //if we see a readback, decode the readback type and add that to the status vars
+        // if readbidx == analog then readbtype =  Type_AnalogOS
+        //db = sys->addDbVar(id->valuestring+"_OS", readbtype, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
     }
     return  sys->numObjs[idx]; 
 }
@@ -819,8 +819,8 @@ bool checkWho(sysCfg*sys, DbVar* db, const char *who)
     if (strcmp("outstation",who) == 0)
     {
        if((db->type == Type_Analog ) || (db->type == Type_Binary)) return true;
-       // if we have a resp registers then we can set it
-       if(db->resp != NULL) return true;
+       // if we have a readb registers then we can set it
+       if(db->readb != NULL) return true;
     }
 
     else
@@ -890,7 +890,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     }              
     uri = msg->pfrags[fragptr+1];
 
-    // TODO look for the interfaces response
+    // TODO look for the interfaces readback
 
     //FPS_DEBUG_PRINT(" %s Running with uri: [%s] \n", __FUNCTION__, uri);
     if (strncmp(uri, sys->id, strlen(sys->id)) != 0)
@@ -911,7 +911,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
 
     // get is OK codewise..
-    // TODO watch for resp vars 
+    // TODO watch for readb vars 
     if(strcmp(msg->method, "get") == 0)
     {
         FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
@@ -1001,12 +1001,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 {
                     if (itypeValues->type == cJSON_String)
                     {
-                        // TODO manage RESP
+                        // TODO manage readb
                         if(db->type == Type_Crob)
                         {
                             uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
                             sys->setDbVarIx(Type_Crob, db->offset, cval);
-                            // send the response
+                            // send the readback
                             dbs.push_back(std::make_pair(db, flag));
 
                             FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval 0x%02x\n"
@@ -1019,18 +1019,18 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     }
                     else
                     {
-                        // handle resp
-                        //if(sys->useResp[db->type] && (db->resp != NULL))
-                        if(db->resp != NULL)
+                        // handle readb
+                        //if(sys->usereadb[db->type] && (db->readb != NULL))
+                        if(db->readb != NULL)
                         {
-                            FPS_ERROR_PRINT(" ***** %s using resp (%s) as [%s] for a set to [%s]\n"
+                            FPS_ERROR_PRINT(" ***** %s using readb (%s) as [%s] for a set to [%s]\n"
                                             , __FUNCTION__
-                                            , sys->useResp[db->type]?"true":"false"
-                                            , db->resp->name.c_str()
+                                            , sys->usereadb[db->type]?"true":"false"
+                                            , db->readb->name.c_str()
                                             , db->name.c_str()
                                             );
-                            if(sys->useResp[db->type])
-                                db = db->resp;
+                            if(sys->useReadb[db->type])
+                                db = db->readb;
                         }
 
                         sys->setDbVar(db, itypeValues);
@@ -1086,7 +1086,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     }
                     else
                     {
-                        // TODO make this work for resp vars
+                        // TODO make this work for readb vars
                         addValueToVec(dbs, sys, cjit->string, cjit, 0);
                     }
                     cjit = cjit->next;
@@ -1100,7 +1100,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 }
 
 // TODO need no dbs option
-// TODO handle resp code
+// TODO handle readb code
 // add who to sys
 int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, int flag)
 {
@@ -1143,7 +1143,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
                                                     , name
                                                     , (int)StringToControlCode(cjvalue->valuestring)
                                                     );
-        // TODO resp
+        // TODO readb
         sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
@@ -1155,14 +1155,14 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
             (db->type == AnF32)
             )
     {
-        if(sys->useResp[db->type] && (db->resp != NULL))
+        if(sys->useReadb[db->type] && (db->readb != NULL))
         {
-            FPS_ERROR_PRINT(" ***** %s using resp [%s] for a set to [%s]\n"
+            FPS_ERROR_PRINT(" ***** %s using readb [%s] for a set to [%s]\n"
                             , __FUNCTION__
-                            , db->resp->name.c_str()
+                            , db->readb->name.c_str()
                             , db->name.c_str()
                             );
-            db = db->resp;
+            db = db->readb;
         }
 
         sys->setDbVar(name, cjvalue);

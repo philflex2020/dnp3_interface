@@ -87,7 +87,7 @@ typedef struct DbVar_t {
         bit = -1;
         parent = NULL;
         initSet = 0;
-        resp = NULL;
+        readb = NULL;
 
         if(iuri)
         {
@@ -172,7 +172,7 @@ typedef struct DbVar_t {
     std::vector<std::pair<const char*,int>>/*bits_map*/dbBits;
 
     uint8_t initSet;
-    DbVar_t* resp;      // we have a resp linked to this  
+    DbVar_t* readb;      // we have a readb linked to this  
 
 } DbVar;
 
@@ -202,7 +202,7 @@ typedef struct sysCfg_t {
         pub = strdup("MyPubs");  // TODO remove this
         for (int i = 0; i < (int)Type_of_Var::NumTypes ; i++)
         {
-            useResp[i] = false;
+            useReadb[i] = false;
         }
     }
     ~sysCfg_t()
@@ -453,19 +453,19 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
-        void setupResp(const char* who)
+        void setupReadb(const char* who)
         {
             if (strcmp(who,(const char*)"outstation") == 0 )
             {
-               useResp[AnF32] = true;
-               useResp[AnIn16] = true;
-               useResp[AnIn32] = true;
-               useResp[Type_Crob] = true;
+               useReadb[AnF32] = true;
+               useReadb[AnIn16] = true;
+               useReadb[AnIn32] = true;
+               useReadb[Type_Crob] = true;
             }
             else // master
             {
-                useResp[Type_Analog] = true;
-                useResp[Type_Binary] = true;
+                useReadb[Type_Analog] = true;
+                useReadb[Type_Binary] = true;
             }
             
         }
@@ -775,7 +775,7 @@ typedef struct sysCfg_t {
         bits_map bitsMap;
 
         int numObjs[Type_of_Var::NumTypes];
-        bool useResp[Type_of_Var::NumTypes]; // set true if writes to this type should be diverted to resp if setup
+        bool useReadb[Type_of_Var::NumTypes]; // set true if writes to this type should be diverted to readb if setup
 
         fims* p_fims;
         cJSON* cj;  

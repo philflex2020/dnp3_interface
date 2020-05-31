@@ -205,7 +205,7 @@ int main(int argc, char* argv[])
         cJSON_Delete(config);
         return 1;
     }
-    sys_cfg.setupResp((const char*)"outstation");
+    sys_cfg.setupReadb((const char*)"outstation");
     sys_cfg.showDbMap();
     sys_cfg.showUris();
 

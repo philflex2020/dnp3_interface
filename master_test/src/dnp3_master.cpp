@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
 
     cJSON_Delete(config);
 
-    sys_cfg.setupResp((const char*)"master");
+    sys_cfg.setupReadb((const char*)"master");
     sys_cfg.showDbMap();
     sys_cfg.showUris();
 
