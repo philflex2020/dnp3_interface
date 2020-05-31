@@ -29,7 +29,59 @@ A var tagged for a response is simply marked as such in its data def and now bot
 "response":"analog"  will do the trick.
 Having done this both master and outstation will be able to track the var.
 
+pwilshire
+May 31, 2020
 
+
+
+More on the output readback system.
+I have distilled this requirement as follows.
+Normally an output from the master to the outstation is write ( and due to local DB read) in the master and read (but no write) on the outstation.
+The readback function is intended to provide a way for the system on the outstation to respond with an actual value in reply to the setpoint. request from the master.
+The setup of this requirement is simply addressed using a "readback" keyword in the config file.
+ For example:
+    "AnOPInt32": [
+
+          {
+                "id": "voltageSP",
+                "offset": 3,
+                "name": "voltageSP",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/home/mystuff/uri",
+                "readback":"analog"
+            }
+
+The readback keyword triggers the creation of a readback var in both master and outstation local databases.
+the name has a "_" prepended.
+Setting a value on the master for voltageSP will send the setpoint to the outstation.
+
+fims_send -m set -r /me -u /components/dnp3_master/voltageSP '{"value":3444}'
+
+The master and outstation can read the voltageSP value.
+
+fims_send -m get -r /me -u /components/dnp3_outstation/voltageSP
+{"voltageSP":3444Also read the value from the Master ( local DB)
+fims_send -m get -r /me -u /components/dnp3_master/voltageSP
+{"voltageSP":3444}
+
+With the new readback option, the outstation can now write a value to the same variable
+
+ fims_send -m set -r /me -u /components/dnp3_outstation/voltageSP '{"value":6444}'
+
+This will cause the value "6444" to be returned to the master as a new variable "_voltageSP"
+
+The original value can be read from both master and outstation as "voltageSP" and the readback value can be discovered by reading the value "_voltageSP"
+This outstation behavior is now in the branch.
+
+If required, the master can be modified so that a read of the local value from the original name "voltageSP" will return the readback value.
+Both the  outstation  and master config files will need to have the readback keys in their  config files.
+( We need this to maintain the variable / point index tracking).
+There are two options for readback keys "analog" or "binary" ( these may be designated automatically).
+The variation for the readback key data item will be worked out automatically.
+We have a number of different output types AnInt16, AnIt32, AnF32, AnF64 and CROB.
+Note I have not worked out what to do about the CROB system yet. I think we need to send simply "on" or "off" commands to it . These could be simply mapped to LATCH_ON and LATCH_OFF.
+I'll review the Modbus system and come up with a plan.
 
 
 pwilshire
