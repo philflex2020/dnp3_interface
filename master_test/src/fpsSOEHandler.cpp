@@ -101,7 +101,7 @@ void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
     return PrintAll(info, values);
 }
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<AnalogOutputStatus>>& values) {
-    FPS_DEBUG_PRINT("******************************AnOpSta: \n"); auto print = [](const Indexed<BinaryCommandEvent>& pair) {
+    FPS_DEBUG_PRINT("******************************AnOpSta: \n"); 
     std::cout << "AnalogOutputStatus: ";
     auto print = [](const Indexed<AnalogOutputStatus>& pair) {
             std::cout << "[" << pair.index << "] : ["  << pair.value.value << " ] "
