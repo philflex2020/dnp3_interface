@@ -41,7 +41,7 @@ fims *p_fims;
 void ConfigureDatabase(DatabaseConfig& config, sysCfg* fpsDB)
 {
     // just deal with analog vars and Group30Var5, this allows floating point numbers through the system
-    auto dsize = fpsDB->dbMapIx[Type_Analog].size();
+    auto dsize = fpsDB->dbVec[Type_Analog].size();
     for (int i = 0; i < (int)dsize; i++)
     {
         DbVar* db = fpsDB->getDbVarId(Type_Analog, i);
@@ -97,21 +97,21 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
 	// 	0,                     // analog output status
 	// 	0,                     // time and intervat
 	// 	0                      // octet string
-    cout<<"Binaries: "<<fpsDB->dbMapIx[Type_Binary].size()<<" Analogs: "<<fpsDB->dbMapIx[Type_Analog].size()<<endl;
-    OutstationStackConfig config(DatabaseSizes( fpsDB->dbMapIx[Type_Binary].size(),
+    cout<<"Binaries: "<<fpsDB->dbVec[Type_Binary].size()<<" Analogs: "<<fpsDB->dbVec[Type_Analog].size()<<endl;
+    OutstationStackConfig config(DatabaseSizes( fpsDB->dbVec[Type_Binary].size(),
                                                 0,
-                                                fpsDB->dbMapIx[Type_Analog].size(),
+                                                fpsDB->dbVec[Type_Analog].size(),
                                                 0,
                                                 0,
-                                                fpsDB->dbMapIx[Type_BinaryOS].size(),
-                                                fpsDB->dbMapIx[Type_AnalogOS].size(),
+                                                fpsDB->dbVec[Type_BinaryOS].size(),
+                                                fpsDB->dbVec[Type_AnalogOS].size(),
                                                 0,
                                                 0));
 
     // Specify the maximum size of the event buffers. Defaults to 0
     // config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
-    config.outstation.eventBufferConfig.maxBinaryEvents = fpsDB->dbMapIx[Type_Binary].size(),
-    config.outstation.eventBufferConfig.maxAnalogEvents = fpsDB->dbMapIx[Type_Analog].size(),
+    config.outstation.eventBufferConfig.maxBinaryEvents = fpsDB->dbVec[Type_Binary].size(),
+    config.outstation.eventBufferConfig.maxAnalogEvents = fpsDB->dbVec[Type_Analog].size(),
     // Specify the maximum size of the event buffers
     //config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
 

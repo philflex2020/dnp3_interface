@@ -179,6 +179,8 @@ typedef struct DbVar_t {
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
 typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
+typedef std::vector<DbVar_t*> dbvec;
+
 
 // used in parseBody the int is a print flag to include "value"
 typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed vars here
@@ -228,9 +230,10 @@ typedef struct sysCfg_t {
             if (dbMap.find(name) == dbMap.end()){
                 db = new DbVar(name, type, offset, uri, variation);
                 dbMap[name] = db;
-                if(dbMapIx[type].find(offset) == dbMapIx[type].end())
+                dbVec[type].push_back(db);
+                if(dbMapIxs[type].find(offset) == dbMapIxs[type].end())
                 {   
-                    dbMapIx[type][offset] = db;
+                    dbMapIxs[type][offset] = db;
                 }
                 else
                 {
@@ -411,9 +414,9 @@ typedef struct sysCfg_t {
         int setDbVarIx(int dbtype, int idx, double fval)
         {
             DbVar* db = NULL;
-            if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
+            if(idx < (int)dbVec[dbtype].size())
             {   
-                db = dbMapIx[dbtype][idx];
+                db = dbVec[dbtype][idx];
             }
             if (db != NULL)
             {
@@ -425,9 +428,9 @@ typedef struct sysCfg_t {
         int setDbVarIx(int dbtype, int idx, int ival)
         {
             DbVar* db = NULL;
-            if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
+            if(idx < (int)dbVec[dbtype].size())
             {   
-                db = dbMapIx[dbtype][idx];
+                db = dbVec[dbtype][idx];
             }
             if (db != NULL)
             {
@@ -446,9 +449,9 @@ typedef struct sysCfg_t {
 
         DbVar* getDbVarId(int dbtype, int idx)
         {
-            if(dbMapIx[dbtype].find(idx) != dbMapIx[dbtype].end())
+            if(idx < (int)dbVec[dbtype].size())
             {   
-                return dbMapIx[dbtype][idx];
+                return dbVec[dbtype][idx];
             }
             return NULL;
         };
@@ -497,7 +500,7 @@ typedef struct sysCfg_t {
                 // {
                 //     free((void *)dbMapIx[i][j].first);
                 // }
-                dbMapIx[i].clear();
+                dbVec[i].clear();
             }
             {
                 duri_map::iterator it;
@@ -770,7 +773,8 @@ typedef struct sysCfg_t {
 
         // new way of doing this
         dbvar_map dbMap;
-        dbix_map dbMapIx[Type_of_Var::NumTypes];
+        dbvec    dbVec[Type_of_Var::NumTypes];
+        dbix_map dbMapIxs[Type_of_Var::NumTypes];
         duri_map uriMap;
         bits_map bitsMap;
 

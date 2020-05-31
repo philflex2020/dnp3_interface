@@ -5,28 +5,27 @@ problem ... we stup an output from the master station
 it gets delivered to the outstation as an ANINT16, AnInt32, AnF32 or a crob.
 There seem to be no other types.
 
-Now the outstation will attemp to set a setpoint at the outstation . A set will be sent to cause the periperal to be given a taget.
+Now the outstation will attemp to set a setpoint at the outstation . A set FIMS message will be sent to cause the periperal to be given a target.
 The peripheral will then provide feedack on the actual value in use.
-master send value .. outstation set target (set <uri> <value>)
-This means that a value must have been declared as a master friendly variable AnInt32 or something else.
-The wish is for selected variable to have an automatic feedback path.
-There are special variables called AnalogutputStatus bytes.
+master sends value .. outstation set target (set <uri> <value>)
+This means that a value must have been declared as a master output variable AnInt32 or something else.
+The requirement  is for selected variable to have an  feedback path.
 
-THe outstation will respond to a pub function but will normally reject variables that are designated as master origin variables.
+THe outstation will respond to a pub function but will normally reject variables that are designated as master variables.
 an attempt to set or pub those on an outstation are normally rejected.
-However if an outstation output var is desired to be automatically linked to a status variable.
+However if an outstation output var is desired to be automatically linked to a status variable the result of the set should be returned to the master.
 
 Follow this sequence
 master set to a holding register.
-master sends this to outstation  outstation issues a set to process via the uri associated with the variable.
-The process issues a Pub to the same uri/var with a response value.
-Te outstation sees that such a pub has to be returned to the master and sets an analogOutputStatus var.
+master sends this to outstation,  outstation issues a set to the outstation process via the uri associated with the variable.
+The outstation process issues a Pub to the same uri/var with a response value.
+Te outstation sees that such a pub has to be returned to the master and sets a feeedback  var.
    1+++> flag the var to return a status.
-The outstation will return the value in an AnalogOutputStatus var Whic is simply an index into the AnalogOutputStatus list.
-The key is tellig the master which var is associated with the index of the return value.
-Luckily both master ad outstation use the same var mapping.
-A var tagged for a response is simply marked as such in its data def and now both sides know about it.
-"response":"analog"  will do the trick.
+The outstation will return the value in the feedback var 
+
+Luckily both master ad outstation use the same config files.
+A var tagged for a feedback is simply marked as such in its data def and now both master and outstation can map it correctly.
+"readback":"analog"  will do the trick.
 Having done this both master and outstation will be able to track the var.
 
 pwilshire
