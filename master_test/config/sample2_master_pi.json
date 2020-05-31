@@ -14,12 +14,11 @@
         "protocol": "DNP3",
         "version": 1,
         "id": "dnp3_master",
-        "ip_address2": "192.168.1.45",
-        "ip_address": "127.0.0.1",
+        "ip_address": "192.168.1.45",
+        "ip_address2": "127.0.0.1",
         "port": 20001,
         "local_address": 1,
-	"remote_address": 10,
-        "frequency":5000
+	"remote_address": 10
     },
     "objects": {
         "binary": [
@@ -122,16 +121,8 @@
                 "unit": "MW",
                 "signed": true,
                 "uri": "/home/mystuff/uri"
-            },
-            {
-                "id": "voltageSP",
-                "offset": 3,
-                "name": "voltageSP",
-                "unit": "MW",
-                "signed": true,
-                "uri": "/home/mystuff/uri",
-                "readback":"analog"
-            }        
+            }
+        
         ],
         "AnOPInt16": [
             {

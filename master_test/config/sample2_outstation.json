@@ -122,8 +122,16 @@
                 "unit": "MW",
                 "signed": true,
                 "uri": "/home/mystuff/uri"
-            }
-        
+            },
+            {
+                "id": "voltageSP",
+                "offset": 3,
+                "name": "voltageSP",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/home/mystuff/uri",
+		"readback":"analog"
+            }        
         ],
         "AnOPInt16": [
             {
