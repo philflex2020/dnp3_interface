@@ -1020,12 +1020,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     else
                     {
                         // handle readb
-                        //if(sys->usereadb[db->type] && (db->readb != NULL))
+                        //if(sys->useReadb[db->type] && (db->readb != NULL))
                         if(db->readb != NULL)
                         {
                             FPS_ERROR_PRINT(" ***** %s using readb (%s) as [%s] for a set to [%s]\n"
                                             , __FUNCTION__
-                                            , sys->usereadb[db->type]?"true":"false"
+                                            , sys->useReadb[db->type]?"true":"false"
                                             , db->readb->name.c_str()
                                             , db->name.c_str()
                                             );
