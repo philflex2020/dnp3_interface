@@ -270,6 +270,17 @@ typedef struct sysCfg_t {
         {
             if(db != NULL)
             {
+                if (db->linkback != NULL)
+                {
+                    if (db->linkb == NULL)
+                    {
+                        db->linkb = getDbVar(db->linkback);
+                    }
+                    if (db->linkb != NULL)
+                    {
+                        setDb(db->linkb, fval);
+                    }
+                }
                 db->initSet = 1;
                 switch (db->type) 
                 {
@@ -279,6 +290,7 @@ typedef struct sysCfg_t {
                         // also copy valueint or the group30var5 stuff
                         db->valuedouble = fval;
                         db->valueint =  static_cast<int32_t>(fval);
+
                         return 1;
                     }    
                     case AnF32:
@@ -320,6 +332,17 @@ typedef struct sysCfg_t {
         {
             if(db != NULL)
             {
+                if (db->linkback != NULL)
+                {
+                    if (db->linkb == NULL)
+                    {
+                        db->linkb = getDbVar(db->linkback);
+                    }
+                    if (db->linkb != NULL)
+                    {
+                        setDb(db->linkb, ival);
+                    }
+                }
                 db->initSet = 1;
                 switch (db->type) 
                 {
