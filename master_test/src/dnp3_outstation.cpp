@@ -325,21 +325,31 @@ int main(int argc, char* argv[])
                     cj = cJSON_CreateObject();
                     
                 UpdateBuilder builder;
+                int varcount = 0;
                 while (!dbs.empty())
                 {
                     std::pair<DbVar*,int>dbp = dbs.back();
                     DbVar* db = dbp.first;
-                    // only do this on sets or posts
-                    if ((strcmp(msg->method,"set") == 0) || (strcmp(msg->method,"post") == 0))
-                        addVarToBuilder(builder, db);
+                    // only do this on sets pubs or  posts
+                    if (
+                        (strcmp(msg->method,"set") == 0) || 
+                        (strcmp(msg->method,"post") == 0) || 
+                        (strcmp(msg->method,"pub") == 0)
+                        )
+                        {
+                            varcount++
+                            addVarToBuilder(builder, db);
+                        }
                     addVarToCj(cj, dbp);  // include flag
                     dbs.pop_back();
                 }
 
                 //finalize set of updates
-                auto updates = builder.Build();
-                outstation->Apply(updates);
-
+                if(varcount > 0) 
+                {
+                    auto updates = builder.Build();
+                    outstation->Apply(updates);
+                }
                 if(cj)
                 {
                     if(msg->replyto)

@@ -124,7 +124,7 @@ Group30Var5  Analog Input single precision with flags (Float)
 Group30Var6  Analog Input double precision with flags (Double)
 
 Typical low level stuff
-    Type(value,flag), index
+    Type(value, flag), index
     Update(Analog(42, 0x01), 5);
     Update(Analog(41, 0x01), 6);
     
