@@ -85,7 +85,6 @@ typedef struct DbVar_t {
         anInt32 = 0;
         anF32 = 0.0;
         crob = 0;
-        xvalflag = 0;
         bit = -1;
         parent = NULL;
         initSet = 0;
@@ -154,7 +153,6 @@ typedef struct DbVar_t {
     std::string name;
     const char* site;    // furute use for site.
     const char* uri;
-    int xvalflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
     int type;
     int variation;         // space to flag different DNP3 variation like Group30var5
     int offset;
@@ -515,24 +513,22 @@ typedef struct sysCfg_t {
                 }
                 uriMap.clear();
             }
-
         }
 
         void showDbMap()
         {
             FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
-
-            dbvar_map::iterator it;
-            for (it = dbMap.begin(); it != dbMap.end(); ++it)
+            for (int i = 0; i < (int)Type_of_Var::NumTypes; i++)
             {
-                DbVar* db = it->second;
-                FPS_ERROR_PRINT(" idx [%d] ->name :[%s] Type :[%d] offset : [%d] ===> \n"
+                for (int j = 0; j < (int)dbVec[i].size(); j++)
+                {
+                    DbVar* db = dbVec[i][j];
+                        FPS_ERROR_PRINT(" idx [%d] ->name :[%s] Type :[%d] offset : [%d] ===> \n"
                             , db->idx
-                            , it->first.c_str()
+                            , db->id.c_str()
                             , db->type
                             , db->offset
                             );
-
             }
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
         }
