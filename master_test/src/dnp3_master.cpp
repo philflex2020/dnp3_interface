@@ -203,13 +203,13 @@ int main(int argc, char *argv[])
         FPS_ERROR_PRINT("Error reading config file\n");
         return 1;
     }
-    if(!parse_system(config, &sys_cfg)) 
+    if(!parse_system(config, &sys_cfg, "master")) 
     {
         FPS_ERROR_PRINT("Error reading system from config file.\n");
         cJSON_Delete(config);
         return 1;
     }
-    if(!parse_variables(config, &sys_cfg)) 
+    if(!parse_variables(config, &sys_cfg, "master")) 
     {
         FPS_ERROR_PRINT("Error reading variabled from config file.\n");
         cJSON_Delete(config);

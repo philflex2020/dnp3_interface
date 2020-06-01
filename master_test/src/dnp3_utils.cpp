@@ -558,11 +558,9 @@ bool parse_system(cJSON* cji, sysCfg* sys)
     return ret;
 }
 // parse an individual variable
-int  parse_object(sysCfg* sys, cJSON* objs, int idx)
+int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
 {
-
     cJSON *id, *offset, *uri, *bf, *bits, *variation, *readback, *linkback;
-
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr(idx));
     if (JSON_list == NULL)
     {
@@ -619,20 +617,46 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         // Deal with linkback option ( which replaces readback function)
         // the master SOEhandler will cause the linkback value to be updated.
         // we may mirror this in the outstation handler too.  
-        if(linkback)
+        // master and outstation have different linkback types
+        if((idx == Type_Analog) || (idx == Type_Binary)) 
         {
-            // copy the variable name into the linkback string.
-            // char* linkback; 
-            // DbVar* linkb
-            // the variable may not exist yet so it will be found later.
-            if (linkback->valuestring != NULL)
+            if (strcmp(who,"outstation") ==0)
             {
-                FPS_ERROR_PRINT(" Setting linkback variable name to [%s]\n", linkback->valuestring);
-                db->linkback = strdup(linkback->valuestring);
-                db->linkb = sys->getDbVar(linkback->valuestring);
+                if(linkback)
+                {
+                    // copy the variable name into the linkback string.
+                    // char* linkback; 
+                    // DbVar* linkb
+                    // the variable may not exist yet so it will be found later.
+                    if (linkback->valuestring != NULL)
+                    {
+                        FPS_ERROR_PRINT(" Setting linkback variable name to [%s]\n", linkback->valuestring);
+                        db->linkback = strdup(linkback->valuestring);
+                        db->linkb = sys->getDbVar(linkback->valuestring);
+                    }
+                }
             }
         }
-
+        else
+        {
+            if (strcmp(who, "master") ==0)
+            {
+                if(linkback)
+                {
+                    // copy the variable name into the linkback string.
+                    // char* linkback; 
+                    // DbVar* linkb
+                    // the variable may not exist yet so it will be found later.
+                    if (linkback->valuestring != NULL)
+                    {
+                        FPS_ERROR_PRINT(" Setting linkback variable name to [%s]\n", linkback->valuestring);
+                        db->linkback = strdup(linkback->valuestring);
+                        db->linkb = sys->getDbVar(linkback->valuestring);
+                    }
+                }
+            }
+        }
+        
         if(readback)
         {
             FPS_DEBUG_PRINT(" config adding readback [%s] for [%s] id [%d]\n", readback->valuestring,id->valuestring, offset->valueint);
@@ -668,9 +692,10 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
     return  sys->numObjs[idx]; 
 }
 
-bool parse_variables(cJSON* object, sysCfg* sys)
+bool parse_variables(cJSON* object, sysCfg* sys, const char* who)
 {
     // config file has "objects" with children groups "binary" and "analog"
+    // who is needd to stop cross referencing linkvars
     cJSON *JSON_objects = cJSON_GetObjectItem(object, "objects");
     if (JSON_objects == NULL)
     {
@@ -678,7 +703,7 @@ bool parse_variables(cJSON* object, sysCfg* sys)
         return false;
     }
     for (int idx = 0; idx< Type_of_Var::NumTypes; idx++)
-        parse_object(sys, JSON_objects, idx);
+        parse_object(sys, JSON_objects, idx, who);
     return true;
 }
 // this needs to go into dnp3_utils

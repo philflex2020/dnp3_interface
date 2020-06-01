@@ -164,14 +164,14 @@ int main(int argc, char* argv[])
 
     }
 
-    if(!parse_system(config, &sys_cfg)) 
+    if(!parse_system(config, &sys_cfg, "outstation")) 
     {
         fprintf(stderr, "Error parsing config file system.\n");
         cJSON_Delete(config);
         return 1;
     }
 
-    if(!parse_variables(config, &sys_cfg)) 
+    if(!parse_variables(config, &sys_cfg, "outstation")) 
     {
         fprintf(stderr, "Error parsing config file variables.\n");
         cJSON_Delete(config);
