@@ -166,6 +166,7 @@ typedef struct DbVar_t {
     uint32_t anInt32;
     double anF32;
     uint8_t crob;
+    int idx;      // type index
 
 
     // used for bit fields
