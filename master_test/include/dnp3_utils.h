@@ -69,7 +69,9 @@ enum {
     NumVars
 };
 
-
+// flag options for reporting
+#define PRINT_VALUE      1 << 0
+#define PRINT_PARENT     1 << 1
 
 // local copy of all inputs and outputs
 // Also used with bit fields
@@ -152,7 +154,7 @@ typedef struct DbVar_t {
     std::string name;
     const char* site;    // furute use for site.
     const char* uri;
-    int valflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
+    int xvalflag;         // set to a1 to enforce the {"name":{"value":val}}  form of output. follows the last set
     int type;
     int variation;         // space to flag different DNP3 variation like Group30var5
     int offset;
