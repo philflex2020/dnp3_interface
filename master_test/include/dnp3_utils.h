@@ -284,7 +284,7 @@ typedef struct sysCfg_t {
                         }
                         else
                         {
-                            setDb(db->linkb, ival);
+                            setDb(db->linkb, fval);
                         }
                     }
                 }
