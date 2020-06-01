@@ -333,12 +333,14 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
 {
     int rc = 0;
     const char* dname = db->name.c_str();
+    if((flag & PRINT_PARENT) &&  (db->parent != NULL))
+        db = db->parent;
     switch (db->type)
     {
         case Type_AnalogOS:
         case Type_Analog:
         {
-            if(flag)
+            if(flag & PRINT_VALUE)
             {
                 cJSON* cji = cJSON_CreateObject();
                 if(db->variation == Group30Var5)
@@ -368,7 +370,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         case Type_BinaryOS:
         case Type_Binary:
         {
-            if(flag)
+            if(flag & PRINT_VALUE)
             {
                 cJSON* cji = cJSON_CreateObject();
                 cJSON_AddBoolToObject(cji, "value", db->valueint);
@@ -384,7 +386,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         {
             FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u [%s] \n"
                     , __FUNCTION__, dname, db->type, db->crob,ControlCodeToString(TypeToControlCode(db->crob)));
-            if(flag)
+            if(flag & PRINT_VALUE)
             {
                 cJSON* cji = cJSON_CreateObject();
                 cJSON_AddStringToObject(cji, "value", ControlCodeToString(TypeToControlCode(db->crob)));
@@ -398,7 +400,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         }
         case AnIn16:
         {
-            if(flag)
+            if(flag & PRINT_VALUE)
             {
                 cJSON* cji = cJSON_CreateObject();
                 cJSON_AddNumberToObject(cji, "value", db->anInt16);
@@ -412,7 +414,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         }
         case AnIn32:
         {
-            if(flag)
+            if(flag & PRINT_VALUE)
             {
                 cJSON* cji = cJSON_CreateObject();
                 cJSON_AddNumberToObject(cji, "value", db->anInt32);
@@ -426,7 +428,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         }
         case AnF32:
         {
-            if(flag)
+            if(flag & PRINT_VALUE)
             {
                 cJSON* cji = cJSON_CreateObject();
                 cJSON_AddNumberToObject(cji, "value", db->anF32);
@@ -994,7 +996,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 // allow '"string"' OR '{"value":"string"}'
                 if(itypeValues->type == cJSON_Object)
                 {
-                    flag = 1;
+                    flag |= PRINT_VALUE;
                     itypeValues = cJSON_GetObjectItem(itypeValues, "value");
                 }
                 // Only Crob gets a string 
@@ -1031,9 +1033,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                                             , db->name.c_str()
                                             );
                             if(sys->useReadb[db->type])
+                            {
+                                flag |= PRINT_PARENT;
                                 db = db->readb;
+                            }
                         }
-
                         sys->setDbVar(db, itypeValues);
                         dbs.push_back(std::make_pair(db, flag));
                     }     
@@ -1073,7 +1077,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
 
                 while(cjit != NULL)
-                {   
+                {
+                    int flag = 0;   
                     FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
                                             , cjit->string
                                             , (void *)cjit->child
@@ -1088,7 +1093,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     else
                     {
                         // TODO make this work for readb vars
-                        addValueToVec(dbs, sys, cjit->string, cjit, 0);
+                        addValueToVec(dbs, sys, cjit->string, cjit, flag);
                     }
                     cjit = cjit->next;
                 }
@@ -1125,7 +1130,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
 
     if (cjvalue->type == cJSON_Object)
     {
-        flag = 1;
+        flag |= PRINT_VALUE;
         FPS_DEBUG_PRINT(" ************* %s Var [%s] set flag to 1 \n", __FUNCTION__, name);
         cjvalue = cJSON_GetObjectItem(cjvalue, "value");
     }
@@ -1164,6 +1169,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
                             , db->name.c_str()
                             );
             db = db->readb;
+            flag |= PRINT_PARENT;
         }
 
         sys->setDbVar(name, cjvalue);

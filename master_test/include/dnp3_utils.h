@@ -547,10 +547,9 @@ typedef struct sysCfg_t {
                             , db->offset
                             );  
             }
-
         }
 
-        void addVarsToVec(std::vector<DbVar*>&dbs)
+        void addVarsToVec(std::vector<DbVar*>& dbs)
         {
             dbvar_map::iterator it;
             //int flag = 0;
@@ -558,7 +557,7 @@ typedef struct sysCfg_t {
             {
                 DbVar* db = it->second;
                 dbs.push_back(db);
-                std::cout << "added to Vector :" <<it->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+                FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
             }
         }
 
@@ -570,7 +569,7 @@ typedef struct sysCfg_t {
             {
                 DbVar* db = it->second;
                 dbs.push_back(std::make_pair(db,flag));
-                std::cout << "added to Vector :" <<it->first << " => Type:" << db->type <<" offset :"<<db->offset << '\n';
+                FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
             }
         }
 
@@ -819,7 +818,7 @@ int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
 
 cJSON* parseBody( dbs_type&dbs, sysCfg*sys, fims_message*msg, const char* who);
-int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue,int flag);
+int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue, int flag);
 // int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag);
 bool checkWho(sysCfg*sys, const char *name, const char *who);
 bool checkWho(sysCfg*sys, DbVar *db, const char *who);
