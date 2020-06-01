@@ -525,7 +525,7 @@ typedef struct sysCfg_t {
                     DbVar* db = dbVec[i][j];
                         FPS_ERROR_PRINT(" idx [%d] ->name :[%s] Type :[%d] offset : [%d] ===> \n"
                             , db->idx
-                            , db->id.c_str()
+                            , db->name.c_str()
                             , db->type
                             , db->offset
                             );
