@@ -337,7 +337,7 @@ int main(int argc, char* argv[])
                         (strcmp(msg->method,"pub") == 0)
                         )
                         {
-                            varcount++
+                            varcount++;
                             addVarToBuilder(builder, db);
                         }
                     addVarToCj(cj, dbp);  // include flag
