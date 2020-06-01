@@ -160,22 +160,22 @@ void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
     {
         case Type_Crob:
         {
-            commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(db->crob)), db->offset)});
+            commands.Add<ControlRelayOutputBlock>({WithIndex(ControlRelayOutputBlock(ControlCodeFromType(db->crob)), db->idx)});
             break;
         }
         case AnIn16:
         {
-            commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(db->anInt16), db->offset)});
+            commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(db->anInt16), db->idx)});
             break;
         }
         case AnIn32:
         {
-            commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(db->anInt32), db->offset)});
+            commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(db->anInt32), db->idx)});
             break;
         }
         case AnF32:
         {
-            commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(db->anF32), db->offset)});
+            commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(db->anF32), db->idx)});
             break;
         }
         default:
