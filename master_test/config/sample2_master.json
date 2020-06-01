@@ -91,7 +91,7 @@
                 "id": "plant_status",
                 "offset": 5,
                 "name": "Plant Status",
-		"bit_field": true,
+		        "bit_field": true,
                 "bit_strings": [
                     "Self-checking",
                     "Microgrid power supply starting",
@@ -103,6 +103,14 @@
                     "Stop",
                     "Emergency Stop"
                 ]
+            },
+            {
+                "id": "site_voltageSP",
+                "offset": 20,
+                "name": "site_voltageSP",
+                "unit": "kV",
+		        "xvariation":"Group30Var5",
+                "signed": true
             }
 
         ],
@@ -130,7 +138,7 @@
                 "unit": "MW",
                 "signed": true,
                 "uri": "/home/mystuff/uri",
-                "readback":"analog"
+                "linkback":"site_voltageSP"
             }        
         ],
         "AnOPInt16": [

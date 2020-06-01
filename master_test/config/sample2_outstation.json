@@ -103,8 +103,16 @@
                     "Stop",
                     "Emergency Stop"
                 ]
+            },
+            {
+                "id": "site_voltageSP",
+                "offset": 20,
+                "name": "site_voltageSP",
+                "unit": "kV",
+		        "xvariation":"Group30Var5",
+                "signed": true
             }
-
+           
         ],
         "AnOPInt32": [
             {
@@ -129,8 +137,8 @@
                 "name": "voltageSP",
                 "unit": "MW",
                 "signed": true,
-                "uri": "/home/mystuff/uri",
-		"readback":"analog"
+                "uri": "/site",
+		        "linkback":"site_voltageSP"
             }        
         ],
         "AnOPInt16": [

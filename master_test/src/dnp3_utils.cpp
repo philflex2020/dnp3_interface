@@ -561,7 +561,7 @@ bool parse_system(cJSON* cji, sysCfg* sys)
 int  parse_object(sysCfg* sys, cJSON* objs, int idx)
 {
 
-    cJSON *id, *offset, *uri, *bf, *bits, *variation, *readback;
+    cJSON *id, *offset, *uri, *bf, *bits, *variation, *readback, *linkback;
 
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr(idx));
     if (JSON_list == NULL)
@@ -587,6 +587,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         bf        = cJSON_GetObjectItem(obj, "bit_field");
         bits      = cJSON_GetObjectItem(obj, "bit_strings");
         readback  = cJSON_GetObjectItem(obj, "readback");
+        linkback  = cJSON_GetObjectItem(obj, "linkback");
         //"bit_field": true,
         //"bit_strings": [
             // "some String"
@@ -615,6 +616,23 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
         {
             sys->addDefUri(db);
         }
+        // Deal with linkback option ( which replaces readback function)
+        // the master SOEhandler will cause the linkback value to be updated.
+        // we may mirror this in the outstation handler too.  
+        if(linkback)
+        {
+            // copy the variable name into the linkback string.
+            // char* linkback; 
+            // DbVar* linkb
+            // the variable may not exist yet so it will be found later.
+            if (linkback->valuestring != NULL)
+            {
+                FPS_ERROR_PRINT(" Setting linkback variable name\n", linkback->valuestring);
+                db->linkback = strdup(linkback->valuestring);
+                db->linkb = sys->getDbVar(linkback->valuestring);
+            }
+        }
+
         if(readback)
         {
             FPS_DEBUG_PRINT(" config adding readback [%s] for [%s] id [%d]\n", readback->valuestring,id->valuestring, offset->valueint);

@@ -91,6 +91,9 @@ typedef struct DbVar_t {
         parent = NULL;
         initSet = 0;
         readb = NULL;
+        linkb = NULL;  // used to link outstation responses to master vars
+        linkback = NULL;
+
 
         if(iuri)
         {
@@ -106,6 +109,7 @@ typedef struct DbVar_t {
     ~DbVar_t()
     {
         if(uri)free((void *)uri);
+        if(linkback) free((void *)linkback);
     }
 
     int addBit(const char*bit)
@@ -176,6 +180,8 @@ typedef struct DbVar_t {
 
     uint8_t initSet;
     DbVar_t* readb;      // we have a readb linked to this  
+    DbVar_t* linkb;
+    const char* linkback;
 
 } DbVar;
 
