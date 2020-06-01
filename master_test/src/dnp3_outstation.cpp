@@ -42,7 +42,7 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* fpsDB)
 {
     // just deal with analog vars and Group30Var5, this allows floating point numbers through the system
     auto dsize = fpsDB->dbVec[Type_Analog].size();
-    for (int i = 0; i < (int)dsize; i++)
+    for (int i = 0; i < static_cast<int32_t>(dsize); i++)
     {
         DbVar* db = fpsDB->getDbVarId(Type_Analog, i);
         if(db != NULL)
@@ -51,6 +51,11 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* fpsDB)
             {
                 config.analog[i].svariation = StaticAnalogVariation::Group30Var5;
             }
+            else if(db->variation == Group30Var2)
+            {
+                config.analog[i].svariation = StaticAnalogVariation::Group30Var2;
+            }
+
         }
     }   
     // example of configuring analog index 0 for Class2 with floating point variations by default

@@ -65,7 +65,9 @@ struct char_dcmp {
 // only allow 1 type for now
 enum {
     GroupUndef,
+    Group30Var2,
     Group30Var5,
+
     NumVars
 };
 

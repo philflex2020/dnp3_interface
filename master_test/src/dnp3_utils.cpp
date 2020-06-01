@@ -348,7 +348,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
                 {
                     cJSON_AddNumberToObject(cji, "value", db->valuedouble);
                 }
-                else
+                else  //also Group30Var2
                 {
                     cJSON_AddNumberToObject(cji, "value", static_cast<int32_t>(db->valuedouble));                    
                 }
@@ -360,7 +360,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
                 {
                     cJSON_AddNumberToObject(cj, dname, db->valuedouble);
                 }
-                else
+                else // Also Group32Var2
                 {
                     cJSON_AddNumberToObject(cj, dname, static_cast<int32_t>(db->valuedouble));
                 }
@@ -503,6 +503,10 @@ int variation_decode(const char* ivar)
     {
         return Group30Var5;
     }
+    if(ivar && (strcmp(ivar,"Group30Var2")== 0))
+    {
+        return Group30Var2;
+    }
     return GroupUndef;
 }
 
@@ -620,7 +624,14 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
                 snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
                 // thats it tie it down NOW
                 db->readb = sys->addDbVar(tmp, Type_Analog, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+                // TODO sort out variation
+                // AnIn16 -> Group30Var2
+                // AnIn32 -> Group30Var2
+                // AnF32 -> Group30Var5
                 db->readb->parent = db;  // link it back
+                if(db->type == AnIn16) db->readb->variation = Group30Var2;
+                if(db->type == AnF32) db->readb->variation = Group30Var5;
+
             }
             else if (strcmp(readback->valuestring, "binary")== 0)
             {
