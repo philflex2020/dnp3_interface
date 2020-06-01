@@ -230,6 +230,7 @@ typedef struct sysCfg_t {
             if (dbMap.find(name) == dbMap.end()){
                 db = new DbVar(name, type, offset, uri, variation);
                 dbMap[name] = db;
+                db->idx = (int)dbVec[type].size();
                 dbVec[type].push_back(db);
                 if(dbMapIxs[type].find(offset) == dbMapIxs[type].end())
                 {   
@@ -443,7 +444,7 @@ typedef struct sysCfg_t {
         {
             DbVar* db = getDbVar(name);
             if ((db != NULL) && (db->type == dbtype))
-                return db->offset;
+                return db->idx;
             return -1;
         };
 
@@ -770,6 +771,8 @@ typedef struct sysCfg_t {
         int local_address;
         int remote_address;
         int frequency;
+        int idx;
+        char* uri;
 
         // new way of doing this
         dbvar_map dbMap;
