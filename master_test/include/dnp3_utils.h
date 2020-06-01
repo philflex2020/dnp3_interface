@@ -85,7 +85,7 @@ typedef struct DbVar_t {
         anInt32 = 0;
         anF32 = 0.0;
         crob = 0;
-        valflag = 0;
+        xvalflag = 0;
         bit = -1;
         parent = NULL;
         initSet = 0;
