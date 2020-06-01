@@ -332,9 +332,10 @@ ControlCode TypeToControlCode(uint8_t arg)
 int addVarToCj(cJSON* cj, DbVar* db, int flag)
 {
     int rc = 0;
+    // always use the value from the actual compoent 
     const char* dname = db->name.c_str();
     if((flag & PRINT_PARENT) &&  (db->parent != NULL))
-        db = db->parent;
+        dname = db->parent->name.c_str();
     switch (db->type)
     {
         case Type_AnalogOS:
@@ -349,7 +350,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
                 }
                 else
                 {
-                    cJSON_AddNumberToObject(cji, "value", (int)db->valuedouble);                    
+                    cJSON_AddNumberToObject(cji, "value", static_cast<int32_t>(db->valuedouble));                    
                 }
                 cJSON_AddItemToObject(cj, dname, cji);
             }
@@ -361,7 +362,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
                 }
                 else
                 {
-                    cJSON_AddNumberToObject(cj, dname, (int)db->valuedouble);
+                    cJSON_AddNumberToObject(cj, dname, static_cast<int32_t>(db->valuedouble));
                 }
             }
             break;
@@ -478,7 +479,7 @@ const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analo
 const char *iotypToStr (int t)
 {
 //    if (t < Type_of_Var::NumTypes)
-    if (t < (int) sizeof(dreg_types)/(int)sizeof(dreg_types[0]))
+    if (t < static_cast<int32_t> (sizeof(dreg_types))/static_cast<int32_t>(sizeof(dreg_types[0])))
     {
         return dreg_types[t];
     }
@@ -920,7 +921,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
 
         // is this a singleton ? 
-        if ((int)msg->nfrags > fragptr+2)
+        if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
             int flag = 0;  // dont set extra value field
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
@@ -959,7 +960,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         //     //single = 0;
         // }
 
-        if ((int)msg->nfrags > fragptr+2)
+        if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
             if(strstr(msg->uri, "/reply/") != NULL)
@@ -1147,7 +1148,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
                                                     , __FUNCTION__
                                                     , db->name.c_str()
                                                     , name
-                                                    , (int)StringToControlCode(cjvalue->valuestring)
+                                                    , static_cast<int32_t>(StringToControlCode(cjvalue->valuestring))
                                                     );
         // TODO readb
         sys->setDbVar(name, cjvalue);
@@ -1255,7 +1256,7 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOu
     }
     else
     {
-        FPS_ERROR_PRINT("%s unable to find AnIn16 at index %d\n", __FUNCTION__, (int)index );
+        FPS_ERROR_PRINT("%s unable to find AnIn16 at index %d\n", __FUNCTION__, static_cast<int32_t>(index) );
     }
     
 }
@@ -1276,7 +1277,7 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
     }
     else
     {
-        FPS_ERROR_PRINT("%s unable to find AnIn32 at index %d\n", __FUNCTION__, (int)index );
+        FPS_ERROR_PRINT("%s unable to find AnIn32 at index %d\n", __FUNCTION__, static_cast<int32_t>(index) );
     }
 
 }
@@ -1297,7 +1298,7 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
     }
     else
     {
-        FPS_ERROR_PRINT("%s unable to find AnF32 at index %d\n", __FUNCTION__, (int)index );
+        FPS_ERROR_PRINT("%s unable to find AnF32 at index %d\n", __FUNCTION__, static_cast<int32_t>(index) );
     }
 
 }
@@ -1318,7 +1319,7 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_
     }
     else
     {
-        FPS_ERROR_PRINT("%s unable to find CROB at index %d\n", __FUNCTION__, (int)index );
+        FPS_ERROR_PRINT("%s unable to find CROB at index %d\n", __FUNCTION__, static_cast<int32_t>(index) );
     }
 
 }

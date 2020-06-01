@@ -1,12 +1,13 @@
 pwilshire
 June 1, 2020
 PRINT options
+
 At the fims input command is parsed the value field can be a simple '{"varname":value} or have a value subobject '{"varname":{"value":value}}'
 A flag is created for each object in the parsed bosy which will have a bit set PRINT_VALUE to remember the presence of the "value" object.
 This allows the output reply to return the value in the simple form or as the value subobject.
 This flag is also used to indicate if the value being processed was a readback variable.
 For example a write on the outstation was sent to "voltageSP" the outstation used the readback variable "_voltageSP" but the response to the "set" command should have the original name plus the ew value.
- 
+
 
 CROB readback
 In the Modbus world CROBS are like coils. Crobs, however, have many more options. 

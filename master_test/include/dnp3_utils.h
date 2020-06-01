@@ -568,7 +568,7 @@ typedef struct sysCfg_t {
             for (it = dbMap.begin() ; it != dbMap.end();++it)
             {
                 DbVar* db = it->second;
-                dbs.push_back(std::make_pair(db,flag));
+                dbs.push_back(std::make_pair(db, flag));
                 FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
             }
         }
