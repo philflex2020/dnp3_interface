@@ -151,22 +151,22 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
     {
         case Type_Analog:
         {
-            builder.Update(Analog(db->valuedouble), db->offset);
+            builder.Update(Analog(db->valuedouble), db->idx);
             break;
         }
         case Type_AnalogOS:
         {
-            builder.Update(AnalogOutputStatus(db->valuedouble), db->offset);
+            builder.Update(AnalogOutputStatus(db->valuedouble), db->idx);
             break;
         }
         case Type_Binary:
         {
-            builder.Update(Binary(db->valueint), db->offset);
+            builder.Update(Binary(db->valueint), db->idx);
             break;
         }
         case Type_BinaryOS:
         {
-            builder.Update(BinaryOutputStatus(db->valueint), db->offset);
+            builder.Update(BinaryOutputStatus(db->valueint), db->idx);
             break;
         }
 
