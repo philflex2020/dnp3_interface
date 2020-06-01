@@ -2,7 +2,7 @@
 
 /usr/local/bin/fims/fims_echo -u /queryx/home/mystuff/uri -b '{"testOP_32_1":1234,"testOP_32_22":3222}' &
 /usr/local/bin/fims/fims_echo -u /queryx/home/athings/uri -b '{"testOP_16_8":1608}' &
-/usr/local/bin/fims/fims_echo -u /queryx/dnp3_outstation -b '{
+/usr/local/bin/fims/fims_echo -u /queryx/dnp3_master -b '{
              "testCROB_4":"LATCH_OFF",
           "line_flows_mw":23456,
           "line_flows_mv":480,
