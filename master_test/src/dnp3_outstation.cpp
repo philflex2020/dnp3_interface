@@ -329,7 +329,9 @@ int main(int argc, char* argv[])
                 {
                     std::pair<DbVar*,int>dbp = dbs.back();
                     DbVar* db = dbp.first;
-                    addVarToBuilder(builder, db);
+                    // only do this on sets or posts
+                    if ((strcmp(msg->method,"set") == 0) || (strcmp(msg->method,"post") == 0))
+                        addVarToBuilder(builder, db);
                     addVarToCj(cj, dbp);  // include flag
                     dbs.pop_back();
                 }

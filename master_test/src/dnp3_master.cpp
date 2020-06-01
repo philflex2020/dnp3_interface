@@ -189,24 +189,13 @@ int main(int argc, char *argv[])
     fims* p_fims;
     p_fims = new fims();
     
-    //char* uri;
-    //bool publish_only[3] = {false,false,false};
     bool running = true;
     signal(SIGTERM, signal_handler);
     signal(SIGINT, signal_handler);
 
-    //int fd_max = 0;
-    //int rc = 0;
-    //int server_socket = -1;
     int fims_connect = 0;
-    //fd_set all_connections;
-    //FD_ZERO(&all_connections);
     sysCfg sys_cfg;
     
-    //memset(&sys_cfg, 0, sizeof(sysCfg));
-    //datalog data[Num_Register_Types];
-    //memset(data, 0, sizeof(datalog) * Num_Register_Types);
-
     FPS_DEBUG_PRINT("Reading config file and starting setup.\n");
     cJSON* config = get_config_json(argc, argv);
     if(config == NULL)
@@ -349,7 +338,9 @@ int main(int argc, char *argv[])
                 while (!dbs.empty())
                 {
                     std::pair<DbVar*,int>dbp = dbs.back();
-                    addVarToCommands(commands, dbp);
+                    // only do this on sets or posts
+                    if ((strcmp(msg->method,"set") == 0) || (strcmp(msg->method,"post") == 0))
+                        addVarToCommands(commands, dbp);
                     if(cj) addVarToCj(cj, dbp);
                     dbs.pop_back();
                 }
