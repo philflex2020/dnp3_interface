@@ -627,7 +627,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx)
             // the variable may not exist yet so it will be found later.
             if (linkback->valuestring != NULL)
             {
-                FPS_ERROR_PRINT(" Setting linkback variable name\n", linkback->valuestring);
+                FPS_ERROR_PRINT(" Setting linkback variable name to [%s]\n", linkback->valuestring);
                 db->linkback = strdup(linkback->valuestring);
                 db->linkb = sys->getDbVar(linkback->valuestring);
             }
