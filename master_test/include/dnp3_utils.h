@@ -529,6 +529,7 @@ typedef struct sysCfg_t {
                             , db->type
                             , db->offset
                             );
+                }
             }
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
         }
