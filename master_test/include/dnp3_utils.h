@@ -278,7 +278,7 @@ typedef struct sysCfg_t {
                     }
                     if (db->linkb != NULL)
                     {
-                        if (db->linkb->linkb != db))
+                        if (db->linkb->linkb != db)
                         {
                             FPS_ERROR_PRINT(" link loopback detected from [%s] to [%s] \n", db->name.c_str(), db->linkb->name.c_str())
                         }
@@ -347,7 +347,7 @@ typedef struct sysCfg_t {
                     }
                     if(db->linkb != NULL)
                     { 
-                        if (db->linkb->linkb != db))
+                        if (db->linkb->linkb != db)
                         {
                             FPS_ERROR_PRINT(" link loopback detected from [%s] to [%s] \n", db->name.c_str(), db->linkb->name.c_str())
                         }
