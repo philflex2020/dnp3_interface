@@ -278,7 +278,14 @@ typedef struct sysCfg_t {
                     }
                     if (db->linkb != NULL)
                     {
-                        setDb(db->linkb, fval);
+                        if (db->linkb->linkb != db))
+                        {
+                            FPS_ERROR_PRINT(" link loopback detected from [%s] to [%s] \n", db->name.c_str(), db->linkb->name.c_str())
+                        }
+                        else
+                        {
+                            setDb(db->linkb, ival);
+                        }
                     }
                 }
                 db->initSet = 1;
@@ -338,9 +345,16 @@ typedef struct sysCfg_t {
                     {
                         db->linkb = getDbVar(db->linkback);
                     }
-                    if (db->linkb != NULL)
-                    {
-                        setDb(db->linkb, ival);
+                    if(db->linkb != NULL)
+                    { 
+                        if (db->linkb->linkb != db))
+                        {
+                            FPS_ERROR_PRINT(" link loopback detected from [%s] to [%s] \n", db->name.c_str(), db->linkb->name.c_str())
+                        }
+                        else
+                        {
+                            setDb(db->linkb, ival);
+                        }
                     }
                 }
                 db->initSet = 1;
