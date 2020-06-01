@@ -620,7 +620,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
         // master and outstation have different linkback types
         if((idx == Type_Analog) || (idx == Type_Binary)) 
         {
-            if (strcmp(who,"outstation") ==0)
+            if (strcmp(who,"master") ==0)
             {
                 if(linkback)
                 {
@@ -639,7 +639,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
         }
         else
         {
-            if (strcmp(who, "master") ==0)
+            if (strcmp(who, "outstation") ==0)
             {
                 if(linkback)
                 {
