@@ -109,7 +109,7 @@ typedef struct DbVar_t {
     int addBit(const char*bit)
     {
         dbBits.push_back(std::make_pair(bit,0));
-        return (int)dbBits.size();
+        return static_cast<int32_t>(dbBits.size());
     }
 
     int setBit(int idx, int val)
@@ -120,7 +120,7 @@ typedef struct DbVar_t {
 
     int setBit(const char* var, int val)
     {
-        for (int i = 0; i < (int)dbBits.size(); i++)
+        for (int i = 0; i < static_cast<int32_t>(dbBits.size()); i++)
         {
             if(strcmp(dbBits[i].first, var) == 0)
             {
@@ -139,7 +139,7 @@ typedef struct DbVar_t {
 
     int getBit(const char* var)
     {
-        for (int i = 0; i < (int)dbBits.size(); i++)
+        for (int i = 0; i < static_cast<int32_t>(dbBits.size()); i++)
         {
             if(strcmp(dbBits[i].first, var) == 0)
             {
@@ -203,7 +203,7 @@ typedef struct sysCfg_t {
         cj = NULL;
         cjloaded = 0;
         pub = strdup("MyPubs");  // TODO remove this
-        for (int i = 0; i < (int)Type_of_Var::NumTypes ; i++)
+        for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
         {
             useReadb[i] = false;
         }
@@ -231,7 +231,7 @@ typedef struct sysCfg_t {
             if (dbMap.find(name) == dbMap.end()){
                 db = new DbVar(name, type, offset, uri, variation);
                 dbMap[name] = db;
-                db->idx = (int)dbVec[type].size();
+                db->idx = static_cast<int32_t>(dbVec[type].size());
                 dbVec[type].push_back(db);
                 if(dbMapIxs[type].find(offset) == dbMapIxs[type].end())
                 {   
@@ -270,7 +270,7 @@ typedef struct sysCfg_t {
                     {
                         // also copy valueint or the group30var5 stuff
                         db->valuedouble = fval;
-                        db->valueint =  (int)fval;
+                        db->valueint =  static_cast<int32_t>(fval);
                         return 1;
                     }    
                     case AnF32:
@@ -281,18 +281,18 @@ typedef struct sysCfg_t {
                     case Type_Binary:
                     case Type_BinaryOS:
                     {
-                        db->valueint = (int)fval;
+                        db->valueint = static_cast<int32_t>(fval);
                         return  1;
                     } 
                     case AnIn32:
                     {
-                        db->valueint = (int)fval;
+                        db->valueint = static_cast<int32_t>(fval);
                         db->anInt32 = db->valueint;
                         return  1;
                     }
                    case AnIn16:
                     {
-                        db->valueint = (int)fval;
+                        db->valueint = static_cast<int32_t>(fval);
                         db->anInt16 = db->valueint;
                         return  1;
                     }
@@ -416,7 +416,7 @@ typedef struct sysCfg_t {
         int setDbVarIx(int dbtype, int idx, double fval)
         {
             DbVar* db = NULL;
-            if(idx < (int)dbVec[dbtype].size())
+            if(idx < static_cast<int32_t>(dbVec[dbtype].size()))
             {   
                 db = dbVec[dbtype][idx];
             }
@@ -430,7 +430,7 @@ typedef struct sysCfg_t {
         int setDbVarIx(int dbtype, int idx, int ival)
         {
             DbVar* db = NULL;
-            if(idx < (int)dbVec[dbtype].size())
+            if(idx < static_cast<int32_t>(dbVec[dbtype].size()))
             {   
                 db = dbVec[dbtype][idx];
             }
@@ -451,7 +451,7 @@ typedef struct sysCfg_t {
 
         DbVar* getDbVarId(int dbtype, int idx)
         {
-            if(idx < (int)dbVec[dbtype].size())
+            if(idx < static_cast<int32_t>(dbVec[dbtype].size()))
             {   
                 return dbVec[dbtype][idx];
             }
@@ -496,9 +496,9 @@ typedef struct sysCfg_t {
             }
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
             dbMap.clear();
-            for (int i = 0; i < (int)Type_of_Var::NumTypes; i++)
+            for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes); i++)
             {
-                // for (int j = 0; j < (int)dbMapIx[i].size(); j++)
+                // for (int j = 0; j < static_cast<int32_t>(dbMapIx[i].size()); j++)
                 // {
                 //     free((void *)dbMapIx[i][j].first);
                 // }
@@ -518,9 +518,9 @@ typedef struct sysCfg_t {
         void showDbMap()
         {
             FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
-            for (int i = 0; i < (int)Type_of_Var::NumTypes; i++)
+            for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes); i++)
             {
-                for (int j = 0; j < (int)dbVec[i].size(); j++)
+                for (int j = 0; j < static_cast<int32_t>(dbVec[i].size()); j++)
                 {
                     DbVar* db = dbVec[i][j];
                         FPS_ERROR_PRINT(" idx [%d.%d] ->name :[%s] offset : [%d] ===> \n"
@@ -580,8 +580,8 @@ typedef struct sysCfg_t {
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
-                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first, (int)it->second.size());
-                for (int i = 0 ; i < (int)it->second.size(); i++ )
+                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
+                for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
                 {
                     DbVar* db = it->second[i];
                     FPS_ERROR_PRINT("                 [%s] %d %d\n"
@@ -608,57 +608,18 @@ typedef struct sysCfg_t {
             return asiz;
         }
 
-        // TODO this will not work if we need it we'll  it another way.
-        // int subsUris(const char *who)
-        // {
-        //     FPS_ERROR_PRINT(" %s subscribe to uris===> \n\n", __FUNCTION__);
-
-        //     bool publish_only = false;
-        //     duri_map::iterator it;
-        //     for (it = uriMap.begin(); it != uriMap.end(); ++it)
-        //     {
-        //         FPS_ERROR_PRINT(" %s subscribe to uri [%s]\n", __FUNCTION__, it->first);
-        //         FPS_ERROR_PRINT(" %s subscribe to id [%s]\n", __FUNCTION__, id);
-
-        //         char replyto[1024];
-        //         const char* subs[1];
-        //         //
-        //         if (it->first[0] == '/') 
-        //         {
-        //             snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply%s", id, who, it->first);
-        //         } 
-        //         else
-        //         {
-        //             snprintf(replyto, sizeof(replyto),"/interfaces/%s/%s/reply/%s", id, who, it->first);
-        //         }
-        //         subs[0] = replyto;
-
-        //         FPS_ERROR_PRINT(" %s subscribe to replyto [%s]\n", __FUNCTION__, replyto);
-        //         if(p_fims->Subscribe((const char**)subs, 1, (bool *)&publish_only) == false)
-        //         {
-        //             FPS_ERROR_PRINT("Subscription to [%s] failed.\n", replyto);
-        //         }
-        //         else
-        //         {
-        //             FPS_ERROR_PRINT("Subscription to [%s] passed.\n", replyto);
-        //         }
-        //     }
-        //     FPS_ERROR_PRINT(" %s subscribe to uris<== DONE \n\n", __FUNCTION__);
-        //     return 0;
-        // }
-
         bool checkUris(const char *who)
         {
             int outs = strcmp(who, "outstation");
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
-                for (int i = 0; i < (int)it->second.size(); i++ )
+                for (int i = 0; i < static_cast<int32_t>(it->second.size()); i++ )
                 {
                     DbVar* db = it->second[i];
                     if (db->initSet == 0)
                     {
-                        if(outs==0)
+                        if(outs == 0)
                         {
                             if ((db->type == Type_Analog) || (db->type == Type_Analog))
                             {
@@ -685,7 +646,7 @@ typedef struct sysCfg_t {
 
         int getSubs(const char**subs, int num, const char *who)
         {
-            if (num < (int)uriMap.size())
+            if (num < static_cast<int32_t>(uriMap.size()))
             {
                 return uriMap.size();
             }
