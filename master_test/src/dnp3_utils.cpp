@@ -533,7 +533,7 @@ bool getCJstr (cJSON *cj, const char *name, char *& val, bool required)
     return ok;
 }
 
-bool parse_system(cJSON* cji, sysCfg* sys)
+bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
 {
     bool ret = true;
     cJSON *cj = cJSON_GetObjectItem(cji, "system");
