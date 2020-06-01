@@ -68,7 +68,7 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         if (db != NULL) 
         {
             const char* vname = db->name.c_str();// static_sysdb->getBinary(pair.index);
-            FPS_DEBUG_PRINT("***************************** analog idx %d name [%s] value [%f]\n", pair.index, db->name.c_str(), pair.value.value);
+            FPS_ERROR_PRINT("***************************** analog idx %d name [%s] value [%f]\n", pair.index, db->name.c_str(), pair.value.value);
             if(strcmp(vname,"Unknown")!= 0) 
             {
                 cJSON_AddNumberToObject(static_sysdb->cj, vname, pair.value.value);
