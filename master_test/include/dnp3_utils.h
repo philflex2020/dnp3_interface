@@ -524,7 +524,8 @@ typedef struct sysCfg_t {
             for (it = dbMap.begin(); it != dbMap.end(); ++it)
             {
                 DbVar* db = it->second;
-                FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
+                FPS_ERROR_PRINT(" idx [%d] ->name :[%s] Type :[%d] offset : [%d] ===> \n"
+                            , db->idx
                             , it->first.c_str()
                             , db->type
                             , db->offset
