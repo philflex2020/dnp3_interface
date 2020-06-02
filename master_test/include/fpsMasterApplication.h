@@ -43,21 +43,24 @@ public:
         return std::make_shared<fpsMasterApplication>(fpsDB);
     }
 
-    virtual void OnReceiveIIN(const opendnp3::IINField& iin) override final {}
+    virtual void OnReceiveIIN(const opendnp3::IINField& iin) override final 
+    {
+        std::cout << "Running ["<<__FUNCTION__<<"]\n";
+    }
     // start the pub object for the master.
     // 
     // TODO find a way to detect the scan result. I dont think we'll have more that one of these running at a time
     // newSOEHandler populates the cJSON object
     virtual void OnTaskStart(opendnp3::MasterTaskType type, opendnp3::TaskId id) override final 
     {
-        //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
+        std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
         sysdb->cj = cJSON_CreateObject();
         sysdb->cjloaded = 0; 
     }
     // if cjloaded is well loaded then send out the pub
     virtual void OnTaskComplete(const opendnp3::TaskInfo& info) override final {
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
-        //std::cout << "Running ["<<__FUNCTION__<<"]\n";//Code for adding timestamp
+        std::cout << "Running ["<<__FUNCTION__<<"]\n";    //Code for adding timestamp
         if(sysdb->cj)
         {
             if (sysdb->cjloaded > 0) 

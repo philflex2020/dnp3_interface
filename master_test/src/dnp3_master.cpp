@@ -117,7 +117,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     
     auto master = channel->AddMaster("master", // id for logging
                                      fpsSOEHandler::Create(ourDB), // callback for data processing  this generates the pub elements when we get data
-                                     fpsMasterApplication::Create(ourDB), // master application instance this manages the collection of al the pub elements 
+                                     fpsMasterApplication::Create(ourDB), // master application instance this manages the collection of all the pub elements 
                                      stackConfig // stack configuration
                                     );
 
