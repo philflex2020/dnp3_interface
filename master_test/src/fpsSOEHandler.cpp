@@ -19,7 +19,7 @@ namespace asiodnp3 {
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
     static sysCfg *static_sysdb = sysdb;
     if(static_sysdb->debug == 1)
-        FPS_DEBUG_PRINT("  ******************************Bin:>> \n");
+        FPS_DEBUG_PRINT(">> ******************************Bin:\n");
     auto print = [](const Indexed<Binary>& pair) {
         DbVar* db = static_sysdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
@@ -68,7 +68,7 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     // magic static
     static sysCfg *static_sysdb = sysdb;
     if(static_sysdb->debug == 1)
-        FPS_DEBUG_PRINT("  ******************************An: >>\n");
+        FPS_DEBUG_PRINT(">> ******************************An:\n");
     auto print = [](const Indexed<Analog>& pair) {
         DbVar* db = static_sysdb->getDbVarId(Type_Analog, pair.index);
         if (db != NULL) 
@@ -94,7 +94,7 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         static_sysdb->cjloaded++;
     }
     if(static_sysdb->debug == 1)
-        FPS_DEBUG_PRINT("<<  ******************************An:\n");
+        FPS_DEBUG_PRINT("<< ******************************An:\n");
     return;
 }
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Counter>>& values) {
