@@ -423,7 +423,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         }
         case AnF32:
         {
-            addCjVal(cj, flag, db->anF32);
+            addCjVal(cj, dname, flag, db->anF32);
             break;
         }
         default:
