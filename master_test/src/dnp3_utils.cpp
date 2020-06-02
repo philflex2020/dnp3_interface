@@ -555,6 +555,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
     if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address,     true);
     if(ret) ret = getCJstr(cj,"pub",             sys->pub,            false);
     if(ret) ret = getCJstr(cj,"name",            sys->name,           false);
+    if(ret) ret = getCJint(cj,"debug",           sys->debug,           false);
     return ret;
 }
 // parse an individual variable
@@ -627,7 +628,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
         // master and outstation have different linkback types
         if((idx == Type_Analog) || (idx == Type_Binary)) 
         {
-            if (strcmp(who,"master") ==0)
+            if (strcmp(who,"master") == 0)
             {
                 if(linkback)
                 {
@@ -646,7 +647,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
         }
         else
         {
-            if (strcmp(who, "outstation") ==0)
+            if (strcmp(who, "outstation") == 0)
             {
                 if(linkback)
                 {
@@ -735,8 +736,6 @@ int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, c
     return num;
 }
 
-
-
 bool checkWho(sysCfg*sys, DbVar* db, const char *who)
 {
     if(db == NULL) return false;
@@ -746,7 +745,6 @@ bool checkWho(sysCfg*sys, DbVar* db, const char *who)
        // if we have a readb registers then we can set it
        if(db->readb != NULL) return true;
     }
-
     else
     {
        if((db->type == AnIn16 ) 
@@ -872,7 +870,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  it crappy code for now, we'll get a better plan in a day or so 
-        FPS_ERROR_PRINT("fims method [%s] uri [%s] almost  supported for [%s]\n", msg->method, msg->uri, who);
+        FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported for [%s]\n", msg->method, msg->uri, who);
 
         // if(strstr(msg->uri, "/reply/") != NULL)
         // {
@@ -883,6 +881,19 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
+            if(strstr(msg->uri, "/_system/debug_on") != NULL)
+            {
+                FPS_DEBUG_PRINT("fims system/debug_on \n");
+                sys->debug = 1;
+                return body_JSON;
+            }
+            if(strstr(msg->uri, "/_system/debug_off") != NULL)
+            {
+                FPS_DEBUG_PRINT("fims system/debug_off \n");
+                sys->debug = 0;
+                return body_JSON;
+            }
+
             if(strstr(msg->uri, "/reply/") != NULL)
             {
                 FPS_DEBUG_PRINT("fims message reply uri ACCEPTED  [%s] \n", msg->body);

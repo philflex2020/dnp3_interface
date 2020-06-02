@@ -216,6 +216,7 @@ typedef struct sysCfg_t {
     {
         cj = NULL;
         cjloaded = 0;
+        debug = 0;
         pub = strdup("MyPubs");  // TODO remove this
         for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
         {
@@ -672,8 +673,9 @@ typedef struct sysCfg_t {
                     {
                         if(outs == 0)
                         {
-                            if ((db->type == Type_Analog) || (db->type == Type_Analog))
+                            if ((db->type == Type_Analog) || (db->type == Type_Binary))
                             {
+                                FPS_ERROR_PRINT(" %s init missing on variable [%s]\n", __FUNCTION__, db->name);
                                 return false;
                             }
                         }
@@ -686,6 +688,7 @@ typedef struct sysCfg_t {
                                 || (db->type == Type_Crob)
                                 )
                             { 
+                                FPS_ERROR_PRINT(" %s init missing on variable [%s]\n", __FUNCTION__, db->name);
                                 return false;
                             }
                         }
@@ -799,6 +802,7 @@ typedef struct sysCfg_t {
         fims* p_fims;
         cJSON* cj;  
         int cjloaded;
+        int debug;
 
 } sysCfg;
 
