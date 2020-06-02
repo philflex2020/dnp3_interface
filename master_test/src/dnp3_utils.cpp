@@ -342,6 +342,19 @@ void addCjVal(cJSON* cj, const char* dname, int flag, double val)
         cJSON_AddNumberToObject(cj, dname, val);
     }
 }
+void addCjVal(cJSON* cj, const char* dname, int flag, uint32_t val)
+{
+    if(flag & PRINT_VALUE)
+    {
+        cJSON* cji = cJSON_CreateObject();
+        cJSON_AddNumberToObject(cji, "value", val);
+        cJSON_AddItemToObject(cj, dname, cji);
+    }
+    else
+    {
+        cJSON_AddNumberToObject(cj, dname, val);
+    }
+}
 
 void addCjVal(cJSON* cj, const char* dname, int flag, int val)
 {
