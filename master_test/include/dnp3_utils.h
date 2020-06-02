@@ -806,7 +806,7 @@ cJSON* get_config_json(int argc, char* argv[]);
 //int parse_system(cJSON *system, system_config *config);
 
 // new mapping
-bool parse_system(cJSON* object, sysCfg* sys, const char* who);
+bool parse_system(cJSON* object, sysCfg* sys, const char*);
 bool parse_variables(cJSON* object, sysCfg* sys, const char* who);
 cJSON *parseJSONConfig(char *file_path);
 void addCjTimestamp(cJSON *cj, const char * ts);

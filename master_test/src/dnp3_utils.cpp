@@ -329,6 +329,46 @@ ControlCode TypeToControlCode(uint8_t arg)
   return static_cast<ControlCode>(arg);
 }
 
+int addCjVal(cJSON* cj, const char* dname, int flag, double val)
+{
+    if(flag & PRINT_VALUE)
+    {
+        cJSON* cji = cJSON_CreateObject();
+        cJSON_AddNumberToObject(cji, "value", val);
+        cJSON_AddItemToObject(cj, dname, cji);
+    }
+    else
+    {
+        cJSON_AddNumberToObject(cj, dname, val);
+    }
+}
+
+int addCjVal(cJSON* cj, const char* dname, int flag, int val)
+{
+    if(flag & PRINT_VALUE)
+    {
+        cJSON* cji = cJSON_CreateObject();
+        cJSON_AddNumberToObject(cji, "value", val);
+        cJSON_AddItemToObject(cj, dname, cji);
+    }
+    else
+    {
+        cJSON_AddNumberToObject(cj, dname, val);
+    }
+}
+int addCjVal(cJSON* cj, const char* dname, int flag, std:string& val)
+{
+    if(flag & PRINT_VALUE)
+    {
+        cJSON* cji = cJSON_CreateObject();
+        cJSON_AddStringToObject(cji, "value", val);
+        cJSON_AddItemToObject(cj, dname, cji);
+    }
+    else
+    {
+        cJSON_AddStringToObject(cj, dname, val);
+    }
+}
 int addVarToCj(cJSON* cj, DbVar* db, int flag)
 {
     int rc = 0;
@@ -341,104 +381,49 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         case Type_AnalogOS:
         case Type_Analog:
         {
-            if(flag & PRINT_VALUE)
-            {
-                cJSON* cji = cJSON_CreateObject();
-                if(db->variation == Group30Var5)
-                {
-                    cJSON_AddNumberToObject(cji, "value", db->valuedouble);
-                }
-                else  //also Group30Var2
-                {
-                    cJSON_AddNumberToObject(cji, "value", static_cast<int32_t>(db->valuedouble));                    
-                }
-                cJSON_AddItemToObject(cj, dname, cji);
-            }
+            if(db->variation == Group30Var5)
+                addCjVal(cj, dname, flag, db->valuedouble);
             else
-            {
-                if(db->variation == Group30Var5)
-                {
-                    cJSON_AddNumberToObject(cj, dname, db->valuedouble);
-                }
-                else // Also Group32Var2
-                {
-                    cJSON_AddNumberToObject(cj, dname, static_cast<int32_t>(db->valuedouble));
-                }
-            }
+                addCjVal(cj, dname, flag, static_cast<int32_t>(db->valuedouble));
             break;
         }
 
         case Type_BinaryOS:
         case Type_Binary:
         {
-            if(flag & PRINT_VALUE)
-            {
-                cJSON* cji = cJSON_CreateObject();
-                cJSON_AddBoolToObject(cji, "value", db->valueint);
-                cJSON_AddItemToObject(cj, dname, cji);
-            }
-            else
-            {
-                cJSON_AddBoolToObject(cj, dname, db->valueint);
-            }
+            addCjVal(cj, dname, flag, db->valueint);
             break;
         }
         case Type_Crob:
         {
             FPS_DEBUG_PRINT("*** %s Found variable [%s] type  %d crob %u [%s] \n"
-                    , __FUNCTION__, dname, db->type, db->crob,ControlCodeToString(TypeToControlCode(db->crob)));
-            if(flag & PRINT_VALUE)
-            {
-                cJSON* cji = cJSON_CreateObject();
-                cJSON_AddStringToObject(cji, "value", ControlCodeToString(TypeToControlCode(db->crob)));
-                cJSON_AddItemToObject(cj, dname, cji);
-            }
-            else
-            {
-                cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
-            }
+                    , __FUNCTION__, dname, db->type, db->crob, ControlCodeToString(TypeToControlCode(db->crob)));
+            addCjVal(cj, dname, flag, ControlCodeToString(TypeToControlCode(db->crob)));
+            // if(flag & PRINT_VALUE)
+            // {
+            //     cJSON* cji = cJSON_CreateObject();
+            //     cJSON_AddStringToObject(cji, "value", ControlCodeToString(TypeToControlCode(db->crob)));
+            //     cJSON_AddItemToObject(cj, dname, cji);
+            // }
+            // else
+            // {
+            //     cJSON_AddStringToObject(cj, dname, ControlCodeToString(TypeToControlCode(db->crob)));
+            // }
             break;
         }
         case AnIn16:
         {
-            if(flag & PRINT_VALUE)
-            {
-                cJSON* cji = cJSON_CreateObject();
-                cJSON_AddNumberToObject(cji, "value", db->anInt16);
-                cJSON_AddItemToObject(cj, dname, cji);
-            }
-            else
-            {
-                cJSON_AddNumberToObject(cj, dname, db->anInt16);
-            }
+            addCjVal(cj, dname, flag, db->anInt16);
             break;
         }
         case AnIn32:
         {
-            if(flag & PRINT_VALUE)
-            {
-                cJSON* cji = cJSON_CreateObject();
-                cJSON_AddNumberToObject(cji, "value", db->anInt32);
-                cJSON_AddItemToObject(cj, dname, cji);
-            }
-            else
-            {
-                cJSON_AddNumberToObject(cj, dname, db->anInt32);
-            }
+            addCjVal(cj, dname, flag, db->anInt32);
             break;
         }
         case AnF32:
         {
-            if(flag & PRINT_VALUE)
-            {
-                cJSON* cji = cJSON_CreateObject();
-                cJSON_AddNumberToObject(cji, "value", db->anF32);
-                cJSON_AddItemToObject(cj, dname, cji);
-            }
-            else
-            {
-                cJSON_AddNumberToObject(cj, dname, db->anF32);
-            }
+            addCjVal(cj, flag, db->anF32);
             break;
         }
         default:
@@ -656,7 +641,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
                 }
             }
         }
-        
+        // to be depricated
         if(readback)
         {
             FPS_DEBUG_PRINT(" config adding readback [%s] for [%s] id [%d]\n", readback->valuestring,id->valuestring, offset->valueint);

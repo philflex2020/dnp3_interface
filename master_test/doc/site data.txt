@@ -1,0 +1,9 @@
+
+For the DNP3 interface, we are expecting the following object groups, data types and variations. Please confirm APX’s DNP3 client’s compatibility or if you have some other preference.
+Function
+
+                 Description             Object Group                 Data Type Variation
+Analog Output    Commands to sites       40 (read), 41 (write)        int32     1
+Binary Output    Commands to sites       10 (read), 12 (write)        bit       1
+Analog Input     Telemetry from sites    30                           int32     3
+Binary Input     Telemetry from sites     1                           bit       1
