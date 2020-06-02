@@ -675,7 +675,7 @@ typedef struct sysCfg_t {
                         {
                             if ((db->type == Type_Analog) || (db->type == Type_Binary))
                             {
-                                FPS_ERROR_PRINT(" %s init missing on variable [%s]\n", __FUNCTION__, db->name);
+                                FPS_ERROR_PRINT(" %s init missing on variable [%s]\n", __FUNCTION__, db->name.c_str());
                                 return false;
                             }
                         }
@@ -688,7 +688,7 @@ typedef struct sysCfg_t {
                                 || (db->type == Type_Crob)
                                 )
                             { 
-                                FPS_ERROR_PRINT(" %s init missing on variable [%s]\n", __FUNCTION__, db->name);
+                                FPS_ERROR_PRINT(" %s init missing on variable [%s]\n", __FUNCTION__, db->name.c_str());
                                 return false;
                             }
                         }

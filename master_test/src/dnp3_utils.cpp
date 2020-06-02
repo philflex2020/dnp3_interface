@@ -342,6 +342,7 @@ void addCjVal(cJSON* cj, const char* dname, int flag, double val)
         cJSON_AddNumberToObject(cj, dname, val);
     }
 }
+
 void addCjVal(cJSON* cj, const char* dname, int flag, uint32_t val)
 {
     if(flag & PRINT_VALUE)
@@ -369,6 +370,7 @@ void addCjVal(cJSON* cj, const char* dname, int flag, int val)
         cJSON_AddNumberToObject(cj, dname, val);
     }
 }
+
 void addCjVal(cJSON* cj, const char* dname, int flag, const char* val)
 {
     if(flag & PRINT_VALUE)
@@ -558,6 +560,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
     if(ret) ret = getCJint(cj,"debug",           sys->debug,           false);
     return ret;
 }
+
 // parse an individual variable
 int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
 {
