@@ -46,7 +46,7 @@ public:
     virtual void OnReceiveIIN(const opendnp3::IINField& iin) override final 
     {
         if(sysdb->debug == 1)
-            FPS_ERROR_PRINT "Running [%s] IINField %u \n", __FUNCTION__, static_cast<uint16_t>(iin));
+            FPS_ERROR_PRINT ("Running [%s] IINField %u \n", __FUNCTION__, static_cast<uint16_t>(iin));
     }
     // start the pub object for the master.
     // 
