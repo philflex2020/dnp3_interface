@@ -123,8 +123,6 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
 
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
-    // TODO we need a way to demand this via FIMS
-    // ourDB->frequency
     auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Milliseconds(ourDB->frequency));
     // do a Class 1 exception poll every 5 seconds
     //auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(60));
