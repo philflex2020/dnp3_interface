@@ -382,6 +382,7 @@ void addCjVal(cJSON* cj, const char* dname, int flag, const char* val)
         cJSON_AddStringToObject(cj, dname, val);
     }
 }
+
 int addVarToCj(cJSON* cj, DbVar* db, int flag)
 {
     int rc = 0;
@@ -497,13 +498,14 @@ int iotypToId (const char* t)
 
 int variation_decode(const char* ivar)
 {
-    if(ivar && (strcmp(ivar,"Group30Var5")== 0))
+    if(ivar)
     {
-        return Group30Var5;
-    }
-    if(ivar && (strcmp(ivar,"Group30Var2")== 0))
-    {
-        return Group30Var2;
+        if (strcmp(ivar, "Group30Var5") == 0)
+            return Group30Var5;
+        else if (strcmp(ivar, "Group30Var2") == 0)
+            return Group30Var2;
+        else if (strcmp(ivar, "Group32Var7") == 0)
+            return Group32Var7;
     }
     return GroupUndef;
 }
@@ -558,7 +560,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
 // parse an individual variable
 int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
 {
-    cJSON *id, *offset, *uri, *bf, *bits, *variation, *readback, *linkback;
+    cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback;
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr(idx));
     if (JSON_list == NULL)
     {
@@ -576,14 +578,15 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
             FPS_ERROR_PRINT("Invalid or NULL binary at %d\n", i);
             continue;
         }
-        id        = cJSON_GetObjectItem(obj, "id");
-        offset    = cJSON_GetObjectItem(obj, "offset");
-        variation = cJSON_GetObjectItem(obj, "variation");
-        uri       = cJSON_GetObjectItem(obj, "uri");
-        bf        = cJSON_GetObjectItem(obj, "bit_field");
-        bits      = cJSON_GetObjectItem(obj, "bit_strings");
-        readback  = cJSON_GetObjectItem(obj, "readback");
-        linkback  = cJSON_GetObjectItem(obj, "linkback");
+        id         = cJSON_GetObjectItem(obj, "id");
+        offset     = cJSON_GetObjectItem(obj, "offset");
+        variation  = cJSON_GetObjectItem(obj, "variation");
+        evariation = cJSON_GetObjectItem(obj, "evariation");
+        uri        = cJSON_GetObjectItem(obj, "uri");
+        bf         = cJSON_GetObjectItem(obj, "bit_field");
+        bits       = cJSON_GetObjectItem(obj, "bit_strings");
+        readback   = cJSON_GetObjectItem(obj, "readback");
+        linkback   = cJSON_GetObjectItem(obj, "linkback");
         //"bit_field": true,
         //"bit_strings": [
             // "some String"
@@ -594,6 +597,12 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
             continue;
         }
         DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
+
+        if(evariation &&(db != NULL))
+        {
+            db->setEvar(evariation->valuestring);
+        }
+        
         if (bf && bits && (bits->type == cJSON_Array))
         {
 

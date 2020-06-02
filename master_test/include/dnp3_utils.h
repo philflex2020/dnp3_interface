@@ -67,7 +67,7 @@ enum {
     GroupUndef,
     Group30Var2,
     Group30Var5,
-
+    Group32Var7,
     NumVars
 };
 
@@ -112,6 +112,11 @@ typedef struct DbVar_t {
         if(linkback) free((void *)linkback);
     }
 
+    void setEvar(const char* evar)
+    {
+        evariation = variation_decode(evar);
+
+    }
     int addBit(const char*bit)
     {
         dbBits.push_back(std::make_pair(bit,0));
@@ -161,6 +166,7 @@ typedef struct DbVar_t {
     const char* uri;
     int type;
     int variation;         // space to flag different DNP3 variation like Group30var5
+    int evariation;         // space to flag different DNP3 variation like Group30var5
     int offset;
     int bit;              // used to indiate which bit in parent
     DbVar_t* parent;      // I'm a bit and this is daddy 

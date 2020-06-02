@@ -55,6 +55,14 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* fpsDB)
             {
                 config.analog[i].svariation = StaticAnalogVariation::Group30Var2;
             }
+            if(db->evariation == Group32Var7)
+            {
+                config.analog[i].evariation = EventAnalogVariation::Group32Var7;
+            }
+            // else if(db->variation == Group30Var2)
+            // {
+            //     config.analog[i].svariation = StaticAnalogVariation::Group30Var2;
+            // }
 
         }
     }   
