@@ -329,7 +329,7 @@ ControlCode TypeToControlCode(uint8_t arg)
   return static_cast<ControlCode>(arg);
 }
 
-int addCjVal(cJSON* cj, const char* dname, int flag, double val)
+void addCjVal(cJSON* cj, const char* dname, int flag, double val)
 {
     if(flag & PRINT_VALUE)
     {
@@ -343,7 +343,7 @@ int addCjVal(cJSON* cj, const char* dname, int flag, double val)
     }
 }
 
-int addCjVal(cJSON* cj, const char* dname, int flag, int val)
+void addCjVal(cJSON* cj, const char* dname, int flag, int val)
 {
     if(flag & PRINT_VALUE)
     {
@@ -356,7 +356,7 @@ int addCjVal(cJSON* cj, const char* dname, int flag, int val)
         cJSON_AddNumberToObject(cj, dname, val);
     }
 }
-int addCjVal(cJSON* cj, const char* dname, int flag, const char* val)
+void addCjVal(cJSON* cj, const char* dname, int flag, const char* val)
 {
     if(flag & PRINT_VALUE)
     {
