@@ -356,7 +356,7 @@ int addCjVal(cJSON* cj, const char* dname, int flag, int val)
         cJSON_AddNumberToObject(cj, dname, val);
     }
 }
-int addCjVal(cJSON* cj, const char* dname, int flag, std:string& val)
+int addCjVal(cJSON* cj, const char* dname, int flag, string& val)
 {
     if(flag & PRINT_VALUE)
     {
