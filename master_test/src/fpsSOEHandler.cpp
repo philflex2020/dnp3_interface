@@ -17,9 +17,9 @@ using namespace opendnp3;
 namespace asiodnp3 { 
 
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
-    if(sys->debug == 1)
-        FPS_DEBUG_PRINT("  ******************************Bin:>> \n");
     static sysCfg *static_sysdb = sysdb;
+    if(static_sysdb->debug == 1)
+        FPS_DEBUG_PRINT("  ******************************Bin:>> \n");
     auto print = [](const Indexed<Binary>& pair) {
         DbVar* db = static_sysdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
