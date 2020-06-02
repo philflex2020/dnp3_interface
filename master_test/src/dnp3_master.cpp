@@ -133,8 +133,8 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     //                                                               TimeDuration::Seconds(5));
     //auto objscan = master->AddAllObjectsScan(GroupVariationID(30,1),
     //                                                               TimeDuration::Seconds(5));
-    //auto objscan2 = master->AddAllObjectsScan(GroupVariationID(30,5),
-    //                                                               TimeDuration::Seconds(10));
+    auto objscan2 = master->AddAllObjectsScan(GroupVariationID(32,7),
+                                                                   TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
     master->Enable();
     // bool channelCommsLoggingEnabled = true;
