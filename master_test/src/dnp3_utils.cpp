@@ -839,18 +839,21 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // TODO watch for readb vars 
     if(strcmp(msg->method, "get") == 0)
     {
-        FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
+        if(sys->debug == 1)
+            FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
 
         // is this a singleton ? 
         if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
             int flag = 0;  // dont set extra value field
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            FPS_DEBUG_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
+            if(sys->debug == 1)
+                FPS_ERROR_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
             DbVar* db = sys->getDbVar(uri);
             if (db != NULL)
             {
-                FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
+                if(sys->debug == 1)
+                    FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
                 dbs.push_back(std::make_pair(db, flag));
                 return body_JSON;
             }
@@ -873,7 +876,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  it crappy code for now, we'll get a better plan in a day or so 
-        FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported for [%s]\n", msg->method, msg->uri, who);
+        if(sys->debug == 1)
+            FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported for [%s]\n", msg->method, msg->uri, who);
 
         // if(strstr(msg->uri, "/reply/") != NULL)
         // {
@@ -899,12 +903,14 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
             if(strstr(msg->uri, "/reply/") != NULL)
             {
-                FPS_DEBUG_PRINT("fims message reply uri ACCEPTED  [%s] \n", msg->body);
+                if(sys->debug == 1)
+                    FPS_DEBUG_PRINT("fims message reply uri ACCEPTED  [%s] \n", msg->body);
                 single = 0;
             }
             else
-            {          
-                FPS_DEBUG_PRINT("fims message frag %d SINGLE variable name [%s] \n", fragptr+2,  uri);
+            {
+                if(sys->debug == 1)
+                    FPS_DEBUG_PRINT("fims message frag %d SINGLE variable name [%s] \n", fragptr+2,  uri);
                 single = 1;
             }
         }
@@ -926,7 +932,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     return body_JSON;
                 } 
                 int flag = 0;
-                FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
+                if(sys->debug == 1)
+                    FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
                 itypeValues = body_JSON;
                 // allow '"string"' OR '{"value":"string"}'
                 if(itypeValues->type == cJSON_Object)
@@ -992,11 +999,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         // process {"valuex":xxx,"valuey":yyy} ; xxx or yyy could be a number or {"value":val}
         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
         {
-            FPS_DEBUG_PRINT("Found variable list or array \n");
+            if(sys->debug == 1)
+                FPS_DEBUG_PRINT("Found variable list or array \n");
             // decode values may be in an array , TODO arrays are DEPRECATED
             if (cJSON_IsArray(itypeValues)) 
             {
-                FPS_DEBUG_PRINT("Found array of variables  \n");
+                if(sys->debug == 1)
+                    FPS_DEBUG_PRINT("Found array of variables  \n");
 
                 cJSON_ArrayForEach(cjit, itypeValues) 
                 {
@@ -1009,21 +1018,24 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             {
                 // process a simple list
                 cjit = itypeValues->child;
-                FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
+                if(sys->debug == 1)
+                    FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
 
                 while(cjit != NULL)
                 {
-                    int flag = 0;   
-                    FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
-                                            , cjit->string
-                                            , (void *)cjit->child
-                                            );
+                    int flag = 0;
+                    if(sys->debug == 1)
+                        FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
+                                                , cjit->string
+                                                , (void *)cjit->child
+                                                );
                     if (!checkWho(sys, cjit->string, who))
                     {
-                        FPS_DEBUG_PRINT("variable [%s] NOT set ON %s\n"
-                                        , cjit->string
-                                        , who
-                                        );
+                        if(sys->debug == 1)
+                            FPS_DEBUG_PRINT("variable [%s] NOT set ON %s\n"
+                                            , cjit->string
+                                            , who
+                                            );
                     }
                     else
                     {
@@ -1032,7 +1044,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     }
                     cjit = cjit->next;
                 }
-                FPS_DEBUG_PRINT("***** Done with variable list \n\n");
+                if(sys->debug == 1)
+                    FPS_DEBUG_PRINT("***** Done with variable list \n\n");
             }
             return body_JSON;//return dbs.size();
         }
@@ -1061,29 +1074,33 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
         return -1;
     }
     
-    FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, name);
+    if(sys->debug == 1)
+        FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, name);
 
     if (cjvalue->type == cJSON_Object)
     {
         flag |= PRINT_VALUE;
-        FPS_DEBUG_PRINT(" ************* %s Var [%s] set flag to 1 \n", __FUNCTION__, name);
+        if(sys->debug == 1)
+            FPS_DEBUG_PRINT(" ************* %s Var [%s] set flag to 1 \n", __FUNCTION__, name);
         cjvalue = cJSON_GetObjectItem(cjvalue, "value");
     }
 
     if (!cjvalue)
     {
-        FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
+        if(sys->debug == 1)
+            FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
         return -1;
     }
 
     if (db->type == Type_Crob) 
     {
-        FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
-                                                    , __FUNCTION__
-                                                    , db->name.c_str()
-                                                    , name
-                                                    , static_cast<int32_t>(StringToControlCode(cjvalue->valuestring))
-                                                    );
+        if(sys->debug == 1)
+            FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
+                                                        , __FUNCTION__
+                                                        , db->name.c_str()
+                                                        , name
+                                                        , static_cast<int32_t>(StringToControlCode(cjvalue->valuestring))
+                                                        );
         // TODO readb
         sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
