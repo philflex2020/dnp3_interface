@@ -123,6 +123,34 @@ Group30Var4  Analog Input 16 bit without flags
 Group30Var5  Analog Input single precision with flags (Float)
 Group30Var6  Analog Input double precision with flags (Double)
 
+IINFIELD uint16_t
+ enum class LSBMask : uint8_t
+    {
+        ALL_STATIONS = 0x01,
+        CLASS1_EVENTS = 0x02,
+        CLASS2_EVENTS = 0x04,
+        CLASS3_EVENTS = 0x08,
+        NEED_TIME = 0x10,
+        LOCAL_CONTROL = 0x20,
+        DEVICE_TROUBLE = 0x40,
+        DEVICE_RESTART = 0x80,
+    };
+
+    enum class MSBMask : uint8_t
+    {
+        FUNC_NOT_SUPPORTED = 0x01,
+        OBJECT_UNKNOWN = 0x02,
+        PARAM_ERROR = 0x04,
+        EVENT_BUFFER_OVERFLOW = 0x08,
+        ALREADY_EXECUTING = 0x10,
+        CONFIG_CORRUPT = 0x20,
+        RESERVED1 = 0x40,
+        RESERVED2 = 0x80,
+
+        // special mask that indicates if there was any error processing a request
+        REQUEST_ERROR_MASK = FUNC_NOT_SUPPORTED | OBJECT_UNKNOWN | PARAM_ERROR
+    };
+
 Typical low level stuff
     Type(value, flag), index
     Update(Analog(42, 0x01), 5);
