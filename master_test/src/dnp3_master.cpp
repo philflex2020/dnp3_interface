@@ -367,17 +367,17 @@ int main(int argc, char *argv[])
                 {
                     case 1:
                     {
-                        master->Scan(ClassField(ClassField::CLASS_1));
+                        master->ScanClasses(ClassField(ClassField::CLASS_1));
                         break;
                     }
                     case 2:
                     {
-                        master->Scan(ClassField(ClassField::CLASS_2));
+                        master->ScanClasses(ClassField(ClassField::CLASS_2));
                         break;
                     }
                     case 3:
                     {
-                        master->Scan(ClassField(ClassField::CLASS_3));
+                        master->ScanClasses(ClassField(ClassField::CLASS_3));
                         break;
                     }
                     default:
