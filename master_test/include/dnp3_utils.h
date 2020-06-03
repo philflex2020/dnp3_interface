@@ -116,8 +116,13 @@ typedef struct DbVar_t {
     void setEvar(const char* evar)
     {
         evariation = variation_decode(evar);
-
     }
+    
+    void setClazz(int iclazz)
+    {
+        clazz = iclazz;
+    }
+    
     int addBit(const char*bit)
     {
         dbBits.push_back(std::make_pair(bit,0));

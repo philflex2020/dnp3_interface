@@ -564,7 +564,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
 // parse an individual variable
 int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
 {
-    cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback;
+    cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback, *clazz;
     cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr(idx));
     if (JSON_list == NULL)
     {
@@ -591,6 +591,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
         bits       = cJSON_GetObjectItem(obj, "bit_strings");
         readback   = cJSON_GetObjectItem(obj, "readback");
         linkback   = cJSON_GetObjectItem(obj, "linkback");
+        clazz      = cJSON_GetObjectItem(obj, "clazz");
         //"bit_field": true,
         //"bit_strings": [
             // "some String"
@@ -605,6 +606,10 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
         if(evariation &&(db != NULL))
         {
             db->setEvar(evariation->valuestring);
+        }
+        if(clazz &&(db != NULL))
+        {
+            db->setClazz(clazz->valueint);
         }
         
         if (bf && bits && (bits->type == cJSON_Array))
