@@ -155,6 +155,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // in this example, we've enabled the oustation to use unsolicted reporting
     // if the master enables it
     config.outstation.params.allowUnsolicited = true;
+    config.outstation.params.allowUnsolicited = false;
 
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
@@ -398,7 +399,7 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("****** outstation scanreq %d ignored \n", sys_cfg.scanreq);
                 sys_cfg.scanreq = 0;
             }
-            
+
             if (cjb != NULL)
             {
                 cJSON_Delete(cjb);
