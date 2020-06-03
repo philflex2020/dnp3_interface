@@ -768,6 +768,7 @@ bool checkWho(sysCfg*sys, const char *name, const char *who)
 cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who, cJSON* body_JSON)
 {
     cJSON* itypeValues = body_JSON;
+    cJSON* cjit = NULL;
     if(sys->debug == 1)
         FPS_DEBUG_PRINT("Found variable list or array \n");
     // decode values may be in an array , TODO arrays are DEPRECATED
@@ -833,7 +834,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     cJSON* itypeF32 = NULL;
     cJSON* itypeValues = NULL;
     cJSON* itypeCROB = NULL;
-    cJSON* cjit = NULL;
+    //cJSON* cjit = NULL;
     
     if (body_JSON == NULL)
     {
