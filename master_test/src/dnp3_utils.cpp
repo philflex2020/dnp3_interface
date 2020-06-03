@@ -764,6 +764,63 @@ bool checkWho(sysCfg*sys, const char *name, const char *who)
     DbVar* db = sys->getDbVar(name);
     return checkWho(sys, db, who);
 }
+//std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
+cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who, cJSON* body_JSON)
+{
+    cJSON* itypeValues = body_JSON;
+    if(sys->debug == 1)
+        FPS_DEBUG_PRINT("Found variable list or array \n");
+    // decode values may be in an array , TODO arrays are DEPRECATED
+    if (cJSON_IsArray(itypeValues)) 
+    {
+        if(sys->debug == 1)
+            FPS_DEBUG_PRINT("Found array of variables  \n");
+
+        cJSON_ArrayForEach(cjit, itypeValues) 
+        {
+            cJSON* cjo = cJSON_GetObjectItem(cjit, "offset");
+            cJSON* cjv = cJSON_GetObjectItem(cjit, "value");
+            addValueToVec(dbs, sys, cjo->valuestring, cjv, 0);
+        }
+    }
+    else
+    {
+        // process a simple list
+        cjit = itypeValues->child;
+        if(sys->debug == 1)
+            FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
+
+        while(cjit != NULL)
+        {
+            int flag = 0;
+            if(sys->debug == 1)
+                FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
+                                        , cjit->string
+                                        , (void *)cjit->child
+                                        );
+            if (!checkWho(sys, cjit->string, who))
+            {
+                if(sys->debug == 1)
+                    FPS_DEBUG_PRINT("variable [%s] NOT set ON %s\n"
+                                    , cjit->string
+                                    , who
+                                    );
+            }
+            else
+            {
+                // TODO make this work for readb vars
+                addValueToVec(dbs, sys, cjit->string, cjit, flag);
+            }
+            cjit = cjit->next;
+        }
+        if(sys->debug == 1)
+            FPS_DEBUG_PRINT("***** Done with variable list \n\n");
+    }
+    return body_JSON;//return dbs.size();
+}
+//    }
+//    return body_JSON;//return dbs.size();
+//}
 
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
 cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
@@ -888,17 +945,26 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            if(strstr(msg->uri, "/_system/debug_on") != NULL)
+            // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3}
+            if(strstr(msg->uri, "/_system") != NULL)
             {
-                FPS_DEBUG_PRINT("fims system/debug_on \n");
-                sys->debug = 1;
+                FPS_DEBUG_PRINT("fims system \n");
+                cJSON* cjsys = cJSON_GetObjectItem(body_JSON, "debug");
+                if {cjsys != NULL)
+                {
+                    if(strcmp(cjsys->valuestring,"on")== 0)
+                        sys->debug = 1;
+                    if(strcmp(cjsys->valuestring,"off")== 0)
+                        sys->debug = 0;
+                }
+                cjsys = cJSON_GetObjectItem(body_JSON, "scan");
+                if {cjsys != NULL)
+                {
+                    if(strcmp(cjsys->valuestring,"on")== 0)
+                        sys->scanreq = cjsys->valueint;
+                }
                 return body_JSON;
-            }
-            if(strstr(msg->uri, "/_system/debug_off") != NULL)
-            {
-                FPS_DEBUG_PRINT("fims system/debug_off \n");
-                sys->debug = 0;
-                return body_JSON;
+
             }
 
             if(strstr(msg->uri, "/reply/") != NULL)
@@ -953,7 +1019,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                             sys->setDbVarIx(Type_Crob, db->offset, cval);
                             // send the readback
                             dbs.push_back(std::make_pair(db, flag));
-
                             FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval 0x%02x\n"
                                             , __FUNCTION__, itypeValues->valuestring, db->offset
                                             , cval
@@ -999,55 +1064,57 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         // process {"valuex":xxx,"valuey":yyy} ; xxx or yyy could be a number or {"value":val}
         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
         {
-            if(sys->debug == 1)
-                FPS_DEBUG_PRINT("Found variable list or array \n");
-            // decode values may be in an array , TODO arrays are DEPRECATED
-            if (cJSON_IsArray(itypeValues)) 
-            {
-                if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("Found array of variables  \n");
+            return parseValues(dbs, sys, msg, who, body_JSON);
 
-                cJSON_ArrayForEach(cjit, itypeValues) 
-                {
-                    cJSON* cjo = cJSON_GetObjectItem(cjit, "offset");
-                    cJSON* cjv = cJSON_GetObjectItem(cjit, "value");
-                    addValueToVec(dbs, sys, cjo->valuestring, cjv, 0);
-                }
-            }
-            else
-            {
-                // process a simple list
-                cjit = itypeValues->child;
-                if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
+                    // if(sys->debug == 1)
+                    //     FPS_DEBUG_PRINT("Found variable list or array \n");
+                    // // decode values may be in an array , TODO arrays are DEPRECATED
+                    // if (cJSON_IsArray(itypeValues)) 
+                    // {
+                    //     if(sys->debug == 1)
+                    //         FPS_DEBUG_PRINT("Found array of variables  \n");
 
-                while(cjit != NULL)
-                {
-                    int flag = 0;
-                    if(sys->debug == 1)
-                        FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
-                                                , cjit->string
-                                                , (void *)cjit->child
-                                                );
-                    if (!checkWho(sys, cjit->string, who))
-                    {
-                        if(sys->debug == 1)
-                            FPS_DEBUG_PRINT("variable [%s] NOT set ON %s\n"
-                                            , cjit->string
-                                            , who
-                                            );
-                    }
-                    else
-                    {
-                        // TODO make this work for readb vars
-                        addValueToVec(dbs, sys, cjit->string, cjit, flag);
-                    }
-                    cjit = cjit->next;
-                }
-                if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("***** Done with variable list \n\n");
-            }
-            return body_JSON;//return dbs.size();
+                    //     cJSON_ArrayForEach(cjit, itypeValues) 
+                    //     {
+                    //         cJSON* cjo = cJSON_GetObjectItem(cjit, "offset");
+                    //         cJSON* cjv = cJSON_GetObjectItem(cjit, "value");
+                    //         addValueToVec(dbs, sys, cjo->valuestring, cjv, 0);
+                    //     }
+                    // }
+                    // else
+                    // {
+                    //     // process a simple list
+                    //     cjit = itypeValues->child;
+                    //     if(sys->debug == 1)
+                    //         FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
+
+                    //     while(cjit != NULL)
+                    //     {
+                    //         int flag = 0;
+                    //         if(sys->debug == 1)
+                    //             FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
+                    //                                     , cjit->string
+                    //                                     , (void *)cjit->child
+                    //                                     );
+                    //         if (!checkWho(sys, cjit->string, who))
+                    //         {
+                    //             if(sys->debug == 1)
+                    //                 FPS_DEBUG_PRINT("variable [%s] NOT set ON %s\n"
+                    //                                 , cjit->string
+                    //                                 , who
+                    //                                 );
+                    //         }
+                    //         else
+                    //         {
+                    //             // TODO make this work for readb vars
+                    //             addValueToVec(dbs, sys, cjit->string, cjit, flag);
+                    //         }
+                    //         cjit = cjit->next;
+                    //     }
+                    //     if(sys->debug == 1)
+                    //         FPS_DEBUG_PRINT("***** Done with variable list \n\n");
+                    // }
+                    // return body_JSON;//return dbs.size();
         }
     }
     return body_JSON;//return dbs.size();
