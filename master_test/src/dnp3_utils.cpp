@@ -610,6 +610,8 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
         if(clazz &&(db != NULL))
         {
             db->setClazz(clazz->valueint);
+            FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
+
         }
         
         if (bf && bits && (bits->type == cJSON_Array))
