@@ -59,11 +59,34 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* fpsDB)
             {
                 config.analog[i].evariation = EventAnalogVariation::Group32Var7;
             }
+
+            if(db->clazz != 0)
+            {
+                switch (db->clazz ) 
+                {
+                    case 1:
+                    {
+                        config.analog[i].clazz = PointClass::Class1;
+                        break;
+                    }
+                    case 2:
+                    {
+                        config.analog[i].clazz = PointClass::Class2;
+                        break;
+                    }
+                    case 3:
+                    {
+                        config.analog[i].clazz = PointClass::Class3;
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
             // else if(db->variation == Group30Var2)
             // {
             //     config.analog[i].svariation = StaticAnalogVariation::Group30Var2;
             // }
-
         }
     }   
     // example of configuring analog index 0 for Class2 with floating point variations by default
@@ -122,9 +145,9 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
                                                 0));
 
     // Specify the maximum size of the event buffers. Defaults to 0
-    // config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
-    config.outstation.eventBufferConfig.maxBinaryEvents = fpsDB->dbVec[Type_Binary].size(),
-    config.outstation.eventBufferConfig.maxAnalogEvents = fpsDB->dbVec[Type_Analog].size(),
+    config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
+    //config.outstation.eventBufferConfig.maxBinaryEvents = fpsDB->dbVec[Type_Binary].size(),
+    //config.outstation.eventBufferConfig.maxAnalogEvents = fpsDB->dbVec[Type_Analog].size(),
     // Specify the maximum size of the event buffers
     //config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
 
@@ -370,7 +393,12 @@ int main(int argc, char* argv[])
                     cj = NULL;
                 }
             }
-
+            if (sys_cfg.scanreq > 0)
+            {
+                FPS_ERROR_PRINT("****** outstation scanreq %d ignored \n", sys_cfg.scanreq);
+                sys_cfg.scanreq = 0;
+            }
+            
             if (cjb != NULL)
             {
                 cJSON_Delete(cjb);

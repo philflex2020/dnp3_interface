@@ -99,7 +99,6 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
- //auto master = setupDNP3master (channel, "master", &sys_cfg , sys_cfg.local_address, sys_cfg.remote_address /*RemoteAddr*/);
 std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB )
 {
     MasterStackConfig stackConfig;
@@ -124,8 +123,12 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
     auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Milliseconds(ourDB->frequency));
+    //void Scan(const HeaderBuilderT& builder, TaskConfig config = TaskConfig::Default());
+
+    //void ScanClasses(const opendnp3::ClassField& field, const opendnp3::TaskConfig& config) override;
     // do a Class 1 exception poll every 5 seconds
     //auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(60));
+    //auto exceptionScan = master->Scan(ClassField(ClassField::CLASS_1);
     
     //auto binscan = master->AddAllObjectsScan(GroupVariationID(1,1),
     //                                                               TimeDuration::Seconds(5));
@@ -356,6 +359,32 @@ int main(int argc, char *argv[])
 
                 FPS_DEBUG_PRINT("      *****Running Direct Outputs \n");
                 master->DirectOperate(std::move(commands), fpsCommandCallback::Get());
+            }
+
+            if (sys_cfg.scanreq > 0)
+            {
+                switch (sys_cfg.scanreq)
+                {
+                    case 1:
+                    {
+                        master->Scan(ClassField(ClassField::CLASS_1));
+                        break;
+                    }
+                    case 2:
+                    {
+                        master->Scan(ClassField(ClassField::CLASS_2));
+                        break;
+                    }
+                    case 3:
+                    {
+                        master->Scan(ClassField(ClassField::CLASS_3));
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                FPS_ERROR_PRINT("****** master scanreq %d serviced\n", sys_cfg.scanreq);
+                sys_cfg.scanreq = 0;
             }
 
             if (cjb != NULL)
