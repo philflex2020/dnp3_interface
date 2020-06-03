@@ -1079,56 +1079,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
         {
             return parseValues(dbs, sys, msg, who, body_JSON);
-
-                    // if(sys->debug == 1)
-                    //     FPS_DEBUG_PRINT("Found variable list or array \n");
-                    // // decode values may be in an array , TODO arrays are DEPRECATED
-                    // if (cJSON_IsArray(itypeValues)) 
-                    // {
-                    //     if(sys->debug == 1)
-                    //         FPS_DEBUG_PRINT("Found array of variables  \n");
-
-                    //     cJSON_ArrayForEach(cjit, itypeValues) 
-                    //     {
-                    //         cJSON* cjo = cJSON_GetObjectItem(cjit, "offset");
-                    //         cJSON* cjv = cJSON_GetObjectItem(cjit, "value");
-                    //         addValueToVec(dbs, sys, cjo->valuestring, cjv, 0);
-                    //     }
-                    // }
-                    // else
-                    // {
-                    //     // process a simple list
-                    //     cjit = itypeValues->child;
-                    //     if(sys->debug == 1)
-                    //         FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
-
-                    //     while(cjit != NULL)
-                    //     {
-                    //         int flag = 0;
-                    //         if(sys->debug == 1)
-                    //             FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
-                    //                                     , cjit->string
-                    //                                     , (void *)cjit->child
-                    //                                     );
-                    //         if (!checkWho(sys, cjit->string, who))
-                    //         {
-                    //             if(sys->debug == 1)
-                    //                 FPS_DEBUG_PRINT("variable [%s] NOT set ON %s\n"
-                    //                                 , cjit->string
-                    //                                 , who
-                    //                                 );
-                    //         }
-                    //         else
-                    //         {
-                    //             // TODO make this work for readb vars
-                    //             addValueToVec(dbs, sys, cjit->string, cjit, flag);
-                    //         }
-                    //         cjit = cjit->next;
-                    //     }
-                    //     if(sys->debug == 1)
-                    //         FPS_DEBUG_PRINT("***** Done with variable list \n\n");
-                    // }
-                    // return body_JSON;//return dbs.size();
         }
     }
     return body_JSON;//return dbs.size();
@@ -1182,7 +1132,6 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
                                                         , name
                                                         , static_cast<int32_t>(StringToControlCode(cjvalue->valuestring))
                                                         );
-        // TODO readb
         sys->setDbVar(name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
@@ -1229,7 +1178,7 @@ cJSON* sysdbFindAddArray(sysCfg* sysdb, const char* field)
     return cjf;
 }
 
-// this sends out sets for ech command received.
+// this sends out sets for each command received.
 void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
 {
     const char *uri;
@@ -1269,7 +1218,6 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     {
         FPS_ERROR_PRINT("%s Error in cJSON object\n", __FUNCTION__ );
     }
-    
 }
 // possibly used in outstation comand handler to publish changes
 void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
@@ -1289,8 +1237,7 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOu
     else
     {
         FPS_ERROR_PRINT("%s unable to find AnIn16 at index %d\n", __FUNCTION__, static_cast<int32_t>(index) );
-    }
-    
+    }    
 }
 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
