@@ -65,8 +65,8 @@
                 "offset": 1,
                 "name": "Line flows MV",
                 "unit": "MV",
-                "signed": true
-                "clazz":1,
+                "signed": true,
+                "clazz":1
             },
             {
                 "id": "voltage",
