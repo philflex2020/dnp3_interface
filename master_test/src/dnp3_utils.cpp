@@ -966,8 +966,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 cjsys = cJSON_GetObjectItem(body_JSON, "scan");
                 if (cjsys != NULL)
                 {
-                    if(strcmp(cjsys->valuestring,"on")== 0)
-                        sys->scanreq = cjsys->valueint;
+                    sys->scanreq = cjsys->valueint;
                 }
                 return body_JSON;
 
