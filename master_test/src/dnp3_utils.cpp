@@ -1013,20 +1013,27 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                     flag |= PRINT_VALUE;
                     itypeValues = cJSON_GetObjectItem(itypeValues, "value");
                 }
+
+                FPS_ERROR_PRINT("Found variable [%s] type  %d  body [%s]  flag %d \n"
+                                        , db->name.c_str()
+                                        , db->type
+                                        , msg->body
+                                        , flag);
+
                 // Only Crob gets a string 
                 if(itypeValues)
                 {
                     if (itypeValues->type == cJSON_String)
                     {
-                        // TODO manage readb
                         if(db->type == Type_Crob)
                         {
                             uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
-                            sys->setDbVarIx(Type_Crob, db->offset, cval);
+                            sys->setDbVarIx(Type_Crob, db->idx, cval);
+                            db->initSet = 1;
                             // send the readback
                             dbs.push_back(std::make_pair(db, flag));
-                            FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d uint8 cval 0x%02x\n"
-                                            , __FUNCTION__, itypeValues->valuestring, db->offset
+                            FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d idx %d uint8 cval 0x%02x\n"
+                                            , __FUNCTION__, itypeValues->valuestring, db->offset, db->idx
                                             , cval
                                             );
                         }
