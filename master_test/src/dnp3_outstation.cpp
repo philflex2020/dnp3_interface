@@ -155,7 +155,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // in this example, we've enabled the oustation to use unsolicted reporting
     // if the master enables it
     config.outstation.params.allowUnsolicited = true;
-    config.outstation.params.allowUnsolicited = false;
+    //config.outstation.params.allowUnsolicited = false;
 
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
