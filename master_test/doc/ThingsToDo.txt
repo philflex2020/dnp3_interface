@@ -6,20 +6,21 @@ individual reg set outstation
 same from master
 scan classes done and understood
 master for each outstation link definition for one channel
-how does outstation set a variable .. no need to do that
-ERCOT dnp3 master we are an outstation pubs from outstation sent to local masters then to their outstations
+Done how does outstation set a variable .. no need to do that
+OK ERCOT dnp3 master we are an outstation pubs from outstation sent to local masters then to their outstations
+Auto routing ??
 
-put fims config 
-look for only scan changed values ( not needed perhaps)
-
+Done .. put fims config 
+D0ne look for only scan changed values ( not needed perhaps)
+Fims assign var to a class
 
 
 ERCOT Site
 1/ setup outstation to receive and send data.
 2/ outstation sends pubs on data updates ( )
     question 
-            -> can we periodically scan for all outstation data.
-            -> Yes if we can keep a copy of the data items in our syscfg structure.
+            -> can we periodically scan for all outstation data.  no 
+            -> Yes if we can keep a copy of the data items in our syscfg structure. done 
 
 3/ Fleet Manager has  master station or each outstation.
       -> master will get pubs (from 2) and set data items on the outstations.
