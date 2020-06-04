@@ -582,6 +582,8 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
             FPS_ERROR_PRINT("Invalid or NULL binary at %d\n", i);
             continue;
         }
+
+        // nore that id translates to name
         id         = cJSON_GetObjectItem(obj, "id");
         offset     = cJSON_GetObjectItem(obj, "offset");
         variation  = cJSON_GetObjectItem(obj, "variation");
@@ -915,6 +917,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             if(sys->debug == 1)
                 FPS_ERROR_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
             DbVar* db = sys->getDbVar(uri);
+            // TODO check against db->uri  // db = checkUri(db, msg->uri)
             if (db != NULL)
             {
                 if(sys->debug == 1)
@@ -926,7 +929,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         // else get them all
         else
         {
-            sys->addVarsToVec(dbs);
+            sys->addVarsToVec(dbs, msg->uri);
             return body_JSON;
         }
         return body_JSON;

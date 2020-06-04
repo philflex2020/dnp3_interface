@@ -117,7 +117,7 @@ typedef struct DbVar_t {
     {
         evariation = variation_decode(evar);
     }
-    
+
     void setClazz(int iclazz)
     {
         clazz = iclazz;
@@ -608,25 +608,28 @@ typedef struct sysCfg_t {
             }
         }
 
-        void addVarsToVec(std::vector<DbVar*>& dbs)
+        void addVarsToVec(std::vector<DbVar*>& dbs, const char* uri)
         {
             dbvar_map::iterator it;
             //int flag = 0;
             for (it = dbMap.begin() ; it != dbMap.end();++it)
             {
                 DbVar* db = it->second;
+                // TODO checkUri(db,uri)
+
                 dbs.push_back(db);
                 FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
             }
         }
 
-        void addVarsToVec(dbs_type& dbs)
+        void addVarsToVec(dbs_type& dbs, const char* uri)
         {
             dbvar_map::iterator it;
             int flag = 0;
             for (it = dbMap.begin() ; it != dbMap.end();++it)
             {
                 DbVar* db = it->second;
+                // TODO checkUri(db,uri)
                 dbs.push_back(std::make_pair(db, flag));
                 FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
             }
