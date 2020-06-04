@@ -321,8 +321,10 @@ int main(int argc, char* argv[])
         FPS_ERROR_PRINT( "DNP3 Channel setup failed.\n");
         return 1;
     }
+    // TODO fix this
+    sysCfg* fpsDB = &sys_cfg;
     cout<<"Binaries: "<<fpsDB->dbVec[Type_Binary].size()<<" Analogs: "<<fpsDB->dbVec[Type_Analog].size()<<endl;
-    OutstationStackConfig config(DatabaseSizes( fpsDB->dbVec[Type_Binary].size(),
+    OutstationStackConfig OSconfig(DatabaseSizes( fpsDB->dbVec[Type_Binary].size(),
                                                 0,
                                                 fpsDB->dbVec[Type_Analog].size(),
                                                 0,
@@ -332,7 +334,7 @@ int main(int argc, char* argv[])
                                                 0,
                                                 0));
 
-    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, config);
+    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, OSconfig);
     if (!outstation){
         FPS_ERROR_PRINT( "Outstation setup failed.\n");
         return 1;
@@ -429,7 +431,7 @@ int main(int argc, char* argv[])
             if (sys_cfg.unsol >= 0)
             {
                 FPS_ERROR_PRINT("****** outstation unsol %d handled \n", sys_cfg.unsol);
-                setConfigUnsol(&sys_cfg, config);                
+                setConfigUnsol(&sys_cfg, OSconfig);                
             }
 
             if (sys_cfg.cjclass != NULL)
