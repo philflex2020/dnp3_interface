@@ -14,7 +14,7 @@
 	[
 		{
 			"type": "Input Registers",
-			"dnp3_type": "Analog",
+			"dnp3_type": "analog",
 			"starting_offset": 350,
 			"number_of_registers": 26,
 			"map":
@@ -86,7 +86,7 @@
 		},
 		{
 			"type": "Input Registers",
-			"dnp3_type": "Analog",
+			"dnp3_type": "analog",
 			"starting_offset": 600,
 			"number_of_registers": 12,
 			"map":
@@ -123,7 +123,7 @@
 		},
 		{
 			"type": "Input Registers",
-			"dnp3_type": "Analog",
+			"dnp3_type": "analog",
 			"starting_offset": 900,
 			"number_of_registers": 11,
 			"map":
@@ -143,7 +143,7 @@
 		},
 		{
 			"type": "Input Registers",
-			"dnp3_type": "Analog",
+			"dnp3_type": "analog",
 			"starting_offset": 1000,
 			"number_of_registers": 12,
 			"map":
