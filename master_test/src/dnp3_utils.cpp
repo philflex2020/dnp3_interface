@@ -789,16 +789,10 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
 //      }
 //  ]
 
-bool parse_modbus(cJSON* object, sysCfg* sys, const char* who)
+bool parse_modbus(cJSON* cj, sysCfg* sys, const char* who)
 {
     // config file has "objects" with children groups "binary" and "analog"
     // who is needd to stop cross referencing linkvars
-    cJSON* cj = cJSON_GetObjectItem(object, "registers");
-    if (cj->type != cJSON_Array)
-    {
-        FPS_ERROR_PRINT("modbus registers object is not an array ! \n");
-        reurn false;
-    }
     cJSON* cji;
     cJSON_ArrayForEach(cji, cj)
     {
@@ -807,21 +801,20 @@ bool parse_modbus(cJSON* object, sysCfg* sys, const char* who)
         if ((cjmap == NULL) || (cjmap->type != cJSON_Array))
         {
             FPS_ERROR_PRINT("modbus registers map object is not an array ! \n");
-            reurn false;
+            return false;
         }
         if ((cjtype == NULL) || (cjtype->type != cJSON_String))
         {
             FPS_ERROR_PRINT("modbus registers dnp3_type missing or  object is not an string ! \n");
-            reurn false;
+            return false;
         }
         int idx = iotypToId (cjtype->valuestring);
         if (idx < 0)
         {
             FPS_ERROR_PRINT("modbus dnp3_type [%s] not recognised! \n", cjtype->valuestring);
-            reurn false;
+            return false;
         }
         parse_items(sys, cjmap, idx, who);
-
     }
     return true;
 }
@@ -829,14 +822,14 @@ bool parse_modbus(cJSON* object, sysCfg* sys, const char* who)
 bool parse_variables(cJSON* object, sysCfg* sys, const char* who)
 {
     for (int idx = 0; idx< Type_of_Var::NumTypes; idx++)
-        sys->numObjs[idx] = 0 
+        sys->numObjs[idx] = 0;
 
     // config file has "objects" with children groups "binary" and "analog"
     // who is needd to stop cross referencing linkvars
-    cJSON *JSON_objects = cJSON_GetObjectItem(object, "registers");
-    if (JSON_objects != NULL)
+    cJSON* cjregs = cJSON_GetObjectItem(object, "registers");
+    if (cjregs != NULL)
     {
-        return parse_modbus(object, sys, who);
+        return parse_modbus(cjregs, sys, who);
     }
 
     cJSON *JSON_objects = cJSON_GetObjectItem(object, "objects");
