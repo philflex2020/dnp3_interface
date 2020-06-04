@@ -893,17 +893,20 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // set /components/master/dnp3_outstation '{"name1":1, "name2":23.56}'
     // or 
     // set /components/master/dnp3_outstation '{"name1":{"value":1}, "name2":{"value":2}'}
-    // TODO are posts OK
-    if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0))
+    // set /<some_uri> '{"name1":{"value":1}, "name2":{"value":2}'}
+    //  in this case the variables must be associated with the uri
+    if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
     {
         FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
         return body_JSON;
     }
     // this is the "debug" or development method
-    //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"offset":"name_or_index","value":52},{"offset":2,"value":5}]}' 
+    //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"index":<index>,"value":52},{"index":2,"value":5}]}' 
 
     // get is OK codewise..
-    // TODO watch for readb vars 
+    // TODO remove  readb vars 
+    // TODO find a good looking uri and find the number of frags
+    //  
     if(strcmp(msg->method, "get") == 0)
     {
         if(sys->debug == 1)
@@ -956,10 +959,10 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
             uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3}
+            // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
             if(strstr(msg->uri, "/_system") != NULL)
             {
-                FPS_DEBUG_PRINT("fims system \n");
+                FPS_DEBUG_PRINT("fims system command\n");
                 cJSON* cjsys = cJSON_GetObjectItem(body_JSON, "debug");
                 if (cjsys != NULL)
                 {
@@ -972,6 +975,16 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 if (cjsys != NULL)
                 {
                     sys->scanreq = cjsys->valueint;
+                }
+                cjsys = cJSON_GetObjectItem(body_JSON, "unsol");
+                if (cjsys != NULL)
+                {
+                    sys->unsol = cjsys->valueint;
+                }
+                cjsys = cJSON_GetObjectItem(body_JSON, "class");
+                if (cjsys != NULL)
+                {
+                    sys->cjclass = cjsys;
                 }
                 return body_JSON;
 

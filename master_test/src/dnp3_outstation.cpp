@@ -118,7 +118,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
-std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* fpsDB)
+std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* fpsDB, OutstationStackConfig &config)
 {
     // The main object for a outstation. The defaults are useable,
     // but understanding the options are important.
@@ -133,16 +133,16 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
 	// 	0,                     // analog output status
 	// 	0,                     // time and intervat
 	// 	0                      // octet string
-    cout<<"Binaries: "<<fpsDB->dbVec[Type_Binary].size()<<" Analogs: "<<fpsDB->dbVec[Type_Analog].size()<<endl;
-    OutstationStackConfig config(DatabaseSizes( fpsDB->dbVec[Type_Binary].size(),
-                                                0,
-                                                fpsDB->dbVec[Type_Analog].size(),
-                                                0,
-                                                0,
-                                                fpsDB->dbVec[Type_BinaryOS].size(),
-                                                fpsDB->dbVec[Type_AnalogOS].size(),
-                                                0,
-                                                0));
+    // cout<<"Binaries: "<<fpsDB->dbVec[Type_Binary].size()<<" Analogs: "<<fpsDB->dbVec[Type_Analog].size()<<endl;
+    // OutstationStackConfig config(DatabaseSizes( fpsDB->dbVec[Type_Binary].size(),
+    //                                             0,
+    //                                             fpsDB->dbVec[Type_Analog].size(),
+    //                                             0,
+    //                                             0,
+    //                                             fpsDB->dbVec[Type_BinaryOS].size(),
+    //                                             fpsDB->dbVec[Type_AnalogOS].size(),
+    //                                             0,
+    //                                             0));
 
     // Specify the maximum size of the event buffers. Defaults to 0
     config.outstation.eventBufferConfig = EventBufferConfig::AllTypes(10);
@@ -306,8 +306,18 @@ int main(int argc, char* argv[])
         FPS_ERROR_PRINT( "DNP3 Channel setup failed.\n");
         return 1;
     }
+    cout<<"Binaries: "<<fpsDB->dbVec[Type_Binary].size()<<" Analogs: "<<fpsDB->dbVec[Type_Analog].size()<<endl;
+    OutstationStackConfig config(DatabaseSizes( fpsDB->dbVec[Type_Binary].size(),
+                                                0,
+                                                fpsDB->dbVec[Type_Analog].size(),
+                                                0,
+                                                0,
+                                                fpsDB->dbVec[Type_BinaryOS].size(),
+                                                fpsDB->dbVec[Type_AnalogOS].size(),
+                                                0,
+                                                0));
 
-    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg);
+    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, config);
     if (!outstation){
         FPS_ERROR_PRINT( "Outstation setup failed.\n");
         return 1;
@@ -394,10 +404,30 @@ int main(int argc, char* argv[])
                     cj = NULL;
                 }
             }
+
             if (sys_cfg.scanreq > 0)
             {
                 FPS_ERROR_PRINT("****** outstation scanreq %d ignored \n", sys_cfg.scanreq);
                 sys_cfg.scanreq = 0;
+            }
+            if (sys_cfg.unsol >= 0)
+            {
+                FPS_ERROR_PRINT("****** outstation unsol %d handled \n", sys_cfg.unsol);
+                if(sys_cfg.unsol == 0)
+                    config.outstation.params.allowUnsolicited = false;
+                else
+                    config.outstation.params.allowUnsolicited = true;
+                sys_cfg.unsol = -1;
+            }
+            if (sys_cfg.cjclass != NULL)
+            {
+                const char*tmp = cJSON_PrintUnformatted(sys_cfg.cjclass);
+                if(tmp != NULL)
+                {                
+                    FPS_ERROR_PRINT("****** outstation class change [%s] handled \n", tmp);
+                    free((void*)tmp);
+                    sys_cfg.cjclass = NULL;
+                }
             }
 
             if (cjb != NULL)
