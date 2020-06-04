@@ -1,0 +1,189 @@
+{
+	"system":
+	{
+		"id": "sel_735",
+		"ip_address": "192.168.0.136",
+		"port": 502,
+		"frequency": 500,
+		"byte_swap": false
+	},
+	"registers": 
+	[
+		{
+			"type": "Input Registers",
+			"starting_offset": 350,
+			"number_of_registers": 26,
+			"map":
+			[
+				{
+					"id": "current_a",
+					"offset": 350,
+					"size": 2,
+					"scale":100,
+					"signed": true
+				},
+				{
+					"id": "current_b",
+					"offset": 352,
+					"size": 2,
+					"scale":100,
+					"signed": true
+				},
+				{
+					"id": "current_c",
+					"offset": 354,
+					"size": 2,
+					"scale":100,
+					"signed": true
+				},
+				{
+					"id": "voltage_ab",
+					"offset": 364,
+					"size": 2,
+					"scale":100,
+					"signed": true
+				},
+				{
+					"id": "voltage_bc",
+					"offset": 366,
+					"size": 2,
+					"scale":100,
+					"signed": true
+				},
+				{
+					"id": "voltage_ca",
+					"offset": 368,
+					"size": 2,
+					"scale":100,
+					"signed": true
+				},
+				{
+					"id": "active_power",
+					"offset": 370,
+					"size": 2,
+					"scale":100000,
+					"signed": true
+				},
+				{
+					"id": "apparent_power",
+					"offset": 372,
+					"size": 2,
+					"scale":100000,
+					"signed": true
+				},
+				{
+					"id": "reactive_power",
+					"offset": 374,
+					"size": 2,
+					"scale":100000,
+					"signed": true
+				}
+			]
+		},
+		{
+			"type": "Input Registers",
+			"starting_offset": 600,
+			"number_of_registers": 12,
+			"map":
+			[
+				{
+					"id": "wh_delivered",
+					"offset": 600,
+					"size": 2,
+					"scale":1,
+					"signed":true
+				},
+				{
+					"id": "wh_received",
+					"offset": 602,
+					"size": 2,
+					"scale":1,
+					"signed":true
+				},
+				{
+					"id": "varh_delivered",
+					"offset": 608,
+					"size": 2,
+					"scale":1,
+					"signed":true
+				},
+				{
+					"id": "varh_received",
+					"offset": 610,
+					"size": 2,
+					"scale":1,
+					"signed":true
+				}
+			]
+		},
+		{
+			"type": "Input Registers",
+			"starting_offset": 900,
+			"number_of_registers": 11,
+			"map":
+			[
+				{
+					"id": "frequency",
+					"offset": 900,
+					"scale": 100
+				},
+				{
+					"id": "power_factor",
+					"offset": 910,
+					"scale": 100,
+					"signed": true
+				}
+			]
+		},
+		{
+			"type": "Input Registers",
+			"starting_offset": 1000,
+			"number_of_registers": 12,
+			"map":
+			[
+				{
+					"id":"thd_i_l1",
+					"offset":1000,
+					"size":2,
+					"scale":100,
+					"signed":true
+				},
+				{
+					"id":"thd_i_l2",
+					"offset":1002,
+					"size":2,
+					"scale":100,
+					"signed":true
+				},
+				{
+					"id":"thd_i_l3",
+					"offset":1004,
+					"size":2,
+					"scale":100,
+					"signed":true
+				},
+				{
+					"id":"thd_v_l1",
+					"offset":1006,
+					"size":2,
+					"scale":100,
+					"signed":true
+				},
+				{
+					"id":"thd_v_l2",
+					"offset":1008,
+					"size":2,
+					"scale":100,
+					"signed":true
+				},
+				{
+					"id":"thd_v_l3",
+					"offset":1010,
+					"size":2,
+					"scale":100,
+					"signed":true
+				}
+			]
+		}
+	]
+}
