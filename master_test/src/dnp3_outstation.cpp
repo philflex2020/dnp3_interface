@@ -118,6 +118,18 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
+void setConfigUnsol(sysCfg* sys, OutstationStackConfig &config)
+{
+    if(sys->unsol >= 0)
+    {
+        if(sys->unsol == 0)
+            config.outstation.params.allowUnsolicited = false;
+        else
+            config.outstation.params.allowUnsolicited = true;
+        sys->unsol = -1;
+    }
+}
+
 std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* fpsDB, OutstationStackConfig &config)
 {
     // The main object for a outstation. The defaults are useable,
@@ -155,6 +167,9 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // in this example, we've enabled the oustation to use unsolicted reporting
     // if the master enables it
     config.outstation.params.allowUnsolicited = true;
+    // allow sys to over rule
+    setConfigUnsol(sys, config);
+
     //config.outstation.params.allowUnsolicited = false;
 
     // You can override the default link layer settings here
@@ -410,15 +425,13 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("****** outstation scanreq %d ignored \n", sys_cfg.scanreq);
                 sys_cfg.scanreq = 0;
             }
+
             if (sys_cfg.unsol >= 0)
             {
                 FPS_ERROR_PRINT("****** outstation unsol %d handled \n", sys_cfg.unsol);
-                if(sys_cfg.unsol == 0)
-                    config.outstation.params.allowUnsolicited = false;
-                else
-                    config.outstation.params.allowUnsolicited = true;
-                sys_cfg.unsol = -1;
+                setConfigUnsol(&sys_cfg, config);                
             }
+
             if (sys_cfg.cjclass != NULL)
             {
                 const char*tmp = cJSON_PrintUnformatted(sys_cfg.cjclass);
