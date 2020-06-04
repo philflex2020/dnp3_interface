@@ -1,12 +1,16 @@
 {
     "system": {
         "id": "hybridos",
+        "ip_address2": "127.0.0.1",
+        "port2": 502
+        "id": "hybridos",
         "ip_address": "127.0.0.1",
-        "port": 502
+        "port": 12502
     },
     "registers": [
         {
             "type": "Holding Registers",
+            "dnp3_type":"AnOPInt16",
             "starting_offset": 0,
             "number_of_registers": 21,
             "map": [
@@ -107,6 +111,7 @@
         {
             "type": "Input Registers",
             "starting_offset": 0,
+            "dnp3_type":"analog",
             "number_of_registers": 66,
             "map": [
                 {
