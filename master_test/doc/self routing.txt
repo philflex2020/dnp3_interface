@@ -1,0 +1,102 @@
+self routing
+june 6 2020
+
+Consider this system setup
+
+
+ERCOT
+master                   FM                        
+                         outstation
+                                                site1    
+                                    master     
+                                                outstation      
+                                                             modbus client
+                                    master
+                                                site2                                             
+                                                outstation      
+                                                             modbus client 
+                                    master
+                                                site3
+                                                outstation      
+                                                             modbus client
+                                    master
+                                                grid_manager grid1
+                                                outstation
+                                                            master
+                                                                    site_sub1
+                                                                    outstation
+                                                                                 modbus client
+
+consider the voltageSP var
+we'll give it self routing names
+
+GMS1_VOLTSP             grid1/sub1/VOLTSP      sub1/VOLTSP          VOLTSP
+
+set path
+set GMS1_VOLTSP 
+                        set /components/grid1/sub1/VOLTSP 
+                                               
+                                              set /components/sub1/VOLTSP 
+
+                                                                   set <uri>/VOLTSP
+
+pub path 
+site_sub1 gets a pub and seds the value back to master
+                                                                   pub <uri>/VOLTSPFB 
+
+ grid1 master issues a pub picked up by grid1 outstation                                                                   
+                                            pub /components/sub1/VOLTSPFB
+FM master issues a pub for FM outstation  
+                        pub /components/grid1/sub1/VOLTSPFB
+                                           
+names
+
+outbound path 
+ERCOT
+sets  GMS1_VOLTSP                                           
+FM outstation
+    {
+        "id":"grid1/sub1/VOLTSP",
+        "uri":"/components"
+    }
+
+    sets /components/grid1/sub1/VOLTSP    
+
+FM Master for grid1
+    {
+        "id":"sub1/VOLTSP",
+        "uri":"/components"
+    }
+    sees /components/grid1/   sub1/VOLTSP
+Grid1 outstation
+    {
+        "id":"sub1/VOLTSP",
+        "uri":"/components"
+    }
+
+    sets /components/sub1/VOLTSP
+
+grid1 master for sub1
+    { 
+        "id":"VOLTSP",
+        "uri":"/components"
+    }
+sub1 outstation
+    {
+        "id":"VOLTSP",
+        "uri":"<myuri>"
+    }
+
+    sets <myuri>/VOLTSP
+
+
+inbound path
+sub1 outstation sees
+pub on <myuri>/VOLTFB
+sends back to master on grid1 
+
+grid1 master issues a pub on /components/sub1 '{"sub1/VOLTFB":value,...}'
+grid1 outstation sees pub and updates FM grid1 master 
+
+FM grid1 master issues pub for /components/grid1 '{"grid1/sub1/VOLTFB":value,...}'
+FM ERCOT outstation can then send the reply to the correct type/index
