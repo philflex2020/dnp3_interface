@@ -796,8 +796,8 @@ bool parse_modbus(cJSON* cj, sysCfg* sys, const char* who)
     cJSON* cji;
     cJSON_ArrayForEach(cji, cj)
     {
-        cJSON* cjmap = cJSON_GetObjectItem(object, "map");
-        cJSON* cjtype = cJSON_GetObjectItem(object, "dnp3_type");
+        cJSON* cjmap = cJSON_GetObjectItem(cji, "map");
+        cJSON* cjtype = cJSON_GetObjectItem(cji, "dnp3_type");
         if ((cjmap == NULL) || (cjmap->type != cJSON_Array))
         {
             FPS_ERROR_PRINT("modbus registers map object is not an array ! \n");
