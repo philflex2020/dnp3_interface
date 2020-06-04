@@ -625,7 +625,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
     cJSON* obj;
     cJSON_ArrayForEach(obj, objs)
     {
-        cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback, *clazz;
+        cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback, *clazz, *rsize;
 
         if(obj == NULL)
         {
@@ -636,6 +636,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         // note that id translates to name
         id         = cJSON_GetObjectItem(obj, "id");
         offset     = cJSON_GetObjectItem(obj, "offset");
+        rsize      = cJSON_GetObjectItem(obj, "size");
         variation  = cJSON_GetObjectItem(obj, "variation");
         evariation = cJSON_GetObjectItem(obj, "evariation");
         uri        = cJSON_GetObjectItem(obj, "uri");
@@ -650,7 +651,20 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
             FPS_ERROR_PRINT("NULL variables or component_id \n");
             continue;
         }
-        DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
+        // allow 32 bit systems ints
+        int myidx = idx;
+        if (rsize != NULL) 
+        {
+            if (idx == AnIn16)
+            {
+                if (rsize->valueint > 1)
+                {
+                    myidx = AnIn32; 
+                }
+            } 
+        }
+
+        DbVar* db = sys->addDbVar(id->valuestring, myidx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
 
         if(evariation &&(db != NULL))
         {
@@ -660,7 +674,6 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         {
             db->setClazz(clazz->valueint);
             FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
-
         }
         
         if (bf && bits && (bits->type == cJSON_Array))
@@ -798,6 +811,7 @@ bool parse_modbus(cJSON* cj, sysCfg* sys, const char* who)
     {
         cJSON* cjmap = cJSON_GetObjectItem(cji, "map");
         cJSON* cjtype = cJSON_GetObjectItem(cji, "dnp3_type");
+        // dnp3_type can be output that will AnInt16 or AnInt32 
         if ((cjmap == NULL) || (cjmap->type != cJSON_Array))
         {
             FPS_ERROR_PRINT("modbus registers map object is not an array ! \n");
