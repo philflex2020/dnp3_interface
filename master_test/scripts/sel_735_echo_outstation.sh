@@ -3,7 +3,7 @@
 
 /usr/local/bin/fims/fims_echo -u /queryx/home/mystuff/uri -b '{"testOP_32_1":1234,"testOP_32_22":3222}' &
 /usr/local/bin/fims/fims_echo -u /queryx/home/athings/uri -b '{"testOP_16_8":1608}' &
-/usr/local/bin/fims/fims_echo -u /getUris/sel_735 -b '{
+/usr/local/bin/fims/fims_echo -u /getUris/components/sel_735 -b '{
 "wh_received":23,
 "wh_delivered":24,
 "voltage_ca":440,
