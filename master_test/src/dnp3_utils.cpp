@@ -541,7 +541,7 @@ bool getCJcj (cJSON *cj, const char *name, cJSON*& val, bool required)
     cJSON *cji = cJSON_GetObjectItem(cj, name);
     if (cji) {
         if(val) cJSON_Delete(val);
-        val = cJSON_Duplicate(cji->child);
+        val = cJSON_Duplicate(cji->child, true);
         ok = true;
     }
     return ok;
@@ -623,17 +623,17 @@ bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
 int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
 {
     cJSON* obj;
-    cJSON_ArrayForEach(cjo, cjobjs)
+    cJSON_ArrayForEach(obj, objs)
     {
         cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback, *clazz;
 
         if(obj == NULL)
         {
-            FPS_ERROR_PRINT("Invalid or NULL binary at %d\n", i);
+            FPS_ERROR_PRINT("Invalid or NULL obj\n");
             continue;
         }
 
-        // nore that id translates to name
+        // note that id translates to name
         id         = cJSON_GetObjectItem(obj, "id");
         offset     = cJSON_GetObjectItem(obj, "offset");
         variation  = cJSON_GetObjectItem(obj, "variation");
