@@ -535,6 +535,28 @@ bool getCJstr (cJSON *cj, const char *name, char *& val, bool required)
     return ok;
 }
 
+bool getCJcj (cJSON *cj, const char *name, cJSON*& val, bool required)
+{
+    bool ok = !required;
+    cJSON *cji = cJSON_GetObjectItem(cj, name);
+    if (cji) {
+        if(val) cJSON_Delete(val);
+        val = cJSON_Duplicate(cji->child);
+        ok = true;
+    }
+    return ok;
+}
+
+// modbus system example
+// "notes":" a collection of inputs from the system all using default uri",
+// 		"id": "sel_735",
+// 		"ip_address": "127.0.0.1",
+// 		"port": 12502,
+// 		"ip_address2": "192.168.0.136",
+// 		"port2": 502,
+// 		"frequency": 500,
+// 		"byte_swap": false
+
 bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
 {
     bool ret = true;
@@ -545,38 +567,66 @@ bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
         FPS_ERROR_PRINT("system  missing from file! \n");
         ret = false;
     }
+    if(strcmp(who, "master")== 0 )
+    {
+        sys->local_address = 1;
+        sys->remote_address = 10;
+    }
+    else
+    {
+        sys->local_address = 10;
+        sys->remote_address = 1;
+    }
+    sys->base_uris = cJSON_Parse("{\"/components\",\"/interfaces\"}");
+    
     // todo add different frequencies for each zone
     sys->frequency  = 1000; // default once a second
-    if(ret) ret = getCJint(cj,"version",         sys->version,        true );
+    if(ret) ret = getCJint(cj,"version",         sys->version,        false );
     if(ret) ret = getCJint(cj,"frequency",       sys->frequency,      false);
     if(ret) ret = getCJint(cj,"port",            sys->port,           true);
-    if(ret) ret = getCJint(cj,"local_address",   sys->local_address,  true);
-    if(ret) ret = getCJint(cj,"remote_address",  sys->remote_address, true);
+    if(ret) ret = getCJint(cj,"local_address",   sys->local_address,  false);
+    if(ret) ret = getCJint(cj,"remote_address",  sys->remote_address, false);
     if(ret) ret = getCJstr(cj,"id",              sys->id,             true);
-    if(ret) ret = getCJstr(cj,"protocol",        sys->protocol,       true);
+    if(ret) ret = getCJstr(cj,"protocol",        sys->protocol,       false);
     if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address,     true);
     if(ret) ret = getCJstr(cj,"pub",             sys->pub,            false);
     if(ret) ret = getCJstr(cj,"name",            sys->name,           false);
-    if(ret) ret = getCJint(cj,"debug",           sys->debug,           false);
+    if(ret) ret = getCJint(cj,"debug",           sys->debug,          false);
+    if(ret) ret = getCJcj(cj,"base_uris",        sys->base_uris,      false);
     return ret;
 }
 
-// parse an individual variable
-int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
-{
-    cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback, *clazz;
-    cJSON *JSON_list = cJSON_GetObjectItem(objs, iotypToStr(idx));
-    if (JSON_list == NULL)
-    {
-        FPS_ERROR_PRINT("[%s] objects missing from config! \n",iotypToStr(idx));
-        return -1;
-    }
 
-    uint num = cJSON_GetArraySize(JSON_list);
-    sys->numObjs[idx] = 0; 
-    for(uint i = 0; i < num; i++)
+
+// big wrinkle here.. Lets parse the modbus file  
+// "registers": 
+// 	[
+// 		{
+// 			"type": "Input Registers",
+// 			"dnp3_type": "Analog",
+// 			"starting_offset": 350,
+// 			"number_of_registers": 26,
+// 			"map":
+// 			[
+// 				{
+// 					"id": "current_a",
+// 					"offset": 350,
+// 					"size": 2,
+// 					"scale":100,
+// 					"signed": true
+//               }
+//          ]
+//      }
+//  ]
+
+// parse a map of items
+int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
+{
+    cJSON* obj;
+    cJSON_ArrayForEach(cjo, cjobjs)
     {
-        cJSON* obj = cJSON_GetArrayItem(JSON_list, i);
+        cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback, *clazz;
+
         if(obj == NULL)
         {
             FPS_ERROR_PRINT("Invalid or NULL binary at %d\n", i);
@@ -594,13 +644,10 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
         readback   = cJSON_GetObjectItem(obj, "readback");
         linkback   = cJSON_GetObjectItem(obj, "linkback");
         clazz      = cJSON_GetObjectItem(obj, "clazz");
-        //"bit_field": true,
-        //"bit_strings": [
-            // "some String"
 
         if (id == NULL || offset == NULL || id->valuestring == NULL)
         {
-            FPS_ERROR_PRINT("NULL variables or component_id for %d\n", i);
+            FPS_ERROR_PRINT("NULL variables or component_id \n");
             continue;
         }
         DbVar* db = sys->addDbVar(id->valuestring, idx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
@@ -712,10 +759,86 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
     return  sys->numObjs[idx]; 
 }
 
-bool parse_variables(cJSON* object, sysCfg* sys, const char* who)
+int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
+{
+    cJSON* cjlist = cJSON_GetObjectItem(objs, iotypToStr(idx));
+    if (cjlist == NULL)
+    {
+        FPS_ERROR_PRINT("[%s] objects missing from config! \n",iotypToStr(idx));
+        return -1;
+    }
+    return parse_items(sys, cjlist, idx, who);
+}
+// "registers": 
+// 	[
+// 		{
+// 			"type": "Input Registers",
+// 			"dnp3_type": "Analog",
+// 			"starting_offset": 350,
+// 			"number_of_registers": 26,
+// 			"map":
+// 			[
+// 				{
+// 					"id": "current_a",
+// 					"offset": 350,
+// 					"size": 2,
+// 					"scale":100,
+// 					"signed": true
+//               }
+//          ]
+//      }
+//  ]
+
+bool parse_modbus(cJSON* object, sysCfg* sys, const char* who)
 {
     // config file has "objects" with children groups "binary" and "analog"
     // who is needd to stop cross referencing linkvars
+    cJSON* cj = cJSON_GetObjectItem(object, "registers");
+    if (cj->type != cJSON_Array)
+    {
+        FPS_ERROR_PRINT("modbus registers object is not an array ! \n");
+        reurn false;
+    }
+    cJSON* cji;
+    cJSON_ArrayForEach(cji, cj)
+    {
+        cJSON* cjmap = cJSON_GetObjectItem(object, "map");
+        cJSON* cjtype = cJSON_GetObjectItem(object, "dnp3_type");
+        if ((cjmap == NULL) || (cjmap->type != cJSON_Array))
+        {
+            FPS_ERROR_PRINT("modbus registers map object is not an array ! \n");
+            reurn false;
+        }
+        if ((cjtype == NULL) || (cjtype->type != cJSON_String))
+        {
+            FPS_ERROR_PRINT("modbus registers dnp3_type missing or  object is not an string ! \n");
+            reurn false;
+        }
+        int idx = iotypToId (cjtype->valuestring);
+        if (idx < 0)
+        {
+            FPS_ERROR_PRINT("modbus dnp3_type [%s] not recognised! \n", cjtype->valuestring);
+            reurn false;
+        }
+        parse_items(sys, cjmap, idx, who);
+
+    }
+    return true;
+}
+
+bool parse_variables(cJSON* object, sysCfg* sys, const char* who)
+{
+    for (int idx = 0; idx< Type_of_Var::NumTypes; idx++)
+        sys->numObjs[idx] = 0 
+
+    // config file has "objects" with children groups "binary" and "analog"
+    // who is needd to stop cross referencing linkvars
+    cJSON *JSON_objects = cJSON_GetObjectItem(object, "registers");
+    if (JSON_objects != NULL)
+    {
+        return parse_modbus(object, sys, who);
+    }
+
     cJSON *JSON_objects = cJSON_GetObjectItem(object, "objects");
     if (JSON_objects == NULL)
     {

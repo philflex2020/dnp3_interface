@@ -226,7 +226,8 @@ typedef struct sysCfg_t {
         scanreq = 0;
         unsol = -1;
         cjclass = NULL;
-        
+        base_uris = NULL;
+
         pub = strdup("MyPubs");  // TODO remove this
         for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
         {
@@ -819,6 +820,7 @@ typedef struct sysCfg_t {
         int scanreq;     //used to request a class 1, 2 or 3 scan 
         int unsol;       // set to 1 to allow unsol in oustation
         cJSON* cjclass;  // used to change class of a var in outstation
+        cJSON* base_uris;
 
 } sysCfg;
 
