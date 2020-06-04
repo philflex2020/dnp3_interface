@@ -27,7 +27,9 @@
 "power_system_stabilizer":0,
   "gen_resource_switches":1,
 "gen_resource_breaker_status":12,
-  "gen_virtual_breaker_status":23
+  "gen_virtual_breaker_status":23,
+"plant_status":1004,
+"site_voltageSP":4800
                  }' &
 
 
