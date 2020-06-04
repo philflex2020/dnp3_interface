@@ -168,7 +168,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // if the master enables it
     config.outstation.params.allowUnsolicited = true;
     // allow sys to over rule
-    setConfigUnsol(sys, config);
+    setConfigUnsol(fpsDB, config);
 
     //config.outstation.params.allowUnsolicited = false;
 
