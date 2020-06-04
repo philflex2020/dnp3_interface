@@ -1,7 +1,7 @@
 {
 	"system":
 	{
-    "notes":" a collection of inputs from the system all using default uri",
+                "notes":" a collection of inputs from the system all using default uri",
 		"id": "sel_735",
 		"ip_address": "127.0.0.1",
 		"port": 12502,
