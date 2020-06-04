@@ -333,7 +333,7 @@ int main(int argc, char *argv[])
             {
                 CommandSet commands;
                 cJSON*cj = NULL;                
-                if(msg->replyto != NULL)
+                if((msg->replyto != NULL) && (strcmp(msg->method,"pub") != 0))
                     cj = cJSON_CreateObject();
 
                 while (!dbs.empty())

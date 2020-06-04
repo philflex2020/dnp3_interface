@@ -353,7 +353,7 @@ int main(int argc, char* argv[])
             if(dbs.size() > 0)
             {
                 cJSON* cj = NULL;                
-                if(msg->replyto != NULL)
+                if((msg->replyto != NULL) && (strcmp(msg->method,"pub") != 0))
                     cj = cJSON_CreateObject();
                     
                 UpdateBuilder builder;
