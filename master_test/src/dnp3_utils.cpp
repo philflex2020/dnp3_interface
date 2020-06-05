@@ -400,7 +400,17 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
             if(db->variation == Group30Var5)
                 addCjVal(cj, dname, flag, db->valuedouble);
             else
-                addCjVal(cj, dname, flag, static_cast<int32_t>(db->valuedouble));
+            {
+                if(db->sign)
+                {
+                    addCjVal(cj, dname, flag, static_cast<double>(static_cast<int32_t>(db->valueint)));
+                }
+                else
+                {
+                    addCjVal(cj, dname, flag, static_cast<double>(db->valueint));        
+                }
+            }
+
             break;
         }
 
@@ -625,7 +635,8 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
     cJSON* obj;
     cJSON_ArrayForEach(obj, objs)
     {
-        cJSON *id, *offset, *uri, *bf, *bits, *variation, *evariation, *readback, *linkback, *clazz, *rsize;
+        cJSON *id, *offset, *uri, *bf, *bits, *variation;
+        cJSON *evariation, *readback, *linkback, *clazz, *rsize, *signed;
 
         if(obj == NULL)
         {
@@ -645,6 +656,8 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         readback   = cJSON_GetObjectItem(obj, "readback");
         linkback   = cJSON_GetObjectItem(obj, "linkback");
         clazz      = cJSON_GetObjectItem(obj, "clazz");
+        signed     = cJSON_GetObjectItem(obj, "signed");
+        
 
         if (id == NULL || offset == NULL || id->valuestring == NULL)
         {
@@ -674,6 +687,11 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         {
             db->setClazz(clazz->valueint);
             FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
+        }
+        if(signed &&(db != NULL))
+        {
+            db->sign = (signed->type == cJSON_True);
+            FPS_ERROR_PRINT("****** variable [%s] set to signed %d\n", db->name.c_str(), db->clazz);
         }
         
         if (bf && bits && (bits->type == cJSON_Array))

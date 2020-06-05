@@ -94,7 +94,7 @@ typedef struct DbVar_t {
         linkb = NULL;  // used to link outstation responses to master vars
         linkback = NULL;
         clazz = 0;
-
+        sign = false;
 
         if(iuri)
         {
@@ -194,6 +194,8 @@ typedef struct DbVar_t {
     DbVar_t* readb;      // we have a readb linked to this  
     DbVar_t* linkb;
     const char* linkback;
+    bool sign;
+
 
 } DbVar;
 
@@ -820,8 +822,7 @@ typedef struct sysCfg_t {
         int scanreq;     //used to request a class 1, 2 or 3 scan 
         int unsol;       // set to 1 to allow unsol in oustation
         cJSON* cjclass;  // used to change class of a var in outstation
-        cJSON* base_uris;
-
+        cJSON* base_uris;        
 } sysCfg;
 
 DbVar* getDbVar(sysCfg *sysdb, const char *name);
