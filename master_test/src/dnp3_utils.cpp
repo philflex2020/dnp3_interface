@@ -636,7 +636,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
     cJSON_ArrayForEach(obj, objs)
     {
         cJSON *id, *offset, *uri, *bf, *bits, *variation;
-        cJSON *evariation, *readback, *linkback, *clazz, *rsize, *signed;
+        cJSON *evariation, *readback, *linkback, *clazz, *rsize, *sign;
 
         if(obj == NULL)
         {
@@ -656,7 +656,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         readback   = cJSON_GetObjectItem(obj, "readback");
         linkback   = cJSON_GetObjectItem(obj, "linkback");
         clazz      = cJSON_GetObjectItem(obj, "clazz");
-        signed     = cJSON_GetObjectItem(obj, "signed");
+        sign     = cJSON_GetObjectItem(obj, "signed");
         
 
         if (id == NULL || offset == NULL || id->valuestring == NULL)
@@ -688,10 +688,10 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
             db->setClazz(clazz->valueint);
             FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
         }
-        if(signed &&(db != NULL))
+        if(sign &&(db != NULL))
         {
-            db->sign = (signed->type == cJSON_True);
-            FPS_ERROR_PRINT("****** variable [%s] set to signed %d\n", db->name.c_str(), db->clazz);
+            db->sign = (sign->type == cJSON_True);
+            FPS_ERROR_PRINT("****** variable [%s] set to signed %d\n", db->name.c_str(), db->sign);
         }
         
         if (bf && bits && (bits->type == cJSON_Array))
