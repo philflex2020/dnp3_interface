@@ -42,6 +42,9 @@ typedef std::map<const char*, body_map*, char_cmp> uri_map;
 
 int variation_decode(const char* ivar);
 
+const char *iotypToStr (int t);
+int iotypToId (const char* t);
+
 
 enum Type_of_Var{
     AnIn16,
@@ -848,8 +851,7 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt32& 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputFloat32& cmd, uint16_t index);
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const char* cmd, uint16_t index);
 const char* cfgGetSOEName(sysCfg* sysdb, const char* fname);
-const char *iotypToStr (int t);
-int iotypToId (const char* t);
+
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
 
