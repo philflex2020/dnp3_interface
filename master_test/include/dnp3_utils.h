@@ -490,7 +490,7 @@ typedef struct sysCfg_t {
             }
             if (db != NULL)
             {
-                FPS_ERROR_PRINT(" setting the value of [%s] %s to %f sign %d \n", db->name.c_str(), iotypToStr(dbtype), fval, db->sign );                
+                FPS_ERROR_PRINT(" setting the double value of [%s] %s to %f sign %d \n", db->name.c_str(), iotypToStr(dbtype), fval, db->sign );                
                 return setDb(db, fval);
             }
             return 0;
@@ -505,6 +505,7 @@ typedef struct sysCfg_t {
             }
             if (db != NULL)
             {
+                FPS_ERROR_PRINT(" setting the int value of [%s] %s to %d sign %d \n", db->name.c_str(), iotypToStr(dbtype), ival, db->sign );                
                 return setDb(db, ival);
             }
             return 0;
