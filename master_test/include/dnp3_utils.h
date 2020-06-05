@@ -183,8 +183,8 @@ typedef struct DbVar_t {
     // values , one for each type
     double valuedouble;
     int valueint;
-    uint16_t anInt16;
-    uint32_t anInt32;
+    int16_t anInt16;
+    int32_t anInt32;
     double anF32;
     uint8_t crob;
     int idx;      // type index
@@ -381,6 +381,7 @@ typedef struct sysCfg_t {
                     }
                 }
                 db->initSet = 1;
+
                 switch (db->type) 
                 {
                     case Type_Analog:
@@ -404,6 +405,7 @@ typedef struct sysCfg_t {
                     } 
                     case AnIn32:
                     {
+                        FPS_ERROR_PRINT(" setting the AnIn32 int value of [%s] %s to %d sign %d \n", db->name.c_str(), iotypToStr(db->type), ival, db->sign );                
                         db->valueint = ival;
                         db->anInt32 = ival;
                         return  1;
