@@ -47,6 +47,7 @@ void fpsCommandHandler::End()
     {
       if(sysdb->cj)
         {
+            // make sure we want to do this. Look at modbus
             pubWithTimeStamp2(sysdb->cj, sysdb, "components");
             cJSON_Delete(sysdb->cj);
             sysdb->cj = NULL;

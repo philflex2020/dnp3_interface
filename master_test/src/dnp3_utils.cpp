@@ -1397,6 +1397,7 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOu
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
         sendCmdSet(sysdb, db, cjv);
+        //cJSON_Delete(cjv);
     }
     else
     {
@@ -1417,6 +1418,7 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
         sendCmdSet(sysdb, db, cjv);
+        //cJSON_Delete(cjv);
     }
     else
     {
@@ -1438,6 +1440,7 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
         sendCmdSet(sysdb, db, cjv);
+        //cJSON_Delete(cjv);
     }
     else
     {

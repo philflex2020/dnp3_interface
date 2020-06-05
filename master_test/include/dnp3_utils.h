@@ -487,6 +487,7 @@ typedef struct sysCfg_t {
             }
             if (db != NULL)
             {
+                FPS_ERROR_PRINT(" setting the value of [%s] %s to %f sign %d \n", db->name.c_str(), iotypToStr(dbtype), fval, db->sign );                
                 return setDb(db, fval);
             }
             return 0;
