@@ -1413,7 +1413,15 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         cJSON* cjf = sysdbFindAddArray(sysdb, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
-        cJSON_AddNumberToObject(cjv,"value", cmd.value);
+        if(db->sign == 1)
+        {
+            cJSON_AddNumberToObject(cjv,"value", cmd.value);
+        }
+        else
+        {
+            cJSON_AddNumberToObject(cjv,"value", static_cast<uint32_t>(cmd.value));            
+        }
+        
         cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
         cJSON_AddItemToArray(cjf, cji);
         sysdb->cjloaded++;
