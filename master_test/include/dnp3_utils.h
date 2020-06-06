@@ -220,8 +220,8 @@ typedef std::map<const char*, std::pair<DbVar_t*,int>, char_dcmp>bits_map;
 int32_t getInt32Val(DbVar *db);
 int16_t getInt16Val(DbVar *db);
 
-bool extactInt32Val(double &dval, DbVar *db);
-bool extratInt16Val(double &dval, DbVar *db);
+bool extractInt32Val(double &dval, DbVar *db);
+bool extractInt16Val(double &dval, DbVar *db);
 
 
 int addVarToCj(cJSON* cj, DbVar*db);

@@ -134,7 +134,7 @@ int16_t getInt16Val(DbVar *db)
     }
     return ival;
 }
-bool extactInt32Val(double &dval, DbVar *db)
+bool extractInt32Val(double &dval, DbVar *db)
 {
     bool flag = false;
     if((db->sign == 0) && (db->valuedouble < 0)
@@ -145,7 +145,7 @@ bool extactInt32Val(double &dval, DbVar *db)
     return flag;
 }
 
-bool extratInt16Val(double &dval, DbVar *db);
+bool extractInt16Val(double &dval, DbVar *db);
 {
     bool flag = false;
     if((db->sign == 0) && (db->valuedouble < 0)
@@ -484,7 +484,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         {
             //addCjVal(cj, dname, flag, db->anInt16);
             double dval = 0.0;
-            if (extactInt16Val(dval, db) == true)
+            if (extractInt16Val(dval, db) == true)
             {
                 // this can still be an int
                 addCjVal(cj, dname, flag, static_cast<int32_t>(dval));
@@ -498,7 +498,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         case AnIn32:
         {
             double dval = 0.0;
-            if (extactInt32Val(dval, db) == true)
+            if (extractInt32Val(dval, db) == true)
             {
                 addCjVal(cj, dname, flag, dval);
             }
