@@ -137,7 +137,7 @@ int16_t getInt16Val(DbVar *db)
 bool extractInt32Val(double &dval, DbVar *db)
 {
     bool flag = false;
-    if((db->sign == 0) && (db->valuedouble < 0)
+    if((db->sign == 0) && (db->valuedouble < 0))
     {
         dval = -(INT_MIN + db->valuedouble);
         flag = true;
@@ -148,7 +148,7 @@ bool extractInt32Val(double &dval, DbVar *db)
 bool extractInt16Val(double &dval, DbVar *db)
 {
     bool flag = false;
-    if((db->sign == 0) && (db->valuedouble < 0)
+    if((db->sign == 0) && (db->valuedouble < 0))
     {
         dval = -(SHRT_MIN + db->valuedouble);
         flag = true;
