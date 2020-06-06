@@ -491,7 +491,6 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         }
         case AnIn16:
         {
-            //addCjVal(cj, dname, flag, db->anInt16);
             double dval = 0.0;
             if (extractInt16Val(dval, db) == true)
             {
@@ -912,7 +911,7 @@ bool parse_modbus(cJSON* cj, sysCfg* sys, const char* who)
     {
         cJSON* cjmap = cJSON_GetObjectItem(cji, "map");
         cJSON* cjtype = cJSON_GetObjectItem(cji, "dnp3_type");
-        // dnp3_type can be output that will AnInt16 or AnInt32 but valuedouble holds it all 
+        // dnp3_type can be output, valuedouble holds it all 
         if ((cjmap == NULL) || (cjmap->type != cJSON_Array))
         {
             FPS_ERROR_PRINT("modbus registers map object is not an array ! \n");

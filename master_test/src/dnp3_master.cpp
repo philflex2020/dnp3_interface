@@ -169,8 +169,8 @@ void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
         }
         case AnIn16:
         {
-            db->anInt16  = getInt16Val(db);
-            commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(db->anInt16), db->idx)});
+            int16_t anInt16  = getInt16Val(db);
+            commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(anInt16), db->idx)});
             break;
         }
         case AnIn32:

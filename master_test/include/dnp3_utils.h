@@ -87,7 +87,7 @@ typedef struct DbVar_t {
     DbVar_t(std::string &_name, int _type, int _offset, const char* iuri, const char*ivariation):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
         valueint = 0;
-        anInt16 = 0;
+        //xnInt16 = 0;
         //anInt32 = 0;
         anF32 = 0.0;
         crob = 0;
@@ -185,7 +185,7 @@ typedef struct DbVar_t {
     // values , one for each type
     double valuedouble;
     int valueint;
-    int16_t anInt16;
+    //int16_t xnInt16;
     //int32_t anInt32;
     double anF32;
     uint8_t crob;
@@ -355,7 +355,7 @@ typedef struct sysCfg_t {
                     {
                         db->valuedouble = fval;
                         db->valueint = static_cast<int32_t>(fval);
-                        db->anInt16 = db->valueint;
+                        //db->xnInt16 = db->valueint;
                         return  1;
                     }
                     case Type_Crob:
@@ -428,7 +428,7 @@ typedef struct sysCfg_t {
                     {
                         db->valuedouble = (double)ival;
                         db->valueint = ival;
-                        db->anInt16 = ival;
+                        //db->xnInt16 = ival;
                         return  1;
                     }
                     case Type_Crob:
