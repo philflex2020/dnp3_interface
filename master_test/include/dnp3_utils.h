@@ -336,12 +336,14 @@ typedef struct sysCfg_t {
                     } 
                     case AnIn32:
                     {
+                        db->valuedouble = fval;
                         db->valueint = static_cast<int32_t>(fval);
                         db->anInt32 = db->valueint;
                         return  1;
                     }
                    case AnIn16:
                     {
+                        db->valuedouble = fval;
                         db->valueint = static_cast<int32_t>(fval);
                         db->anInt16 = db->valueint;
                         return  1;
