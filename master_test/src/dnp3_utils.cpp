@@ -21,6 +21,8 @@
 #include <net/if.h>
 #include <signal.h>
 #include <arpa/inet.h>
+#include <climits>
+
 #include <fims/libfims.h>
 
 #include "dnp3_utils.h"
@@ -112,6 +114,47 @@ using namespace std;
 //     //}
 //     return sock;
 // }
+// uses unsigned int to extend the range for int
+int32_t getInt32Val(DbVar *db)
+{
+    int32_t ival = static_cast<int32_t>(db->valuedouble); 
+    if((db->sign == 0) && (db->valuedouble > INT_MAX) && (db->valuedouble <= UINT_MAX))
+    {
+        ival = -(db->valuedouble - INT_MAX);
+    }
+    return ival;
+}
+// uses unsigned int to extend the range for int
+int16_t getInt16Val(DbVar *db)
+{
+    int16_t ival = static_cast<int16_t>(db->valuedouble); 
+    if((db->sign == 0) && (db->valuedouble > SHRT_MAX) && (db->valuedouble <= USHRT_MAX))
+    {
+        ival = -(db->valuedouble - SHRT_MAX);
+    }
+    return ival;
+}
+bool extactInt32Val(double &dval, DbVar *db)
+{
+    bool flag = false;
+    if((db->sign == 0) && (db->valuedouble < 0)
+    {
+        dval = -(INT_MIN + db->valuedouble);
+        flag = true;
+    }
+    return flag;
+}
+
+bool extratInt16Val(double &dval, DbVar *db);
+{
+    bool flag = false;
+    if((db->sign == 0) && (db->valuedouble < 0)
+    {
+        dval = -(SHRT_MIN + db->valuedouble);
+        flag = true;
+    }
+    return flag;
+}
 
 void emit_event(fims* pFims, const char* source, const char* message, int severity)
 {
@@ -439,12 +482,30 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         }
         case AnIn16:
         {
-            addCjVal(cj, dname, flag, db->anInt16);
+            //addCjVal(cj, dname, flag, db->anInt16);
+            double dval = 0.0;
+            if (extactInt16Val(dval, db) == true)
+            {
+                // this can still be an int
+                addCjVal(cj, dname, flag, static_cast<int32_t>(dval));
+            }
+            else
+            {
+                addCjVal(cj, dname, flag, db->anInt32);                
+            }
             break;
         }
         case AnIn32:
         {
-            addCjVal(cj, dname, flag, db->anInt32);
+            double dval = 0.0;
+            if (extactInt32Val(dval, db) == true)
+            {
+                addCjVal(cj, dname, flag, dval);
+            }
+            else
+            {
+                addCjVal(cj, dname, flag, db->anInt32);                
+            }            
             break;
         }
         case AnF32:

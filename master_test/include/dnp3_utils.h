@@ -27,6 +27,7 @@ using namespace opendnp3;
 
 const ControlCode StringToControlCode(const char* codeWord);
 
+
 struct char_cmp {
     bool operator () (const char *a,const char *b) const
     {
@@ -202,6 +203,7 @@ typedef struct DbVar_t {
 
 } DbVar;
 
+
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
 typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
@@ -213,6 +215,13 @@ typedef std::vector<std::pair<DbVar*,int>>dbs_type; // collect all the parsed va
 
 // this is for the bits
 typedef std::map<const char*, std::pair<DbVar_t*,int>, char_dcmp>bits_map;
+
+// do conversion for large values unsigned ints
+int32_t getInt32Val(DbVar *db);
+int16_t getInt16Val(DbVar *db);
+
+bool extactInt32Val(double &dval, DbVar *db);
+bool extratInt16Val(double &dval, DbVar *db);
 
 
 int addVarToCj(cJSON* cj, DbVar*db);

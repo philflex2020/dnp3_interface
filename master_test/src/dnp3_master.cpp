@@ -153,16 +153,6 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     return master;
 }
 
-// uses unsigned int to extend the range for int
-int32_t getInt32Val(DbVar *db)
-{
-    int32_t ival = static_cast<int32_t>(db->valuedouble); 
-    if((db->sign == 0) && (db->valuedouble > INT_MAX) && (db->valuedouble <= UINT_MAX))
-    {
-        ival = -(db->valuedouble - INT_MAX);
-    }
-    return ival;
-}
 
 
 void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
@@ -179,6 +169,7 @@ void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
         }
         case AnIn16:
         {
+            db->anInt16  = getInt16Val(db);
             commands.Add<AnalogOutputInt16>({WithIndex(AnalogOutputInt16(db->anInt16), db->idx)});
             break;
         }
