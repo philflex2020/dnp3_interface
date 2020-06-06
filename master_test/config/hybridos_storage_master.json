@@ -1,9 +1,9 @@
 {
     "system": {
-        "id": "hybridos",
+        "idx": "hybridos",
         "ip_address2": "127.0.0.1",
         "port2": 502,
-        "id": "hybridos",
+        "id": "hybridos_m",
         "ip_address": "127.0.0.1",
         "port": 12502
     },
