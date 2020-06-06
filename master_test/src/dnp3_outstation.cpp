@@ -223,7 +223,6 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
             builder.Update(BinaryOutputStatus(vint), db->idx);
             break;
         }
-
         default:
             break;
     }

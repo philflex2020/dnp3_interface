@@ -1058,10 +1058,25 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who,
     }
     return body_JSON;//return dbs.size();
 }
-//    }
-//    return body_JSON;//return dbs.size();
-//}
 
+
+
+// uri handling
+// we create a list of uris from cofig data
+// a var name can be partly a uri
+//   gateway/system1/voltageSP
+// with a uri /components/fleetmanager/
+// this incoming uri in the fims request will be
+// get  /components/fleetmanager/[gateway/system1/voltageSP]
+// anything past /components/fleetmanager/  must be a name simple
+// but what do we forward to /components/gateway1
+// so we have a set uri , used for pubs
+// and a get uri used to pick up pubs etc.
+// so the test checkUri makes sure we have a name / uri match
+//  
+// si  
+
+// we have an incoming uri
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
 cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
