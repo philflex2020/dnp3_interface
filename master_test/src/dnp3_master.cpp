@@ -156,9 +156,9 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
 int32_t getInt32Val(DbVar *db)
 {
     int32_t ival = static_cast<int32_t>(db->valuedouble); 
-    if((db->sign == 0) && (db->valuedouble > (double)ival))
+    if((db->sign == 0) && (db->valuedouble > INT_MAX) && (db->valuedouble <= UINT_MAX))
     {
-        ival = -(db->valuedouble - ival);
+        ival = -(db->valuedouble - INT_MAX);
     }
     return ival;
 }
