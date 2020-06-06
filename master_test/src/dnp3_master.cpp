@@ -183,10 +183,10 @@ void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
         }
         case AnIn32:
         {
-            int32_t ival = getInt32Val(db);
+            //int32_t ival = getInt32Val(db);
             
-            //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(db->anInt32), db->idx)});
-            commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(ival, db->idx)});
+            commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(db->anInt32), db->idx)});
+            //commands.Add<AnalogOutputInt32>({WithIndex(AnalogOutputInt32(ival, db->idx)});
             break;
         }
         case AnF32:
