@@ -455,11 +455,11 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
             {
                 if(db->sign)
                 {
-                    addCjVal(cj, dname, flag, static_cast<double>(static_cast<int32_t>(db->valueint)));
+                    addCjVal(cj, dname, flag, static_cast<double>(static_cast<int32_t>(db->valuedouble)));
                 }
                 else
                 {
-                    addCjVal(cj, dname, flag, static_cast<double>(db->valueint));        
+                    addCjVal(cj, dname, flag, db->valuedouble);        
                 }
             }
 
@@ -469,7 +469,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         case Type_BinaryOS:
         case Type_Binary:
         {
-            addCjVal(cj, dname, flag, db->valueint);
+            addCjVal(cj, dname, flag, static_cast<int32_t>(db->valuedouble));
             break;
         }
         case Type_Crob:
@@ -522,7 +522,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         }
         case AnF32:
         {
-            addCjVal(cj, dname, flag, db->anF32);
+            addCjVal(cj, dname, flag, db->valuedouble);
             break;
         }
         default:

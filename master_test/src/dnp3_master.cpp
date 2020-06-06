@@ -183,7 +183,7 @@ void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
         }
         case AnF32:
         {
-            commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(db->anF32), db->idx)});
+            commands.Add<AnalogOutputFloat32>({WithIndex(AnalogOutputFloat32(db->valuedouble), db->idx)});
             break;
         }
         default:

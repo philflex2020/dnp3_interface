@@ -86,10 +86,10 @@ enum {
 typedef struct DbVar_t {
     DbVar_t(std::string &_name, int _type, int _offset, const char* iuri, const char*ivariation):name(_name), site(NULL),type(_type), offset(_offset),site_offset(-1) {
         valuedouble = 0.0;
-        valueint = 0;
+        //valueint = 0;
         //xnInt16 = 0;
         //anInt32 = 0;
-        anF32 = 0.0;
+        //xnF32 = 0.0;
         crob = 0;
         bit = -1;
         parent = NULL;
@@ -184,10 +184,10 @@ typedef struct DbVar_t {
     int site_offset;     // future use for site offset
     // values , one for each type
     double valuedouble;
-    int valueint;
+    //int valueint;
     //int16_t xnInt16;
     //int32_t anInt32;
-    double anF32;
+    //double xnF32;
     uint8_t crob;
     int idx;      // type index
     int clazz;    // class
@@ -329,7 +329,7 @@ typedef struct sysCfg_t {
                     {
                         // also copy valueint or the group30var5 stuff
                         db->valuedouble = fval;
-                        db->valueint =  static_cast<int32_t>(fval);
+                        //db->valueint =  static_cast<int32_t>(fval);
 
                         return 1;
                     }    
@@ -341,20 +341,21 @@ typedef struct sysCfg_t {
                     case Type_Binary:
                     case Type_BinaryOS:
                     {
-                        db->valueint = static_cast<int32_t>(fval);
+                        db->valuedouble = fval;
+                        //db->valueint = static_cast<int32_t>(fval);
                         return  1;
                     } 
                     case AnIn32:
                     {
                         db->valuedouble = fval;
-                        db->valueint = static_cast<int32_t>(fval);
+                        //db->valueint = static_cast<int32_t>(fval);
                         //db->anInt32 = db->valueint;
                         return  1;
                     }
                    case AnIn16:
                     {
                         db->valuedouble = fval;
-                        db->valueint = static_cast<int32_t>(fval);
+                        //db->valueint = static_cast<int32_t>(fval);
                         //db->xnInt16 = db->valueint;
                         return  1;
                     }
@@ -401,7 +402,7 @@ typedef struct sysCfg_t {
                     {
                         // also copy valueint or the group30var5 stuff
                         db->valuedouble = (double)ival;
-                        db->valueint =  ival;
+                        //db->valueint =  ival;
                         return 1;
                     }    
                     case AnF32:
@@ -413,21 +414,21 @@ typedef struct sysCfg_t {
                     case Type_BinaryOS:
                     {
                         db->valuedouble = (double)ival;
-                        db->valueint = ival;
+                        //db->valueint = ival;
                         return  1;
                     } 
                     case AnIn32:
                     {
                         FPS_ERROR_PRINT(" setting the AnIn32 int value of [%s] %s to %d sign %d \n", db->name.c_str(), iotypToStr(db->type), ival, db->sign );                
                         db->valuedouble = (double)ival;
-                        db->valueint = ival;
+                        //db->valueint = ival;
                         //db->anInt32 = ival;
                         return  1;
                     }
                    case AnIn16:
                     {
                         db->valuedouble = (double)ival;
-                        db->valueint = ival;
+                        //db->valueint = ival;
                         //db->xnInt16 = ival;
                         return  1;
                     }
@@ -460,7 +461,7 @@ typedef struct sysCfg_t {
                     case AnIn32:
                     case AnIn16:
                     {
-                        FPS_ERROR_PRINT(" XXX setting the value of [%s] %s to (int)%d (double) %f sign %d \n", db->name.c_str(), iotypToStr(db->type), cj->valueint, cj->valuedouble, db->sign );                
+                        FPS_ERROR_PRINT(" XXX setting the value of [%s] %s to  (double) %f sign %d \n", db->name.c_str(), iotypToStr(db->type), cj->valuedouble, db->sign );                
 
                         return setDb(db, cj->valuedouble);
                         //return setDb(db, cj->valueint);
