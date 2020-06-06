@@ -445,6 +445,8 @@ typedef struct sysCfg_t {
                     case AnIn32:
                     case AnIn16:
                     {
+                        FPS_ERROR_PRINT(" XXX setting the value of [%s] %s to (int)%d (double) %f sign %d \n", db->name.c_str(), iotypToStr(db->type), cj->valueint, cj->valuedouble, db->sign );                
+
                         return setDb(db, cj->valueint);
                     } 
                     case Type_Crob:
