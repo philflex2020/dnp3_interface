@@ -213,13 +213,13 @@ void addVarToBuilder (UpdateBuilder& builder, DbVar *db)
         }
         case Type_Binary:
         {
-            int32_t vint = static_cast<int32_t)(db->valuedouble);
+            int32_t vint = static_cast<int32_t>(db->valuedouble);
             builder.Update(Binary(vint), db->idx);
             break;
         }
         case Type_BinaryOS:
         {
-            int32_t vint = static_cast<int32_t)(db->valuedouble);
+            int32_t vint = static_cast<int32_t>(db->valuedouble);
             builder.Update(BinaryOutputStatus(vint), db->idx);
             break;
         }
