@@ -1,4 +1,5 @@
 #!/bin/sh
+
 #How to create an OpenSSL certificate
 #We have the power to create certificates on our own. 
 #This example generates a self-signed certificate using OpenSSL.
