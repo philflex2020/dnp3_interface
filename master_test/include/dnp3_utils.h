@@ -411,18 +411,21 @@ typedef struct sysCfg_t {
                     case Type_Binary:
                     case Type_BinaryOS:
                     {
+                        db->valuedouble = (double)ival;
                         db->valueint = ival;
                         return  1;
                     } 
                     case AnIn32:
                     {
                         FPS_ERROR_PRINT(" setting the AnIn32 int value of [%s] %s to %d sign %d \n", db->name.c_str(), iotypToStr(db->type), ival, db->sign );                
+                        db->valuedouble = (double)ival;
                         db->valueint = ival;
                         db->anInt32 = ival;
                         return  1;
                     }
                    case AnIn16:
                     {
+                        db->valuedouble = (double)ival;
                         db->valueint = ival;
                         db->anInt16 = ival;
                         return  1;

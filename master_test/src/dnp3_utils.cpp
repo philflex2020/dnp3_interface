@@ -428,6 +428,7 @@ void addCjVal(cJSON* cj, const char* dname, int flag, const char* val)
     }
 }
 
+// This is the root function
 int addVarToCj(cJSON* cj, DbVar* db, int flag)
 {
     int rc = 0;
