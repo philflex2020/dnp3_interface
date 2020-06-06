@@ -145,7 +145,7 @@ bool extractInt32Val(double &dval, DbVar *db)
     return flag;
 }
 
-bool extractInt16Val(double &dval, DbVar *db);
+bool extractInt16Val(double &dval, DbVar *db)
 {
     bool flag = false;
     if((db->sign == 0) && (db->valuedouble < 0)
