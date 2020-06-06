@@ -1,4 +1,5 @@
 export PATH=/usr/local/bin/fims:$PATH
-export LD_LIBRARY_PATH=/home/vagrant/work/flexgen-power/dnp3_interface/master_test/build/release_obj:/usr/local/lib64
+export LD_LIBRARY_PATH=/home/vagrant/work/flexgen-power/dnp3_interface/master_test/build/release_obj:/usr/local/lib64:/usr/local/lib:
+
 #sh scripts/sample2_fims_echo_both.sh
 #build/release/dnp3_master  config/sample2_master.json 
