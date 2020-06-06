@@ -339,6 +339,7 @@ int main(int argc, char *argv[])
             if(dbs.size() > 0)
             {
                 CommandSet commands;
+                int numCmds = 0;
                 cJSON*cj = NULL;                
                 if((msg->replyto != NULL) && (strcmp(msg->method,"pub") != 0))
                     cj = cJSON_CreateObject();
@@ -348,7 +349,10 @@ int main(int argc, char *argv[])
                     std::pair<DbVar*,int>dbp = dbs.back();
                     // only do this on sets or posts
                     if ((strcmp(msg->method,"set") == 0) || (strcmp(msg->method,"post") == 0))
+                    {
                         addVarToCommands(commands, dbp);
+                        numCmds++;
+                    }
                     if(cj) addVarToCj(cj, dbp);
                     dbs.pop_back();
                 }
@@ -363,9 +367,11 @@ int main(int argc, char *argv[])
                     p_fims->Send("set", msg->replyto, NULL, reply);
                     free((void* )reply);
                 }
-
-                FPS_DEBUG_PRINT("      *****Running Direct Outputs \n");
-                master->DirectOperate(std::move(commands), fpsCommandCallback::Get());
+                if(numCmds > 0)
+                {
+                    FPS_DEBUG_PRINT("      *****Running Direct Outputs \n");
+                    master->DirectOperate(std::move(commands), fpsCommandCallback::Get());
+                }
             }
 
             if (sys_cfg.scanreq > 0)
