@@ -141,7 +141,7 @@ bool extractInt32Val(double &dval, DbVar *db)
     if(db->sign == 0)
     {
         flag = true;
-        if  (db->valuedouble < 0))
+        if  (db->valuedouble < 0.0)
         {
             dval = -(static_cast<double>(INT_MIN) + db->valuedouble);
         }
