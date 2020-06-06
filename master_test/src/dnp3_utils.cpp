@@ -134,13 +134,21 @@ int16_t getInt16Val(DbVar *db)
     }
     return ival;
 }
+
 bool extractInt32Val(double &dval, DbVar *db)
 {
     bool flag = false;
-    if((db->sign == 0) && (db->valuedouble < 0))
+    if(db->sign == 0)
     {
-        dval = -(static_cast<double>(INT_MIN) + db->valuedouble);
         flag = true;
+        if  (db->valuedouble < 0))
+        {
+            dval = -(static_cast<double>(INT_MIN) + db->valuedouble);
+        }
+        else
+        {
+            dval = db->valuedouble;
+        }        
     }
     return flag;
 }
@@ -492,7 +500,7 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
             }
             else
             {
-                addCjVal(cj, dname, flag, db->anInt32);                
+                addCjVal(cj, dname, flag, static_cast<int32_t>(db->valuedouble));                
             }
             break;
         }
@@ -507,8 +515,8 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
             }
             else
             {
-                FPS_ERROR_PRINT("*** %s Found variable [%s] type  %d sign %d using int %d valuedouble %f\n"
-                                , __FUNCTION__, db->name.c_str(), db->type, db->sign, db->anInt32, db->valuedouble);
+                FPS_ERROR_PRINT("*** %s Found variable [%s] type  %d sign %d using valuedouble %f\n"
+                                , __FUNCTION__, db->name.c_str(), db->type, db->sign, db->valuedouble);
                 addCjVal(cj, dname, flag, db->valuedouble);                
             }            
             break;
@@ -703,6 +711,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
     {
         cJSON *id, *offset, *uri, *bf, *bits, *variation;
         cJSON *evariation, *readback, *linkback, *clazz, *rsize, *sign;
+        cJSON *scale;
 
         if(obj == NULL)
         {
@@ -722,7 +731,8 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         readback   = cJSON_GetObjectItem(obj, "readback");
         linkback   = cJSON_GetObjectItem(obj, "linkback");
         clazz      = cJSON_GetObjectItem(obj, "clazz");
-        sign     = cJSON_GetObjectItem(obj, "signed");
+        sign       = cJSON_GetObjectItem(obj, "signed");
+        scale      = cJSON_GetObjectItem(obj, "scale");
         
 
         if (id == NULL || offset == NULL || id->valuestring == NULL)
@@ -754,12 +764,19 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
             db->setClazz(clazz->valueint);
             FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
         }
+
         if(sign &&(db != NULL))
         {
             db->sign = (sign->type == cJSON_True);
             FPS_ERROR_PRINT("****** variable [%s] set to signed %d\n", db->name.c_str(), db->sign);
         }
         
+        if(scale &&(db != NULL))
+        {
+            db->scale = (scale->valueint);
+            FPS_ERROR_PRINT("****** variable [%s] scale set %d\n", db->name.c_str(), db->sign);
+        }
+
         if (bf && bits && (bits->type == cJSON_Array))
         {
 
@@ -895,7 +912,7 @@ bool parse_modbus(cJSON* cj, sysCfg* sys, const char* who)
     {
         cJSON* cjmap = cJSON_GetObjectItem(cji, "map");
         cJSON* cjtype = cJSON_GetObjectItem(cji, "dnp3_type");
-        // dnp3_type can be output that will AnInt16 or AnInt32 
+        // dnp3_type can be output that will AnInt16 or AnInt32 but valuedouble holds it all 
         if ((cjmap == NULL) || (cjmap->type != cJSON_Array))
         {
             FPS_ERROR_PRINT("modbus registers map object is not an array ! \n");

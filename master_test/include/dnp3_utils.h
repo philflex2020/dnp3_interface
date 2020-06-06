@@ -88,7 +88,7 @@ typedef struct DbVar_t {
         valuedouble = 0.0;
         valueint = 0;
         anInt16 = 0;
-        anInt32 = 0;
+        //anInt32 = 0;
         anF32 = 0.0;
         crob = 0;
         bit = -1;
@@ -99,6 +99,7 @@ typedef struct DbVar_t {
         linkback = NULL;
         clazz = 0;
         sign = false;
+        scale = 0;
 
         if(iuri)
         {
@@ -185,7 +186,7 @@ typedef struct DbVar_t {
     double valuedouble;
     int valueint;
     int16_t anInt16;
-    int32_t anInt32;
+    //int32_t anInt32;
     double anF32;
     uint8_t crob;
     int idx;      // type index
@@ -199,7 +200,7 @@ typedef struct DbVar_t {
     DbVar_t* linkb;
     const char* linkback;
     bool sign;
-
+    int scale;
 
 } DbVar;
 
@@ -347,7 +348,7 @@ typedef struct sysCfg_t {
                     {
                         db->valuedouble = fval;
                         db->valueint = static_cast<int32_t>(fval);
-                        db->anInt32 = db->valueint;
+                        //db->anInt32 = db->valueint;
                         return  1;
                     }
                    case AnIn16:
@@ -420,7 +421,7 @@ typedef struct sysCfg_t {
                         FPS_ERROR_PRINT(" setting the AnIn32 int value of [%s] %s to %d sign %d \n", db->name.c_str(), iotypToStr(db->type), ival, db->sign );                
                         db->valuedouble = (double)ival;
                         db->valueint = ival;
-                        db->anInt32 = ival;
+                        //db->anInt32 = ival;
                         return  1;
                     }
                    case AnIn16:
