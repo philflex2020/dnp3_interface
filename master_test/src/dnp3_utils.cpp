@@ -1419,6 +1419,9 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         }
         else
         {
+            uint32_t u32val = static_cast<uint32_t>(cmd.value);
+            FPS_ERROR_PRINT("%s usigned AnIn32 val %u at index %d\n", __FUNCTION__, u32val, static_cast<int32_t>(index) );
+
             cJSON_AddNumberToObject(cjv,"value", static_cast<uint32_t>(cmd.value));            
         }
         
