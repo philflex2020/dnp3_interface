@@ -1,0 +1,180 @@
+#!/bin/sh
+#How to create an OpenSSL certificate
+#We have the power to create certificates on our own. 
+#This example generates a self-signed certificate using OpenSSL.
+
+#Create a private key using the openssl command:
+
+   openssl genrsa -out example.key 2048
+
+
+#Create a certificate signing request (CSR) using the private key generated in step 1:
+
+   openssl req -new -key example.key -out example.csr \
+   -subj "/C=US/ST=TX/L=Dallas/O=Red Hat/OU=IT/CN=test.example.com"
+
+
+#Create a certificate using your CSR and private key:
+
+   openssl x509 -req -days 366 -in example.csr \
+    -signkey example.key -out example.crt
+
+
+# create a public key from a the private key
+
+   openssl rsa -in example.key -pubout -out example.pub
+
+
+
+#For those interested in the details - 
+#you can see what's inside the public key file (generated as explained above), by doing this:-
+
+   openssl rsa -noout -text -inform PEM -in example.pub -pubin
+
+#or for the private key file, this:-
+
+   openssl rsa -noout -text -in example.key
+
+
+
+
+#If your looking how to copy an Amazon AWS .pem keypair into a different region do the following:
+
+      openssl rsa -in .ssh/amazon-aws.pem -pubout > .ssh/amazon-aws.pub
+#Then
+
+   aws ec2 import-key-pair --key-name amazon-aws --public-key-material '$(cat .ssh/amazon-aws.pub)' --region us-west-2
+
+#The public key output by openssl is sandwiched in PEM headers, which you will have to remove before AWS CLI accepts the key.
+#For AWS importing an existing public key,
+
+#Export from the .pem doing this... (on linux)
+
+     openssl rsa -in ./AWSGeneratedKey.pem -pubout -out PublicKey.pub
+
+This will produce a file which if you open in a text editor looking something like this...
+
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn/8y3uYCQxSXZ58OYceG
+A4uPdGHZXDYOQR11xcHTrH13jJEzdkYZG8irtyG+m3Jb6f9F8WkmTZxl+4YtkJdN
+9WyrKhxq4Vbt42BthadX3Ty/pKkJ81Qn8KjxWoL+SMaCGFzRlfWsFju9Q5C7+aTj
+eEKyFujH5bUTGX87nULRfg67tmtxBlT8WWWtFe2O/wedBTGGQxXMpwh4ObjLl3Qh
+bfwxlBbh2N4471TyrErv04lbNecGaQqYxGrY8Ot3l2V2fXCzghAQg26Hc4dR2wyA
+PPgWq78db+gU3QsePeo2Ki5sonkcyQQQlCkL35Asbv8khvk90gist4kijPnVBCuv
+cwIDAQAB
+-----END PUBLIC KEY-----
+However AWS will NOT accept this file.
+
+You have to strip off the -----BEGIN PUBLIC KEY----- and -----END PUBLIC KEY----- from the file. Save it and import and it should work in AWS.
+
+
+
+
+
+The best answer can be found here - https://www.youtube.com/watch?v=KXi3-3dEb8k
+
+I have modified it to suit needs by making the intermediate certificate's CA basic constraint True:
+
+MyOpenssl.conf:
+
+[ req ]
+distinguished_name       = distinguished_name
+extensions               = int_ca
+req_extensions           = int_ca
+
+[ int_ca ]
+basicConstraints         = CA:TRUE
+
+[ distinguished_name ]
+
+
+#create Root CA
+openssl genrsa -out RootCA.key 4096
+openssl req -new -x509 -days 1826 -key RootCA.key -out RootCA.pem -subj "/C=US/O=xzy/OU=abc/CN=ROOT-CN"
+
+#create Intermediate CA
+openssl genrsa -out IntermediateCA.key 4096
+openssl req -new -sha256 -key IntermediateCA.key -nodes -out IntermediateCA.csr -subj "/C=US/O=xyz/OU=abc/CN=INTERIM-CN"
+openssl x509 -req -days 1000 -extfile MyOpenssl.conf -extensions int_ca -in IntermediateCA.csr -CA RootCA.pem -CAkey RootCA.key -CAcreateserial -out IntermediateCA.pem
+
+#create EndUser certificates
+openssl genrsa -out my_server.key 2048
+openssl req -new -key my_server.key -out my_server.csr -subj "/C=US/O=xyz/OU=abc/CN=USER-CN"
+openssl x509 -req -in my_server.csr -CA IntermediateCA.pem -CAkey IntermediateCA.key -set_serial 01 -out my_server.pem -days 500 -sha1
+
+
+
+
+For the dnp3 tls outstation we need
+
+    std::string caCertificate(argv[1]);
+    std::string certificateChain(argv[2]);
+    std::string privateKey(argv[3]);
+
+    std::cout << "Using CA certificate: " << caCertificate << std::endl;
+    std::cout << "Using certificate chain: " << certificateChain << std::endl;
+    std::cout << "Using private key file: " << privateKey << std::endl;
+
+    // Specify what log levels to use. NORMAL is warning and above
+    // You can add all the comms logging by uncommenting below.
+    const uint32_t FILTERS = levels::NORMAL; // | levels::ALL_COMMS;
+
+    // This is the main point of interaction with the stack
+    // Allocate a single thread to the pool since this is a single outstation
+    DNP3Manager manager(1, ConsoleLogger::Create());
+
+    std::error_code ec;
+
+    // Create a TCP server (listener)
+    auto channel = manager.AddTLSServer("server", 
+                                        FILTERS, 
+                                        ServerAcceptMode::CloseExisting, 
+                                        "0.0.0.0", 20001,
+                                        TLSConfig(caCertificate, certificateChain, privateKey, 2),
+                                        PrintingChannelListener::Create(), 
+                                        ec);
+
+    if (ec)
+    {
+        std::cout << "Unable to create tls server: " << ec.message() << std::endl;
+        return ec.value();
+    }
+
+
+The dnp3 master needs this
+
+    std::string peerCertificate(argv[1]);
+    std::string privateKey(argv[2]);
+
+    std::cout << "Using peer cert: " << peerCertificate << std::endl;
+    std::cout << "Using private key file: " << privateKey << std::endl;
+
+    // Specify what log levels to use. NORMAL is warning and above
+    // You can add all the comms logging by uncommenting below
+    const uint32_t FILTERS = levels::NORMAL | levels::ALL_APP_COMMS;
+
+    // This is the main point of interaction with the stack
+    // send log messages to the console
+    DNP3Manager manager(1, ConsoleLogger::Create());
+
+    std::error_code ec;
+
+    // Connect via a TCPClient socket to a outstation
+    auto channel = manager.AddTLSClient(
+                                          "tls-client", 
+                                           FILTERS, 
+                                           ChannelRetry::Default(), 
+                                           {IPEndpoint("127.0.0.1", 20001)}, 
+                                           "0.0.0.0",
+                                           TLSConfig(peerCertificate, privateKey, privateKey), 
+                                           PrintingChannelListener::Create(), 
+                                           ec);
+
+    if (ec)
+    {
+        std::cout << "Unable to create tls client: " << ec.message() << std::endl;
+        return ec.value();
+    }
+
+
+    In this case the chain is satisfed by the privateKey file.
