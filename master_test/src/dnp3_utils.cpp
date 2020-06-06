@@ -500,11 +500,15 @@ int addVarToCj(cJSON* cj, DbVar* db, int flag)
         {
             double dval = 0.0;
             if (extractInt32Val(dval, db) == true)
-            {
+            {                
+                FPS_ERROR_PRINT("*** %s Found variable [%s] type  %d sign %d usng dval %f \n"
+                                , __FUNCTION__, db->name.c_str(), db->type, db->sign, dval);
                 addCjVal(cj, dname, flag, dval);
             }
             else
             {
+                FPS_ERROR_PRINT("*** %s Found variable [%s] type  %d sign %d using int %d \n"
+                                , __FUNCTION__, db->name.c_str(), db->type, db->sign, db->anInt32);
                 addCjVal(cj, dname, flag, db->anInt32);                
             }            
             break;
