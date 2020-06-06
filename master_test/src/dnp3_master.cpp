@@ -27,6 +27,7 @@
 #include <netinet/in.h>
 #include <net/if.h>
 #include <signal.h>
+#include <climits>
 
 #include <arpa/inet.h>
 #include <stdint.h>
