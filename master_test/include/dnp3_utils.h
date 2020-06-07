@@ -687,6 +687,36 @@ typedef struct sysCfg_t {
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
         }
+        
+        bool checkUri(DbVar* db, const char*uri)
+        {
+            // first limit the uri 
+            FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
+
+            duri_map::iterator it;
+            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            {
+                // it.first is the uri
+                if(strncmp(it.first, uri, strlen(it.first)) == 0)
+                {
+                    FPS_ERROR_PRINT(" %s possible uri match [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
+                    for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
+                    {
+                        if(it->second[i] == db)
+                        {
+                            FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
+                                        , db->name.c_str() 
+                                        , db->type
+                                        , db->offset
+                                        );
+                            return true;
+                        }
+                    }
+                }
+            }
+            FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+            return false;
+        }
 
         int addBits(DbVar *db, cJSON *bits)
         {
