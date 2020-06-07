@@ -1165,7 +1165,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             if(sys->debug == 1)
                 FPS_ERROR_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  dburi);
             DbVar* db = sys->getDbVar(dburi);
-            if (checkUri(db->name, msg->uri) == false)
+            if (sys->checkUri(db->name, msg->uri) == false)
             {
                 db = NULL;
             }
