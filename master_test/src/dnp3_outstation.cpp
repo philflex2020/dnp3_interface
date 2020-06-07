@@ -268,7 +268,7 @@ int main(int argc, char* argv[])
         (const char *)"/interfaces",
         (const char*)"/fooey",
         NULL
-        };
+    };
     const char **subs = NULL;
     bool *bpubs = NULL;
     int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 0);
@@ -286,6 +286,7 @@ int main(int argc, char* argv[])
         return 1;
         //goto cleanup;
     }
+    
     // could alternatively fims connect using a stored name for the server
     while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(sys_cfg.id) == false)
     {
