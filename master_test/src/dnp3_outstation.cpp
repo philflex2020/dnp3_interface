@@ -271,7 +271,7 @@ int main(int argc, char* argv[])
         };
     const char **subs = NULL;
     bool *bpubs = NULL;
-    int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 2);
+    int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 0);
     if(num < 0)
     {
         FPS_ERROR_PRINT("Failed to create subs array.\n");
