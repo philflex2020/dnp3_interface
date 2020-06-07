@@ -5,6 +5,9 @@
 * each outsation will have a number of data points.
 * a feature of dnp3 is the need to povide a shadow  stack to hold the user defined data points
 * iniitally a copy of the modbus stuff
+* note that modbus_client only responds to gets and sets on the base_url
+* it pubs the result of the query_registers
+*base_uri is set by /components + sys_cfg.name
 */
 /*
  * dnp3_master.cpp
@@ -237,6 +240,8 @@ int main(int argc, char *argv[])
         };
     const char **subs = NULL;
     bool *bpubs = NULL;
+
+    // "components is pulled in as the default uri "
     int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 2);
     if(num < 0)
     {
@@ -305,7 +310,10 @@ int main(int argc, char *argv[])
     
     // send out intial gets
     // set max ticks
-    sys_cfg.getUris("master");
+    
+    // no need to do this for the master
+    //sys_cfg.getUris("master");
+
     // set all values to inval  done at the start
     // start time to complete gets
     // TODO set for all the getURI responses as todo
@@ -319,7 +327,8 @@ int main(int argc, char *argv[])
         { 
             // TODO check for all the getURI resposes
             ttick++;
-            bool ok = sys_cfg.checkUris("master");
+            // master does not need to be preset
+            bool ok = true;// sys_cfg.checkUris("master");
             if(ok == false)
             {
                 FPS_DEBUG_PRINT("Timeout tick2 %d\n", ttick);
