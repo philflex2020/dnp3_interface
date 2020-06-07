@@ -811,10 +811,18 @@ typedef struct sysCfg_t {
             }
         }
         // TODO set this up as an object
-        void addDefUri(DbVar*db)
+        void addDefUri(DbVar*db, const char* who)
         {
             char tmp[1024];
-            snprintf(tmp, sizeof(tmp),"/components/%s",id);
+            if(strcmp(who, "master" == 0))
+            {
+                snprintf(tmp, sizeof(tmp),"/components/%s",id);
+            }
+            else
+            {
+                snprintf(tmp, sizeof(tmp),"/interfaces/%s",id);
+            }
+            
             return addUri(tmp, db);
         }
         

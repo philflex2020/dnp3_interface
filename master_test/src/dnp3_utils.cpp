@@ -792,7 +792,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         }
         else
         {
-            sys->addDefUri(db);
+            sys->addDefUri(db, who);
         }
         // Deal with linkback option ( which replaces readback function)
         // the master SOEhandler will cause the linkback value to be updated.
