@@ -4,7 +4,7 @@ pkill fims_echo
 
 /usr/local/bin/fims/fims_echo -u /queryx/home/mystuff/uri -b '{"testOP_32_1":1234,"testOP_32_22":3222}' &
 /usr/local/bin/fims/fims_echo -u /queryx/home/athings/uri -b '{"testOP_16_8":1608}' &
-/usr/local/bin/fims/fims_echo -u /getUris/components/hybridos -b '{
+/usr/local/bin/fims/fims_echo -u /getUris/interfaces/hybridos -b '{
 
 "present_enable_flag":0,
 "present_disable_flag":0,
@@ -62,8 +62,8 @@ pkill fims_echo
 "pv_apparent_power":0,
 "Timestamp":"06-04-2020 14:55:51.705450"
                  }' &
-/usr/local/bin/fims/fims_echo -u /getUris/components/hybridos_m -b '{
 
+/usr/local/bin/fims/fims_echo -u /getUris/components/hybridos -b '{
 "present_enable_flag":0,
 "present_disable_flag":0,
 "present_standby_flag":0,
