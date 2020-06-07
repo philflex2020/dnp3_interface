@@ -1161,11 +1161,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
             int flag = 0;  // dont set extra value field
-            uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
+            const char* dburi = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
             if(sys->debug == 1)
-                FPS_ERROR_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  uri);
-            DbVar* db = sys->getDbVar(uri);
-            // TODO check against db->uri  // db = checkUri(db, msg->uri)
+                FPS_ERROR_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  dburi);
+            DbVar* db = sys->getDbVar(dburi);
+            // TODO check against db->uri  // db = checkUri(db->name, msg->uri)
             if (db != NULL)
             {
                 if(sys->debug == 1)
