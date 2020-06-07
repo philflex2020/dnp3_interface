@@ -814,7 +814,7 @@ typedef struct sysCfg_t {
         void addDefUri(DbVar*db, const char* who)
         {
             char tmp[1024];
-            if(strcmp(who, "master" == 0))
+            if(strcmp(who, "master") == 0)
             {
                 snprintf(tmp, sizeof(tmp),"/components/%s",id);
             }
