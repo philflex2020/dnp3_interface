@@ -1117,7 +1117,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     }
     else if (strncmp(uri, who, strlen(who)) != 0)
     {
-        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] \n", msg->uri, uri, who);
+        bool uriOK = sys->confirmUri(NULL, msg->uri);
+        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] uriOK %d\n", msg->uri, uri, who, uriOK);
         return body_JSON;
     }
     else
