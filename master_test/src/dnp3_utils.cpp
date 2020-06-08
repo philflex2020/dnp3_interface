@@ -1137,13 +1137,16 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // /assets/feeders/feed_6/test/feeder_kW_slew_rate    == reject unless we have a var called "test/feeder_kW_slew_rate"
     //
     bool uriOK = sys->confirmUri(NULL, msg->uri, reffrags);
+    bool isReply = false;
     FPS_ERROR_PRINT("fims message first test msg->uri [%s]  uriOK %d nfags %dreffrags %d\n", msg->uri, uriOK, msg->nfrags, reffrags);
 
     if (uriOK == false)
     {
-        if(strstr(msg->uri, "/reply/") != NULL)
+        if((strstr(msg->uri, "/reply/") != NULL) && (strstr(msg->uri, sys->id) != NULL))
         {
+            FPS_ERROR_PRINT("fims message msg->uri [%s] reply uri [%s] ACCEPTED \n", msg->uri, sys->id);
             reffrags = msg->nfrags;
+            isReply = true;
         }
         else
         {        
@@ -1153,42 +1156,43 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     }
     // may be a single but we have to find the var
     single = 0;
-    if((int)msg->nfrags > reffrags)
+    
+    if(!isReply)
     {
-        dburi = msg->pfrags[reffrags];
-        db = sys->getDbVar(dburi);
-        if(db == NULL)
-        {        
-            FPS_ERROR_PRINT("fims message msg->uri [%s] name  [%s] Not Found  sysid [%s] \n", msg->uri, dburi, sys->id);
-            return body_JSON;
-        }
-        single = 1;
-    }
-    int urifrags = 0;
-    FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
-    uriOK = sys->confirmUri(db, msg->uri, urifrags);
-    FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%s] uriOK is %d uriflags [%d]\n", dburi, who, sys->id, uriOK, urifrags);
-
-    if(uriOK == false)
-    {
-        if(strstr(msg->uri, "/reply/") != NULL)
+        if((int)msg->nfrags > reffrags)
         {
-            reffrags = msg->nfrags;
+            dburi = msg->pfrags[reffrags];
+            db = sys->getDbVar(dburi);
+            if(db == NULL)
+            {        
+                FPS_ERROR_PRINT("fims message msg->uri [%s] name  [%s] Not Found  sysid [%s] \n", msg->uri, dburi, sys->id);
+                return body_JSON;
+            }
+            single = 1;
         }
-        else
-        {        
-            FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
+        int urifrags = 0;
+        FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
+        uriOK = sys->confirmUri(db, msg->uri, urifrags);
+        FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%s] uriOK is %d uriflags [%d]\n", dburi, who, sys->id, uriOK, urifrags);
+
+        if(uriOK == false)
+        {
+            if(strstr(msg->uri, "/reply/") != NULL)
+            {
+                reffrags = msg->nfrags;
+            }
+            else
+            {        
+                FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
+                return body_JSON;
+            }
+        }   
+        if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
+        {
+            FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
             return body_JSON;
         }
     }
-
-     
-    if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
-    {
-        FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
-        return body_JSON;
-    }
-
     // this is the "debug" or development method
     //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"index":<index>,"value":52},{"index":2,"value":5}]}' 
 
