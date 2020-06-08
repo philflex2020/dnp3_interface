@@ -697,26 +697,25 @@ typedef struct sysCfg_t {
         bool confirmUri(DbVar* db, const char*uri, int& nfrags)
         {
             // first limit the uri 
-            FPS_ERROR_PRINT(" %s uris===> \n", __FUNCTION__);
+            FPS_DEBUG_PRINT(" %s uris===> \n", __FUNCTION__);
 
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
                 // it.first is the uri
-                FPS_ERROR_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first, uri);
+                FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first, uri);
 
                 if(strncmp(it->first, uri, strlen(it->first)) == 0)
                 {
-                    nfrags = countUris(it->first);
-                   
+                    nfrags = countUris(it->first);                   
                     if(db != NULL)
                     {
-                        FPS_ERROR_PRINT(" %s possible uri match [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
+                        FPS_DEBUG_PRINT(" %s possible uri match [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
                         for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
                         {
                             if(it->second[i] == db)
                             {
-                                FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
+                                FPS_DEBUG_PRINT(" URI Match                [%s] %d %d\n"
                                             , db->name.c_str() 
                                             , db->type
                                             , db->offset
@@ -732,7 +731,7 @@ typedef struct sysCfg_t {
                     
                 }
             }
-            FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+            FPS_DEBUG_PRINT(" %s<=== uris \n\n", __FUNCTION__);
             return false;
         }
 

@@ -1218,11 +1218,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // Allow "pub" to "set" outstation
     if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && strcmp(who,"outstation") == 0))
     {
-        // todo need to ignore sets on the outstation for master vars ans vice versa 
+        //TODO need to ignore sets on the outstation for master vars and vice versa 
         //int single = 0;
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
-        // handle a single item set  it crappy code for now, we'll get a better plan in a day or so 
+        // handle a single item set getting better 
         //if(sys->debug == 1)
         if(single == 1)
         {
