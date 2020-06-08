@@ -1198,9 +1198,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
             const char* dburi = NULL;
             if ((msg->nfrags - reffrags) == 1)
+            {
                 dburi = msg->pfrags[reffrags]; // we may have a single
             //if(sys->debug == 1)
                 FPS_ERROR_PRINT("fims message reffrags %d variable name [%s] \n", reffrags,  dburi);
+            }
             DbVar* db = sys->getDbVar(dburi);
             if (sys->confirmUri(db, msg->uri, nfrags) == false)
             {
