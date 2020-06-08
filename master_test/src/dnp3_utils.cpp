@@ -1152,7 +1152,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     if (strncmp(uri, sys->id, strlen(sys->id)) != 0)
     {
         bool uriOK = sys->confirmUri(NULL, msg->uri, urifrags);
-        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] but uriOK is %d  frags %d \n", fragptr+1, uri, who, sys->id, uriOK, urifrags);
+        FPS_ERROR_PRINT("   xxxx fims message frag %d [%s] on  [%s]  [%s] but uriOK is %d  frags %d \n", fragptr+1, uri, who, sys->id, uriOK, urifrags);
 
         if(uriOK == false)
         {
@@ -1189,7 +1189,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     //  
     if(strcmp(msg->method, "get") == 0)
     {
-        if(sys->debug == 1)
+        //if(sys->debug == 1)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
 
         // is this a singleton ? 
@@ -1207,16 +1207,18 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 FPS_ERROR_PRINT("fims message reffrags %d variable name [%s] \n", reffrags,  dburi);
             }
             DbVar* db = sys->getDbVar(dburi);
-            if (sys->confirmUri(db, msg->uri, nfrags) == false)
+            if (db != NULL)
             {
-                FPS_ERROR_PRINT("fims message  dbvar not confirmed  frag %d uri [%s] variable name [%s] \n", reffrags,  msg->uri, dburi);
-                db = NULL;
+                if (sys->confirmUri(db, msg->uri, nfrags) == false)
+                {
+                    FPS_ERROR_PRINT("fims message  dbvar not confirmed  frag %d uri [%s] variable name [%s] \n", reffrags,  msg->uri, dburi);
+                    db = NULL;
+                }
+                else
+                {
+                    FPS_ERROR_PRINT("fims message  dbvar confirmed  frag %d uri [%s] variable name [%s] \n", reffrags,  msg->uri, dburi);
+                }
             }
-            else
-            {
-                FPS_ERROR_PRINT("fims message  dbvar confirmed  frag %d uri [%s] variable name [%s] \n", reffrags,  msg->uri, dburi);
-            }
-
             if (db != NULL)
             {
                 if(sys->debug == 1)
