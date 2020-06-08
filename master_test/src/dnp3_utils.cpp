@@ -1093,6 +1093,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     const char* uri = NULL;
     const char* dburi = NULL;
     int fragptr = 1;
+    int single = 0;
     cJSON* body_JSON = cJSON_Parse(msg->body);
     cJSON* itypeA16 = NULL;
     cJSON* itypeA32 = NULL;
@@ -1144,7 +1145,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     }
     // may be a single but we have to find the var
     single = 0;
-    if(msg->nfrags > reffrags)
+    if((int)msg->nfrags > reffrags)
     {
         dburi = msg->pfrags[reffrags];
         db = sys->getDbVar(dburi);
