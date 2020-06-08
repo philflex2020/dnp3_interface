@@ -1223,8 +1223,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  it crappy code for now, we'll get a better plan in a day or so 
-        if(sys->debug == 1)
-            FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported for [%s]\n", msg->method, msg->uri, who);
+        //if(sys->debug == 1)
+            FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s]\n", msg->method, msg->uri, who);
 
         // if(strstr(msg->uri, "/reply/") != NULL)
         // {
@@ -1232,52 +1232,50 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         //     //single = 0;
         // }
 
-        if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
+        //uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
+        // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
+        if(strstr(msg->uri, "/_system") != NULL)
         {
-            //uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
-            if(strstr(msg->uri, "/_system") != NULL)
+            FPS_DEBUG_PRINT("fims system command\n");
+            cJSON* cjsys = cJSON_GetObjectItem(body_JSON, "debug");
+            if (cjsys != NULL)
             {
-                FPS_DEBUG_PRINT("fims system command\n");
-                cJSON* cjsys = cJSON_GetObjectItem(body_JSON, "debug");
-                if (cjsys != NULL)
-                {
-                    if(strcmp(cjsys->valuestring,"on")== 0)
-                        sys->debug = 1;
-                    if(strcmp(cjsys->valuestring,"off")== 0)
-                        sys->debug = 0;
-                }
-                cjsys = cJSON_GetObjectItem(body_JSON, "scan");
-                if (cjsys != NULL)
-                {
-                    sys->scanreq = cjsys->valueint;
-                }
-                cjsys = cJSON_GetObjectItem(body_JSON, "unsol");
-                if (cjsys != NULL)
-                {
-                    sys->unsol = cjsys->valueint;
-                }
-                cjsys = cJSON_GetObjectItem(body_JSON, "class");
-                if (cjsys != NULL)
-                {
-                    sys->cjclass = cjsys;
-                }
-                return body_JSON;
-
+                if(strcmp(cjsys->valuestring,"on")== 0)
+                    sys->debug = 1;
+                if(strcmp(cjsys->valuestring,"off")== 0)
+                    sys->debug = 0;
             }
-            // TODO redundant
-            if(strstr(msg->uri, "/reply/") != NULL)
+            cjsys = cJSON_GetObjectItem(body_JSON, "scan");
+            if (cjsys != NULL)
             {
-                if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("fims message reply uri ACCEPTED  [%s] \n", msg->body);
-                single = 0;
-            }            
+                sys->scanreq = cjsys->valueint;
+            }
+            cjsys = cJSON_GetObjectItem(body_JSON, "unsol");
+            if (cjsys != NULL)
+            {
+                sys->unsol = cjsys->valueint;
+            }
+            cjsys = cJSON_GetObjectItem(body_JSON, "class");
+            if (cjsys != NULL)
+            {
+                sys->cjclass = cjsys;
+            }
+            return body_JSON;
+
         }
+            // TODO redundant
+        if(strstr(msg->uri, "/reply/") != NULL)
+        {
+            //if(sys->debug == 1)
+                FPS_DEBUG_PRINT("fims message reply uri ACCEPTED  [%s] \n", msg->body);
+            single = 0;
+        }            
+        
 
         if(single == 1)
         {
             // process a single var
-            FPS_ERROR_PRINT("Found variable [%s] type  %d NOT set ON %s\n"
+            FPS_ERROR_PRINT("Found variable [%s] type  %d run set %s\n"
                                     , db->name.c_str()
                                     , db->type
                                     , who
