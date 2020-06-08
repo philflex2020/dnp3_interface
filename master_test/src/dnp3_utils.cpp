@@ -1091,6 +1091,7 @@ int countUris(const char* uri)
 cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
     const char* uri = NULL;
+    const char* dburi = NULL;
     int fragptr = 1;
     cJSON* body_JSON = cJSON_Parse(msg->body);
     cJSON* itypeA16 = NULL;
@@ -1100,6 +1101,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     cJSON* itypeCROB = NULL;
     //cJSON* cjit = NULL;
     int reffrags = 0; // nfrags in the reference uri 
+    DbVar* db = NULL;
+
     // msg->nfrags number of frags in the message
     // if reffrags == nfrags we have no name
     // if msg->nfrags - reffrags == 1 and we find a var for msg->pfrags[reffrags]; we have a single
@@ -1119,67 +1122,56 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     
     if (msg->nfrags < 2)
     {
-        FPS_ERROR_PRINT("fims message not enough pfrags id [%s] \n", sys->id);
+        FPS_ERROR_PRINT("fims message uri [%s] not enough pfrags [%d] id [%s] \n", msg->uri, msg->nfrags, sys->id);
+        return body_JSON;
+    }
+    // valid uri
+    // /assets/feeders/feed_6
+    // 
+    // possible inputs
+    // /assets/feeders/feed_6/feeder_kW_slew_rate  ==> process single  
+    // /assets/feeders/feed_6                      ==> process list
+    // /assets/feeders/feed_6/test/feeder_kW_slew_rate    == reject unless we have a var called "test/feeder_kW_slew_rate"
+    //
+    bool uriOK = sys->confirmUri(NULL, msg->uri, reffrags);
+    FPS_ERROR_PRINT("fims message first test msg->uri [%s]  uriOK %d nfags %dreffrags %d\n", msg->uri, uriOK, msg->nfrags, reffrags);
+
+    if (uriOK == false)
+    {
+        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] Not ACCEPTED  [%s] \n", msg->uri, uri, sys->id);
+        return body_JSON;
+    }
+    // may be a single but we have to find the var
+    single = 0;
+    if(msg->nfrags > reffrags)
+    {
+        dburi = msg->pfrags[reffrags];
+        db = sys->getDbVar(dburi);
+        if(db == NULL)
+        {        
+            FPS_ERROR_PRINT("fims message msg->uri [%s] name  [%s] Not Found  sysid [%s] \n", msg->uri, dburi, sys->id);
+            return body_JSON;
+        }
+        single = 1;
+    }
+
+    FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
+    bool uriOK = sys->confirmUri(db, msg->uri, urifrags);
+    FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%s] uriOK is %d  urifrags %d \n", dburi, who, sys->id, uriOK, urifrags);
+
+    if(uriOK == false)
+    {
+        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, uri, who, sys->id, uriOK);
         return body_JSON;
     }
 
-    uri = msg->pfrags[fragptr];
-    if (strncmp(uri, sys->id, strlen(sys->id)) == 0)
-    {
-        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] Not DEVEL ACCEPTED  [%s] \n", msg->uri, uri, sys->id);
-        fragptr = 0;
-    }
-    else if (strncmp(uri, who, strlen(who)) != 0)
-    {
-        bool uriOK = sys->confirmUri(NULL, msg->uri, reffrags);
-        if(uriOK == false)
-        {
-            FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] uriOK %d nfrags %d\n", msg->uri, uri, who, uriOK, reffrags);
-            return body_JSON;
-        }
-    }
-    else
-    {
-        //FPS_DEBUG_PRINT("fims message ACCEPTED msg->uri [%s] body [%s] \n", msg->uri, msg->body);
-        fragptr = 1;
-    }              
-    uri = msg->pfrags[reffrags];
-
-    // TODO look for the interfaces readback
-    int urifrags = 0;
-
-    FPS_ERROR_PRINT(" %s Running with uri: [%s] \n", __FUNCTION__, uri);
-    if (strncmp(uri, sys->id, strlen(sys->id)) != 0)
-    {
-        bool uriOK = sys->confirmUri(NULL, msg->uri, urifrags);
-        FPS_ERROR_PRINT("   xxxx fims message frag %d [%s] on  [%s]  [%s] but uriOK is %d  frags %d \n", fragptr+1, uri, who, sys->id, uriOK, urifrags);
-
-        if(uriOK == false)
-        {
-            FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, uri, who, sys->id, uriOK);
-            return body_JSON;
-        }
-    }
-    // set /components/master/dnp3_outstation '{"name1":1, "name2":23.56}'
-    // or 
-    // set /components/master/dnp3_outstation '{"name1":{"value":1}, "name2":{"value":2}'}
-    // set /<some_uri> '{"name1":{"value":1}, "name2":{"value":2}'}
-    //  in this case the variables must be associated with the uri
-    // need to extract the real uri and the var name
-    // we have x frags in the ref uri and y frags in the request uri 
-    // the var name is the last var as we step back from y frags
-    //
-    // incoming uri /assets/feeders/feed_6/site_6/feeder_kw
-    // ref uri /assets/feeders/feed_6 
-    //     look for var called feeder_kw with a uri of /assets/feeders/feed_6/site_6
-    // extension look for var called "site_6/feeder_kw" with a uri "/assets/feeders/feed_6"
-    // so start with the last as the var name
-    // 
+     
     if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
     {
         FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
         return body_JSON;
     }
+
     // this is the "debug" or development method
     //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"index":<index>,"value":52},{"index":2,"value":5}]}' 
 
@@ -1190,43 +1182,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     if(strcmp(msg->method, "get") == 0)
     {
         //if(sys->debug == 1)
-            FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
-
-        // is this a singleton ? 
-        if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
+        FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
+        if(single ==1)
         {
-            int flag = 0;  // dont set extra value field
-            int nfrags = 0;  // dont set extra value field
-            DbVar* db = NULL;
-            // if msg->nfrags - reffrags == 1 and we find a var for msg->pfrags[reffrags]; we have a single
-
-            const char* dburi = NULL;
-            if ((msg->nfrags - reffrags) == 1)
-            {
-                dburi = msg->pfrags[reffrags]; // we may have a single
             //if(sys->debug == 1)
-                FPS_ERROR_PRINT("fims message reffrags %d variable name [%s] \n", reffrags,  dburi);
-                db = sys->getDbVar(dburi);
-            }
-            if (db != NULL)
-            {
-                if (sys->confirmUri(db, msg->uri, nfrags) == false)
-                {
-                    FPS_ERROR_PRINT("fims message  dbvar not confirmed  frag %d uri [%s] variable name [%s] \n", reffrags,  msg->uri, dburi);
-                    db = NULL;
-                }
-                else
-                {
-                    FPS_ERROR_PRINT("fims message  dbvar confirmed  frag %d uri [%s] variable name [%s] \n", reffrags,  msg->uri, dburi);
-                }
-            }
-            if (db != NULL)
-            {
-                if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("Found variable [%s] type  %d \n", db->name.c_str(), db->type); 
-                dbs.push_back(std::make_pair(db, flag));
-                return body_JSON;
-            }
+                FPS_DEBUG_PRINT("Found SINGLE variable [%s] type  %d \n", db->name.c_str(), db->type); 
+            dbs.push_back(std::make_pair(db, flag));
+            return body_JSON;
         }
         // else get them all
         // but only the ones associated with the uri
