@@ -1183,6 +1183,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     //  
     if(strcmp(msg->method, "get") == 0)
     {
+        int flag = 0;
         //if(sys->debug == 1)
         FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
         if(single ==1)
