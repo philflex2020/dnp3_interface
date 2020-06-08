@@ -1077,6 +1077,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who,
 // si  
 int countUris(const char* uri)
 {
+    int nfrags = 0;
     for (int i = 0; i < (int)strlen(uri); i++ )
     {
         if (uri[i] == '/')
