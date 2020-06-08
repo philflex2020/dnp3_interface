@@ -1140,7 +1140,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
     if (uriOK == false)
     {
-        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] Not ACCEPTED  [%s] \n", msg->uri, uri, sys->id);
+        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] Not ACCEPTED  [%s] \n", msg->uri, dburi, sys->id);
         return body_JSON;
     }
     // may be a single but we have to find the var
