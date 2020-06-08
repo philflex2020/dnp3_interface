@@ -701,11 +701,8 @@ typedef struct sysCfg_t {
                 // it.first is the uri
                 if(strncmp(it->first, uri, strlen(it->first)) == 0)
                 {
-                    for (int i = 0; i < (int)strlen(it->first); i++ )
-                    {
-                        if (it->first[i] == '/')
-                            nfrags++;
-                    }
+                    nfrags = countUris(it->first);
+                   
 
                     if(db != NULL)
                     {
@@ -937,5 +934,6 @@ int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char
 bool checkWho(sysCfg*sys, const char *name, const char *who);
 bool checkWho(sysCfg*sys, DbVar *db, const char *who);
 int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, const char **slogs, int snum);
-
+int countUris(const char* uri);
+ 
 #endif

@@ -1075,6 +1075,15 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who,
 // so the test checkUri makes sure we have a name / uri match
 //  
 // si  
+int countUris(const char* uri)
+{
+    for (int i = 0; i < (int)strlen(uri); i++ )
+    {
+        if (uri[i] == '/')
+            nfrags++;
+    }
+    return nfrags;
+}
 
 // we have an incoming uri
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
