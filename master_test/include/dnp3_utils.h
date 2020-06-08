@@ -173,7 +173,7 @@ typedef struct DbVar_t {
         return -1;
     }
 
-    // TODO turn these into char* no point the extra strcmp uses more resources
+    // TODO turn these into char* .... no point the extra strcmp uses more resources
     std::string name;
     const char* site;    // furute use for site.
     const char* uri;
@@ -245,7 +245,7 @@ typedef struct sysCfg_t {
         cjclass = NULL;
         base_uris = NULL;
 
-        pub = strdup("MyPubs");  // TODO remove this
+        //pub = strdup("MyPubs");  // TODO remove this
         for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
         {
             useReadb[i] = false;
@@ -259,7 +259,7 @@ typedef struct sysCfg_t {
         if(protocol)free(protocol);
         if(id)free(id);
         if(ip_address)free(ip_address);
-        if (pub) free(pub);
+        //if (pub) free(pub);
         if (name) free(name);
 
         if (cj) cJSON_Delete(cj);
@@ -811,7 +811,7 @@ typedef struct sysCfg_t {
             return idx;
         }
 
-        // TODO only get the ones for vars applied to this application (outstation or master)
+        // only get the ones for vars applied to this application (outstation or master)
         int getUris(int who)
         {
             FPS_ERROR_PRINT(" %s uris===>%d<=== \n\n", __FUNCTION__, who);
@@ -866,7 +866,7 @@ typedef struct sysCfg_t {
                 return addUri(uri->valuestring, db);
             }
         }
-        // TODO set this up as an object
+       
         void addDefUri(DbVar*db, int who)
         {
             char tmp[1024];
@@ -886,7 +886,7 @@ typedef struct sysCfg_t {
         char* protocol;
         char* id;
         char* ip_address;
-        char* pub;
+        //char* pub;
         int version;
         int port;
         int local_address;
