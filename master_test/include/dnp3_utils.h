@@ -700,19 +700,29 @@ typedef struct sysCfg_t {
                 // it.first is the uri
                 if(strncmp(it->first, uri, strlen(it->first)) == 0)
                 {
-                    FPS_ERROR_PRINT(" %s possible uri match [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
-                    for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
+                    if(db != NULL)
                     {
-                        if(it->second[i] == db)
+
+                    
+                        FPS_ERROR_PRINT(" %s possible uri match [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
+                        for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
                         {
-                            FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
-                                        , db->name.c_str() 
-                                        , db->type
-                                        , db->offset
-                                        );
-                            return true;
+                            if(it->second[i] == db)
+                            {
+                                FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
+                                            , db->name.c_str() 
+                                            , db->type
+                                            , db->offset
+                                            );
+                                return true;
+                            }
                         }
                     }
+                    else
+                    {
+                        return true;
+                    }
+                    
                 }
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);

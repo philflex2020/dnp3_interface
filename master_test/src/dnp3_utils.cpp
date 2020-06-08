@@ -1132,7 +1132,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     FPS_ERROR_PRINT(" %s Running with uri: [%s] \n", __FUNCTION__, uri);
     if (strncmp(uri, sys->id, strlen(sys->id)) != 0)
     {
-        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] \n", fragptr+1, uri, who, sys->id);
+        bool uriOK = confirmUri(NULL, msg->uri);
+        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] but uriOK is %d \n", fragptr+1, uri, who, sys->id, uriOK);
         return body_JSON;
     }
     // set /components/master/dnp3_outstation '{"name1":1, "name2":23.56}'
