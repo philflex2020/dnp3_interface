@@ -978,7 +978,7 @@ int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs, const cha
     return num;
 }
 
-bool checkWho(sysCfg*sys, DbVar* db, const char *who)
+bool checkWho(sysCfg*sys, DbVar* db, int who)
 {
     if(db == NULL) return false;
     if (who == DNP3_OUTSTATION)
