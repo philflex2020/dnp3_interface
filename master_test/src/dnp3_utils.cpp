@@ -1127,6 +1127,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         FPS_ERROR_PRINT("fims message uri [%s] not enough pfrags [%d] id [%s] \n", msg->uri, msg->nfrags, sys->id);
         return body_JSON;
     }
+    // special case [/interfaces/hybridos/reply/interfaces/hybridos] 
     // valid uri
     // /assets/feeders/feed_6
     // 
@@ -1140,8 +1141,15 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
     if (uriOK == false)
     {
-        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] Not ACCEPTED \n", msg->uri, sys->id);
-        return body_JSON;
+        if(strstr(msg->uri, "/reply/") != NULL)
+        {
+            reffrags = msg->nfrags;
+        }
+        else
+        {        
+          FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] Not ACCEPTED \n", msg->uri, sys->id);
+          return body_JSON;
+        }
     }
     // may be a single but we have to find the var
     single = 0;
@@ -1163,8 +1171,15 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
     if(uriOK == false)
     {
-        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
-        return body_JSON;
+        if(strstr(msg->uri, "/reply/") != NULL)
+        {
+            reffrags = msg->nfrags;
+        }
+        else
+        {        
+            FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
+            return body_JSON;
+        }
     }
 
      
