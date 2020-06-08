@@ -271,12 +271,15 @@ int main(int argc, char* argv[])
     };
     const char **subs = NULL;
     bool *bpubs = NULL;
-    int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 0);
+    int num = getSysUris(&sys_cfg, "outstation", subs, bpubs, sub_array, 0);
     if(num < 0)
     {
         FPS_ERROR_PRINT("Failed to create subs array.\n");
         return 1;
     }
+
+    FPS_ERROR_PRINT(">>>>>> Num Uris found %d .\n", num);
+
     sys_cfg.p_fims = p_fims = new fims();
 
     if (p_fims == NULL)
