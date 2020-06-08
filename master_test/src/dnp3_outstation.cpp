@@ -343,7 +343,7 @@ int main(int argc, char* argv[])
                                                 0,
                                                 0));
 
-    auto outstation = setupDNP3outstation(channel, DNP3_OUTSTATION, &sys_cfg, OSconfig);
+    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, OSconfig);
     if (!outstation){
         FPS_ERROR_PRINT( "Outstation setup failed.\n");
         return 1;
