@@ -689,7 +689,8 @@ typedef struct sysCfg_t {
         }
         // make sure the uri is in the list
         // what about default / base uri 
-        bool confirmUri(DbVar* db, const char*uri)
+        //
+        bool confirmUri(DbVar* db, const char*uri, int& nfrags)
         {
             // first limit the uri 
             FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
@@ -700,10 +701,14 @@ typedef struct sysCfg_t {
                 // it.first is the uri
                 if(strncmp(it->first, uri, strlen(it->first)) == 0)
                 {
+                    for (int i = 0; i < (int)strlen(uri); i++ )
+                    {
+                        if (uri[i] == '/')
+                            nfrags++
+                    }
+
                     if(db != NULL)
                     {
-
-                    
                         FPS_ERROR_PRINT(" %s possible uri match [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
                         for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
                         {

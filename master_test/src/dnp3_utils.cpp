@@ -1117,7 +1117,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     }
     else if (strncmp(uri, who, strlen(who)) != 0)
     {
-        bool uriOK = sys->confirmUri(NULL, msg->uri);
+        int nfrags = 0;
+        bool uriOK = sys->confirmUri(NULL, msg->uri, nfrags);
         FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] uriOK %d\n", msg->uri, uri, who, uriOK);
         return body_JSON;
     }
@@ -1129,12 +1130,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     uri = msg->pfrags[fragptr+1];
 
     // TODO look for the interfaces readback
+    int urifrags = 0;
 
     FPS_ERROR_PRINT(" %s Running with uri: [%s] \n", __FUNCTION__, uri);
     if (strncmp(uri, sys->id, strlen(sys->id)) != 0)
     {
-        bool uriOK = sys->confirmUri(NULL, msg->uri);
-        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] but uriOK is %d \n", fragptr+1, uri, who, sys->id, uriOK);
+        bool uriOK = sys->confirmUri(NULL, msg->uri, urifrags);
+        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] but uriOK is %d  frags %d \n", fragptr+1, uri, who, sys->id, uriOK, urifrags);
 
         if(uriOK == false)
         {
@@ -1147,6 +1149,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // set /components/master/dnp3_outstation '{"name1":{"value":1}, "name2":{"value":2}'}
     // set /<some_uri> '{"name1":{"value":1}, "name2":{"value":2}'}
     //  in this case the variables must be associated with the uri
+    // need to extract the real uri and he var name 
     if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
     {
         FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
@@ -1168,11 +1171,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
             int flag = 0;  // dont set extra value field
+            int nfrags = 0;  // dont set extra value field
             const char* dburi = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
             if(sys->debug == 1)
                 FPS_ERROR_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  dburi);
             DbVar* db = sys->getDbVar(dburi);
-            if (sys->confirmUri(db, msg->uri) == false)
+            if (sys->confirmUri(db, msg->uri, nfrags) == false)
             {
                 db = NULL;
             }
