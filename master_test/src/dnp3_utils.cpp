@@ -1099,7 +1099,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     cJSON* itypeValues = NULL;
     cJSON* itypeCROB = NULL;
     //cJSON* cjit = NULL;
-    
+    int reffrags = 0; // nfrags in the reference uri 
+    // msg->nfrags number of frags in the message
+    // if reffrags == nfrags we have no name
+    // if msg->nfrags - reffrags == 1 and we find a var for msg->pfrags[reffrags]; we have a single
+    // 
     if (body_JSON == NULL)
     {
         if(strcmp(msg->method,"set") == 0)
@@ -1127,9 +1131,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     }
     else if (strncmp(uri, who, strlen(who)) != 0)
     {
-        int nfrags = 0;
-        bool uriOK = sys->confirmUri(NULL, msg->uri, nfrags);
-        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] uriOK %d nfrags %d\n", msg->uri, uri, who, uriOK, nfrags);
+        bool uriOK = sys->confirmUri(NULL, msg->uri, reffrags);
+        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] uriOK %d nfrags %d\n", msg->uri, uri, who, uriOK, reffrags);
         return body_JSON;
     }
     else
@@ -1159,7 +1162,16 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     // set /components/master/dnp3_outstation '{"name1":{"value":1}, "name2":{"value":2}'}
     // set /<some_uri> '{"name1":{"value":1}, "name2":{"value":2}'}
     //  in this case the variables must be associated with the uri
-    // need to extract the real uri and he var name 
+    // need to extract the real uri and the var name
+    // we have x frags in the ref uri and y frags in the request uri 
+    // the var name is the last var as we step back from y frags
+    //
+    // incoming uri /assets/feeders/feed_6/site_6/feeder_kw
+    // ref uri /assets/feeders/feed_6 
+    //     look for var called feeder_kw with a uri of /assets/feeders/feed_6/site_6
+    // extension look for var called "site_6/feeder_kw" with a uri "/assets/feeders/feed_6"
+    // so start with the last as the var name
+    // 
     if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
     {
         FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
@@ -1182,13 +1194,22 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         {
             int flag = 0;  // dont set extra value field
             int nfrags = 0;  // dont set extra value field
-            const char* dburi = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
-            if(sys->debug == 1)
-                FPS_ERROR_PRINT("fims message frag %d variable name [%s] \n", fragptr+2,  dburi);
+            // if msg->nfrags - reffrags == 1 and we find a var for msg->pfrags[reffrags]; we have a single
+
+            const char* dburi = NULL;
+            if ((msg->nfrags - reffrags) == 1)
+                dburi = msg->pfrags[reffrags]; // we may have a single
+            //if(sys->debug == 1)
+                FPS_ERROR_PRINT("fims message reffrags %d variable name [%s] \n", reffrags,  dburi);
             DbVar* db = sys->getDbVar(dburi);
             if (sys->confirmUri(db, msg->uri, nfrags) == false)
             {
+                FPS_ERROR_PRINT("fims message  dbvar not confirmed  frag %d uri [%s] variable name [%s] \n", reffrags,  msg->uri, dburi);
                 db = NULL;
+            }
+            else
+            {
+                FPS_ERROR_PRINT("fims message  dbvar confirmed  frag %d uri [%s] variable name [%s] \n", reffrags,  msg->uri, dburi);
             }
 
             if (db != NULL)
@@ -1200,6 +1221,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             }
         }
         // else get them all
+        // but only the ones associated with the uri
         else
         {
             sys->addVarsToVec(dbs, msg->uri);
