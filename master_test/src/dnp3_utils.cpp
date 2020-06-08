@@ -1224,24 +1224,27 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  it crappy code for now, we'll get a better plan in a day or so 
         //if(sys->debug == 1)
-        if (db != NULL)
+        if(single == 1)
         {
-            FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s] single %d name [%s]\n"
-                                , msg->method
-                                , msg->uri
-                                , who
-                                , single
-                                , db->name.c_str()
-                                );
-        }
-        else
-        {
-            FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s] NO DBVAR\n"
-                                , msg->method
-                                , msg->uri
-                                , who
-                                );
-            return body_JSON;
+            if (db != NULL)
+            {
+                FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s] single %d name [%s]\n"
+                                    , msg->method
+                                    , msg->uri
+                                    , who
+                                    , single
+                                    , db->name.c_str()
+                                    );
+            }
+            else
+            {
+                FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s] NO DBVAR\n"
+                                    , msg->method
+                                    , msg->uri
+                                    , who
+                                    );
+                return body_JSON;
+            }
         }
         
         if(strstr(msg->uri, "/reply/") != NULL)
