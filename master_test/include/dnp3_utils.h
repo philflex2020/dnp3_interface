@@ -704,7 +704,7 @@ typedef struct sysCfg_t {
                     for (int i = 0; i < (int)strlen(uri); i++ )
                     {
                         if (uri[i] == '/')
-                            nfrags++
+                            nfrags++;
                     }
 
                     if(db != NULL)
