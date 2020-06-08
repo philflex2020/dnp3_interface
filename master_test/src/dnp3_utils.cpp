@@ -182,7 +182,7 @@ DbVar* getDbVar(sysCfg *sysdb, const char *name)
     return sysdb->getDbVar(name);
 }
 
-//old version deprecated
+//TODO check remove old version deprecated
 void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
 {
     if(cj)
@@ -196,11 +196,11 @@ void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
             char tmp[1024];
             if(ev) 
             {
-                snprintf(tmp,1024,"/%s/%s/%s/%s", "id", sys->pub, ev, sys->id);
+                snprintf(tmp,1024,"/%s/%s/%s/%s", "id", "components", ev, sys->id);
             }
             else
             {
-                snprintf(tmp,1024,"/%s/%s/%s", "id", sys->pub, sys->id);
+                snprintf(tmp,1024,"/%s/%s/%s", "id", "components", sys->id);
             }
             if(sys->p_fims)
             {
@@ -672,9 +672,10 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
     if(ret) ret = getCJstr(cj,"id",              sys->id,             true);
     if(ret) ret = getCJstr(cj,"protocol",        sys->protocol,       false);
     if(ret) ret = getCJstr(cj,"ip_address",      sys->ip_address,     true);
-    if(ret) ret = getCJstr(cj,"pub",             sys->pub,            false);
+    //if(ret) ret = getCJstr(cj,"pub",             sys->pub,            false);
     if(ret) ret = getCJstr(cj,"name",            sys->name,           false);
     if(ret) ret = getCJint(cj,"debug",           sys->debug,          false);
+    //TODO use this
     if(ret) ret = getCJcj(cj,"base_uris",        sys->base_uris,      false);
     return ret;
 }
@@ -1048,7 +1049,6 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
             }
             else
             {
-                // TODO make this work for readb vars
                 addValueToVec(dbs, sys, cjit->string, cjit, flag);
             }
             cjit = cjit->next;
@@ -1195,7 +1195,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 
     // get is OK codewise..
     // TODO remove  readb vars 
-    // TODO find a good looking uri and find the number of frags
+    // find a good looking uri and find the number of frags
     //  
     if(strcmp(msg->method, "get") == 0)
     {
