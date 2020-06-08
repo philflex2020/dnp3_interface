@@ -1322,14 +1322,15 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 flag |= PRINT_VALUE;
                 itypeValues = cJSON_GetObjectItem(itypeValues, "value");
             }
-
-            FPS_ERROR_PRINT("Found variable [%s] type  %d  sign %d body [%s]  flag %d \n"
-                                    , db->name.c_str()
-                                    , db->type
-                                    , db->sign
-                                    , msg->body
-                                    , flag);
-
+            if(sys->debug == 1)
+            {
+                FPS_ERROR_PRINT("Found variable [%s] type  %d  sign %d body [%s]  flag %d \n"
+                                        , db->name.c_str()
+                                        , db->type
+                                        , db->sign
+                                        , msg->body
+                                        , flag);
+            }
             // Only Crob gets a string 
             if(itypeValues)
             {
