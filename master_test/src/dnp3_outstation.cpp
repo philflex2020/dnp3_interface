@@ -281,7 +281,7 @@ int main(int argc, char* argv[])
     FPS_ERROR_PRINT(">>>>>> Num Uris found %d .\n", num);
     for (int ix = 0; ix < num; ix++ )
     {
-         FPS_ERROR_PRINT(">>>>>>>>>> Uri [%d] [%s] \n", ix, subs[ix];    
+         FPS_ERROR_PRINT(">>>>>>>>>> Uri [%d] [%s] \n", ix, subs[ix]);    
     }
 
     sys_cfg.p_fims = p_fims = new fims();
