@@ -1119,6 +1119,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             return NULL;
         }
     }
+    FPS_ERROR_PRINT("fims message uri [%s] test for enough pfrags [%d] id [%s] \n", msg->uri, msg->nfrags, sys->id);
     
     if (msg->nfrags < 2)
     {

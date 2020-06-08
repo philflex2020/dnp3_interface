@@ -692,17 +692,18 @@ typedef struct sysCfg_t {
         bool confirmUri(DbVar* db, const char*uri, int& nfrags)
         {
             // first limit the uri 
-            FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
+            FPS_ERROR_PRINT(" %s uris===> \n", __FUNCTION__);
 
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
                 // it.first is the uri
+                FPS_ERROR_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first, uri);
+
                 if(strncmp(it->first, uri, strlen(it->first)) == 0)
                 {
                     nfrags = countUris(it->first);
                    
-
                     if(db != NULL)
                     {
                         FPS_ERROR_PRINT(" %s possible uri match [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
