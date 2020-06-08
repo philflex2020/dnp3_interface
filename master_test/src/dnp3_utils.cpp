@@ -1138,27 +1138,25 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     //
     bool uriOK = sys->confirmUri(NULL, msg->uri, reffrags);
     bool isReply = false;
-    FPS_ERROR_PRINT("fims message first test msg->uri [%s]  uriOK %d nfags %dreffrags %d\n", msg->uri, uriOK, msg->nfrags, reffrags);
+    FPS_ERROR_PRINT("fims message first test msg->uri [%s]  uriOK %d nfags %d reffrags %d\n", msg->uri, uriOK, msg->nfrags, reffrags);
 
-    if (uriOK == false)
+    if((strstr(msg->uri, "/reply/") != NULL) && (strstr(msg->uri, sys->id) != NULL))
     {
-        if((strstr(msg->uri, "/reply/") != NULL) && (strstr(msg->uri, sys->id) != NULL))
-        {
-            FPS_ERROR_PRINT("fims message msg->uri [%s] reply uri [%s] ACCEPTED \n", msg->uri, sys->id);
-            reffrags = msg->nfrags;
-            isReply = true;
-        }
-        else
-        {        
-          FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] Not ACCEPTED \n", msg->uri, sys->id);
-          return body_JSON;
-        }
+        FPS_ERROR_PRINT("fims message msg->uri [%s] reply uri [%s] ACCEPTED \n", msg->uri, sys->id);
+        reffrags = msg->nfrags;
+        isReply = true;
     }
+
     // may be a single but we have to find the var
     single = 0;
-    
-    if(!isReply)
+
+    if(isReply == false)
     {
+        if (uriOK == false)
+        {
+            FPS_ERROR_PRINT("fims message msg->uri [%s] frag [%s] Not ACCEPTED \n", msg->uri, sys->id);
+            return body_JSON;
+        }
         if((int)msg->nfrags > reffrags)
         {
             dburi = msg->pfrags[reffrags];
