@@ -761,7 +761,6 @@ typedef struct sysCfg_t {
 
         bool checkUris(int who)
         {
-            int outs = (who == DNP3_OUTSTATION);
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
@@ -770,7 +769,7 @@ typedef struct sysCfg_t {
                     DbVar* db = it->second[i];
                     if (db->initSet == 0)
                     {
-                        if(outs == 0)
+                        if(who == DNP3_OUTSTATION)
                         {
                             if ((db->type == Type_Analog) || (db->type == Type_Binary))
                             {

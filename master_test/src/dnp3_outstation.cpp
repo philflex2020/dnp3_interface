@@ -351,7 +351,7 @@ int main(int argc, char* argv[])
 
     FPS_ERROR_PRINT( "DNP3 Setup complete: Entering main loop.\n");
 
-    // // send out initial sunscribes
+    // // send out initial subscribes
     //ssys_cfg.subsUris();
     // send out intial gets
     // set max ticks

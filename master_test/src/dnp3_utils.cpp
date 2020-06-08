@@ -956,7 +956,7 @@ bool parse_variables(cJSON* object, sysCfg* sys, int who)
         parse_object(sys, JSON_objects, idx, who);
     return true;
 }
-// this needs to go into dnp3_utils
+
 int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs, const char **slogs, int snum)
 {
     int num = sys->getSubs(NULL, 0, who);
