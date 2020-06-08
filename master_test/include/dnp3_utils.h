@@ -646,10 +646,12 @@ typedef struct sysCfg_t {
             for (it = dbMap.begin() ; it != dbMap.end();++it)
             {
                 DbVar* db = it->second;
-                // TODO checkUri(db,uri)
-
-                dbs.push_back(db);
-                FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
+                int dummy;
+                if(confirmUri(db, uri, dummy)
+                {
+                    dbs.push_back(db);
+                    FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
+                }
             }
         }
 
@@ -660,9 +662,12 @@ typedef struct sysCfg_t {
             for (it = dbMap.begin() ; it != dbMap.end();++it)
             {
                 DbVar* db = it->second;
-                // TODO checkUri(db,uri)
-                dbs.push_back(std::make_pair(db, flag));
-                FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
+                int dummy;
+                if(confirmUri(db, uri, dummy)
+                {
+                    dbs.push_back(std::make_pair(db, flag));
+                    FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
+                }
             }
         }
 

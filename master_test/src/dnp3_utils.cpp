@@ -1175,15 +1175,9 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
         if(uriOK == false)
         {
-            if(strstr(msg->uri, "/reply/") != NULL)
-            {
-                reffrags = msg->nfrags;
-            }
-            else
-            {        
-                FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
-                return body_JSON;
-            }
+            
+            FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
+            return body_JSON;
         }   
         if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
         {
