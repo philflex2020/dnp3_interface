@@ -1197,6 +1197,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         {
             int flag = 0;  // dont set extra value field
             int nfrags = 0;  // dont set extra value field
+            DbVar* db = NULL;
             // if msg->nfrags - reffrags == 1 and we find a var for msg->pfrags[reffrags]; we have a single
 
             const char* dburi = NULL;
@@ -1205,8 +1206,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 dburi = msg->pfrags[reffrags]; // we may have a single
             //if(sys->debug == 1)
                 FPS_ERROR_PRINT("fims message reffrags %d variable name [%s] \n", reffrags,  dburi);
+                db = sys->getDbVar(dburi);
             }
-            DbVar* db = sys->getDbVar(dburi);
             if (db != NULL)
             {
                 if (sys->confirmUri(db, msg->uri, nfrags) == false)
