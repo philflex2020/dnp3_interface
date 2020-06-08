@@ -214,13 +214,13 @@ int main(int argc, char *argv[])
         FPS_ERROR_PRINT("Error reading config file\n");
         return 1;
     }
-    if(!parse_system(config, &sys_cfg, "master")) 
+    if(!parse_system(config, &sys_cfg, DNP3_MASTER)) 
     {
         FPS_ERROR_PRINT("Error reading system from config file.\n");
         cJSON_Delete(config);
         return 1;
     }
-    if(!parse_variables(config, &sys_cfg, "master")) 
+    if(!parse_variables(config, &sys_cfg, DNP3_MASTER)) 
     {
         FPS_ERROR_PRINT("Error reading variabled from config file.\n");
         cJSON_Delete(config);
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
 
     cJSON_Delete(config);
 
-    sys_cfg.setupReadb((const char*)"master");
+    sys_cfg.setupReadb(DNP3_MASTER);
     sys_cfg.showDbMap();
     sys_cfg.showUris();
 
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
     bool *bpubs = NULL;
 
     // "components is pulled in as the default uri "
-    int num = getSysUris(&sys_cfg, "master", subs, bpubs, sub_array, 0);
+    int num = getSysUris(&sys_cfg, DNP3_MASTER, subs, bpubs, sub_array, 0);
     if(num < 0)
     {
         FPS_ERROR_PRINT("Failed to create subs array.\n");
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
         return 1;
     }
         //std::shared_ptr<IChannel> 
-    auto master = setupDNP3master (channel, "master", &sys_cfg );
+    auto master = setupDNP3master (channel, DNP3_MASTER, &sys_cfg );
     if (!master){
         FPS_ERROR_PRINT("Error in setupDNP3master.\n");
         delete manager;
@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
     // set max ticks
     
     // no need to do this for the master
-    //sys_cfg.getUris("master");
+    //sys_cfg.getUris(DNP3_MASTER);
 
     // set all values to inval  done at the start
     // start time to complete gets
@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
             // TODO check for all the getURI resposes
             ttick++;
             // master does not need to be preset
-            bool ok = true;// sys_cfg.checkUris("master");
+            bool ok = true;// sys_cfg.checkUris(DNP3_MASTER);
             if(ok == false)
             {
                 FPS_DEBUG_PRINT("Timeout tick2 %d\n", ttick);
@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
         else //if(msg != NULL)
         {
             dbs_type dbs; // collect all the parsed vars here
-            cJSON* cjb = parseBody(dbs, &sys_cfg, msg, "master");
+            cJSON* cjb = parseBody(dbs, &sys_cfg, msg, DNP3_MASTER);
     
             if(dbs.size() > 0)
             {

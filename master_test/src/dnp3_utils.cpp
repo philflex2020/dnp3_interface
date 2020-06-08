@@ -640,7 +640,7 @@ bool getCJcj (cJSON *cj, const char *name, cJSON*& val, bool required)
 // 		"frequency": 500,
 // 		"byte_swap": false
 
-bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
+bool parse_system(cJSON* cji, sysCfg* sys, int who)
 {
     bool ret = true;
     cJSON *cj = cJSON_GetObjectItem(cji, "system");
@@ -650,7 +650,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
         FPS_ERROR_PRINT("system  missing from file! \n");
         ret = false;
     }
-    if(strcmp(who, "master")== 0 )
+    if(who == DNP3_MASTER )
     {
         sys->local_address = 1;
         sys->remote_address = 10;
@@ -703,7 +703,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, const char* who)
 //  ]
 
 // parse a map of items
-int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
+int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 {
     cJSON* obj;
     cJSON_ArrayForEach(obj, objs)
@@ -800,7 +800,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         // master and outstation have different linkback types
         if((idx == Type_Analog) || (idx == Type_Binary)) 
         {
-            if (strcmp(who,"master") == 0)
+            if (who == DNP3_MASTER)
             {
                 if(linkback)
                 {
@@ -819,7 +819,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
         }
         else
         {
-            if (strcmp(who, "outstation") == 0)
+            if (who == DNP3_OUTSTATION)
             {
                 if(linkback)
                 {
@@ -872,7 +872,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, const char* who)
     return  sys->numObjs[idx]; 
 }
 
-int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
+int  parse_object(sysCfg* sys, cJSON* objs, int idx, int who)
 {
     cJSON* cjlist = cJSON_GetObjectItem(objs, iotypToStr(idx));
     if (cjlist == NULL)
@@ -902,7 +902,7 @@ int  parse_object(sysCfg* sys, cJSON* objs, int idx, const char* who)
 //      }
 //  ]
 
-bool parse_modbus(cJSON* cj, sysCfg* sys, const char* who)
+bool parse_modbus(cJSON* cj, sysCfg* sys, int who)
 {
     // config file has "objects" with children groups "binary" and "analog"
     // who is needd to stop cross referencing linkvars
@@ -933,7 +933,7 @@ bool parse_modbus(cJSON* cj, sysCfg* sys, const char* who)
     return true;
 }
 
-bool parse_variables(cJSON* object, sysCfg* sys, const char* who)
+bool parse_variables(cJSON* object, sysCfg* sys, int who)
 {
     for (int idx = 0; idx< Type_of_Var::NumTypes; idx++)
         sys->numObjs[idx] = 0;
@@ -957,7 +957,7 @@ bool parse_variables(cJSON* object, sysCfg* sys, const char* who)
     return true;
 }
 // this needs to go into dnp3_utils
-int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, const char **slogs, int snum)
+int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs, const char **slogs, int snum)
 {
     int num = sys->getSubs(NULL, 0, who);
     subs= (const char **) malloc((num+3) * sizeof(char *));
@@ -981,7 +981,7 @@ int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, c
 bool checkWho(sysCfg*sys, DbVar* db, const char *who)
 {
     if(db == NULL) return false;
-    if (strcmp("outstation",who) == 0)
+    if (who == DNP3_OUTSTATION)
     {
        if((db->type == Type_Analog ) || (db->type == Type_Binary)) return true;
        // if we have a readb registers then we can set it
@@ -998,13 +998,13 @@ bool checkWho(sysCfg*sys, DbVar* db, const char *who)
     return false;    
 }
 
-bool checkWho(sysCfg*sys, const char *name, const char *who)
+bool checkWho(sysCfg*sys, const char *name, int who)
 {
     DbVar* db = sys->getDbVar(name);
     return checkWho(sys, db, who);
 }
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
-cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who, cJSON* body_JSON)
+cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* body_JSON)
 {
     cJSON* itypeValues = body_JSON;
     cJSON* cjit = NULL;
@@ -1041,7 +1041,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who,
             if (!checkWho(sys, cjit->string, who))
             {
                 if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("variable [%s] NOT set ON %s\n"
+                    FPS_DEBUG_PRINT("variable [%s] NOT set ON %d\n"
                                     , cjit->string
                                     , who
                                     );
@@ -1088,7 +1088,7 @@ int countUris(const char* uri)
 
 // we have an incoming uri
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
-cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
+cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 {
     //const char* uri = NULL;
     const char* dburi = NULL;
@@ -1176,12 +1176,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
         uriOK = sys->confirmUri(db, msg->uri, urifrags);
         if(sys->debug == 1)
-            FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%s] uriOK is %d uriflags [%d]\n", dburi, who, sys->id, uriOK, urifrags);
+            FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%d] uriOK is %d uriflags [%d]\n", dburi, who, sys->id, uriOK, urifrags);
 
         if(uriOK == false)
         {
             
-            FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
+            FPS_ERROR_PRINT("fims message frag %d [%s] not for this %d [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
             return body_JSON;
         }   
         if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
@@ -1201,7 +1201,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     {
         int flag = 0;
         if(sys->debug == 1)
-            FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
+            FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
         if(single ==1)
         {
             if(sys->debug == 1)
@@ -1221,7 +1221,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
     // TODO check this out and clean it up
     // Allow "pub" to "set" outstation
-    if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && strcmp(who,"outstation") == 0))
+    if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && (who == DNP3_OUTSTATION) == 0))
     {
         //TODO need to ignore sets on the outstation for master vars and vice versa 
         //int single = 0;
@@ -1235,7 +1235,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             {
                 if(sys->debug == 1)
                 {
-                    FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s] single %d name [%s]\n"
+                    FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%d] single %d name [%s]\n"
                                         , msg->method
                                         , msg->uri
                                         , who
@@ -1246,7 +1246,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             }
             else
             {
-                FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s] NO DBVAR\n"
+                FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%d] NO DBVAR\n"
                                     , msg->method
                                     , msg->uri
                                     , who
@@ -1305,7 +1305,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         {
             // process a single var
             if(sys->debug == 1)
-                FPS_ERROR_PRINT("Found variable [%s] type  %d run set %s\n"
+                FPS_ERROR_PRINT("Found variable [%s] type  %d run set %d\n"
                                         , db->name.c_str()
                                         , db->type
                                         , who

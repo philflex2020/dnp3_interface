@@ -24,6 +24,9 @@ using namespace opendnp3;
 #define FPS_DEBUG_PRINT printf
 #endif
 #define MAX_SETUP_TICKS  50
+#define DNP3_MASTER 0
+#define DNP3_OUTSTATION 1
+
 
 const ControlCode StringToControlCode(const char* codeWord);
 
@@ -548,9 +551,9 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
-        void setupReadb(const char* who)
+        void setupReadb(int who)
         {
-            if (strcmp(who,(const char*)"outstation") == 0 )
+            if (who == DNP3_OUTSTATION)
             {
                useReadb[AnF32] = true;
                useReadb[AnIn16] = true;
@@ -756,9 +759,9 @@ typedef struct sysCfg_t {
             return asiz;
         }
 
-        bool checkUris(const char *who)
+        bool checkUris(int who)
         {
-            int outs = strcmp(who, "outstation");
+            int outs = (who == DNP3_OUTSTATION);
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
@@ -794,7 +797,7 @@ typedef struct sysCfg_t {
             return true;
         };
 
-        int getSubs(const char**subs, int num, const char *who)
+        int getSubs(const char**subs, int num, int who)
         {
             if (num < static_cast<int32_t>(uriMap.size()))
             {
@@ -810,9 +813,9 @@ typedef struct sysCfg_t {
         }
 
         // TODO only get the ones for vars applied to this application (outstation or master)
-        int getUris(const char *who)
+        int getUris(int who)
         {
-            FPS_ERROR_PRINT(" %s uris===>%s<=== \n\n", __FUNCTION__, who);
+            FPS_ERROR_PRINT(" %s uris===>%d<=== \n\n", __FUNCTION__, who);
 
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
@@ -865,10 +868,10 @@ typedef struct sysCfg_t {
             }
         }
         // TODO set this up as an object
-        void addDefUri(DbVar*db, const char* who)
+        void addDefUri(DbVar*db, int who)
         {
             char tmp[1024];
-            if(strcmp(who, "master") == 0)
+            if(who == DNP3_MASTER)
             {
                 snprintf(tmp, sizeof(tmp),"/components/%s",id);
             }
@@ -923,8 +926,8 @@ cJSON* get_config_json(int argc, char* argv[]);
 //int parse_system(cJSON *system, system_config *config);
 
 // new mapping
-bool parse_system(cJSON* object, sysCfg* sys, const char* who);
-bool parse_variables(cJSON* object, sysCfg* sys, const char* who);
+bool parse_system(cJSON* object, sysCfg* sys, int who);
+bool parse_variables(cJSON* object, sysCfg* sys, int who);
 cJSON *parseJSONConfig(char *file_path);
 void addCjTimestamp(cJSON *cj, const char* ts);
 void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev);
@@ -939,12 +942,12 @@ const char* cfgGetSOEName(sysCfg* sysdb, const char* fname);
 int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
 
-cJSON* parseBody( dbs_type&dbs, sysCfg*sys, fims_message*msg, const char* who);
+cJSON* parseBody( dbs_type&dbs, sysCfg*sys, fims_message*msg, int who);
 int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue, int flag);
 // int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag);
-bool checkWho(sysCfg*sys, const char *name, const char *who);
-bool checkWho(sysCfg*sys, DbVar *db, const char *who);
-int getSysUris(sysCfg* sys, const char* who, const char **&subs, bool *&bpubs, const char **slogs, int snum);
+bool checkWho(sysCfg*sys, const char *name, int who);
+bool checkWho(sysCfg*sys, DbVar *db, int who);
+int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs, const char **slogs, int snum);
 
  
 #endif

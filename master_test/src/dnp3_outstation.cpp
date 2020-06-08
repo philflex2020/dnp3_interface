@@ -245,20 +245,20 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if(!parse_system(config, &sys_cfg, "outstation")) 
+    if(!parse_system(config, &sys_cfg, DNP3_OUTSTATION)) 
     {
         fprintf(stderr, "Error reading config file system.\n");
         cJSON_Delete(config);
         return 1;
     }
 
-    if(!parse_variables(config, &sys_cfg, "outstation")) 
+    if(!parse_variables(config, &sys_cfg, DNP3_OUTSTATION)) 
     {
         fprintf(stderr, "Error reading config file variables.\n");
         cJSON_Delete(config);
         return 1;
     }
-    sys_cfg.setupReadb((const char*)"outstation");
+    sys_cfg.setupReadb(DNP3_OUTSTATION);
     sys_cfg.showDbMap();
     sys_cfg.showUris();
 
@@ -271,7 +271,7 @@ int main(int argc, char* argv[])
     };
     const char **subs = NULL;
     bool *bpubs = NULL;
-    int num = getSysUris(&sys_cfg, "outstation", subs, bpubs, sub_array, 0);
+    int num = getSysUris(&sys_cfg, DNP3_OUTSTATION, subs, bpubs, sub_array, 0);
     if(num < 0)
     {
         FPS_ERROR_PRINT("Failed to create subs array.\n");
@@ -343,7 +343,7 @@ int main(int argc, char* argv[])
                                                 0,
                                                 0));
 
-    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, OSconfig);
+    auto outstation = setupDNP3outstation(channel, DNP3_OUTSTATION, &sys_cfg, OSconfig);
     if (!outstation){
         FPS_ERROR_PRINT( "Outstation setup failed.\n");
         return 1;
@@ -355,7 +355,7 @@ int main(int argc, char* argv[])
     //ssys_cfg.subsUris();
     // send out intial gets
     // set max ticks
-    sys_cfg.getUris("outstation");
+    sys_cfg.getUris(DNP3_OUTSTATION);
     // set all values to inval  done at the start
     // start time to complete gets
     // TODO set for all the getURI responses as todo
@@ -370,7 +370,7 @@ int main(int argc, char* argv[])
             // TODO check for all the getURI resposes
             FPS_DEBUG_PRINT("Timeout tick %d\n", ttick);
             ttick++;
-            bool ok = sys_cfg.checkUris("outstation");
+            bool ok = sys_cfg.checkUris(DNP3_OUTSTATION);
             if(ok == false)
             {
                 if (ttick > MAX_SETUP_TICKS)
@@ -386,7 +386,7 @@ int main(int argc, char* argv[])
                 FPS_ERROR_PRINT("****** Hey %s got a message uri [%s] \n", __FUNCTION__, msg->uri);
             dbs_type dbs; // collect all the parsed vars here
 
-            cJSON* cjb = parseBody(dbs, &sys_cfg, msg, "outstation");
+            cJSON* cjb = parseBody(dbs, &sys_cfg, msg, DNP3_OUTSTATION);
             if(dbs.size() > 0)
             {
                 cJSON* cj = NULL;                
