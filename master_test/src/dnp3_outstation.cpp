@@ -389,7 +389,7 @@ int main(int argc, char* argv[])
             if(dbs.size() > 0)
             {
                 cJSON* cj = NULL;                
-                if((msg->replyto != NULL) && (strcmp(msg->method,"pub") != 0))
+                if((msg->replyto != NULL) && (strcmp(msg->method, "pub") != 0))
                     cj = cJSON_CreateObject();
                     
                 UpdateBuilder builder;
@@ -400,9 +400,9 @@ int main(int argc, char* argv[])
                     DbVar* db = dbp.first;
                     // only do this on sets pubs or  posts
                     if (
-                        (strcmp(msg->method,"set") == 0) || 
-                        (strcmp(msg->method,"post") == 0) || 
-                        (strcmp(msg->method,"pub") == 0)
+                        (strcmp(msg->method, "set") == 0) || 
+                        (strcmp(msg->method, "post") == 0) || 
+                        (strcmp(msg->method, "pub") == 0)
                         )
                         {
                             varcount++;
