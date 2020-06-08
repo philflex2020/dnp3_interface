@@ -1090,7 +1090,7 @@ int countUris(const char* uri)
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
 cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 {
-    const char* uri = NULL;
+    //const char* uri = NULL;
     const char* dburi = NULL;
     int fragptr = 1;
     int single = 0;
@@ -1234,7 +1234,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
         if (static_cast<int32_t>(msg->nfrags) > fragptr+2)
         {
-            uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
+            //uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
             // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
             if(strstr(msg->uri, "/_system") != NULL)
             {
@@ -1265,7 +1265,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 return body_JSON;
 
             }
-
+            // TODO redundant
             if(strstr(msg->uri, "/reply/") != NULL)
             {
                 if(sys->debug == 1)
