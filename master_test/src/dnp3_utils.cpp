@@ -1156,10 +1156,10 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         }
         single = 1;
     }
-
+    int uriflags = 0;
     FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
     uriOK = sys->confirmUri(db, msg->uri, urifrags);
-    FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%s] uriOK is %d \n", dburi, who, sys->id, uriOK);
+    FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%s] uriOK is %d uriflags [%d]\n", dburi, who, sys->id, uriOK, uriflags);
 
     if(uriOK == false)
     {
