@@ -1271,91 +1271,78 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
                 if(sys->debug == 1)
                     FPS_DEBUG_PRINT("fims message reply uri ACCEPTED  [%s] \n", msg->body);
                 single = 0;
-            }
-            else
-            {
-                if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("fims message frag %d SINGLE variable name [%s] \n", fragptr+2,  uri);
-                single = 1;
-            }
+            }            
         }
 
         if(single == 1)
         {
             // process a single var
-            DbVar* db = sys->getDbVar(uri);
-            if (db != NULL)
+            FPS_ERROR_PRINT("Found variable [%s] type  %d NOT set ON %s\n"
+                                    , db->name.c_str()
+                                    , db->type
+                                    , who
+                                    );
+
+            
+            int flag = 0;
+            if(sys->debug == 1)
+                FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
+            itypeValues = body_JSON;
+            // allow '"string"' OR '{"value":"string"}'
+            if(itypeValues->type == cJSON_Object)
             {
-                if (!checkWho(sys, db, who))
-                {
-                    FPS_ERROR_PRINT("Found variable [%s] type  %d NOT set ON %s\n"
-                                , db->name.c_str()
-                                , db->type
-                                , who
-                                );
+                flag |= PRINT_VALUE;
+                itypeValues = cJSON_GetObjectItem(itypeValues, "value");
+            }
 
-                    return body_JSON;
-                } 
-                int flag = 0;
-                if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
-                itypeValues = body_JSON;
-                // allow '"string"' OR '{"value":"string"}'
-                if(itypeValues->type == cJSON_Object)
-                {
-                    flag |= PRINT_VALUE;
-                    itypeValues = cJSON_GetObjectItem(itypeValues, "value");
-                }
+            FPS_ERROR_PRINT("Found variable [%s] type  %d  sign %d body [%s]  flag %d \n"
+                                    , db->name.c_str()
+                                    , db->type
+                                    , db->sign
+                                    , msg->body
+                                    , flag);
 
-                FPS_ERROR_PRINT("Found variable [%s] type  %d  sign %d body [%s]  flag %d \n"
-                                        , db->name.c_str()
-                                        , db->type
-                                        , db->sign
-                                        , msg->body
-                                        , flag);
-
-                // Only Crob gets a string 
-                if(itypeValues)
+            // Only Crob gets a string 
+            if(itypeValues)
+            {
+                if (itypeValues->type == cJSON_String)
                 {
-                    if (itypeValues->type == cJSON_String)
+                    if(db->type == Type_Crob)
                     {
-                        if(db->type == Type_Crob)
-                        {
-                            uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
-                            sys->setDbVarIx(Type_Crob, db->idx, cval);
-                            db->initSet = 1;
-                            // send the readback
-                            dbs.push_back(std::make_pair(db, flag));
-                            FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d idx %d uint8 cval 0x%02x\n"
-                                            , __FUNCTION__, itypeValues->valuestring, db->offset, db->idx
-                                            , cval
-                                            );
-                        }
-                    // TODO any other strings
-                    // do we have to convert strings into numbers ??
-                    }
-                    else
-                    {
-                        // handle readb
-                        //if(sys->useReadb[db->type] && (db->readb != NULL))
-                        if(db->readb != NULL)
-                        {
-                            FPS_ERROR_PRINT(" ***** %s using readb (%s) as [%s] for a set to [%s]\n"
-                                            , __FUNCTION__
-                                            , sys->useReadb[db->type]?"true":"false"
-                                            , db->readb->name.c_str()
-                                            , db->name.c_str()
-                                            );
-                            if(sys->useReadb[db->type])
-                            {
-                                flag |= PRINT_PARENT;
-                                db = db->readb;
-                            }
-                        }
-                        sys->setDbVar(db, itypeValues);
+                        uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
+                        sys->setDbVarIx(Type_Crob, db->idx, cval);
+                        db->initSet = 1;
+                        // send the readback
                         dbs.push_back(std::make_pair(db, flag));
-                    }     
+                        FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d idx %d uint8 cval 0x%02x\n"
+                                        , __FUNCTION__, itypeValues->valuestring, db->offset, db->idx
+                                        , cval
+                                        );
+                    }
+                // TODO any other strings
+                // do we have to convert strings into numbers ??
                 }
+                else
+                {
+                    // handle readb
+                    //if(sys->useReadb[db->type] && (db->readb != NULL))
+                    if(db->readb != NULL)
+                    {
+                        FPS_ERROR_PRINT(" ***** %s using readb (%s) as [%s] for a set to [%s]\n"
+                                        , __FUNCTION__
+                                        , sys->useReadb[db->type]?"true":"false"
+                                        , db->readb->name.c_str()
+                                        , db->name.c_str()
+                                        );
+                        if(sys->useReadb[db->type])
+                        {
+                            flag |= PRINT_PARENT;
+                            db = db->readb;
+                        }
+                    }
+                    sys->setDbVar(db, itypeValues);
+                    dbs.push_back(std::make_pair(db, flag));
+                }     
             }
             return body_JSON;
         }
