@@ -1135,7 +1135,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     {
         bool uriOK = sys->confirmUri(NULL, msg->uri);
         FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] but uriOK is %d \n", fragptr+1, uri, who, sys->id, uriOK);
-        return body_JSON;
+
+        if(uriOK == false)
+        {
+            FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, uri, who, sys->id, uriOK);
+            return body_JSON;
+        }
     }
     // set /components/master/dnp3_outstation '{"name1":1, "name2":23.56}'
     // or 
