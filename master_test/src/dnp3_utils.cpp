@@ -1132,15 +1132,18 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     else if (strncmp(uri, who, strlen(who)) != 0)
     {
         bool uriOK = sys->confirmUri(NULL, msg->uri, reffrags);
-        FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] uriOK %d nfrags %d\n", msg->uri, uri, who, uriOK, reffrags);
-        return body_JSON;
+        if(uriOK == false)
+        {
+            FPS_ERROR_PRINT("fims message msg->uri [%s] frag 1 [%s] not for  [%s] uriOK %d nfrags %d\n", msg->uri, uri, who, uriOK, reffrags);
+            return body_JSON;
+        }
     }
     else
     {
         //FPS_DEBUG_PRINT("fims message ACCEPTED msg->uri [%s] body [%s] \n", msg->uri, msg->body);
         fragptr = 1;
     }              
-    uri = msg->pfrags[fragptr+1];
+    uri = msg->pfrags[reffrags];
 
     // TODO look for the interfaces readback
     int urifrags = 0;
