@@ -701,9 +701,9 @@ typedef struct sysCfg_t {
                 // it.first is the uri
                 if(strncmp(it->first, uri, strlen(it->first)) == 0)
                 {
-                    for (int i = 0; i < (int)strlen(uri); i++ )
+                    for (int i = 0; i < (int)strlen(it->first); i++ )
                     {
-                        if (uri[i] == '/')
+                        if (it->first[i] == '/')
                             nfrags++;
                     }
 
