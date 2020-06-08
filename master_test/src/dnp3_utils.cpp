@@ -1163,7 +1163,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
 
     if(uriOK == false)
     {
-        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, uri, who, sys->id, uriOK);
+        FPS_ERROR_PRINT("fims message frag %d [%s] not for this %s [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
         return body_JSON;
     }
 
