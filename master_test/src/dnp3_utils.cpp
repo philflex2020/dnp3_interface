@@ -1120,7 +1120,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             return NULL;
         }
     }
-    FPS_ERROR_PRINT("fims message uri [%s] test for enough pfrags [%d] id [%s] \n", msg->uri, msg->nfrags, sys->id);
+    if(sys->debug == 1)
+        FPS_ERROR_PRINT("fims message uri [%s] test for enough pfrags [%d] id [%s] \n", msg->uri, msg->nfrags, sys->id);
     
     if (msg->nfrags < 2)
     {
@@ -1138,11 +1139,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     //
     bool uriOK = sys->confirmUri(NULL, msg->uri, reffrags);
     bool isReply = false;
-    FPS_ERROR_PRINT("fims message first test msg->uri [%s]  uriOK %d nfags %d reffrags %d\n", msg->uri, uriOK, msg->nfrags, reffrags);
+    if(sys->debug == 1)
+        FPS_ERROR_PRINT("fims message first test msg->uri [%s]  uriOK %d nfags %d reffrags %d\n", msg->uri, uriOK, msg->nfrags, reffrags);
 
     if((strstr(msg->uri, "/reply/") != NULL) && (strstr(msg->uri, sys->id) != NULL))
     {
-        FPS_ERROR_PRINT("fims message msg->uri [%s] reply uri [%s] ACCEPTED \n", msg->uri, sys->id);
+        if(sys->debug == 1)
+            FPS_ERROR_PRINT("fims message msg->uri [%s] reply uri [%s] ACCEPTED \n", msg->uri, sys->id);
         reffrags = msg->nfrags;
         isReply = true;
     }
@@ -1169,9 +1172,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             single = 1;
         }
         int urifrags = 0;
-        FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
+        if(sys->debug == 1)
+            FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
         uriOK = sys->confirmUri(db, msg->uri, urifrags);
-        FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%s] uriOK is %d uriflags [%d]\n", dburi, who, sys->id, uriOK, urifrags);
+        if(sys->debug == 1)
+            FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%s]/[%s] uriOK is %d uriflags [%d]\n", dburi, who, sys->id, uriOK, urifrags);
 
         if(uriOK == false)
         {
@@ -1195,11 +1200,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     if(strcmp(msg->method, "get") == 0)
     {
         int flag = 0;
-        //if(sys->debug == 1)
-        FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
+        if(sys->debug == 1)
+            FPS_ERROR_PRINT("fims method [%s] almost  supported for [%s]\n", msg->method, who);
         if(single ==1)
         {
-            //if(sys->debug == 1)
+            if(sys->debug == 1)
                 FPS_DEBUG_PRINT("Found SINGLE variable [%s] type  %d \n", db->name.c_str(), db->type); 
             dbs.push_back(std::make_pair(db, flag));
             return body_JSON;
@@ -1228,13 +1233,16 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         {
             if (db != NULL)
             {
-                FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s] single %d name [%s]\n"
-                                    , msg->method
-                                    , msg->uri
-                                    , who
-                                    , single
-                                    , db->name.c_str()
-                                    );
+                if(sys->debug == 1)
+                {
+                    FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%s] single %d name [%s]\n"
+                                        , msg->method
+                                        , msg->uri
+                                        , who
+                                        , single
+                                        , db->name.c_str()
+                                        );
+                }
             }
             else
             {
@@ -1257,7 +1265,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
         if(strstr(msg->uri, "/_system") != NULL)
         {
-            FPS_DEBUG_PRINT("fims system command\n");
+            FPS_DEBUG_PRINT("fims system command [%s] body [%s]\n", msg->uri, msg->body);
             cJSON* cjsys = cJSON_GetObjectItem(body_JSON, "debug");
             if (cjsys != NULL)
             {
@@ -1296,11 +1304,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
         if(single == 1)
         {
             // process a single var
-            FPS_ERROR_PRINT("Found variable [%s] type  %d run set %s\n"
-                                    , db->name.c_str()
-                                    , db->type
-                                    , who
-                                    );
+            if(sys->debug == 1)
+                FPS_ERROR_PRINT("Found variable [%s] type  %d run set %s\n"
+                                        , db->name.c_str()
+                                        , db->type
+                                        , who
+                                        );
 
             
             int flag = 0;
