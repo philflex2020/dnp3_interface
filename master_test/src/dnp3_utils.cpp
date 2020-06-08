@@ -1219,7 +1219,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
     if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && strcmp(who,"outstation") == 0))
     {
         // todo need to ignore sets on the outstation for master vars ans vice versa 
-        int single = 0;
+        //int single = 0;
         //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set  it crappy code for now, we'll get a better plan in a day or so 
@@ -1244,11 +1244,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, const char* who)
             return body_JSON;
         }
         
-        // if(strstr(msg->uri, "/reply/") != NULL)
-        // {
-        //     FPS_DEBUG_PRINT("fims message reply uri DETECTED  [%s] \n", msg->uri);
-        //     //single = 0;
-        // }
+        if(strstr(msg->uri, "/reply/") != NULL)
+        {
+             FPS_DEBUG_PRINT("fims message reply uri DETECTED  [%s] \n", msg->uri);
+             single = 0;
+        }
 
         //uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
         // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
