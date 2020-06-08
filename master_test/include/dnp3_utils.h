@@ -687,8 +687,9 @@ typedef struct sysCfg_t {
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
         }
-
-        bool checkUri(DbVar* db, const char*uri)
+        // make sure the uri is in the list
+        // what about default / base uri 
+        bool confirmUri(DbVar* db, const char*uri)
         {
             // first limit the uri 
             FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
