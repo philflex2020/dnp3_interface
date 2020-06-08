@@ -1,0 +1,479 @@
+{
+    "system": {
+        "id": "rtu",
+        "ip_address": "127.0.0.1",
+        "port": 502
+    },
+    "registers": {
+        "holding_registers": [
+            {
+                "uri": "/site/operation",
+                "id": "remote_enable_flag",
+                "offset": 0,
+                "name": "Start Flag",
+                "bool": true
+            },
+            {
+                "uri": "/site/operation",
+                "id": "remote_disable_flag",
+                "offset": 1,
+                "name": "Disable/Enable Flag",
+                "bool": true
+            },
+            {
+                "uri": "/site/operation",
+                "id": "remote_standby_flag",
+                "offset": 2,
+                "name": "Standby Flag",
+                "bool": true
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "remote_features_kW_mode_cmd",
+                "offset": 3,
+                "name": "Active Power Mode"
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "remote_features_kVAR_mode_cmd",
+                "offset": 4,
+                "name": "Reactive Power Mode"
+            },
+            {
+                "uri": "/assets/feeders/feed_6",
+                "id": "rated_active_power",
+                "offset": 5,
+                "size": 2,
+                "name": "Peak Power Limit"
+            },
+            {
+                "uri": "/site/configuration",
+                "id": "feeder_kW_slew_rate",
+                "offset": 7,
+                "name": "Max System Ramp Rate"
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "remote_ess_charge_control_target_soc",
+                "offset": 8,
+                "scale": 100,
+                "name": "Target SOC"
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "remote_export_target_kW_cmd",
+                "offset": 9,
+                "size": 2,
+                "name": "Site Export Target",
+                "signed": true
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "remote_manual_ess_kW_cmd",
+                "offset": 11,
+                "size": 2,
+                "name": "BESS Active Power Setpoint",
+                "signed": true
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "remote_manual_solar_kW_cmd",
+                "offset": 13,
+                "size": 2,
+                "name": "PV Curtailment Target"
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "remote_active_voltage_cmd",
+                "offset": 15,
+                "scale": 1,
+                "name": "AVR setpoint voltage"
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "remote_reactive_setpoint_kVAR_cmd",
+                "offset": 16,
+                "name": "Reactive Power Target",
+                "signed": true
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "remote_power_factor_cmd",
+                "offset": 17,
+                "scale": 100,
+                "name": "Power Factor Target"
+            },
+            {
+                "uri": "/metrics/misc",
+                "id": "heartbeat",
+                "offset": 18,
+                "name": "Heartbeat"
+            },
+            {
+                "uri": "/components/sel_735_poi",
+                "id": "active_power",
+                "offset": 19,
+                "size": 2,
+                "name": "Real Time Peak Power Limit Measurement",
+                "signed": true
+            }
+        ],
+        "input_registers": [
+            {
+                "uri": "/site/operation",
+                "id": "present_enable_flag",
+                "offset": 0,
+                "name": "Start Feedback",
+                "bool": true
+            },
+            {
+                "uri": "/site/operation",
+                "id": "present_disable_flag",
+                "offset": 1,
+                "name": "Disable/Enable Feedback",
+                "bool": true
+            },
+            {
+                "uri": "/site/operation",
+                "id": "present_standby_flag",
+                "offset": 2,
+                "name": "Standby Flag Feedback",
+                "bool": true
+            },
+            {
+                "uri": "/site/operation",
+                "id": "running_status_flag",
+                "offset": 3,
+                "name": "Running Status",
+                "bool": true
+            },
+            {
+                "uri": "/site/operation",
+                "id": "alarm_status_flag",
+                "offset": 4,
+                "name": "Alarm Status",
+                "bool": true
+            },
+            {
+                "uri": "/site/operation",
+                "id": "fault_status_flag",
+                "offset": 5,
+                "name": "Fault Status",
+                "bool": true
+            },
+            {
+                "uri": "/site/operation",
+                "id": "local_remote_source_flag",
+                "offset": 6,
+                "name": "Remote/Local Control Feedback",
+                "bool": true
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "present_export_target_kW_cmd",
+                "offset": 7,
+                "size": 2,
+                "name": "Site Export Target Feedback",
+                "signed": true
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "present_features_kW_mode_cmd",
+                "offset": 9,
+                "name": "Active Power Mode Feedback"
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "present_features_kVAR_mode_cmd",
+                "offset": 10,
+                "name": "Reactive Power Mode Feedback"
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "peak_power_limit_status_flag",
+                "offset": 13,
+                "name": "Peak Power Limit Status",
+                "bool": true
+            },
+            {
+                "uri": "/features/frequency",
+                "id": "pfr_status_flag",
+                "offset": 15,
+                "name": "Frequency Response Status",
+                "bool": true
+            },
+            {
+                "uri": "/assets/solar/summary",
+                "id": "solar_curtailment_state",
+                "offset": 16,
+                "name": "PV Curtailment Status",
+                "bool": true
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "present_manual_ess_kW_cmd",
+                "offset": 17,
+                "size": 2,
+                "name": "BESS Active Power Setpoint Feedback"
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "present_manual_solar_kW_cmd",
+                "offset": 19,
+                "size": 2,
+                "name": "PV Curtailment Target Feedback"
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "present_ess_charge_control_target_soc",
+                "offset": 21,
+                "scale": 100,
+                "name": "Target SOC Feedback"
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "present_active_voltage_cmd",
+                "offset": 22,
+                "name": "Voltage Control Setpoint Feedback"
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "active_voltage_status_flag",
+                "offset": 23,
+                "name": "AVR status",
+                "bool": true
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "remote_reactive_setpoint_kVAR_cmd",
+                "offset": 24,
+                "name": "Reactive Power Target Feedback",
+                "signed": true
+            },
+            {
+                "uri": "/features/reactive_power",
+                "id": "present_power_factor_cmd",
+                "offset": 25,
+                "scale": 100,
+                "name": "Power Factor Target Feedback"
+            },
+            {
+                "uri": "/metrics/misc",
+                "id": "heartbeat_feedback",
+                "offset": 26,
+                "name": "Heartbeat Feedback"
+            },
+            {
+                "uri": "/metrics/production",
+                "id": "gross_active_power",
+                "offset": 27,
+                "name": "Site - Active Power Total Gross",
+                "signed": true
+            },
+            {
+                "uri": "/metrics/production",
+                "id": "gross_reactive_power",
+                "offset": 28,
+                "name": "Site - Reactive Power Total Gross",
+                "signed": true
+            },
+            {
+                "uri": "/metrics/production",
+                "id": "gross_apparent_power",
+                "offset": 29,
+                "name": "Site - Apparent Power Total Gross"
+            },
+            {
+                "uri": "/metrics/production",
+                "id": "net_active_power",
+                "offset": 30,
+                "name": "Site - Active Power Total Net",
+                "signed": true
+            },
+            {
+                "uri": "/metrics/production",
+                "id": "net_reactive_power",
+                "offset": 31,
+                "name": "Site - Reactive Power Total Net",
+                "signed": true
+            },
+            {
+                "uri": "/metrics/production",
+                "id": "net_apparent_power",
+                "offset": 32,
+                "name": "Site - Apparent Power Total Net"
+            },
+            {
+                "uri": "/assets/ess/summary",
+                "id": "ess_total_active_power",
+                "offset": 33,
+                "name": "Battery - Active Power",
+                "signed": true
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "potential_ess_charge_kW",
+                "offset": 39,
+                "name": "Battery - Available AC Charge Power"
+            },
+            {
+                "uri": "/features/active_power",
+                "id": "potential_ess_dischg_kW",
+                "offset": 40,
+                "name": "Battery - Available AC Discharge Power"
+            },
+            {
+                "uri": "/assets/ess/summary",
+                "id": "ess_average_soc",
+                "offset": 41,
+                "scale": 100,
+                "name": "Battery - State of Charge %"
+            },
+            {
+                "uri": "/metrics/ess",
+                "id": "ess_total_soc_abs",
+                "offset": 42,
+                "name": "Battery - State of Charge kWh"
+            },
+            {
+                "uri": "/metrics/ess",
+                "id": "ess_total_soh",
+                "offset": 43,
+                "scale": 100,
+                "name": "Battery - State of Health %"
+            },
+            {
+                "uri": "/metrics/ess",
+                "id": "ess_total_soh_abs",
+                "offset": 44,
+                "name": "Battery - State of Health kWh"
+            },
+            {
+                "uri": "/metrics/ess",
+                "id": "ess_total_throughput",
+                "offset": 45,
+                "size": 2,
+                "name": "Battery - Accumulated Throughput"
+            },
+            {
+                "uri": "/metrics/ess",
+                "id": "ess_decay_rate",
+                "offset": 47,
+                "size": 2,
+                "scale": 1000,
+                "name": "Battery - Estimated Decay Rate"
+            },
+            {
+                "uri": "/components/bess_aux",
+                "id": "active_power",
+                "offset": 49,
+                "name": "Battery - Aux Power 3P",
+                "signed": true
+            },
+            {
+                "uri": "/components/bess_aux",
+                "id": "reactive_power",
+                "offset": 50,
+                "name": "Battery - Aux Power 3Q",
+                "signed": true
+            },
+            {
+                "uri": "/assets/ess/summary",
+                "id": "available_ess_num",
+                "offset": 51,
+                "name": "Battery - Number ESS Available"
+            },
+            {
+                "uri": "/assets/ess/summary",
+                "id": "running_ess_num",
+                "offset": 52,
+                "name": "Battery - Number ESS Online"
+            },
+            {
+                "uri": "/assets/solar/summary",
+                "id": "solar_total_active_power",
+                "offset": 53,
+                "name": "PV - Active Power"
+            },
+            {
+                "uri": "/assets/solar/summary",
+                "id": "solar_total_reactive_power",
+                "offset": 54,
+                "name": "PV - Reactive Power",
+                "signed": true
+            },
+            {
+                "uri": "/assets/solar/summary",
+                "id": "solar_total_apparent_power",
+                "offset": 55,
+                "name": "PV - Apparent Power"
+            },
+            {
+                "uri": "/components/pv_aux_epm9650",
+                "id": "active_power",
+                "offset": 56,
+                "name": "PV - Aux 3P",
+                "signed": true
+            },
+            {
+                "uri": "/components/pv_aux_epm9650",
+                "id": "reactive_power",
+                "offset": 57,
+                "name": "PV - Aux 3Q",
+                "signed": true
+            },
+            {
+                "uri": "/assets/solar/summary",
+                "id": "available_solar_num",
+                "offset": 58,
+                "name": "PV - Number Inverters Available"
+            },
+            {
+                "uri": "/assets/solar/summary",
+                "id": "running_solar_num",
+                "offset": 59,
+                "name": "PV - Number Inverters Online"
+            },
+            {
+                "uri": "/components/bess_ion_8650b",
+                "id": "active_power",
+                "offset": 60,
+                "name": "BESS Active Power",
+                "signed": true
+            },
+            {
+                "uri": "/components/bess_ion_8650b",
+                "id": "reactive_power",
+                "offset": 61,
+                "name": "BESS Reactive Power",
+                "signed": true
+            },
+            {
+                "uri": "/metrics/production",
+                "id": "bess_ion_apparent_power",
+                "offset": 62,
+                "name": "BESS Apparent Power"
+            },
+            {
+                "uri": "/components/pv_ion_8650b",
+                "id": "active_power",
+                "offset": 63,
+                "name": "PV Active Power",
+                "signed": true
+            },
+            {
+                "uri": "/components/pv_ion_8650b",
+                "id": "reactive_power",
+                "offset": 64,
+                "name": "PV Reactive Power",
+                "signed": true
+            },
+            {
+                "uri": "/metrics/production",
+                "id": "pv_ion_apparent_power",
+                "offset": 65,
+                "name": "PV Apparent Power"
+            }
+        ]
+    }
+}
