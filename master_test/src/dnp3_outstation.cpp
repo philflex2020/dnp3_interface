@@ -382,7 +382,7 @@ int main(int argc, char* argv[])
         }
         else
         {
-            if (sys_cfg.debug)
+            if (sys_cfg.debug == 1)
                 FPS_ERROR_PRINT("****** Hey %s got a message uri [%s] \n", __FUNCTION__, msg->uri);
             dbs_type dbs; // collect all the parsed vars here
 
