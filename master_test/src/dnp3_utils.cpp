@@ -660,7 +660,6 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
         sys->local_address = 10;
         sys->remote_address = 1;
     }
-    sys->base_uris = cJSON_Parse("{\"/components\",\"/interfaces\"}");
     
     // todo add different frequencies for each zone
     sys->frequency  = 1000; // default once a second
@@ -676,7 +675,29 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
     if(ret) ret = getCJstr(cj,"name",            sys->name,           false);
     if(ret) ret = getCJint(cj,"debug",           sys->debug,          false);
     //TODO use this
-    if(ret) ret = getCJcj(cj,"base_uris",        sys->base_uris,      false);
+    if(ret) ret = getCJstr(cj,"base_uri",         sys->base_uri,      false);
+
+    // fixup base_uri
+    char tmp[1024];
+    const char* sys_id = sys->id;
+    if(sys->base_uri)
+    {
+        snprintf(tmp, sizeof(tmp),"%s/%s", sys->base_uri, sys_id);
+        free((void *) sys->base_uri);
+    }
+    else
+    {
+        if (who == DNP3_MASTER)
+        {
+            snprintf(tmp, sizeof(tmp),"%s/%s", "/components", sys_id);
+        }
+        else
+        {
+            snprintf(tmp, sizeof(tmp),"%s", "/interfaces", sys_id);
+        }
+    }
+    sys->base_uri = strdup(tmp);
+
     return ret;
 }
 
