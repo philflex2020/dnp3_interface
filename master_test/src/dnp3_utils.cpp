@@ -979,7 +979,7 @@ bool parse_variables(cJSON* object, sysCfg* sys, int who)
     return true;
 }
 
-int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs, const char **slogs, int snum)
+int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs)
 {
     int num = sys->getSubs(NULL, 0, who);
     subs= (const char **) malloc((num+3) * sizeof(char *));
@@ -993,10 +993,10 @@ int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs, const cha
     memset(bpubs, false, (num+3) * sizeof(bool)); // all false we hope
 
     num = sys->getSubs(subs, num, who);
-    for (int i = 0; i < snum; i++)
-    {
-        subs[num++] = slogs[i];
-    }
+    // for (int i = 0; i < snum; i++)
+    // {
+    //     subs[num++] = slogs[i];
+    // }
     return num;
 }
 

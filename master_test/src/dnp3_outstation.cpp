@@ -264,14 +264,10 @@ int main(int argc, char* argv[])
 
     cJSON_Delete(config);
 
-    const char *sub_array[]={
-        (const char *)"/interfaces",
-        (const char*)"/fooey",
-        NULL
-    };
+    
     const char **subs = NULL;
     bool *bpubs = NULL;
-    int num = getSysUris(&sys_cfg, DNP3_OUTSTATION, subs, bpubs, sub_array, 0);
+    int num = getSysUris(&sys_cfg, DNP3_OUTSTATION, subs, bpubs);
     if(num < 0)
     {
         FPS_ERROR_PRINT("Failed to create subs array.\n");

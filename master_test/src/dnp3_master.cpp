@@ -142,10 +142,10 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                                                                    TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
     master->Enable();
-    bool channelCommsLoggingEnabled = true;
-    bool masterCommsLoggingEnabled = true;
-    //bool channelCommsLoggingEnabled = false;
-    //bool masterCommsLoggingEnabled = false;
+    //bool channelCommsLoggingEnabled = true;
+    //bool masterCommsLoggingEnabled = true;
+    bool channelCommsLoggingEnabled = false;
+    bool masterCommsLoggingEnabled = false;
 
     auto levels = channelCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
     channel->SetLogFilters(levels);
@@ -194,7 +194,6 @@ void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
     }
 }
 
-
 int main(int argc, char *argv[])
 {
     fims* p_fims;
@@ -233,16 +232,12 @@ int main(int argc, char *argv[])
     sys_cfg.showDbMap();
     sys_cfg.showUris();
 
-    const char *sub_array[]={
-        (const char *)"/interfaces",
-        (const char*)"/fooey",
-        NULL
-        };
+   
     const char **subs = NULL;
     bool *bpubs = NULL;
 
     // "components is pulled in as the default uri "
-    int num = getSysUris(&sys_cfg, DNP3_MASTER, subs, bpubs, sub_array, 0);
+    int num = getSysUris(&sys_cfg, DNP3_MASTER, subs, bpubs);
     if(num < 0)
     {
         FPS_ERROR_PRINT("Failed to create subs array.\n");

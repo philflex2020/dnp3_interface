@@ -812,6 +812,7 @@ typedef struct sysCfg_t {
                 return uriMap.size();
             }
             int idx = 0;
+            subs[idx++] = base_uri;
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
@@ -823,7 +824,8 @@ typedef struct sysCfg_t {
         // only get the ones for vars applied to this application (outstation or master)
         int getUris(int who)
         {
-            FPS_ERROR_PRINT(" %s uris===>%d<=== \n\n", __FUNCTION__, who);
+            if(debug ==1)
+                FPS_ERROR_PRINT(" %s uris===>%d<=== \n\n", __FUNCTION__, who);
 
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
@@ -955,7 +957,7 @@ int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char
 // int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag);
 bool checkWho(sysCfg*sys, const char *name, int who);
 bool checkWho(sysCfg*sys, DbVar *db, int who);
-int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs, const char **slogs, int snum);
+int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs);
 
  
 #endif
