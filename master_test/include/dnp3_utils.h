@@ -921,7 +921,7 @@ typedef struct sysCfg_t {
         int scanreq;     //used to request a class 1, 2 or 3 scan 
         int unsol;       // set to 1 to allow unsol in oustation
         cJSON* cjclass;  // used to change class of a var in outstation
-        const char* base_uri;        
+        char* base_uri;        
 } sysCfg;
 
 DbVar* getDbVar(sysCfg *sysdb, const char *name);
