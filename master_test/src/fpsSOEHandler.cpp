@@ -18,6 +18,7 @@ namespace asiodnp3 {
 
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
     static sysCfg *static_sysdb = sysdb;
+    static int items = 0;
     if(static_sysdb->debug == 1)
         FPS_DEBUG_PRINT(">> ******************************Bin:\n");
     auto print = [](const Indexed<Binary>& pair) {
@@ -32,6 +33,7 @@ void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
             {
                 cJSON_AddBoolToObject(static_sysdb->cj, vname, pair.value.value);
                 static_sysdb->setDbVar(vname, pair.value.value);
+                items++;
             }
         }
         else
@@ -44,7 +46,8 @@ void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
     if(static_sysdb->cj)
     {
         //cJSON_AddItemToObject(static_sysdb->cj, cfgGetSOEName(static_sysdb,"binaries"), cj);
-        static_sysdb->cjloaded++;
+        if(items > 0)
+            static_sysdb->cjloaded++;
     }
     if(static_sysdb->debug == 1)
         FPS_DEBUG_PRINT("<< ******************************Bin:\n" );
@@ -67,6 +70,7 @@ void fpsSOEHandler::Process(const HeaderInfo& /*info*/, const ICollection<Indexe
 void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Indexed<Analog>>& values) {
     // magic static
     static sysCfg *static_sysdb = sysdb;
+    static int items = 0;
     if(static_sysdb->debug == 1)
         FPS_DEBUG_PRINT(">> ******************************An:\n");
     auto print = [](const Indexed<Analog>& pair) {
@@ -80,6 +84,7 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
             {
                 cJSON_AddNumberToObject(static_sysdb->cj, vname, pair.value.value);
                 static_sysdb->setDbVar(vname, pair.value.value);
+                items++;
             }
         }
         else
@@ -91,7 +96,8 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     values.ForeachItem(print);
     if(static_sysdb->cj)
     {
-        static_sysdb->cjloaded++;
+        if(items > 0)
+            static_sysdb->cjloaded++;
     }
     if(static_sysdb->debug == 1)
         FPS_DEBUG_PRINT("<< ******************************An:\n");

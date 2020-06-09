@@ -27,4 +27,10 @@ ERCOT Site
       -> master will issue pubs to update status on Fleet Manager ERCOT outstation.
 
 
+Done all of the above
+6/8/2020
+BaseUrl
+check where the modbus runs the pubs.
+make uri lookup much faster.
+lookup the name then get the uri
 
