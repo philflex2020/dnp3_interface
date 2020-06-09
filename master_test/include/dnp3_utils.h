@@ -503,7 +503,7 @@ typedef struct sysCfg_t {
             return 0;
         };
 
-        int setDbVarIx(int dbtype, int idx, double fval)
+        int setDbVarIx(int dbtype, int idx, double ival)
         {
             DbVar* db = NULL;
             if(idx < static_cast<int32_t>(dbVec[dbtype].size()))
@@ -512,12 +512,12 @@ typedef struct sysCfg_t {
             }
             if (db != NULL)
             {
-                FPS_ERROR_PRINT(" setting the double value of [%s] %s to %f sign %d \n", db->name.c_str(), iotypToStr(dbtype), fval, db->sign );                
-                return setDb(db, fval);
+                FPS_ERROR_PRINT(" setting the double value of [%s] %s to %f sign %d \n", db->name.c_str(), iotypToStr(dbtype), ival, db->sign );                
+                return setDb(db, ival);
             }
             else
             {
-                FPS_ERROR_PRINT("  Set DVAL Variable %s index  %d unknown \n", iotypToStr(dbtype), ival);                  
+                FPS_ERROR_PRINT("  %s Set Double Variable %s index  %d unknown \n", __FUNCTION__, iotypToStr(dbtype), ival);                  
             }
 
             return 0;
@@ -537,7 +537,7 @@ typedef struct sysCfg_t {
             }
             else
             {
-                FPS_ERROR_PRINT("  Set IVAL Variable %s index  %d unknown \n", iotypToStr(dbtype), ival);                  
+                FPS_ERROR_PRINT(" %s Set INT Variable %s index  %d unknown \n", __FUNCTION__, iotypToStr(dbtype), ival);                  
             }
             
             return 0;
