@@ -824,7 +824,7 @@ typedef struct sysCfg_t {
         // only get the ones for vars applied to this application (outstation or master)
         int getUris(int who)
         {
-            if(debug ==1)
+            //if(debug ==1)
                 FPS_ERROR_PRINT(" %s uris===>%d<=== \n\n", __FUNCTION__, who);
 
             duri_map::iterator it;
@@ -832,27 +832,28 @@ typedef struct sysCfg_t {
             {
                 char replyto[1024];
                 char getUri[1024];
+                //sprintf(replyto, "%s/reply%s", server_map->base_uri, it->first);
+                //server_map->p_fims->Send("get", it->first, replyto, NULL);
                 if (it->first[0] == '/') 
                 {
-                    // TODO fixup getUris
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply%s",  id, it->first);
-                    snprintf(getUri,sizeof(getUri),"/getUris%s", it->first);
+                    snprintf(replyto, sizeof(replyto),"%s/reply%s",  base_uri, it->first);
+                    snprintf(getUri,sizeof(getUri),"%s", it->first);
                 } 
                 else
                 {
-                    // TODO fixup getUris
-                    snprintf(replyto, sizeof(replyto),"/interfaces/%s/reply/%s", id, it->first);
-                    snprintf(getUri,sizeof(getUri),"/getUris/%s", it->first);
+                    snprintf(replyto, sizeof(replyto),"%s/reply%s",  base_uri, it->first);
+                    snprintf(getUri,sizeof(getUri),"%s", it->first);
                 }
-
-                FPS_ERROR_PRINT(" uri : [%s] replyto: [%s]\n"
-                    , getUri
-                    , replyto
-                    );
+                //if(debug == 1)
+                    FPS_ERROR_PRINT(" uri : [%s] replyto: [%s]\n"
+                        , getUri
+                        , replyto
+                        );
         
                 p_fims->Send("get", getUri, replyto, NULL);
             }
-            FPS_ERROR_PRINT(" %s<=== get uris DONE\n\n", __FUNCTION__);
+            //if(debug ==1)
+                FPS_ERROR_PRINT(" %s<=== get uris DONE\n\n", __FUNCTION__);
             return 0;
         }
 
