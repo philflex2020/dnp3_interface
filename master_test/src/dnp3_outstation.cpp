@@ -105,7 +105,7 @@ DNP3Manager* setupDNP3Manager(sysCfg* fpsDB)
 std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* fpsDB) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
-    const uint32_t FILTERS = levels::NORMAL;// | levels::ALL_COMMS;
+    const uint32_t FILTERS = levels::NORMAL | levels::ALL_COMMS;
 
     // Create a TCP server (listener)
     auto channel = manager->AddTCPServer(cname, 
