@@ -517,7 +517,7 @@ typedef struct sysCfg_t {
             }
             else
             {
-                FPS_ERROR_PRINT("  %s Set Double Variable %s index  %d unknown \n", __FUNCTION__, iotypToStr(dbtype), ival);                  
+                FPS_ERROR_PRINT("  %s Set Double Variable %s index  %f unknown \n", __FUNCTION__, iotypToStr(dbtype), ival);                  
             }
 
             return 0;
