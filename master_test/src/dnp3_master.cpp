@@ -142,10 +142,10 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
                                                                    TimeDuration::Seconds(10));
     // Enable the master. This will start communications.
     master->Enable();
-    // bool channelCommsLoggingEnabled = true;
-    // bool masterCommsLoggingEnabled = true;
-    bool channelCommsLoggingEnabled = false;
-    bool masterCommsLoggingEnabled = false;
+    bool channelCommsLoggingEnabled = true;
+    bool masterCommsLoggingEnabled = true;
+    //bool channelCommsLoggingEnabled = false;
+    //bool masterCommsLoggingEnabled = false;
 
     auto levels = channelCommsLoggingEnabled ? levels::ALL_COMMS : levels::NORMAL;
     channel->SetLogFilters(levels);
