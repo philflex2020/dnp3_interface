@@ -693,7 +693,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
         }
         else
         {
-            snprintf(tmp, sizeof(tmp),"%s", "/interfaces/%s", sys_id);
+            snprintf(tmp, sizeof(tmp),"%s/%s", "/interfaces", sys_id);
         }
     }
     sys->base_uri = strdup(tmp);
