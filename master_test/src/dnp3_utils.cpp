@@ -1242,7 +1242,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 
     // TODO check this out and clean it up
     // Allow "pub" to "set" outstation
-    if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && (who == DNP3_OUTSTATION) == 0))
+    if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && (who == DNP3_OUTSTATION)))
     {
         //TODO need to ignore sets on the outstation for master vars and vice versa 
         //int single = 0;
