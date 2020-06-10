@@ -622,15 +622,22 @@ typedef struct sysCfg_t {
             FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
             for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes); i++)
             {
-                for (int j = 0; j < static_cast<int32_t>(dbVec[i].size()); j++)
+                if (dbVec[i].size() > 0)
                 {
-                    DbVar* db = dbVec[i][j];
-                        FPS_ERROR_PRINT(" idx [%d.%d] ->name :[%s] offset : [%d] ===> \n"
-                            , db->type
-                            , db->idx
-                            , db->name.c_str()
-                            , db->offset
-                            );
+                    FPS_ERROR_PRINT(" dnp3 type [%s]\n", iotypToStr(i)); 
+                    for (int j = 0; j < static_cast<int32_t>(dbVec[i].size()); j++)
+                    {
+                        DbVar* db = dbVec[i][j];
+                        if(db != NULL)
+                        {
+                            FPS_ERROR_PRINT(" idx [%d.%d] ->name :[%s] offset : [%d] ===> \n"
+                                , db->type
+                                , db->idx
+                                , db->name.c_str()
+                                , db->offset
+                                );
+                        }
+                    }
                 }
             }
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
@@ -745,8 +752,7 @@ typedef struct sysCfg_t {
                     else
                     {
                         return true;
-                    }
-                    
+                    }                  
                 }
             }
             if(debug)
