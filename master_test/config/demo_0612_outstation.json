@@ -30,7 +30,7 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
-                "uri":"/components/dnp3",
+                "uri":"/metrics/misc",
                 "xxsigned": true
 
 
@@ -43,7 +43,7 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
-                "uri":"/components/dnp3",
+                "uri":"/metrics/misc",
                 "xxsigned": true
 
             },
@@ -55,7 +55,7 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
-                "uri":"/components/dnp3",
+                "uri":"/mertics/misc",
                 "xxsigned": true
 
             },
@@ -67,7 +67,7 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
-                "uri":"/components/dnp3",
+                "uri":"/metrics/misc",
                 "xxsigned": true
 
             }
