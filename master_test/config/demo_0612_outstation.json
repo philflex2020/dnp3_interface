@@ -30,7 +30,9 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
+                "uri":"/components/dnp3",
                 "xxsigned": true
+
 
             },
             {
@@ -41,6 +43,7 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
+                "uri":"/components/dnp3",
                 "xxsigned": true
 
             },
@@ -52,6 +55,7 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
+                "uri":"/components/dnp3",
                 "xxsigned": true
 
             },
@@ -63,6 +67,7 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
+                "uri":"/components/dnp3",
                 "xxsigned": true
 
             }
@@ -104,6 +109,7 @@
                 "unit": "MW",
                 "signed": true,
                 "uri": "/testing/testop"
+
             }
         ],
 
