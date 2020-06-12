@@ -13,13 +13,12 @@
         "name":"dnp3_test_master",
         "protocol": "DNP3",
         "version": 1,
-        "id": "dnp3_master",
-        "ip_address2": "192.168.1.45",
-        "ip_address": "127.0.0.1",
-        "port": 20001,
-        "port2": 12502,
+        "id": "dnp3_master1",
+        "ip_address": "192.168.1.45",
+        "ip_address2": "127.0.0.1",
+        "port": 20011,
         "local_address": 1,
-	"remote_address": 10,
+	"remote_address": 11,
         "frequency":5000
     },
     "objects": {
@@ -110,8 +109,9 @@
                 "offset": 20,
                 "name": "site_voltageSP",
                 "unit": "kV",
-		        "xvariation":"Group30Var5",
-                "signed": true
+		"xvariation":"Group30Var5",
+                "signed": true,
+		"linkback":"voltageSP"
             }
 
         ],

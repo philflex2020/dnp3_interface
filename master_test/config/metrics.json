@@ -1,0 +1,64 @@
+{
+    "publishRate": 1000,
+    "listenRate": 2,
+    "metricsUri": "/metrics/kpi",
+    "publishUris": [
+        {
+            "uri": "/metrics/misc",
+            "naked": true,
+            "metrics": [
+                {
+                    "id": "heartbeat",
+                    "inputs": [
+                        {"uri":"/metrics/misc","id":"heartbeat"}
+                    ],
+                    "operation":"echo"
+                },
+                {
+                    "id": "heartbeat_feedback",
+                    "inputs": [
+                        {"uri":"/metrics/misc","id":"heartbeat"}
+                    ],
+                    "operation":"echo"
+                },
+                
+
+
+                {
+                    "id": "sel_735_active_power",
+                    "inputs":[
+                        {"uri": "/components/sel_735", "id": "active_power"}
+                    ],
+                    "operation": "echo"
+                },
+                {
+                    "id": "sel_735_reactive_power",
+                    "inputs":[
+                        {"uri": "/components/sel_735", "id": "reactive_power"}
+                    ],
+                    "operation": "echo"
+                },
+                {
+                    "id": "ess_active_power",
+                    "inputs":[
+                        {"uri": "/components/ess_1", "id": "active_power"},
+                        {"uri": "/components/ess_2", "id": "active_power"},
+                        {"uri": "/components/ess_3", "id": "active_power"},
+                        {"uri": "/components/ess_4", "id": "active_power"}
+                    ],
+                    "operation": "sum"
+                },
+                {
+                    "id": "ess_reactive_power",
+                    "inputs":[
+                        {"uri": "/components/ess_1", "id": "reactive_power"},
+                        {"uri": "/components/ess_2", "id": "reactive_power"},
+                        {"uri": "/components/ess_3", "id": "reactive_power"},
+                        {"uri": "/components/ess_4", "id": "reactive_power"}
+                    ],
+                    "operation": "sum"
+                }
+            ]
+        }
+    ]
+}
