@@ -37,7 +37,7 @@
             },
             {
                 "id": "sel_735_reactive_power",
-                "offset": 0,
+                "offset": 1,
                 "name": "Sel 735 Reactive Power",
                 "unit": "MW",
 		        "variation":"Group30Var5",
@@ -49,19 +49,19 @@
             },
             {
                 "id": "ess_active_power",
-                "offset": 0,
+                "offset": 2,
                 "name": "Ess Active Power",
                 "unit": "MW",
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
-                "uri":"/mertics/misc",
+                "uri":"/metrics/misc",
                 "xxsigned": true
 
             },
             {
                 "id": "ess_reactive_power",
-                "offset": 0,
+                "offset": 3,
                 "name": "Ess Reactive Power",
                 "unit": "MW",
 		        "variation":"Group30Var5",
