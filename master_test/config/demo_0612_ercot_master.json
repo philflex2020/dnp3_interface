@@ -1,0 +1,165 @@
+{
+    "fileInfo": {
+        "sourceFileName": "dnp3_master.xlsx",
+        "sourceFileCreated": "2020-01-02T21:16:38.000Z",
+        "sourceFileLastModified": "2020-05-05T16:29:07.000Z",
+        "sourceFileCreatedBy": "Microsoft Office User",
+        "sourceFileLastModifiedBy": "pmiller",
+        "outputFileName": "dnp3_outstation.json",
+        "outputFileType": "server",
+        "outputFileCreated": "2020-05-05T16:29:13.344Z"
+    },
+    "system": {
+        "name":"demo_0612_ercot_master",
+        "protocol": "DNP3",
+        "version": 1,
+        "id": "ercot_master",
+        "ip_address2": "192.168.1.50",
+        "ip_address": "192.168.1.101",
+        "port": 20021,
+        "local_address": 1,
+	    "remote_address": 10
+    },
+    "objects": {
+        "analog": [
+            {
+                "id": "sel_735_active_power",
+                "offset": 0,
+                "name": "Sel 735 Active Power",
+                "unit": "MW",
+		        "variation":"Group30Var5",
+                "xxclazz":1,
+		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
+                "xxsigned": true
+
+
+            },
+            {
+                "id": "sel_735_reactive_power",
+                "offset": 1,
+                "name": "Sel 735 Reactive Power",
+                "unit": "MW",
+		        "variation":"Group30Var5",
+                "xxclazz":1,
+		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
+                "xxsigned": true
+
+            },
+            {
+                "id": "ess_active_power",
+                "offset": 2,
+                "name": "Ess Active Power",
+                "unit": "MW",
+		        "variation":"Group30Var5",
+                "xxclazz":1,
+		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
+                "xxsigned": true
+
+            },
+            {
+                "id": "ess_reactive_power",
+                "offset": 3,
+                "name": "Ess Reactive Power",
+                "unit": "MW",
+		        "variation":"Group30Var5",
+                "xxclazz":1,
+		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
+                "xxsigned": true
+
+            }
+        ],
+
+        "xxbinary": [
+            {
+                "id": "voltage_regulator",
+                "offset": 0,
+                "name": "Voltage Regulator"
+            },
+            {
+                "id": "power_system_stabilizer",
+                "offset": 1,
+                "name": "Power System Stabilizer"
+            },
+            {
+                "id": "gen_resource_switches",
+                "offset": 2,
+                "name": "Generation Resource Switches"
+            },
+            {
+                "id": "gen_resource_breaker_status",
+                "offset": 3,
+                "name": "Generation Resource Breaker Status"
+            },
+            {
+                "id": "gen_virtual_breaker_status",
+                "offset": 4,
+                "name": "Gen Virtual Breaker Status"
+            }
+        ],
+        
+        "AnOPInt32": [
+            {
+                "id": "TestOPtoSite",
+                "offset": 0,
+                "name": "Test OUTPut To Site",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/testing/testop"
+
+            }
+        ],
+
+        "xxAnOPInt32": [
+            {
+                "id": "testOP_32_1",
+                "offset": 0,
+                "name": "testOP_32_1",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/home/mystuff/uri"
+            },
+            {
+                "id": "testOP_32_22",
+                "offset": 2,
+                "name": "testOP_32_22",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/home/mystuff/uri"
+            },
+            {
+                "id": "voltageSP",
+                "offset": 3,
+                "name": "voltageSP",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/site",
+        		"linkback":"site_voltageSP"
+            }        
+        ],
+        "xxAnOPInt16": [
+            {
+                "id": "testOP_16_8",
+                "offset": 8,
+                "name": "testOP_16_8",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/home/athings/uri"
+
+            }
+        ],
+        "xxCROB": [
+            {
+                "id": "testCROB_4",
+                "offset": 4,
+                "name": "testCROB_4",
+                "unit": "None",
+                "signed": true
+            }
+       ]
+
+    }
+}
