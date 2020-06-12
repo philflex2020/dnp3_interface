@@ -1,6 +1,6 @@
 {
     "fileInfo": {
-        "sourceFileName": "dnp3_outstation.xlsx",
+        "sourceFileName": "dnp3_master.xlsx",
         "sourceFileCreated": "2020-01-02T21:16:38.000Z",
         "sourceFileLastModified": "2020-05-05T16:29:07.000Z",
         "sourceFileCreatedBy": "Microsoft Office User",
@@ -13,11 +13,10 @@
         "name":"demo_0612_master",
         "protocol": "DNP3",
         "version": 1,
-        "id": "dnp3_outstation",
+        "id": "dnp3_master",
         "ip_address2": "192.168.1.50",
-        "ip_address": "127.0.0.1",
-        "notes":" this will be routed via  shootback system running on the vagrant target",
-        "port": 20001,
+        "ip_address": "0.0.0.0",
+        "port": 10023,
         "local_address": 1,
 	    "remote_address": 10
     },
@@ -31,39 +30,44 @@
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
                 "xxsigned": true
+
 
             },
             {
                 "id": "sel_735_reactive_power",
-                "offset": 0,
+                "offset": 1,
                 "name": "Sel 735 Reactive Power",
                 "unit": "MW",
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
                 "xxsigned": true
 
             },
             {
                 "id": "ess_active_power",
-                "offset": 0,
+                "offset": 2,
                 "name": "Ess Active Power",
                 "unit": "MW",
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
                 "xxsigned": true
 
             },
             {
                 "id": "ess_reactive_power",
-                "offset": 0,
+                "offset": 3,
                 "name": "Ess Reactive Power",
                 "unit": "MW",
 		        "variation":"Group30Var5",
                 "xxclazz":1,
 		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
                 "xxsigned": true
 
             }
@@ -96,6 +100,7 @@
                 "name": "Gen Virtual Breaker Status"
             }
         ],
+        
         "AnOPInt32": [
             {
                 "id": "TestOPtoSite",
@@ -104,17 +109,19 @@
                 "unit": "MW",
                 "signed": true,
                 "uri": "/testing/testop"
+
             }
         ],
+
         "xxAnOPInt32": [
-                {
-                    "id": "TestOPtoSite",
-                    "offset": 0,
-                    "name": "Test OUTPut To Site",
-                    "unit": "MW",
-                    "signed": true,
-                    "uri": "/testing/testop"
-                },
+            {
+                "id": "testOP_32_1",
+                "offset": 0,
+                "name": "testOP_32_1",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/home/mystuff/uri"
+            },
             {
                 "id": "testOP_32_22",
                 "offset": 2,
