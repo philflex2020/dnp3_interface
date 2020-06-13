@@ -1,0 +1,842 @@
+hello
+ file is :fims_out.txt
+Uri: [/components/bess_aux] 
+                      [active_power] -> 0
+                      [closecmd] -> True
+                      [closed] -> False
+                      [ctrlword1] -> 0
+                      [ctrlwordenabled] -> False
+                      [di] -> 0
+                      [f1] -> 0
+                      [f2] -> 0
+                      [i] -> 0
+                      [opencmd] -> False
+                      [pf] -> 0
+                      [ph] -> 0
+                      [pmax] -> 12000
+                      [polrev] -> False
+                      [qi] -> 0
+                      [qmax] -> 12000
+                      [reactive_power] -> 0
+                      [resetcmd] -> False
+                      [s] -> 0
+                      [smax] -> 12000
+                      [status] -> []
+                      [tripcmd] -> False
+                      [tripped] -> False
+                      [v1] -> 0
+                      [v2] -> 0
+                      [voltage_ab] -> 0
+                      [voltage_bc] -> 0
+                      [voltage_ca] -> 0
+Uri: [/components/tx_1] 
+                      [di] -> -8.801241263218369
+                      [eff] -> 99
+                      [f] -> 60.0000000000001
+                      [i] -> 8.801241263218369
+                      [n] -> 22.67
+                      [p] -> -8.385112345545439
+                      [ph] -> 0
+                      [q] -> 0
+                      [qi] -> 0
+                      [s] -> 8.385112345545439
+                      [sn] -> 2750
+                      [status] -> []
+                      [v] -> 0
+                      [v1] -> 12470
+                      [v2] -> 550.0527397331726
+                      [vn] -> 12470
+                      [xor] -> 7.1
+                      [zpu] -> 5.74
+Uri: [/components/sel_735] 
+                      [active_power] -> -33.540449382181755
+                      [apparent_power] -> 0
+                      [closecmd] -> True
+                      [ctrlwordenabled] -> True
+                      [current_a] -> 0
+                      [current_b] -> 0
+                      [current_c] -> 0
+                      [di] -> 0
+                      [f1] -> 60.0000000000001
+                      [f2] -> 60.0000000000001
+                      [opencmd] -> False
+                      [pf] -> 1
+                      [ph] -> 0
+                      [pmax] -> 12000
+                      [polrev] -> False
+                      [qi] -> 0
+                      [qmax] -> 12000
+                      [reactive_power] -> 0
+                      [relay_command] -> 1
+                      [relay_reset] -> False
+                      [relay_status] -> True
+                      [smax] -> 12000
+                      [status] -> []
+                      [tripcmd] -> False
+                      [tripped] -> False
+                      [v1] -> 12470
+                      [v2] -> 12470
+                      [voltage_ab] -> 0
+                      [voltage_bc] -> 0
+                      [voltage_ca] -> 0
+Uri: [/components/tx_3] 
+                      [di] -> -8.801241263218369
+                      [eff] -> 99
+                      [f] -> 60.0000000000001
+                      [i] -> 8.801241263218369
+                      [n] -> 22.67
+                      [p] -> -8.385112345545439
+                      [ph] -> 0
+                      [q] -> 0
+                      [qi] -> 0
+                      [s] -> 8.385112345545439
+                      [sn] -> 2750
+                      [status] -> []
+                      [v] -> 0
+                      [v1] -> 12470
+                      [v2] -> 550.0527397331726
+                      [vn] -> 12470
+                      [xor] -> 7.1
+                      [zpu] -> 5.74
+Uri: [/components/ess_3] 
+                      [accontactor] -> False
+                      [accontactorclosecmd] -> False
+                      [accontactoropencmd] -> False
+                      [active_power] -> 0
+                      [active_power_setpoint] -> 0
+                      [apparent_power] -> 0
+                      [bms1_racks_in_service] -> 0
+                      [bms2_racks_in_service] -> 0
+                      [cap] -> 11420
+                      [clear_faults] -> 2
+                      [contactorcontrol] -> False
+                      [control_word_1] -> 0
+                      [control_word_2] -> 2
+                      [ctrlword3] -> 0
+                      [ctrlword4] -> 0
+                      [current_l1] -> 0
+                      [current_l2] -> 0
+                      [current_l3] -> 0
+                      [dccontactor] -> False
+                      [dccontactorclosecmd] -> False
+                      [dccontactoropencmd] -> False
+                      [di] -> 0
+                      [fcmd] -> 0
+                      [frequency] -> 0
+                      [gridfollowingcmd] -> False
+                      [gridforming] -> False
+                      [gridformingcmd] -> False
+                      [idc] -> 0
+                      [idleloss] -> 5.5
+                      [ivcurve] -> 0
+                      [noise] -> 0
+                      [offcmd] -> False
+                      [on] -> False
+                      [oncmd] -> False
+                      [pcharge] -> 0
+                      [pdischarge] -> 0
+                      [pf] -> 1
+                      [pfcmd] -> 0
+                      [pfmode] -> False
+                      [ph] -> 0
+                      [qhigh] -> 0
+                      [qi] -> 0
+                      [qlow] -> 0
+                      [racks] -> 19
+                      [reactive_power] -> 0
+                      [reactive_power_setpoint] -> 0
+                      [rte] -> 92
+                      [soc] -> 50
+                      [standby] -> False
+                      [standby_mode] -> 0
+                      [standbycmd] -> False
+                      [status] -> [{'value': 7, 'string': 'Stopped'}]
+                      [system_chargeable_power] -> 2750
+                      [system_dischargeable_power] -> 2750
+                      [vcmd] -> 0
+                      [vdc] -> 0
+                      [voltage_l1] -> 550.0527397331726
+                      [voltage_l2] -> 550.0527397331726
+                      [voltage_l3] -> 550.0527397331726
+Uri: [/components/ess_2] 
+                      [accontactor] -> False
+                      [accontactorclosecmd] -> False
+                      [accontactoropencmd] -> False
+                      [active_power] -> 0
+                      [active_power_setpoint] -> 0
+                      [apparent_power] -> 0
+                      [bms1_racks_in_service] -> 0
+                      [bms2_racks_in_service] -> 0
+                      [cap] -> 11420
+                      [clear_faults] -> 2
+                      [contactorcontrol] -> False
+                      [control_word_1] -> 0
+                      [control_word_2] -> 2
+                      [ctrlword3] -> 0
+                      [ctrlword4] -> 0
+                      [current_l1] -> 0
+                      [current_l2] -> 0
+                      [current_l3] -> 0
+                      [dccontactor] -> False
+                      [dccontactorclosecmd] -> False
+                      [dccontactoropencmd] -> False
+                      [di] -> 0
+                      [fcmd] -> 0
+                      [frequency] -> 0
+                      [gridfollowingcmd] -> False
+                      [gridforming] -> False
+                      [gridformingcmd] -> False
+                      [idc] -> 0
+                      [idleloss] -> 5.5
+                      [ivcurve] -> 0
+                      [noise] -> 0
+                      [offcmd] -> False
+                      [on] -> False
+                      [oncmd] -> False
+                      [pcharge] -> 0
+                      [pdischarge] -> 0
+                      [pf] -> 1
+                      [pfcmd] -> 0
+                      [pfmode] -> False
+                      [ph] -> 0
+                      [qhigh] -> 0
+                      [qi] -> 0
+                      [qlow] -> 0
+                      [racks] -> 19
+                      [reactive_power] -> 0
+                      [reactive_power_setpoint] -> 0
+                      [rte] -> 92
+                      [soc] -> 50
+                      [standby] -> False
+                      [standby_mode] -> 0
+                      [standbycmd] -> False
+                      [status] -> [{'value': 7, 'string': 'Stopped'}]
+                      [system_chargeable_power] -> 2750
+                      [system_dischargeable_power] -> 2750
+                      [vcmd] -> 0
+                      [vdc] -> 0
+                      [voltage_l1] -> 550.0527397331726
+                      [voltage_l2] -> 550.0527397331726
+                      [voltage_l3] -> 550.0527397331726
+Uri: [/components/tx_2] 
+                      [di] -> -8.801241263218369
+                      [eff] -> 99
+                      [f] -> 60.0000000000001
+                      [i] -> 8.801241263218369
+                      [n] -> 22.67
+                      [p] -> -8.385112345545439
+                      [ph] -> 0
+                      [q] -> 0
+                      [qi] -> 0
+                      [s] -> 8.385112345545439
+                      [sn] -> 2750
+                      [status] -> []
+                      [v] -> 0
+                      [v1] -> 12470
+                      [v2] -> 550.0527397331726
+                      [vn] -> 12470
+                      [xor] -> 7.1
+                      [zpu] -> 5.74
+Uri: [/components/tx_aux] 
+                      [di] -> -63.90051585162485
+                      [eff] -> 99
+                      [f] -> 60.0000000000001
+                      [i] -> 63.90051585162485
+                      [n] -> 22.67
+                      [p] -> -60.76228294050413
+                      [ph] -> 0
+                      [q] -> 0
+                      [qi] -> 0
+                      [s] -> 60.76228294050413
+                      [sn] -> 250
+                      [status] -> []
+                      [v] -> 0
+                      [v1] -> 12470
+                      [v2] -> 548.9958875094782
+                      [vn] -> 12470
+                      [xor] -> 7.1
+                      [zpu] -> 5.74
+Uri: [/components/ess_1] 
+                      [accontactor] -> False
+                      [accontactorclosecmd] -> False
+                      [accontactoropencmd] -> False
+                      [active_power] -> 0
+                      [active_power_setpoint] -> 0
+                      [apparent_power] -> 0
+                      [bms1_racks_in_service] -> 0
+                      [bms2_racks_in_service] -> 0
+                      [cap] -> 11420
+                      [clear_faults] -> 2
+                      [contactorcontrol] -> False
+                      [control_word_1] -> 0
+                      [control_word_2] -> 2
+                      [ctrlword3] -> 0
+                      [ctrlword4] -> 0
+                      [current_l1] -> 0
+                      [current_l2] -> 0
+                      [current_l3] -> 0
+                      [dccontactor] -> False
+                      [dccontactorclosecmd] -> False
+                      [dccontactoropencmd] -> False
+                      [di] -> 0
+                      [fcmd] -> 0
+                      [frequency] -> 0
+                      [gridfollowingcmd] -> False
+                      [gridforming] -> False
+                      [gridformingcmd] -> False
+                      [idc] -> 0
+                      [idleloss] -> 5.5
+                      [ivcurve] -> 0
+                      [noise] -> 0
+                      [offcmd] -> False
+                      [on] -> False
+                      [oncmd] -> False
+                      [pcharge] -> 0
+                      [pdischarge] -> 0
+                      [pf] -> 1
+                      [pfcmd] -> 0
+                      [pfmode] -> False
+                      [ph] -> 0
+                      [qhigh] -> 0
+                      [qi] -> 0
+                      [qlow] -> 0
+                      [racks] -> 19
+                      [reactive_power] -> 0
+                      [reactive_power_setpoint] -> 0
+                      [rte] -> 92
+                      [soc] -> 50
+                      [standby] -> False
+                      [standby_mode] -> 0
+                      [standbycmd] -> False
+                      [status] -> [{'value': 7, 'string': 'Stopped'}]
+                      [system_chargeable_power] -> 2750
+                      [system_dischargeable_power] -> 2750
+                      [vcmd] -> 0
+                      [vdc] -> 0
+                      [voltage_l1] -> 550.0527397331726
+                      [voltage_l2] -> 550.0527397331726
+                      [voltage_l3] -> 550.0527397331726
+Uri: [/components/sel_651] 
+                      [active_power] -> -33.540449382181755
+                      [apparent_power] -> 0
+                      [closecmd] -> True
+                      [ctrlwordenabled] -> True
+                      [current_a] -> 0
+                      [current_b] -> 0
+                      [current_c] -> 0
+                      [di] -> 0
+                      [f1] -> 60.0000000000001
+                      [f2] -> 60.0000000000001
+                      [opencmd] -> False
+                      [pf] -> 1
+                      [ph] -> 0
+                      [pmax] -> 12000
+                      [polrev] -> False
+                      [qi] -> 0
+                      [qmax] -> 12000
+                      [reactive_power] -> 0
+                      [relay_command] -> 1
+                      [relay_reset] -> False
+                      [relay_status] -> True
+                      [smax] -> 12000
+                      [status] -> []
+                      [tripcmd] -> False
+                      [tripped] -> False
+                      [v1] -> 12470
+                      [v2] -> 12470
+                      [voltage_ab] -> 0
+                      [voltage_bc] -> 0
+                      [voltage_ca] -> 0
+Uri: [/components/ess_4] 
+                      [accontactor] -> False
+                      [accontactorclosecmd] -> False
+                      [accontactoropencmd] -> False
+                      [active_power] -> 0
+                      [active_power_setpoint] -> 0
+                      [apparent_power] -> 0
+                      [bms1_racks_in_service] -> 0
+                      [bms2_racks_in_service] -> 0
+                      [cap] -> 11420
+                      [clear_faults] -> 2
+                      [contactorcontrol] -> False
+                      [control_word_1] -> 0
+                      [control_word_2] -> 2
+                      [ctrlword3] -> 0
+                      [ctrlword4] -> 0
+                      [current_l1] -> 0
+                      [current_l2] -> 0
+                      [current_l3] -> 0
+                      [dccontactor] -> False
+                      [dccontactorclosecmd] -> False
+                      [dccontactoropencmd] -> False
+                      [di] -> 0
+                      [fcmd] -> 0
+                      [frequency] -> 0
+                      [gridfollowingcmd] -> False
+                      [gridforming] -> False
+                      [gridformingcmd] -> False
+                      [idc] -> 0
+                      [idleloss] -> 5.5
+                      [ivcurve] -> 0
+                      [noise] -> 0
+                      [offcmd] -> False
+                      [on] -> False
+                      [oncmd] -> False
+                      [pcharge] -> 0
+                      [pdischarge] -> 0
+                      [pf] -> 1
+                      [pfcmd] -> 0
+                      [pfmode] -> False
+                      [ph] -> 0
+                      [qhigh] -> 0
+                      [qi] -> 0
+                      [qlow] -> 0
+                      [racks] -> 19
+                      [reactive_power] -> 0
+                      [reactive_power_setpoint] -> 0
+                      [rte] -> 92
+                      [soc] -> 50
+                      [standby] -> False
+                      [standby_mode] -> 0
+                      [standbycmd] -> False
+                      [status] -> [{'value': 7, 'string': 'Stopped'}]
+                      [system_chargeable_power] -> 2750
+                      [system_dischargeable_power] -> 2750
+                      [vcmd] -> 0
+                      [vdc] -> 0
+                      [voltage_l1] -> 550.0527397331726
+                      [voltage_l2] -> 550.0527397331726
+                      [voltage_l3] -> 550.0527397331726
+Uri: [/components/bess_aux_load] 
+                      [ctrlword1] -> 0
+                      [di] -> -63.09886274107925
+                      [f] -> 60.0000000000001
+                      [i] -> 63.09886274107925
+                      [noise] -> 0
+                      [offcmd] -> False
+                      [on] -> True
+                      [oncmd] -> False
+                      [p] -> -60
+                      [pcmd] -> -60
+                      [pf] -> -1
+                      [ph] -> 0
+                      [pmax] -> 0
+                      [pmin] -> 0
+                      [pramp] -> 100
+                      [q] -> 0
+                      [qcmd] -> 0
+                      [qi] -> 0
+                      [qmax] -> 0
+                      [qmin] -> 0
+                      [qramp] -> 100
+                      [randomwalk] -> False
+                      [s] -> 60
+                      [v] -> 548.9958875094782
+Uri: [/components/tx_4] 
+                      [di] -> -8.801241263218369
+                      [eff] -> 99
+                      [f] -> 60.0000000000001
+                      [i] -> 8.801241263218369
+                      [n] -> 22.67
+                      [p] -> -8.385112345545439
+                      [ph] -> 0
+                      [q] -> 0
+                      [qi] -> 0
+                      [s] -> 8.385112345545439
+                      [sn] -> 2750
+                      [status] -> []
+                      [v] -> 0
+                      [v1] -> 12470
+                      [v2] -> 550.0527397331726
+                      [vn] -> 12470
+                      [xor] -> 7.1
+                      [zpu] -> 5.74
+Uri: [/components/grid] 
+                      [dactiveexternal] -> {'YNom': 0, 'Percent': 0, 'XNom': 0}
+                      [di] -> -4.366135356200474
+                      [dreactiveexternal] -> {'YNom': 0, 'Percent': 0, 'XNom': 0}
+                      [f] -> 60.0000000000001
+                      [fcmd] -> 60
+                      [i] -> 0
+                      [p] -> -94.30273232268588
+                      [pf] -> 1
+                      [ph] -> 0
+                      [q] -> 0
+                      [qi] -> 0
+                      [s] -> 0
+                      [v] -> 12470
+                      [vcmd] -> 12470
+Uri: [/heart1000] 
+                      [count] 
+                      [timestamp] 
+Uri: [/assets/ess/ess_1] 
+    Name -> val [BESS Inverter Block 01] 
+                      [active_power] 
+                      [active_power_setpoint] 
+                      [alarms] 
+                      [apparent_power] 
+                      [current_l1] 
+                      [current_l2] 
+                      [current_l3] 
+                      [faults] 
+                      [frequency] 
+                      [max_temp] 
+                      [min_temp] 
+                      [reactive_power] 
+                      [reactive_power_setpoint] 
+                      [soc] 
+                      [soh] 
+                      [status] 
+                      [system_chargeable_power] 
+                      [system_dischargeable_power] 
+                      [voltage_dc] 
+                      [voltage_l1_n] 
+                      [voltage_l2_n] 
+                      [voltage_l3_n] 
+                      [maint_mode] 
+                      [start] 
+                      [stop] 
+                      [enter_standby] 
+                      [exit_standby] 
+                      [clear_faults] 
+                      [close_dc_contactors] 
+                      [open_dc_contactors] 
+                      [maint_active_power_setpoint] 
+                      [maint_reactive_power_setpoint] 
+Uri: [/assets/ess/ess_2] 
+    Name -> val [BESS Inverter Block 02] 
+                      [active_power] 
+                      [active_power_setpoint] 
+                      [alarms] 
+                      [apparent_power] 
+                      [current_l1] 
+                      [current_l2] 
+                      [current_l3] 
+                      [faults] 
+                      [frequency] 
+                      [max_temp] 
+                      [min_temp] 
+                      [reactive_power] 
+                      [reactive_power_setpoint] 
+                      [soc] 
+                      [soh] 
+                      [status] 
+                      [system_chargeable_power] 
+                      [system_dischargeable_power] 
+                      [voltage_dc] 
+                      [voltage_l1_n] 
+                      [voltage_l2_n] 
+                      [voltage_l3_n] 
+                      [maint_mode] 
+                      [start] 
+                      [stop] 
+                      [enter_standby] 
+                      [exit_standby] 
+                      [clear_faults] 
+                      [close_dc_contactors] 
+                      [open_dc_contactors] 
+                      [maint_active_power_setpoint] 
+                      [maint_reactive_power_setpoint] 
+Uri: [/assets/ess/ess_3] 
+    Name -> val [BESS Inverter Block 03] 
+                      [active_power] 
+                      [active_power_setpoint] 
+                      [alarms] 
+                      [apparent_power] 
+                      [current_l1] 
+                      [current_l2] 
+                      [current_l3] 
+                      [faults] 
+                      [frequency] 
+                      [max_temp] 
+                      [min_temp] 
+                      [reactive_power] 
+                      [reactive_power_setpoint] 
+                      [soc] 
+                      [soh] 
+                      [status] 
+                      [system_chargeable_power] 
+                      [system_dischargeable_power] 
+                      [voltage_dc] 
+                      [voltage_l1_n] 
+                      [voltage_l2_n] 
+                      [voltage_l3_n] 
+                      [maint_mode] 
+                      [start] 
+                      [stop] 
+                      [enter_standby] 
+                      [exit_standby] 
+                      [clear_faults] 
+                      [close_dc_contactors] 
+                      [open_dc_contactors] 
+                      [maint_active_power_setpoint] 
+                      [maint_reactive_power_setpoint] 
+Uri: [/assets/ess/ess_4] 
+    Name -> val [BESS Inverter Block 04] 
+                      [active_power] 
+                      [active_power_setpoint] 
+                      [alarms] 
+                      [apparent_power] 
+                      [current_l1] 
+                      [current_l2] 
+                      [current_l3] 
+                      [faults] 
+                      [frequency] 
+                      [max_temp] 
+                      [min_temp] 
+                      [reactive_power] 
+                      [reactive_power_setpoint] 
+                      [soc] 
+                      [soh] 
+                      [status] 
+                      [system_chargeable_power] 
+                      [system_dischargeable_power] 
+                      [voltage_dc] 
+                      [voltage_l1_n] 
+                      [voltage_l2_n] 
+                      [voltage_l3_n] 
+                      [maint_mode] 
+                      [start] 
+                      [stop] 
+                      [enter_standby] 
+                      [exit_standby] 
+                      [clear_faults] 
+                      [close_dc_contactors] 
+                      [open_dc_contactors] 
+                      [maint_active_power_setpoint] 
+                      [maint_reactive_power_setpoint] 
+Uri: [/assets/feeders/feed_1] 
+    Name -> val [POI (SEL 651/735)] 
+                      [active_power] 
+                      [apparent_power] 
+                      [breaker_status] 
+                      [current_l1] 
+                      [current_l2] 
+                      [current_l3] 
+                      [frequency] 
+                      [power_factor] 
+                      [reactive_power] 
+                      [voltage_l1_l2] 
+                      [voltage_l2_l3] 
+                      [voltage_l3_l1] 
+                      [maint_mode] 
+Uri: [/assets/feeders/feed_2] 
+    Name -> val [BESS Aux] 
+                      [active_power] 
+                      [reactive_power] 
+                      [voltage_l1_l2] 
+                      [voltage_l2_l3] 
+                      [voltage_l3_l1] 
+Uri: [/assets/ess/summary] 
+    Name -> val [ESS Summary] 
+                      [num_ess_available] 
+                      [num_ess_running] 
+                      [ess_total_active_power] 
+                      [ess_total_reactive_power] 
+                      [ess_total_apparent_power] 
+                      [ess_average_soc] 
+                      [ess_total_alarms] 
+                      [ess_total_faults] 
+                      [running_ess_num] 
+                      [available_ess_num] 
+                      [grid_forming_voltage_slew] 
+Uri: [/assets/feeders/summary] 
+    Name -> val [Feeder Summary] 
+                      [feed_1_active_power] 
+                      [feed_1_voltage] 
+                      [feed_1_alarms] 
+                      [feed_1_faults] 
+                      [feed_2_active_power] 
+                      [feed_2_voltage] 
+                      [feed_2_alarms] 
+                      [feed_2_faults] 
+Uri: [/site/summary] 
+    Name -> val [Site Summary] 
+                      [site_state] 
+                      [site_status] 
+                      [local_remote_source_status] 
+                      [present_disable_flag] 
+                      [present_enable_flag] 
+                      [present_clear_faults] 
+                      [ess_kW_cmd] 
+                      [gen_kW_cmd] 
+                      [solar_kW_cmd] 
+                      [feeder_kW_cmd] 
+                      [ess_kVAR_cmd] 
+                      [gen_kVAR_cmd] 
+                      [solar_kVAR_cmd] 
+                      [ess_instant_discharge] 
+                      [ess_instant_charge_grid] 
+                      [ess_instant_charge_pv] 
+                      [active_faults] 
+                      [active_alarms] 
+                      [fault_status_flag] 
+                      [alarm_status_flag] 
+Uri: [/site/operation] 
+    Name -> val [Operation] 
+                      [local_remote_source_flag] 
+                      [local_disable_flag] 
+                      [local_standby_flag] 
+                      [local_enable_flag] 
+                      [local_clear_faults] 
+                      [site_state] 
+                      [site_status] 
+                      [running_status_flag] 
+                      [local_remote_source_status] 
+                      [present_disable_flag] 
+                      [present_standby_flag] 
+                      [present_enable_flag] 
+                      [present_clear_faults] 
+                      [remote_disable_flag] 
+                      [remote_standby_flag] 
+                      [remote_enable_flag] 
+                      [remote_clear_faults] 
+                      [active_faults] 
+                      [active_alarms] 
+                      [fault_status_flag] 
+                      [alarm_status_flag] 
+Uri: [/site/configuration] 
+    Name -> val [Configuration] 
+                      [ess_kVAR_slew_rate] 
+                      [gen_kVAR_slew_rate] 
+                      [solar_kVAR_slew_rate] 
+                      [power_priority_flag] 
+                      [reserved_bool_1] 
+                      [reserved_bool_2] 
+                      [reserved_bool_3] 
+                      [reserved_bool_4] 
+                      [reserved_bool_5] 
+                      [reserved_bool_6] 
+                      [reserved_bool_7] 
+                      [reserved_bool_8] 
+                      [reserved_bool_9] 
+                      [reserved_bool_10] 
+                      [reserved_bool_11] 
+                      [reserved_bool_12] 
+                      [reserved_bool_13] 
+                      [reserved_bool_14] 
+                      [reserved_bool_15] 
+                      [reserved_bool_16] 
+                      [reserved_float_1] 
+                      [reserved_float_2] 
+                      [reserved_float_3] 
+                      [reserved_float_4] 
+                      [reserved_float_5] 
+                      [reserved_float_6] 
+                      [reserved_float_7] 
+                      [reserved_float_8] 
+Uri: [/features/summary] 
+    Name -> val [Features Summary] 
+                      [present_threshold_charge_2] 
+                      [present_threshold_charge_1] 
+                      [present_threshold_dischg_1] 
+                      [present_threshold_dischg_2] 
+                      [price] 
+                      [features_kW_mode_status] 
+                      [features_kVAR_mode_status] 
+                      [curtailment_enable_flag] 
+                      [curtailment_target] 
+                      [curtailment_status_flag] 
+                      [peak_power_limit_status_flag] 
+                      [pfr_status_flag] 
+                      [pfr_actual_hz] 
+                      [avr_setpoint_voltage] 
+Uri: [/features/active_power] 
+    Name -> val [Active Power Management] 
+                      [local_features_kW_mode_cmd] 
+                      [grid_target_kW_cmd] 
+                      [local_ess_charge_control_target_soc] 
+                      [local_export_target_kW_cmd] 
+                      [export_target_max_soc] 
+                      [export_target_min_soc] 
+                      [local_manual_solar_kW_cmd] 
+                      [local_manual_ess_kW_cmd] 
+                      [features_kW_mode_status] 
+                      [curtailment_status_flag] 
+                      [peak_power_limit_status_flag] 
+                      [grid_target_mode_enable_flag] 
+                      [target_soc_mode_enable_flag] 
+                      [export_target_mode_enable_flag] 
+                      [manual_mode_enable_flag] 
+                      [ess_charge_support_enable_flag] 
+                      [remote_features_kW_mode_cmd] 
+                      [remote_ess_charge_control_target_soc] 
+                      [remote_export_target_kW_cmd] 
+                      [remote_manual_solar_kW_cmd] 
+                      [remote_manual_ess_kW_cmd] 
+                      [present_features_kW_mode_cmd] 
+                      [present_ess_charge_control_target_soc] 
+                      [present_export_target_kW_cmd] 
+                      [present_manual_solar_kW_cmd] 
+                      [present_manual_ess_kW_cmd] 
+                      [site_kW_load] 
+                      [site_kW_demand] 
+                      [ess_kW_cmd] 
+                      [gen_kW_cmd] 
+                      [solar_kW_cmd] 
+                      [feeder_kW_cmd] 
+                      [max_potential_ess_kW] 
+                      [min_potential_ess_kW] 
+                      [max_potential_gen_kW] 
+                      [min_potential_gen_kW] 
+                      [max_potential_solar_kW] 
+                      [min_potential_solar_kW] 
+                      [max_potential_feeder_kW] 
+                      [min_potential_feeder_kW] 
+                      [ess_actual_kW] 
+                      [gen_actual_kW] 
+                      [solar_actual_kW] 
+                      [feeder_actual_kW] 
+Uri: [/features/reactive_power] 
+    Name -> val [Reactive Power Management] 
+                      [local_features_kVAR_mode_cmd] 
+                      [local_active_voltage_cmd] 
+                      [local_reactive_setpoint_kVAR_cmd] 
+                      [local_power_factor_cmd] 
+                      [features_kVAR_mode_status] 
+                      [active_voltage_status_flag] 
+                      [active_voltage_actual_volts] 
+                      [remote_features_kVAR_mode_cmd] 
+                      [remote_active_voltage_cmd] 
+                      [remote_reactive_setpoint_kVAR_cmd] 
+                      [remote_power_factor_cmd] 
+                      [present_features_kVAR_mode_cmd] 
+                      [present_active_voltage_cmd] 
+                      [present_reactive_setpoint_kVAR_cmd] 
+                      [present_power_factor_cmd] 
+                      [site_kVAR_demand] 
+                      [ess_kVAR_cmd] 
+                      [gen_kVAR_cmd] 
+                      [solar_kVAR_cmd] 
+                      [potential_ess_kVAR] 
+                      [potential_gen_kVAR] 
+                      [potential_solar_kVAR] 
+                      [ess_actual_kVAR] 
+                      [gen_actual_kVAR] 
+                      [solar_actual_kVAR] 
+                      [feeder_actual_kVAR] 
+Uri: [/features/charge_control] 
+    Name -> val [Charge Control] 
+                      [ess_charge_control_enable_flag] 
+                      [ess_charge_control_solar_charge_only_flag] 
+                      [ess_charge_control_solar_dischg_priority_flag] 
+                      [ess_charge_control_kW_limit] 
+                      [soc_avg_running] 
+                      [ess_charge_control_kW_request] 
+                      [_ess_charge_control_kW_command] 
+                      [ess_charge_control_feeder_enable_flag] 
+Uri: [/features/frequency] 
+    Name -> val [Frequency Response] 
+                      [frequency_droop_target] 
+                      [frequency_droop_enable_flag] 
+                      [frequency_droop_enable_feedback_flag] 
+                      [frequency_droop_status_flag] 
+                      [pfr_enable_flag] 
+                      [pfr_status_flag] 
+                      [pfr_actual_hz] 
+                      [_pfr_power] 
+                      [pfr_offset_hz] 
+                      [avr_setpoint_voltage] 
+Uri: [/metrics/misc] 
+                      [heartbeat] 
+                      [heartbeat_feedback] 
