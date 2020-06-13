@@ -1,6 +1,6 @@
 {
     "fileInfo": {
-        "sourceFileName": "dnp3_outstation.xlsx",
+        "sourceFileName": "dnp3_master.xlsx",
         "sourceFileCreated": "2020-01-02T21:16:38.000Z",
         "sourceFileLastModified": "2020-05-05T16:29:07.000Z",
         "sourceFileCreatedBy": "Microsoft Office User",
@@ -10,20 +10,70 @@
         "outputFileCreated": "2020-05-05T16:29:13.344Z"
     },
     "system": {
-        "name":"dnp3_test_master",
+        "name":"demo_0612_ercot_master",
         "protocol": "DNP3",
         "version": 1,
-        "id": "dnp3_master",
-        "ip_address2": "192.168.1.45",
-        "ip_address": "127.0.0.1",
-        "port": 20001,
-        "port2": 12502,
+        "id": "ercot_master",
+        "ip_address2": "192.168.1.50",
+        "ip_address": "192.168.1.101",
+        "port": 20021,
         "local_address": 1,
-	"remote_address": 10,
-        "frequency":5000
+	    "remote_address": 10
     },
     "objects": {
-        "binary": [
+        "analog": [
+            {
+                "id": "sel_735_active_power",
+                "offset": 0,
+                "name": "Sel 735 Active Power",
+                "unit": "MW",
+		        "variation":"Group30Var5",
+                "xxclazz":1,
+		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
+                "xxsigned": true
+
+
+            },
+            {
+                "id": "sel_735_reactive_power",
+                "offset": 1,
+                "name": "Sel 735 Reactive Power",
+                "unit": "MW",
+		        "variation":"Group30Var5",
+                "xxclazz":1,
+		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
+                "xxsigned": true
+
+            },
+            {
+                "id": "ess_active_power",
+                "offset": 2,
+                "name": "Ess Active Power",
+                "unit": "MW",
+		        "variation":"Group30Var5",
+                "xxclazz":1,
+		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
+                "xxsigned": true
+
+            },
+            {
+                "id": "ess_reactive_power",
+                "offset": 3,
+                "name": "Ess Reactive Power",
+                "unit": "MW",
+		        "variation":"Group30Var5",
+                "xxclazz":1,
+		        "evariation":"Group32Var7",
+                "uri":"/metrics/misc",
+                "xxsigned": true
+
+            }
+        ],
+
+        "xxbinary": [
             {
                 "id": "voltage_regulator",
                 "offset": 0,
@@ -50,72 +100,20 @@
                 "name": "Gen Virtual Breaker Status"
             }
         ],
-        "analog": [
-            {
-                "id": "line_flows_mw",
-                "offset": 0,
-                "name": "Line flows MW",
-                "unit": "MW",
-		"variation":"Group30Var5",
-                "signed": true
-            },
-            {
-                "id": "line_flows_mv",
-                "offset": 1,
-                "name": "Line flows MV",
-                "unit": "MW",
-                "signed": true
-            },
-            {
-                "id": "voltage",
-                "offset": 2,
-                "name": "Voltage",
-                "unit": "kV",
-		"variation":"Group30Var5",
-                "signed": true
-            },
-            {
-                "id": "plant_auxiliary_load_mw",
-                "offset": 3,
-                "name": "Plant Auxiliary Load MW",
-                "unit": "MW",
-                "signed": true
-            },
-            {
-                "id": "plant_auxiliary_load_mv",
-                "offset": 4,
-                "name": "Plant Auxiliary Load MV",
-                "unit": "MV",
-                "signed": true
-            },
-            {
-                "id": "plant_status",
-                "offset": 5,
-                "name": "Plant Status",
-		        "bit_field": true,
-                "bit_strings": [
-                    "Self-checking",
-                    "Microgrid power supply starting",
-                    "Grid power supply starting",
-                    "Microgrid power supply running",
-                    "Grid power supply running",
-                    "Fault",
-                    "Stopping",
-                    "Stop",
-                    "Emergency Stop"
-                ]
-            },
-            {
-                "id": "site_voltageSP",
-                "offset": 20,
-                "name": "site_voltageSP",
-                "unit": "kV",
-		        "xvariation":"Group30Var5",
-                "signed": true
-            }
-
-        ],
+        
         "AnOPInt32": [
+            {
+                "id": "TestOPtoSite",
+                "offset": 0,
+                "name": "Test OUTPut To Site",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/testing/testop"
+
+            }
+        ],
+
+        "xxAnOPInt32": [
             {
                 "id": "testOP_32_1",
                 "offset": 0,
@@ -138,11 +136,11 @@
                 "name": "voltageSP",
                 "unit": "MW",
                 "signed": true,
-                "uri": "/home/mystuff/uri",
-                "linkback":"site_voltageSP"
+                "uri": "/site",
+        		"linkback":"site_voltageSP"
             }        
         ],
-        "AnOPInt16": [
+        "xxAnOPInt16": [
             {
                 "id": "testOP_16_8",
                 "offset": 8,
@@ -153,7 +151,7 @@
 
             }
         ],
-        "CROB": [
+        "xxCROB": [
             {
                 "id": "testCROB_4",
                 "offset": 4,

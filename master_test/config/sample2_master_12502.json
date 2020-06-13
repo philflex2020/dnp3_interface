@@ -16,8 +16,8 @@
         "id": "dnp3_master",
         "ip_address2": "192.168.1.45",
         "ip_address": "127.0.0.1",
-        "port": 20001,
-        "port2": 12502,
+        "port2": 20001,
+        "port": 12502,
         "local_address": 1,
 	"remote_address": 10,
         "frequency":5000

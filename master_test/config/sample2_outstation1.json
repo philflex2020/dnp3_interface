@@ -10,17 +10,15 @@
         "outputFileCreated": "2020-05-05T16:29:13.344Z"
     },
     "system": {
-        "name":"dnp3_test_master",
+        "name":"dnp3_test_outstation",
         "protocol": "DNP3",
         "version": 1,
-        "id": "dnp3_master",
-        "ip_address2": "192.168.1.45",
-        "ip_address": "127.0.0.1",
-        "port": 20001,
-        "port2": 12502,
-        "local_address": 1,
-	"remote_address": 10,
-        "frequency":5000
+        "id": "dnp3_outstation1",
+        "ip_address2": "192.168.1.50",
+        "ip_address": "0.0.0.0",
+        "port": 20011,
+        "local_address": 11,
+	"remote_address": 1
     },
     "objects": {
         "binary": [
@@ -58,6 +56,7 @@
                 "unit": "MW",
 		"variation":"Group30Var5",
                 "signed": true
+
             },
             {
                 "id": "line_flows_mv",
@@ -92,7 +91,7 @@
                 "id": "plant_status",
                 "offset": 5,
                 "name": "Plant Status",
-		        "bit_field": true,
+		"bit_field": true,
                 "bit_strings": [
                     "Self-checking",
                     "Microgrid power supply starting",
@@ -111,9 +110,10 @@
                 "name": "site_voltageSP",
                 "unit": "kV",
 		        "xvariation":"Group30Var5",
-                "signed": true
+                "signed": true,
+                "linkback":"voltageSP"
             }
-
+           
         ],
         "AnOPInt32": [
             {
@@ -138,8 +138,8 @@
                 "name": "voltageSP",
                 "unit": "MW",
                 "signed": true,
-                "uri": "/home/mystuff/uri",
-                "linkback":"site_voltageSP"
+                "uri": "/site",
+		"linkback":"site_voltageSP"
             }        
         ],
         "AnOPInt16": [
