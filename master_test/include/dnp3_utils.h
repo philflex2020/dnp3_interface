@@ -231,7 +231,8 @@ typedef std::vector<DbVar_t*> dbvec;
 //this structure is still good. the uri points to a map
 // just like john did
 // but it can be a real map we dont need to share them
-typedef std::map<std::string, dbvar_map> dburi_map;
+// so  when we add a var we include the uri
+typedef std::map<std::string, dbvar_map*> dburi_map;
 
 
 // used in parseBody the int is a print flag to include "value"
@@ -897,6 +898,25 @@ typedef struct sysCfg_t {
             }
             uriMap[uri].push_back(db);
         }
+        // new way of doing this
+        //typedef std::map<std::string, dbvar_map*> dburi_map;
+
+        void addDbUri(const char *uri, DbVar*db)
+        {
+            const char *mapUri;
+            // this is a pointer to the uri 
+            // if there is not one in the map then create a new one and then add it
+            //duri_map::iterator it_uris;
+            if(dburiMap.find(uri) == dburiMap.end())
+            {
+                mapUri = strdup(uri);
+                uri = mapUri;
+                dburiMap[uri] = new dbVar_Map();
+            }
+            dbvar_map* dbm = dburiMap[uri]
+
+            dbm[db.name] = db;
+        }
 
         void addUri(cJSON* uri, DbVar*db)
         {
@@ -940,9 +960,7 @@ typedef struct sysCfg_t {
         dbix_map dbMapIxs[Type_of_Var::NumTypes];
         duri_map uriMap;
         bits_map bitsMap;
-        dburi_map setMap;
-        dburi_map getMap;
-        dburi_map pubMap;
+        dburi_map dburiMap;
 
 
         int numObjs[Type_of_Var::NumTypes];
