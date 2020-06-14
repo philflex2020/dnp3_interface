@@ -206,17 +206,32 @@ typedef struct DbVar_t {
 
 } DbVar;
 
-// new thining 
- // we'll have a map of uris each with a pointer to a map of variables
- //
 
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
 typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
 typedef std::vector<DbVar_t*> dbvec;
 
-
-typedef std::map<std::string, dbvar_map*> dburi_map;
+// new thinking 
+// we'll have a map of uris each with a pointer to a map of variables
+// we'll have one of these for pubs , gets , and sets
+// how do we group them together
+// each varuable can have a uri or a default one establised for the component
+// "compname" :{
+//    "uri":" <some uri>",
+//    "varibles":[
+      // "varname":{.....},
+      // "varname":{.....}
+//    ]
+// }
+// 
+// not going to do it this way
+// the uri is fixed for a var
+// we can add _get or _set to the uri for special uses.
+//this structure is still good. the uri points to a map
+// just like john did
+// but it can be a real map we dont need to share them
+typedef std::map<std::string, dbvar_map> dburi_map;
 
 
 // used in parseBody the int is a print flag to include "value"
@@ -925,6 +940,10 @@ typedef struct sysCfg_t {
         dbix_map dbMapIxs[Type_of_Var::NumTypes];
         duri_map uriMap;
         bits_map bitsMap;
+        dburi_map setMap;
+        dburi_map getMap;
+        dburi_map pubMap;
+
 
         int numObjs[Type_of_Var::NumTypes];
         bool useReadb[Type_of_Var::NumTypes]; // set true if writes to this type should be diverted to readb if setup
