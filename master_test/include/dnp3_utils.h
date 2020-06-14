@@ -206,11 +206,17 @@ typedef struct DbVar_t {
 
 } DbVar;
 
+// new thining 
+ // we'll have a map of uris each with a pointer to a map of variables
+ //
 
 typedef std::map<std::string, DbVar_t*> dbvar_map;
 typedef std::map<int, DbVar_t*>dbix_map;
 typedef std::map<const char*,std::vector<DbVar_t*>, char_dcmp>duri_map;
 typedef std::vector<DbVar_t*> dbvec;
+
+
+typedef std::map<std::string, dbvar_map*> dburi_map;
 
 
 // used in parseBody the int is a print flag to include "value"
