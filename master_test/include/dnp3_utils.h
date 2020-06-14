@@ -910,7 +910,7 @@ typedef struct sysCfg_t {
             {
                 mapUri = strdup(uri);
                 uri = mapUri;
-                dburiMap[uri] = new dbVar_Map();
+                dburiMap[uri] = new dbvar_map();
             }
             dbvar_map* dbm = dburiMap[uri];
 
