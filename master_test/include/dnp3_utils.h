@@ -912,7 +912,7 @@ typedef struct sysCfg_t {
                 uri = mapUri;
                 dburiMap[uri] = new dbVar_Map();
             }
-            dbvar_map* dbm = dburiMap[uri]
+            dbvar_map* dbm = dburiMap[uri];
 
             dbm[db.name] = db;
         }
