@@ -232,7 +232,7 @@ typedef std::vector<DbVar_t*> dbvec;
 // just like john did
 // but it can be a real map we dont need to share them
 // so  when we add a var we include the uri
-typedef std::map<std::string, dbvar_map*> dburi_map;
+typedef std::map<std::string, dbvar_map> dburi_map;
 
 
 // used in parseBody the int is a print flag to include "value"
@@ -899,7 +899,7 @@ typedef struct sysCfg_t {
             uriMap[uri].push_back(db);
         }
         // new way of doing this
-        //typedef std::map<std::string, dbvar_map*> dburi_map;
+        //typedef std::map<std::string, dbvar_map> dburi_map;
         void addDbUri(const char *uri, DbVar*db)
         {
             const char *mapUri;
@@ -910,9 +910,9 @@ typedef struct sysCfg_t {
             {
                 mapUri = strdup(uri);
                 uri = mapUri;
-                dburiMap[uri] = new dbvar_map();
+                dburiMap[uri] = new map<std:string,dbvar_map>();
             }
-            dbvar_map* dbm = dburiMap[uri];
+            dbvar_map dbm = dburiMap[uri];
 
             dbm[db->name] = db;
         }
