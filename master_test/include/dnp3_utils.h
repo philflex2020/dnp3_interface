@@ -900,7 +900,6 @@ typedef struct sysCfg_t {
         }
         // new way of doing this
         //typedef std::map<std::string, dbvar_map*> dburi_map;
-
         void addDbUri(const char *uri, DbVar*db)
         {
             const char *mapUri;
