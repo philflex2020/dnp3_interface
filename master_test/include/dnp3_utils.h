@@ -908,9 +908,10 @@ typedef struct sysCfg_t {
             //duri_map::iterator it_uris;
             if(dburiMap.find(uri) == dburiMap.end())
             {
+                dvar_map dvar;
                 mapUri = strdup(uri);
                 uri = mapUri;
-                dburiMap[uri] = std::move(new std::map<std::string,dbvar_map>());
+                dburiMap[uri] = std::move(dvar);
             }
             dbvar_map dbm = dburiMap[uri];
 
