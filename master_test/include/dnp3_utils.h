@@ -914,7 +914,7 @@ typedef struct sysCfg_t {
             }
             dbvar_map* dbm = dburiMap[uri];
 
-            dbm[db.name] = db;
+            dbm[db->name] = db;
         }
 
         void addUri(cJSON* uri, DbVar*db)
