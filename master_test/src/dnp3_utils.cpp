@@ -1517,7 +1517,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name
                                                         , name
                                                         , static_cast<int32_t>(StringToControlCode(cjvalue->valuestring))
                                                         );
-        sys->setDbVar(name, cjvalue);
+        sys->setDbVar(curi, name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
     else if (
@@ -1539,7 +1539,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name
             flag |= PRINT_PARENT;
         }
 
-        sys->setDbVar(name, cjvalue);
+        sys->setDbVar(curi, name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
     else
