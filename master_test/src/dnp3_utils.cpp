@@ -732,7 +732,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
     {
         cJSON *id, *offset, *uri, *bf, *bits, *variation;
         cJSON *evariation, *readback, *linkback, *clazz, *rsize, *sign;
-        cJSON *scale;
+        cJSON *scale, *cjidx;
 
         if(obj == NULL)
         {
@@ -742,6 +742,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 
         // note that id translates to name
         id         = cJSON_GetObjectItem(obj, "id");
+        cjidx      = cJSON_GetObjectItem(obj, "idx");
         offset     = cJSON_GetObjectItem(obj, "offset");
         rsize      = cJSON_GetObjectItem(obj, "size");
         variation  = cJSON_GetObjectItem(obj, "variation");
@@ -793,10 +794,13 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         //   1.. parse config file using the uri's.
         //   2.. get the uri/var name search  working for FIMS querues
         //   3.. get the int, DbVar* search / map  running to find vars for outstation builder.
-        //   4.. get themapping working for the incoming commands.
+        //   4.. get the  mapping working for the incoming commands.
         //    
         // TODO No central map any more.
         // 
+
+        // the cjidx fielcs will ovride the auto idx.
+
         DbVar* db = sys->newDbVar(id->valuestring, myidx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
 
         if(evariation &&(db != NULL))
@@ -830,16 +834,25 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         }
 
         FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
+        // keep a count of the objects.
         sys->numObjs[idx]++; 
+
+        // set up uri
         char* nuri = sys->getDefUri(who);
         if (uri && uri->valuestring) 
         {
             nuri = uri->valuestring;
         }
+        if(cjidx)
+        {
+            db->idx = cjidx->valueint;
+        }
+        sys->setDbIdxMap(db);
 
+        // deprecated
         sys->addUri(nuri, db);
 
-        // new way under test
+        // new way 
         sys->addDbUri(nuri, db);
 
         // Deal with linkback option ( which replaces readback function)
@@ -883,35 +896,6 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
                     }
                 }
             }
-        }
-        // to be depricated
-        if(readback)
-        {
-            FPS_DEBUG_PRINT(" config adding readback [%s] for [%s] id [%d]\n", readback->valuestring,id->valuestring, offset->valueint);
-            if (strcmp(readback->valuestring, "analog")== 0)
-            {
-                char tmp[1024];
-                snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
-                // thats it tie it down NOW
-                db->readb = sys->newDbVar(tmp, Type_Analog, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
-                // TODO sort out variation
-                // AnIn16 -> Group30Var2
-                // AnIn32 -> Group30Var2
-                // AnF32 -> Group30Var5
-                db->readb->parent = db;  // link it back
-                if(db->type == AnIn16) db->readb->variation = Group30Var2;
-                if(db->type == AnF32) db->readb->variation = Group30Var5;
-
-            }
-            else if (strcmp(readback->valuestring, "binary")== 0)
-            {
-                char tmp[1024];
-                snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
-                // thats it tie it down NOW
-                db->readb = sys->newDbVar(tmp, Type_Binary, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
-                db->readb->parent = db;  // link it back
-            }
-
         }
         //if we see a readback, decode the readback type and add that to the status vars
         // if readbidx == analog then readbtype =  Type_AnalogOS

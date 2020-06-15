@@ -321,16 +321,10 @@ typedef struct sysCfg_t {
             //if (dbMap.find(name) == dbMap.end()){
                 db = new DbVar(name, type, offset, uri, variation);
                 dbMap[name] = db;
-                db->idx = static_cast<int32_t>(dbVec[type].size());
+                //
+                //db->idx = static_cast<int32_t>(dbVec[type].size());
+                db->idx = getDbIdx(type);
                 dbVec[type].push_back(db);
-                if(dbMapIxs[type].find(offset) == dbMapIxs[type].end())
-                {   
-                    dbMapIxs[type][offset] = db;
-                }
-                else
-                {
-                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name.c_str());
-                }
             //}
             //else
             //{
@@ -338,6 +332,43 @@ typedef struct sysCfg_t {
             //}
             return db;
         };
+
+        void setDbIdxMap(DbVar* db)
+        {
+                if(dbMapIxs[db->type].find(db->idx) == dbMapIxs[type].end())
+                {   
+                    dbMapIxs[type][db->idx] = db;
+                }
+                else
+                {
+                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name.c_str());
+                }
+        } 
+
+        int getDbIdx(int type)
+        {
+            int idx = -1;
+            switch(type)
+            {
+                case Type_Analog:
+                case Type_Binary:
+                case Type_Crob:
+                    return static_cast<int32_t>(dbVec[type].size());
+                    break;
+
+                case AnF32:
+                case AnIn16:
+                case AnIn32:
+                    idx = static_cast<int32_t>(dbVec[AnF32].size());
+                    idx += static_cast<int32_t>(dbVec[AnIn16].size());
+                    idx += static_cast<int32_t>(dbVec[AnIn32].size());
+                    return idx;
+                    break;
+                
+            }
+            //db->idx = static_cast<int32_t>(dbVec[type].size());
+            return -1;
+        }
 
         DbVar* getDbVar(const char *uri, const char* name)
         {
@@ -602,7 +633,7 @@ typedef struct sysCfg_t {
             return 0;
         };
 
-        int getDbIdx(int dbtype, const char * uri, const char* name)
+        int getDbIdx(int dbtype, const char* uri, const char* name)
         {
             DbVar* db = getDbVar(uri, name);
             if ((db != NULL) && (db->type == dbtype))
@@ -610,6 +641,7 @@ typedef struct sysCfg_t {
             return -1;
         };
 
+// TODO deprecated
         DbVar* getDbVarId(int dbtype, int idx)
         {
             if(idx < static_cast<int32_t>(dbVec[dbtype].size()))
