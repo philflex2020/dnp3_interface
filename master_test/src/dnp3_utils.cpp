@@ -1008,7 +1008,7 @@ bool parse_variables(cJSON* object, sysCfg* sys, int who)
 int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs)
 {
     int num = sys->getSubs(NULL, 0, who);
-    subs= (const char **) malloc((num+3) * sizeof(char *));
+    subs = (const char **) malloc((num+3) * sizeof(char *));
     if(subs == NULL)
     {
         FPS_ERROR_PRINT("Failed to creae subs array.\n");
@@ -1077,7 +1077,8 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         cjit = itypeValues->child;
         if(sys->debug == 1)
             FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
-
+        //char* curi = strdup(msg->uri);
+        //char* mcuri = NULL;
         while(cjit != NULL)
         {
             int flag = 0;
@@ -1086,7 +1087,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
                                         , cjit->string
                                         , (void *)cjit->child
                                         );
-            if (!checkWho(sys, cjit->string, who))
+            if (!checkWho(sys, msg->uri, cjit->string, who))
             {
                 if(sys->debug == 1)
                     FPS_DEBUG_PRINT("variable [%s] NOT set ON %d\n"
