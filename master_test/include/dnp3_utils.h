@@ -780,20 +780,14 @@ typedef struct sysCfg_t {
             dbvar_map::iterator itd;
             for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
             {
-                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first.c_str(), static_cast<int32_t>(it->second->dbmap.size()));
+                FPS_ERROR_PRINT(" .. uri [%s] num vars %d\n", it->first.c_str(), static_cast<int32_t>(it->second->dbmap.size()));
 
                 // dbvar_map
                 auto dvar = it->second;
                 auto dbm = dvar->dbmap;
                 for (itd = dbm.begin(); itd != dbm.end(); ++itd)
                 {
-                    FPS_ERROR_PRINT("             var [%s] \n", itd->first.c_str());
-                    //DbVar* db = it->second[i];
-                    // FPS_ERROR_PRINT("                 [%s] %d %d\n"
-                    //             , db->name.c_str() 
-                    //             , db->type
-                    //             , db->offset
-                    //             );
+                    FPS_ERROR_PRINT(" ..                            [%s] \n", itd->first.c_str());
                 }
             }
             FPS_ERROR_PRINT(" %s<=== New uris \n\n", __FUNCTION__);
