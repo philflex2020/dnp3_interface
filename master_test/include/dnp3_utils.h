@@ -602,9 +602,9 @@ typedef struct sysCfg_t {
             return 0;
         };
 
-        int getDbIdx(int dbtype, const char* name)
+        int getDbIdx(int dbtype, const char * uri, const char* name)
         {
-            DbVar* db = getDbVar(name);
+            DbVar* db = getDbVar(uri, name);
             if ((db != NULL) && (db->type == dbtype))
                 return db->idx;
             return -1;
