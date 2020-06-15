@@ -985,7 +985,7 @@ typedef struct sysCfg_t {
             }
             //mymap.insert ( std::pair<char,int>('a',100) );
             varList_t *vl = dburiMap[mapUri];
-            vl->addDB(db);
+            vl->addDb(db);
 
             //dbvar_map dbm = dburiMap[mapUri]->dbmap;
             //dbm.insert(std::pair<std::string,DbVar*>(db->name, db));
