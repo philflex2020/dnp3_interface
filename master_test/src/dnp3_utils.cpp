@@ -1175,7 +1175,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 
     if((strstr(msg->uri, "/reply/") != NULL) && (strstr(msg->uri, sys->id) != NULL))
     {
-        if(sys->debug == 1)
+        if(1 || sys->debug == 1)
             FPS_ERROR_PRINT("fims message msg->uri [%s] reply uri [%s] ACCEPTED \n", msg->uri, sys->id);
         reffrags = msg->nfrags;
         isReply = true;
