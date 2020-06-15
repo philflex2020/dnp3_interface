@@ -1108,7 +1108,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name
 //int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue, int flag);
 // int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag);
 //bool checkWho(sysCfg*sys, const char *name, int who);
-bool checkWho(sysCfg*sys, const char* uri, const char *name, int who)
+bool checkWho(sysCfg*sys, const char* uri, const char *name, int who);
 bool checkWho(sysCfg*sys, DbVar *db, int who);
 int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs);
 
