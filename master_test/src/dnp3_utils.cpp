@@ -775,6 +775,28 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
             } 
         }
 
+        // rework
+        // DbVars are sorted by uri's now.
+        // we can have the same DbVar name for different uris.
+        // incoming messages from master only know type (AnIn16,AnIn32,AF32,CROB) and offset.
+        // for these items offset is still set by the config file.
+        // The return path from outstation to master still has type an index. The system has changed to use the offset from the conig file here too.
+        // so we can no longer use the vector position as an index.
+        // items are added from the config file against a registered uri ot the default one.
+        // pubs, gets and sets from FIMS ues a combination of URI + var name to find vars.
+        // data incoming from master to outstation will use type and offset to find the variable.
+        // each type will have a map <int,DbVar *> to search
+        // Data base for the outstation vars (analog and binary) will no longer use the vector size but max offset as db size ????
+        // the <int , dBVar *> map can also  be used for these vars
+        //
+        // Get this going as follows 
+        //   1.. parse config file using the uri's.
+        //   2.. get the uri/var name search  working for FIMS querues
+        //   3.. get the int, DbVar* search / map  running to find vars for outstation builder.
+        //   4.. get themapping working for the incoming commands.
+        //    
+        // TODO No central map any more.
+        // 
         DbVar* db = sys->newDbVar(id->valuestring, myidx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
 
         if(evariation &&(db != NULL))

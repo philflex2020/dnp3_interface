@@ -737,6 +737,34 @@ typedef struct sysCfg_t {
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
         }
+
+        void showNewUris()
+        {
+            FPS_ERROR_PRINT(" %s New uris===> \n\n", __FUNCTION__);
+
+            dburi_map::iterator it;
+            dbvar_map::iterator itd;
+            for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
+            {
+                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
+                for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
+                {
+                    dbvar_map dvar = it->second[i];
+                    for (itd = dvar.begin(); itd != dvar.end(); ++itd)
+                    {
+                        FPS_ERROR_PRINT(" %s var [%s] \n", __FUNCTION__, itd->first);
+                        //DbVar* db = it->second[i];
+                        // FPS_ERROR_PRINT("                 [%s] %d %d\n"
+                        //             , db->name.c_str() 
+                        //             , db->type
+                        //             , db->offset
+                        //             );
+                    }
+                }
+            }
+            FPS_ERROR_PRINT(" %s<=== New uris \n\n", __FUNCTION__);
+        }
+
         // make sure the uri is in the list
         // what about default / base uri 
         //
