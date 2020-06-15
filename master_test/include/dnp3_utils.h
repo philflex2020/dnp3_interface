@@ -976,9 +976,10 @@ typedef struct sysCfg_t {
 
                 FPS_ERROR_PRINT("     %s  ==> FOUND varlist [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
             }
-            
+            //mymap.insert ( std::pair<char,int>('a',100) );
             dbvar_map dbm = dburiMap[mapUri]->dbmap;
-            dbm[db->name] = db;
+            dbm.insert(std::pair<string,DbVar*>(db->name, db));
+            
             //if(debug ==1)
                 FPS_ERROR_PRINT(" %s  ==> added var [%s]  dbm size %d \n", __FUNCTION__, db->name.c_str(), (int) dbm.size());
 
