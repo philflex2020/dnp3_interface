@@ -349,7 +349,7 @@ typedef struct sysCfg_t {
                  // dbvar_map
                 auto dvar = it->second;
                 auto dbm = dvar->dbmap;
-                duri_map::iterator itd = dbm.find(sname);
+                dbvar_map::iterator itd = dbm.find(sname);
             
                 if (itd != dbm.end() )
                 {
