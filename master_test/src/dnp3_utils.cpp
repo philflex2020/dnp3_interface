@@ -809,7 +809,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 
         FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         sys->numObjs[idx]++; 
-        char* nuri = getDefUri(who);
+        char* nuri = sys->getDefUri(who);
         if (uri && uri->valuestring) 
         {
             nuri = uri->valuestring;
