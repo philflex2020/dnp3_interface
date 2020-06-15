@@ -959,25 +959,26 @@ typedef struct sysCfg_t {
 
         void addDbUri(const char *uri, DbVar*db)
         {
-            const char *mapUri;
+            std::string mapUri = uri;
+
             // this is a pointer to the uri 
             // if there is not one in the map then create a new one and then add it
             //duri_map::iterator it_uris;
             if(dburiMap.find(uri) == dburiMap.end())
             {
+
                 FPS_ERROR_PRINT(" %s  ==> ADDED uri [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
 
-                dbvar_map dvar;
-                mapUri = strdup(uri);
-                uri = mapUri;
-                dburiMap[mapUri] = new varList(mapUri); 
+                //dbvar_map dvar;
+                dburiMap[mapUri] = new varList(uri); 
             }
             else
             {
+
                 FPS_ERROR_PRINT(" %s  ==> FOUND uri [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
             }
             
-            dbvar_map dbm = dburiMap[uri]->dbmap;
+            dbvar_map dbm = dburiMap[mapUri]->dbmap;
             dbm[db->name] = db;
             //if(debug ==1)
                 FPS_ERROR_PRINT(" %s  ==> added var [%s]  dbm size %d \n", __FUNCTION__, db->name.c_str(), (int) dbm.size());
