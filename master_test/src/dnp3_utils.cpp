@@ -1202,6 +1202,14 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 
     if(isReply == false)
     {
+        char* curi = strdup(msg->uri);
+        char* mcuri = strstr(curi, name);
+        if(mcuri != NULL)
+        {
+            // force a termination at the '/'
+            mcuri[-1] = 0;
+        }
+
         if (uriOK == false)
         {
             FPS_ERROR_PRINT("fims message msg->uri [%s] frag [%s] Not ACCEPTED \n", msg->uri, sys->id);
@@ -1210,10 +1218,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         if((int)msg->nfrags > reffrags)
         {
             dburi = msg->pfrags[reffrags];
-            db = sys->getDbVar(dburi);
+            db = sys->getDbVar(curi, dburi);
             if(db == NULL)
             {        
                 FPS_ERROR_PRINT("fims message msg->uri [%s] name  [%s] Not Found  sysid [%s] \n", msg->uri, dburi, sys->id);
+                free((void*)curi);
                 return body_JSON;
             }
             single = 1;
@@ -1229,11 +1238,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         {
             
             FPS_ERROR_PRINT("fims message frag %d [%s] not for this %d [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
+            free((void*)curi);
             return body_JSON;
         }   
         if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
         {
             FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
+            free((void*)curi);
             return body_JSON;
         }
     }
@@ -1260,9 +1271,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         // but only the ones associated with the uri
         else
         {
-            sys->addVarsToVec(dbs, msg->uri);
+            sys->addVarsToVec(dbs, curi);
+            free((void*)curi);
             return body_JSON;
         }
+        free((void*)curi);
+
         return body_JSON;
     }
 
