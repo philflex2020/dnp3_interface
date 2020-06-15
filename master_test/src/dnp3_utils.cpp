@@ -731,7 +731,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
     cJSON_ArrayForEach(obj, objs)
     {
         cJSON *id, *offset, *uri, *bf, *bits, *variation;
-        cJSON *evariation, *readback, *linkback, *clazz, *rsize, *sign;
+        cJSON *evariation, *linkback, *clazz, *rsize, *sign;
         cJSON *scale, *cjidx;
 
         if(obj == NULL)
@@ -750,7 +750,6 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         uri        = cJSON_GetObjectItem(obj, "uri");
         bf         = cJSON_GetObjectItem(obj, "bit_field");
         bits       = cJSON_GetObjectItem(obj, "bit_strings");
-        readback   = cJSON_GetObjectItem(obj, "readback");
         linkback   = cJSON_GetObjectItem(obj, "linkback");
         clazz      = cJSON_GetObjectItem(obj, "clazz");
         sign       = cJSON_GetObjectItem(obj, "signed");
