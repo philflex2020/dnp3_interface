@@ -335,13 +335,13 @@ typedef struct sysCfg_t {
 
         void setDbIdxMap(DbVar* db)
         {
-                if(dbMapIxs[db->type].find(db->idx) == dbMapIxs[type].end())
+                if(dbMapIxs[db->type].find(db->idx) == dbMapIxs[db->type].end())
                 {   
-                    dbMapIxs[type][db->idx] = db;
+                    dbMapIxs[db->type][db->idx] = db;
                 }
                 else
                 {
-                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name.c_str());
+                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, db->name.c_str());
                 }
         } 
 
