@@ -1203,12 +1203,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     if(isReply == false)
     {
         char* curi = strdup(msg->uri);
-        char* mcuri = strstr(curi, name);
-        if(mcuri != NULL)
-        {
-            // force a termination at the '/'
-            mcuri[-1] = 0;
-        }
+        char* mcuri = NULL;
 
         if (uriOK == false)
         {
@@ -1218,6 +1213,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         if((int)msg->nfrags > reffrags)
         {
             dburi = msg->pfrags[reffrags];
+            mcuri = strstr(curi, dburi);
+            if(mcuri != NULL)
+            {
+                // force a termination at the '/'
+                mcuri[-1] = 0;
+            }
+
             db = sys->getDbVar(curi, dburi);
             if(db == NULL)
             {        
