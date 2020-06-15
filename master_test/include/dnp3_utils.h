@@ -757,13 +757,19 @@ typedef struct sysCfg_t {
         {
             FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
 
-            duri_map::iterator it;
-            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            dburi_map::iterator it;
+            dbvar_map::iterator itd;
+
+            for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
             {
+                // dbvar_map
+                auto dvar = it->second;
+                auto dbm = dvar->dbmap;
+
                 FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
-                for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
+                for (itd = dbm.begin(); itd != dbm.end(); ++itd)
                 {
-                    DbVar* db = it->second[i];
+                    DbVar* db = itd->second;
                     FPS_ERROR_PRINT("                 [%s] %d %d\n"
                                     , db->name.c_str() 
                                     , db->type
@@ -773,6 +779,7 @@ typedef struct sysCfg_t {
             }
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
         }
+        
 
         //typedef std::map<std::string, varList*> dburi_map;
         //typedef std::map<std::string, DbVar_t*> dbvar_map;
