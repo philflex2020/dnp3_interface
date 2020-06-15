@@ -449,7 +449,7 @@ typedef struct sysCfg_t {
                         }
                         else
                         {
-                            setDb(db->uri, db->linkb, ival);
+                            setDb(db->linkb, ival);
                         }
                     }
                 }
