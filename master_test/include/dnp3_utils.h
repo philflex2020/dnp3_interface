@@ -339,13 +339,22 @@ typedef struct sysCfg_t {
             return db;
         };
 
-        DbVar* getDbVar(const char* name)
+        DbVar* getDbVar(const char *uri, const char* name)
         {
-            if (dbMap.find(name) != dbMap.end() )
-            {   
-                return dbMap[name];
+            dburi_map::iterator it = dburiMap.find(uri);
+            if(it != dburiMap.end())
+            {
+                 // dbvar_map
+                auto dvar = it->second;
+                auto dbm = dvar->dbmap;
+                duri_map::iterator itd = dbm.find(name);
+            
+                if (itd != dbm.end() )
+                {   
+                    return itd->scond;
+                }
+                return NULL;
             }
-            return NULL;
         };
 
         int setDb(DbVar* db, double fval)
@@ -428,7 +437,7 @@ typedef struct sysCfg_t {
                 {
                     if (db->linkb == NULL)
                     {
-                        db->linkb = getDbVar(db->linkback);
+                        db->linkb = getDbVar(d->uri, db->linkback);
                     }
                     if(db->linkb != NULL)
                     { 
@@ -438,7 +447,7 @@ typedef struct sysCfg_t {
                         }
                         else
                         {
-                            setDb(db->linkb, ival);
+                            setDb(db->uri, db->linkb, ival);
                         }
                     }
                 }
@@ -526,14 +535,14 @@ typedef struct sysCfg_t {
             return 0;
         };
 
-        int setDbVar(const char* name, cJSON* cj)
+        int setDbVar(const char* uri, const char* name, cJSON* cj)
         {
-            return setDbVar(getDbVar(name),cj);
+            return setDbVar(getDbVar(uri, name),cj);
         };
 
-        int setDbVar(const char *name, double dval)
+        int setDbVar(const char * uri, const char *name, double dval)
         {
-            DbVar* db = getDbVar(name);
+            DbVar* db = getDbVar(uri, name);
             if(db != NULL)
             {
                 return setDb(db, dval);
@@ -541,9 +550,9 @@ typedef struct sysCfg_t {
             return 0;
         };
 
-        int setDbVar(const char *name, int ival)
+        int setDbVar(const char* uri, const char *name, int ival)
         {
-            DbVar* db = getDbVar(name);
+            DbVar* db = getDbVar(uri, name);
             if(db != NULL)
             {
                 return setDb(db, ival);
@@ -551,6 +560,7 @@ typedef struct sysCfg_t {
             return 0;
         };
 
+//TODO check this
         int setDbVarIx(int dbtype, int idx, double ival)
         {
             DbVar* db = NULL;
@@ -570,7 +580,7 @@ typedef struct sysCfg_t {
 
             return 0;
         };
-
+//TODO check this
         int setDbVarIx(int dbtype, int idx, int ival)
         {
             DbVar* db = NULL;
@@ -586,8 +596,7 @@ typedef struct sysCfg_t {
             else
             {
                 FPS_ERROR_PRINT(" %s Set INT Variable %s index  %d unknown \n", __FUNCTION__, iotypToStr(dbtype), ival);                  
-            }
-            
+            }            
             return 0;
         };
 
@@ -665,6 +674,7 @@ typedef struct sysCfg_t {
             }
         }
 
+// deprecated
         void showDbMap()
         {
             FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
@@ -691,20 +701,20 @@ typedef struct sysCfg_t {
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
         }
 
-        void addVarsToCj(cJSON* cj)
-        {
-            dbvar_map::iterator it;
-            for (it = dbMap.begin() ; it != dbMap.end();++it)
-            {
-                DbVar* db = it->second;
-                addVarToCj(cj, db);
-                FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
-                            , it->first.c_str()
-                            , db->type
-                            , db->offset
-                            );  
-            }
-        }
+        // void addVarsToCj(cJSON* cj)
+        // {
+        //     dbvar_map::iterator it;
+        //     for (it = dbMap.begin() ; it != dbMap.end();++it)
+        //     {
+        //         DbVar* db = it->second;
+        //         addVarToCj(cj, db);
+        //         FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
+        //                     , it->first.c_str()
+        //                     , db->type
+        //                     , db->offset
+        //                     );  
+        //     }
+        // }
 
         // add all the vars referenced by this uri
         void addVarsToVec(std::vector<DbVar*>& dbs, const char* uri)
