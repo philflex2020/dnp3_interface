@@ -439,7 +439,7 @@ typedef struct sysCfg_t {
                 {
                     if (db->linkb == NULL)
                     {
-                        db->linkb = getDbVar(d->uri, db->linkback);
+                        db->linkb = getDbVar(db->uri, db->linkback);
                     }
                     if(db->linkb != NULL)
                     { 
