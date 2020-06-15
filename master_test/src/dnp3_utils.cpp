@@ -1281,8 +1281,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
             free((void*)curi);
             return body_JSON;
         }
-        free((void*)curi);
-
         return body_JSON;
     }
 
