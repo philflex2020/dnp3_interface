@@ -1450,7 +1450,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name
     // msg->uri // just take it up to the name
     char* curi = strdup(msg->uri);
     char* mcuri = strstr(curi, name);
-    if(mcuri) != NULL)
+    if(mcuri != NULL)
     {
         // force a termination at the '/'
         mcuri[-1] = 0;
