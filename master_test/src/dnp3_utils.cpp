@@ -177,9 +177,9 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
     cJSON_Delete(body_object);
 }
 
-DbVar* getDbVar(sysCfg *sysdb, const char *name)
+DbVar* getDbVar(sysCfg *sysdb, const char * uri, const char *name)
 {
-    return sysdb->getDbVar(name);
+    return sysdb->getDbVar(uri, name);
 }
 
 //TODO check remove old version deprecated
@@ -838,7 +838,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         }
 
         sys->addUri(nuri, db);
-        
+
         // new way under test
         sys->addDbUri(nuri, db);
 
