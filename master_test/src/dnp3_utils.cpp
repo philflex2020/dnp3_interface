@@ -762,6 +762,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
             continue;
         }
         // allow 32 bit systems ints
+        // TODO rework this
         int myidx = idx;
         if (rsize != NULL) 
         {
@@ -774,7 +775,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
             } 
         }
 
-        DbVar* db = sys->addDbVar(id->valuestring, myidx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
+        DbVar* db = sys->newDbVar(id->valuestring, myidx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
 
         if(evariation &&(db != NULL))
         {
@@ -800,22 +801,23 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 
         if (bf && bits && (bits->type == cJSON_Array))
         {
-
             //TODO bits need a value use make_pair there too 
             FPS_ERROR_PRINT("*****************Adding bitfields for %s\n", db->name.c_str());
             sys->addBits(db, bits);
 
         }
+
         FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         sys->numObjs[idx]++; 
         if (uri) 
         {
-            sys->addUri(uri, db);
+            uri = getDefUri(who);
         }
-        else
-        {
-            sys->addDefUri(db, who);
-        }
+
+        sys->addUri(uri, db);
+        // new way under test
+        sys->addDbUri(uri, db);
+
         // Deal with linkback option ( which replaces readback function)
         // the master SOEhandler will cause the linkback value to be updated.
         // we may mirror this in the outstation handler too.  
@@ -867,7 +869,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
                 char tmp[1024];
                 snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
                 // thats it tie it down NOW
-                db->readb = sys->addDbVar(tmp, Type_Analog, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+                db->readb = sys->newDbVar(tmp, Type_Analog, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
                 // TODO sort out variation
                 // AnIn16 -> Group30Var2
                 // AnIn32 -> Group30Var2
@@ -882,14 +884,14 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
                 char tmp[1024];
                 snprintf(tmp, sizeof(tmp),"_%s", id->valuestring);
                 // thats it tie it down NOW
-                db->readb = sys->addDbVar(tmp, Type_Binary, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+                db->readb = sys->newDbVar(tmp, Type_Binary, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
                 db->readb->parent = db;  // link it back
             }
 
         }
         //if we see a readback, decode the readback type and add that to the status vars
         // if readbidx == analog then readbtype =  Type_AnalogOS
-        //db = sys->addDbVar(id->valuestring+"_OS", readbtype, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
+        //db = sys->newDbVar(id->valuestring+"_OS", readbtype, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
     }
     return  sys->numObjs[idx]; 
 }

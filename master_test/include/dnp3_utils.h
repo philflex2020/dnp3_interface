@@ -288,11 +288,12 @@ typedef struct sysCfg_t {
     };
 
     public:
-        DbVar* addDbVar(std::string name, int type, int offset, char* uri, char* variation) 
+        // now always creates one. it is added to the uri map
+        DbVar* newDbVar(std::string name, int type, int offset, char* uri, char* variation) 
         {
             DbVar* db = NULL;
-
-            if (dbMap.find(name) == dbMap.end()){
+            // TODO check this 
+            //if (dbMap.find(name) == dbMap.end()){
                 db = new DbVar(name, type, offset, uri, variation);
                 dbMap[name] = db;
                 db->idx = static_cast<int32_t>(dbVec[type].size());
@@ -305,11 +306,11 @@ typedef struct sysCfg_t {
                 {
                     FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, name.c_str());
                 }
-            }
-            else
-            {
-                FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name.c_str());
-            }
+            //}
+            //else
+            //{
+            //    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name.c_str());
+            //}
             return db;
         };
 
@@ -885,19 +886,6 @@ typedef struct sysCfg_t {
             return 0;
         }
 
-        void addUri(const char *uri, DbVar*db)
-        {
-            const char *mapUri;
-            // this is a pointer to the uri 
-            // if there is not one in the map then create a new one and then add it
-            //duri_map::iterator it_uris;
-            if(uriMap.find(uri) == uriMap.end())
-            {
-                mapUri = strdup(uri);
-                uri = mapUri;
-            }
-            uriMap[uri].push_back(db);
-        }
         // new way of doing this
         //typedef std::map<std::string, dbvar_map> dburi_map;
         void addDbUri(const char *uri, DbVar*db)
@@ -918,6 +906,20 @@ typedef struct sysCfg_t {
             dbm[db->name] = db;
         }
 
+        void addUri(const char *uri, DbVar*db)
+        {
+            const char *mapUri;
+            // this is a pointer to the uri 
+            // if there is not one in the map then create a new one and then add it
+            //duri_map::iterator it_uris;
+            if(uriMap.find(uri) == uriMap.end())
+            {
+                mapUri = strdup(uri);
+                uri = mapUri;
+            }
+            uriMap[uri].push_back(db);
+        }
+        
         void addUri(cJSON* uri, DbVar*db)
         {
             if(uri && (uri->valuestring))
@@ -925,26 +927,29 @@ typedef struct sysCfg_t {
                 return addUri(uri->valuestring, db);
             }
         }
-       
-        void addDefUri(DbVar*db, int who)
+
+
+        const char*getDefUri(int who)
         {
-            char tmp[1024];
-            if(who == DNP3_MASTER)
+            if(defUri == NULL)
             {
-                snprintf(tmp, sizeof(tmp),"/components/%s",id);
+                if(who == DNP3_MASTER)
+                {
+                    asprintf(&defUri,"/components/%s",id);
+                }
+                else
+                {
+                    asprintf(&defUri,"/interfaces/%s",id);
+                }
             }
-            else
-            {
-                snprintf(tmp, sizeof(tmp),"/interfaces/%s",id);
-            }
-            
-            return addUri(tmp, db);
-        }
+            return (const char *)defUri;
+        }   
         
         char* name;
         char* protocol;
         char* id;
         char* ip_address;
+        char *defUri;
         //char* pub;
         int version;
         int port;
