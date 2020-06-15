@@ -787,7 +787,7 @@ typedef struct sysCfg_t {
                 auto dbm = dvar->dbmap;
                 for (itd = dbm.begin(); itd != dbm.end(); ++itd)
                 {
-                    FPS_ERROR_PRINT(" %s var [%s] \n", __FUNCTION__, itd->first.c_str());
+                    FPS_ERROR_PRINT("             var [%s] \n", itd->first.c_str());
                     //DbVar* db = it->second[i];
                     // FPS_ERROR_PRINT("                 [%s] %d %d\n"
                     //             , db->name.c_str() 
