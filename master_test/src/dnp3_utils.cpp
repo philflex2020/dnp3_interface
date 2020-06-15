@@ -1064,7 +1064,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         mcuri = strstr(msg->uri,"/reply/");
         if (mcuri != NULL)
         {
-            mcuri += strlen("/reply/");
+            mcuri += strlen("reply/");
         }
         else
         {
