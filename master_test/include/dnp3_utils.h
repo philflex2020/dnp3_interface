@@ -967,15 +967,14 @@ typedef struct sysCfg_t {
             if(dburiMap.find(uri) == dburiMap.end())
             {
 
-                FPS_ERROR_PRINT(" %s  ==> ADDED uri [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
-
+                FPS_ERROR_PRINT("     %s  ==> ADDED varlist [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
                 //dbvar_map dvar;
-                dburiMap[mapUri] = new varList(uri); 
+                dburiMap[mapUri] = new varList_t(uri); 
             }
             else
             {
 
-                FPS_ERROR_PRINT(" %s  ==> FOUND uri [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
+                FPS_ERROR_PRINT("     %s  ==> FOUND varlist [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
             }
             
             dbvar_map dbm = dburiMap[mapUri]->dbmap;
