@@ -809,14 +809,15 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 
         FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         sys->numObjs[idx]++; 
-        if (uri) 
+        char* nuri = getDefUri(who);
+        if (uri && uri->valuestring) 
         {
-            uri = getDefUri(who);
+            nuri = uri->valuestring;
         }
 
-        sys->addUri(uri, db);
+        sys->addUri(nuri, db);
         // new way under test
-        sys->addDbUri(uri, db);
+        sys->addDbUri(nuri, db);
 
         // Deal with linkback option ( which replaces readback function)
         // the master SOEhandler will cause the linkback value to be updated.
