@@ -341,13 +341,15 @@ typedef struct sysCfg_t {
 
         DbVar* getDbVar(const char *uri, const char* name)
         {
-            dburi_map::iterator it = dburiMap.find(uri);
+            std::string sname = name;
+            std::string suri = uri;
+            dburi_map::iterator it = dburiMap.find(suri);
             if(it != dburiMap.end())
             {
                  // dbvar_map
                 auto dvar = it->second;
                 auto dbm = dvar->dbmap;
-                duri_map::iterator itd = dbm.find(name);
+                duri_map::iterator itd = dbm.find(sname);
             
                 if (itd != dbm.end() )
                 {
