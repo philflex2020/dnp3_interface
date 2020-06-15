@@ -256,11 +256,12 @@ int addVarToCj(cJSON* cj, const char *dname);
 int addVarToCj(cJSON* cj, DbVar* db, int flag);
 
 typedef struct varList_t {
-    varList(const char* iuri){
+    varList_t(const char* iuri)
+    {
         uri = iuri;
     };
     // TODO delete dbmap
-    ~varList(){};
+    ~varList_t(){};
     const char* uri;
     dbvar_map dbmap;
 } varList;
