@@ -350,11 +350,11 @@ typedef struct sysCfg_t {
                 duri_map::iterator itd = dbm.find(name);
             
                 if (itd != dbm.end() )
-                {   
-                    return itd->scond;
+                {
+                    return itd->second;
                 }
-                return NULL;
             }
+            return NULL;
         };
 
         int setDb(DbVar* db, double fval)
