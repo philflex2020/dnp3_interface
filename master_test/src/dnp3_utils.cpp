@@ -1040,7 +1040,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
     cJSON* itypeValues = body_JSON;
     cJSON* cjit = NULL;
     if(sys->debug == 1)
-        FPS_DEBUG_PRINT("Found variable list or array \n");
+        FPS_ERROR_PRINT("Found variable list or array uri [%s] \n", msg->uri);
     // decode values may be in an array , TODO arrays are DEPRECATED
     if (cJSON_IsArray(itypeValues)) 
     {
@@ -1306,7 +1306,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         
         if(strstr(msg->uri, "/reply/") != NULL)
         {
-             FPS_DEBUG_PRINT("fims message reply uri DETECTED  [%s] \n", msg->uri);
+             FPS_ERROR_PRINT("fims message reply uri DETECTED  [%s] \n", msg->uri);
              single = 0;
         }
 
