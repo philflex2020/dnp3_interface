@@ -233,7 +233,7 @@ typedef std::vector<DbVar_t*> dbvec;
 // just like john did
 // but it can be a real map we dont need to share them
 // so  when we add a var we include the uri
-typedef std::map<std::string, dbvar_map> dburi_map;
+//typedef std::map<std::string, dbvar_map> dburi_map;
 
 
 // used in parseBody the int is a print flag to include "value"
@@ -255,6 +255,17 @@ int addVarToCj(cJSON* cj, std::pair<DbVar*,int>dbp);
 int addVarToCj(cJSON* cj, const char *dname);
 int addVarToCj(cJSON* cj, DbVar* db, int flag);
 
+typedef struct varList_t {
+    varList(const char* iuri){
+        uri = iuri;
+    };
+    // TODO delete dbmap
+    ~varList(){};
+    const char* uri;
+    dbvar_map dbmap;
+} varList;
+
+typedef std::map<std::string, varList*> dburi_map;
 
 typedef struct sysCfg_t {
 
@@ -738,7 +749,17 @@ typedef struct sysCfg_t {
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
         }
 
+        //typedef std::map<std::string, varList*> dburi_map;
         //typedef std::map<std::string, DbVar_t*> dbvar_map;
+//        typedef struct varList_t {
+//           varList(const char* iuri){
+//           uri = iuri;
+//         };
+//     // TODO delete dbmap
+//        ~varList(){};
+//        const char* uri;
+//        dbvar_map dbmap;
+//      } varList;
         void showNewUris()
         {
             FPS_ERROR_PRINT(" %s New uris===> \n\n", __FUNCTION__);
@@ -751,9 +772,10 @@ typedef struct sysCfg_t {
 
                 // dbvar_map
                 auto dvar = it->second;
-                for (itd = dvar.begin(); itd != dvar.end(); ++itd)
+                auto dbm = dvar->dbmap;
+                for (itd = dbm.begin(); itd != dbm.end(); ++itd)
                 {
-                    FPS_ERROR_PRINT(" %s var [%s] \n", __FUNCTION__, itd->first.c_str());
+                    FPS_ERROR_PRINT(" %s var [%s] \n", __FUNCTION__, itd->first;
                     //DbVar* db = it->second[i];
                     // FPS_ERROR_PRINT("                 [%s] %d %d\n"
                     //             , db->name.c_str() 
@@ -917,8 +939,23 @@ typedef struct sysCfg_t {
         }
 
         // new way of doing this
-        //typedef std::map<std::string, dbvar_map> dburi_map;
+        // new structure varList  uri name, map of dbVars
+        // struct varList {
+        //    const char* uri;
+        //    dbvar_map dbmap;
+        //};
+        //typedef std::map<std::string, varList*> dburi_map;
         //typedef std::map<std::string, DbVar_t*> dbvar_map;
+//      typedef struct varList_t {
+//           varList(const char* iuri){
+//           uri = iuri;
+//         };
+//     // TODO delete dbmap
+//        ~varList(){};
+//        const char* uri;
+//        dbvar_map dbmap;
+//      } varList;
+
         void addDbUri(const char *uri, DbVar*db)
         {
             const char *mapUri;
@@ -932,14 +969,14 @@ typedef struct sysCfg_t {
                 dbvar_map dvar;
                 mapUri = strdup(uri);
                 uri = mapUri;
-                dburiMap[uri] = std::move(dvar);
+                dburiMap[mapUri] = new varList(mapUri); 
             }
             else
             {
                 FPS_ERROR_PRINT(" %s  ==> FOUND uri [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
             }
             
-            dbvar_map dbm = dburiMap[uri];
+            dbvar_map dbm = dburiMap[uri]->dbmap;
             dbm[db->name] = db;
             //if(debug ==1)
                 FPS_ERROR_PRINT(" %s  ==> added var [%s]  dbm size %d \n", __FUNCTION__, db->name.c_str(), (int) dbm.size());
