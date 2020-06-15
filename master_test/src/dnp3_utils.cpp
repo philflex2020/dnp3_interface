@@ -1068,7 +1068,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         {
             cJSON* cjo = cJSON_GetObjectItem(cjit, "offset");
             cJSON* cjv = cJSON_GetObjectItem(cjit, "value");
-            addValueToVec(dbs, sys, cjo->valuestring, cjv, 0);
+            addValueToVec(dbs, sys, msg, cjo->valuestring, cjv, 0);
         }
     }
     else
@@ -1096,7 +1096,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
             }
             else
             {
-                addValueToVec(dbs, sys, cjit->string, cjit, flag);
+                addValueToVec(dbs, sys, msg, cjit->string, cjit, flag);
             }
             cjit = cjit->next;
         }
@@ -1443,21 +1443,31 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 // TODO need no dbs option
 // TODO handle readb code
 // add who to sys
-int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, int flag)
+int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name, cJSON *cjvalue, int flag)
 {
     // cjoffset must be a name
     // cjvalue may be an object
+    // msg->uri // just take it up to the name
+    char* curi = strdup(msg->uri);
+    char* mcuri = strstr(curi, name);
+    if(mcuri) != NULL)
+    {
+        // force a termination
+        *mcuri = 0;
+    }
 
     if (name == NULL)
     {
         FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
+        free((void*)curi);
         return -1;
     }
 
-    DbVar* db = getDbVar(sys, name); 
+    DbVar* db = getDbVar(sys, (const char*)curi, name); 
     if (db == NULL)
     {
         FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, name);
+        free((void*)curi);
         return -1;
     }
     
@@ -1476,6 +1486,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
     {
         if(sys->debug == 1)
             FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
+        free((void*)curi);
         return -1;
     }
 
@@ -1515,9 +1526,11 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, const char* name, cJSON *cjvalue, i
     }
     else
     {
-      FPS_ERROR_PRINT( " *************** %s Var [%s] not processed \n",__FUNCTION__, name);  
-      return -1;
+        FPS_ERROR_PRINT( " *************** %s Var [%s] not processed \n",__FUNCTION__, name);  
+        free((void*)curi);
+        return -1;
     }
+    free((void*)curi);
     return dbs.size();   
 }
 
