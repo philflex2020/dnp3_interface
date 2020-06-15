@@ -739,7 +739,7 @@ typedef struct sysCfg_t {
             {
                 // it.first is the uri
                 if(debug)
-                    FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first, uri);
+                    FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first.c_str(), uri);
                 // dbvar_map
                 auto dvar = it->second;
                 auto dbm = dvar->dbmap;
