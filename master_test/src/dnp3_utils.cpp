@@ -1452,8 +1452,8 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name
     char* mcuri = strstr(curi, name);
     if(mcuri) != NULL)
     {
-        // force a termination
-        *mcuri = 0;
+        // force a termination at the '/'
+        mcuri[-1] = 0;
     }
 
     if (name == NULL)

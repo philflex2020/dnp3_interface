@@ -1104,7 +1104,7 @@ int addVarToCj(cJSON* cj, DbVar*db);
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
 
 cJSON* parseBody( dbs_type&dbs, sysCfg*sys, fims_message*msg, int who);
-int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name, cJSON *cjvalue, int flag)
+int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name, cJSON *cjvalue, int flag);
 //int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue, int flag);
 // int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag);
 bool checkWho(sysCfg*sys, const char *name, int who);
