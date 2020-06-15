@@ -706,36 +706,49 @@ typedef struct sysCfg_t {
             }
         }
 
+        // add all the vars referenced by this uri
         void addVarsToVec(std::vector<DbVar*>& dbs, const char* uri)
         {
-            dbvar_map::iterator it;
-            //int flag = 0;
-            for (it = dbMap.begin() ; it != dbMap.end();++it)
+            dburi_map::iterator it = dburiMap.find(uri);
+            if (it != dburiMap.end())
             {
-                DbVar* db = it->second;
-                int dummy;
-                if(confirmUri(db, uri, dummy))
+                // it.first is the uri
+                if(debug)
+                    FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first, uri);
+                // dbvar_map
+                auto dvar = it->second;
+                auto dbm = dvar->dbmap;
+                dbvar_map::iterator itd;
+                //int flag = 0;
+                for (itd = dbm.begin() ; itd != dbm.end(); ++itd)
                 {
+                    DbVar* db = itd->second;
                     dbs.push_back(db);
-                    if(debug ==1 )
-                        FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
+                    if(debug)
+                        FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", itd->first.c_str(), db->type, db->offset);
                 }
             }
         }
 
         void addVarsToVec(dbs_type& dbs, const char* uri)
         {
-            dbvar_map::iterator it;
+            dburi_map::iterator it = dburiMap.find(uri);
             int flag = 0;
-            for (it = dbMap.begin() ; it != dbMap.end();++it)
+
+            if (it != dburiMap.end())
             {
-                DbVar* db = it->second;
-                int dummy;
-                if(confirmUri(db, uri, dummy))
+                // it.first is the uri
+                if(debug)
+                    FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first, uri);
+                // dbvar_map
+                auto dvar = it->second;
+                auto dbm = dvar->dbmap;
+                dbvar_map::iterator itd;
+                //int flag = 0;
+                for (itd = dbm.begin() ; itd != dbm.end(); ++itd)
                 {
+                    DbVar* db = itd->second;
                     dbs.push_back(std::make_pair(db, flag));
-                    if(debug ==1 )
-                        FPS_ERROR_PRINT("added to Vector name: %s => Type: %d offset : %d\n", it->first.c_str(), db->type, db->offset);
                 }
             }
         }
@@ -763,15 +776,6 @@ typedef struct sysCfg_t {
 
         //typedef std::map<std::string, varList*> dburi_map;
         //typedef std::map<std::string, DbVar_t*> dbvar_map;
-//        typedef struct varList_t {
-//           varList(const char* iuri){
-//           uri = iuri;
-//         };
-//     // TODO delete dbmap
-//        ~varList(){};
-//        const char* uri;
-//        dbvar_map dbmap;
-//      } varList;
         void showNewUris()
         {
             FPS_ERROR_PRINT(" %s New uris===> \n\n", __FUNCTION__);
@@ -802,42 +806,28 @@ typedef struct sysCfg_t {
             if(debug)
                 FPS_DEBUG_PRINT(" %s uris===> \n", __FUNCTION__);
 
-            duri_map::iterator it;
-            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            dburi_map::iterator it = dburiMap.find(uri);
+            if (it != dburiMap.end())
             {
                 // it.first is the uri
                 if(debug)
                     FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first, uri);
-
-                if(strncmp(it->first, uri, strlen(it->first)) == 0)
+                // dbvar_map
+                auto dvar = it->second;
+                auto dbm = dvar->dbmap;
+                if (dbm[db->name] != dbm.end())
                 {
-                    nfrags = countUris(it->first);                   
-                    if(db != NULL)
-                    {
-                        if(debug)
-                            FPS_DEBUG_PRINT(" %s possible uri match [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second.size()));
-                        for (int i = 0 ; i < static_cast<int32_t>(it->second.size()); i++ )
-                        {
-                            if(it->second[i] == db)
-                            {
-                                if(debug)
-                                    FPS_DEBUG_PRINT(" URI Match                [%s] %d %d\n"
-                                                , db->name.c_str() 
-                                                , db->type
-                                                , db->offset
-                                                );
-                                return true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        return true;
-                    }                  
+                    if(debug)
+                        FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
+                                        , db->name.c_str() 
+                                        , db->type
+                                        , db->offset
+                                        );
+                    return true;
                 }
             }
             if(debug)
-                FPS_DEBUG_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+                FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
             return false;
         }
 
