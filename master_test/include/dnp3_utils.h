@@ -102,7 +102,7 @@ typedef struct DbVar_t {
         clazz = 0;
         sign = false;
         scale = 0;
-        defUri = NULL;
+     
 
         if(iuri)
         {
@@ -267,6 +267,7 @@ typedef struct sysCfg_t {
         unsol = -1;
         cjclass = NULL;
         base_uri = NULL;
+        defUri = NULL;
 
         for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
         {
