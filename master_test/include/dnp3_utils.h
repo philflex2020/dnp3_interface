@@ -927,11 +927,18 @@ typedef struct sysCfg_t {
             //duri_map::iterator it_uris;
             if(dburiMap.find(uri) == dburiMap.end())
             {
+                FPS_ERROR_PRINT(" %s  ==> ADDED uri [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
+
                 dbvar_map dvar;
                 mapUri = strdup(uri);
                 uri = mapUri;
                 dburiMap[uri] = std::move(dvar);
             }
+            else
+            {
+                FPS_ERROR_PRINT(" %s  ==> FOUND uri [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
+            }
+            
             dbvar_map dbm = dburiMap[uri];
             dbm[db->name] = db;
             //if(debug ==1)
