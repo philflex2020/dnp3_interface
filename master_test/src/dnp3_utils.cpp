@@ -1176,7 +1176,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     if((strstr(msg->uri, "/reply/") != NULL) && (strstr(msg->uri, sys->id) != NULL))
     {
         if(1 || sys->debug == 1)
-            FPS_ERROR_PRINT("fims message msg->uri [%s] reply uri [%s] ACCEPTED \n", msg->uri, sys->id);
+            FPS_ERROR_PRINT("fims message msg->method [%s] msg->uri [%s] reply uri [%s] ACCEPTED \n", msg->method, msg->uri, sys->id);
         reffrags = msg->nfrags;
         isReply = true;
     }
@@ -1345,7 +1345,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         if(strstr(msg->uri, "/reply/") != NULL)
         {
             //if(sys->debug == 1)
-                FPS_DEBUG_PRINT("fims message reply uri ACCEPTED  [%s] \n", msg->body);
+                FPS_ERROR_PRINT("fims message reply uri ACCEPTED Body  [%s] \n", msg->body);
             single = 0;
         }            
         
@@ -1436,6 +1436,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         // process {"valuex":xxx,"valuey":yyy} ; xxx or yyy could be a number or {"value":val}
         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
         {
+            FPS_ERROR_PRINT("fims message running parseValues \n");
+
             return parseValues(dbs, sys, msg, who, body_JSON);
         }
     }
