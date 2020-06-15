@@ -929,7 +929,7 @@ typedef struct sysCfg_t {
         }
 
 
-        const char*getDefUri(int who)
+        char*getDefUri(int who)
         {
             if(defUri == NULL)
             {
@@ -942,7 +942,7 @@ typedef struct sysCfg_t {
                     asprintf(&defUri,"/interfaces/%s",id);
                 }
             }
-            return (const char *)defUri;
+            return defUri;
         }   
         
         char* name;
