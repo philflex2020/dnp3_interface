@@ -266,6 +266,10 @@ typedef struct varList_t {
     {
         dbmap[db->name] = db;
     }
+    int size()
+    {
+        return (int)dbmap.size();
+    }
     // TODO delete dbmap/dbvar_map dbm = dburiMap[mapUri]->dbmap;
     //dbm.insert(std::pair<std::string,DbVar*>(db->name, db));
 
@@ -991,7 +995,7 @@ typedef struct sysCfg_t {
             //dbm.insert(std::pair<std::string,DbVar*>(db->name, db));
 
             //if(debug ==1)
-                FPS_ERROR_PRINT(" %s  ==> added var [%s]  dbm size %d \n", __FUNCTION__, db->name.c_str(), (int) dbm.size());
+                FPS_ERROR_PRINT(" %s  ==> added var [%s]  dbm size %d \n", __FUNCTION__, db->name.c_str(), (int) vl->size());
 
         }
 
