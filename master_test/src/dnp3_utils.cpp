@@ -1259,6 +1259,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     //  
     if(strcmp(msg->method, "get") == 0)
     {
+        
+
         int flag = 0;
         if(sys->debug == 1)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
@@ -1273,6 +1275,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         // but only the ones associated with the uri
         else
         {
+            char* curi = strdup(msg->uri);
+            
             sys->addVarsToVec(dbs, curi);
             free((void*)curi);
             return body_JSON;
