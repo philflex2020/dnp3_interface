@@ -766,7 +766,7 @@ typedef struct sysCfg_t {
                 auto dvar = it->second;
                 auto dbm = dvar->dbmap;
 
-                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first, static_cast<int32_t>(it->second->size()));
+                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first.c_str(), static_cast<int32_t>(dvar->size()));
                 for (itd = dbm.begin(); itd != dbm.end(); ++itd)
                 {
                     DbVar* db = itd->second;
