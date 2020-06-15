@@ -1046,9 +1046,9 @@ bool checkWho(sysCfg*sys, DbVar* db, int who)
     return false;    
 }
 
-bool checkWho(sysCfg*sys, const char *name, int who)
+bool checkWho(sysCfg*sys, const char* uri, const char *name, int who)
 {
-    DbVar* db = sys->getDbVar(name);
+    DbVar* db = sys->getDbVar(uri, name);
     return checkWho(sys, db, who);
 }
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
