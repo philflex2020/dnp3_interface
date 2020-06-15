@@ -899,6 +899,7 @@ typedef struct sysCfg_t {
         bool checkUris(int who)
         {
             duri_map::iterator it;
+            bool ret = true;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
                 for (int i = 0; i < static_cast<int32_t>(it->second.size()); i++ )
@@ -911,7 +912,7 @@ typedef struct sysCfg_t {
                             if ((db->type == Type_Analog) || (db->type == Type_Binary))
                             {
                                 FPS_ERROR_PRINT(" %s init missing on variable [%s]\n", __FUNCTION__, db->name.c_str());
-                                return false;
+                                ret = false;
                             }
                         }
                         else // all others are on master
@@ -924,13 +925,13 @@ typedef struct sysCfg_t {
                                 )
                             { 
                                 FPS_ERROR_PRINT(" %s init missing on variable [%s]\n", __FUNCTION__, db->name.c_str());
-                                return false;
+                                ret = false;
                             }
                         }
                     }
                 }
             }
-            return true;
+            return ret;
         };
 
         int getSubs(const char**subs, int num, int who)
