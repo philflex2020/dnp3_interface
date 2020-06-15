@@ -815,7 +815,7 @@ typedef struct sysCfg_t {
                 // dbvar_map
                 auto dvar = it->second;
                 auto dbm = dvar->dbmap;
-                if (dbm[db->name] != dbm.end())
+                if (dbm.find(db->name) != dbm.end())
                 {
                     if(debug)
                         FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
