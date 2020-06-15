@@ -1061,7 +1061,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         if(1 || sys->debug == 1)
             FPS_ERROR_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
         char* mcuri = msg->uri;
-        mcuri = ststr(msg->uri,"/reply/");
+        mcuri = strstr(msg->uri,"/reply/");
         if (mcuri != NULL)
         {
             mcuri += strlen("/reply/");
