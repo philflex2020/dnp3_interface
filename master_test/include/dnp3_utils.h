@@ -102,6 +102,7 @@ typedef struct DbVar_t {
         clazz = 0;
         sign = false;
         scale = 0;
+        defUri = NULL;
 
         if(iuri)
         {
@@ -922,7 +923,7 @@ typedef struct sysCfg_t {
         
         void addUri(cJSON* uri, DbVar*db)
         {
-            if(uri && (uri->valuestring))
+            if(uri && uri->valuestring)
             {
                 return addUri(uri->valuestring, db);
             }
