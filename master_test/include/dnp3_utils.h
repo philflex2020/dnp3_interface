@@ -898,13 +898,16 @@ typedef struct sysCfg_t {
 
         bool checkUris(int who)
         {
-            duri_map::iterator it;
+            dburi_map::iterator it;
+            dbvar_map::iterator itd;
             bool ret = true;
-            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
             {
-                for (int i = 0; i < static_cast<int32_t>(it->second.size()); i++ )
+                auto dvar = it->second;
+                auto dbm = dvar->dbmap;
+                for (itd = dbm.begin(); itd != dbm.end(); ++itd)
                 {
-                    DbVar* db = it->second[i];
+                    DbVar* db = itd->second;
                     if (db->initSet == 0)
                     {
                         if(who == DNP3_OUTSTATION)
