@@ -860,7 +860,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
                     {
                         FPS_ERROR_PRINT(" Setting linkback variable name to [%s]\n", linkback->valuestring);
                         db->linkback = strdup(linkback->valuestring);
-                        db->linkb = sys->getDbVar(linkback->valuestring);
+                        db->linkb = sys->getDbVar(nuri, linkback->valuestring);
                     }
                 }
             }
@@ -879,7 +879,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
                     {
                         FPS_ERROR_PRINT(" Setting linkback variable name to [%s]\n", linkback->valuestring);
                         db->linkback = strdup(linkback->valuestring);
-                        db->linkb = sys->getDbVar(linkback->valuestring);
+                        db->linkb = sys->getDbVar(nuri, linkback->valuestring);
                     }
                 }
             }
