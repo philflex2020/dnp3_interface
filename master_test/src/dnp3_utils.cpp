@@ -1060,8 +1060,11 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         cjit = itypeValues->child;
         if(1 || sys->debug == 1)
             FPS_ERROR_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
-        //char* curi = strdup(msg->uri);
-        //char* mcuri = NULL;
+        char* mcuri = msg->uri;
+        if(isReply)
+        {
+            mcuri = ststr(msg->uri,"/reply/") + strlen("/reply/");
+        }
         while(cjit != NULL)
         {
             int flag = 0;
@@ -1070,12 +1073,12 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
                                         , cjit->string
                                         , (void *)cjit->child
                                         );
-            if (!checkWho(sys, msg->uri, cjit->string, who))
+            if (!checkWho(sys, mcuri, cjit->string, who))
             {
                 if(1 || sys->debug == 1)
                     FPS_DEBUG_PRINT("variable [%s] uri [%s] NOT set ON %d\n"
                                     , cjit->string
-                                    , msg->uri
+                                    , mcuri
                                     , who
                                     );
             }
@@ -1087,7 +1090,8 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
                                     , msg->uri
                                     , who
                                     );
-                addValueToVec(dbs, sys, msg, cjit->string, cjit, flag);
+                addValueToVec(dbs, sys, mcuri, cjit->string, cjit, flag);
+                //addValueToVec(dbs, sys, msg, cjit->string, cjit, flag);
             }
             cjit = cjit->next;
         }
@@ -1451,34 +1455,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     return body_JSON;//return dbs.size();
 }
 
-// TODO need no dbs option
-// TODO handle readb code
-// add who to sys
-int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name, cJSON *cjvalue, int flag)
+
+int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON *cjvalue, int flag)
 {
-    // cjoffset must be a name
-    // cjvalue may be an object
-    // msg->uri // just take it up to the name
-    char* curi = strdup(msg->uri);
-    char* mcuri = strstr(curi, name);
-    if(mcuri != NULL)
-    {
-        // force a termination at the '/'
-        mcuri[-1] = 0;
-    }
-
-    if (name == NULL)
-    {
-        FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
-        free((void*)curi);
-        return -1;
-    }
-
     DbVar* db = getDbVar(sys, (const char*)curi, name); 
     if (db == NULL)
     {
         FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, name);
-        free((void*)curi);
         return -1;
     }
     
@@ -1497,7 +1480,6 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name
     {
         if(sys->debug == 1)
             FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
-        free((void*)curi);
         return -1;
     }
 
@@ -1538,11 +1520,36 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name
     else
     {
         FPS_ERROR_PRINT( " *************** %s Var [%s] not processed \n",__FUNCTION__, name);  
+        return -1;
+    }
+    return dbs.size();   
+}
+// TODO need no dbs option
+// TODO handle readb code
+// add who to sys
+int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name, cJSON *cjvalue, int flag)
+{
+    int ret;
+    // cjoffset must be a name
+    // cjvalue may be an object
+    // msg->uri // just take it up to the name
+    char* curi = strdup(msg->uri);
+    char* mcuri = strstr(curi, name);
+    if(mcuri != NULL)
+    {
+        // force a termination at the '/'
+        mcuri[-1] = 0;
+    }
+
+    if (name == NULL)
+    {
+        FPS_ERROR_PRINT(" ************** %s offset is not  string\n",__FUNCTION__);
         free((void*)curi);
         return -1;
     }
+    ret = addValueToVec(dbs, sys, curi, name, cjvalue, flag);
     free((void*)curi);
-    return dbs.size();   
+    return ret;
 }
 
 cJSON* sysdbFindAddArray(sysCfg* sysdb, const char* field)
