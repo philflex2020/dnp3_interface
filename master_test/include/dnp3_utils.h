@@ -738,6 +738,7 @@ typedef struct sysCfg_t {
             FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
         }
 
+        //typedef std::map<std::string, DbVar_t*> dbvar_map;
         void showNewUris()
         {
             FPS_ERROR_PRINT(" %s New uris===> \n\n", __FUNCTION__);
@@ -747,6 +748,8 @@ typedef struct sysCfg_t {
             for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
             {
                 FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first.c_str(), static_cast<int32_t>(it->second.size()));
+
+                // dbvar_map
                 auto dvar = it->second;
                 for (itd = dvar.begin(); itd != dvar.end(); ++itd)
                 {
@@ -915,6 +918,7 @@ typedef struct sysCfg_t {
 
         // new way of doing this
         //typedef std::map<std::string, dbvar_map> dburi_map;
+        //typedef std::map<std::string, DbVar_t*> dbvar_map;
         void addDbUri(const char *uri, DbVar*db)
         {
             const char *mapUri;
@@ -929,8 +933,10 @@ typedef struct sysCfg_t {
                 dburiMap[uri] = std::move(dvar);
             }
             dbvar_map dbm = dburiMap[uri];
-
             dbm[db->name] = db;
+            //if(debug ==1)
+                FPS_ERROR_PRINT(" %s  ==> added var [%s]  size %d ", __FUNCTION__, db->name.c_str(), (int) dbm.size());
+
         }
 
         void addUri(const char *uri, DbVar*db)

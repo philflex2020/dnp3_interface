@@ -838,6 +838,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         }
 
         sys->addUri(nuri, db);
+        
         // new way under test
         sys->addDbUri(nuri, db);
 
