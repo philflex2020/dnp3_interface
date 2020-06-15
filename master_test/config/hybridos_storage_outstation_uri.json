@@ -5,7 +5,8 @@
         "port2": 502,
         "id": "hybridos",
         "ip_address": "127.0.0.1",
-        "port": 12502
+        "port": 12502,
+        "local_uri":"/local"
     },
     "registers": [
         {
