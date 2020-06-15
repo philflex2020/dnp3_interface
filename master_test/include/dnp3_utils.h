@@ -935,7 +935,7 @@ typedef struct sysCfg_t {
             dbvar_map dbm = dburiMap[uri];
             dbm[db->name] = db;
             //if(debug ==1)
-                FPS_ERROR_PRINT(" %s  ==> added var [%s]  size %d ", __FUNCTION__, db->name.c_str(), (int) dbm.size());
+                FPS_ERROR_PRINT(" %s  ==> added var [%s]  dbm size %d \n", __FUNCTION__, db->name.c_str(), (int) dbm.size());
 
         }
 
