@@ -1039,12 +1039,12 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
 {
     cJSON* itypeValues = body_JSON;
     cJSON* cjit = NULL;
-    if(sys->debug == 1)
+    if(1 ||sys->debug == 1)
         FPS_ERROR_PRINT("Found variable list or array uri [%s] \n", msg->uri);
     // decode values may be in an array , TODO arrays are DEPRECATED
     if (cJSON_IsArray(itypeValues)) 
     {
-        if(sys->debug == 1)
+        if(1 ||sys->debug == 1)
             FPS_DEBUG_PRINT("Found array of variables  \n");
 
         cJSON_ArrayForEach(cjit, itypeValues) 
@@ -1058,28 +1058,35 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
     {
         // process a simple list
         cjit = itypeValues->child;
-        if(sys->debug == 1)
-            FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
+        if(1 || sys->debug == 1)
+            FPS_ERROR_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
         //char* curi = strdup(msg->uri);
         //char* mcuri = NULL;
         while(cjit != NULL)
         {
             int flag = 0;
-            if(sys->debug == 1)
+            if(1 || sys->debug == 1)
                 FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
                                         , cjit->string
                                         , (void *)cjit->child
                                         );
             if (!checkWho(sys, msg->uri, cjit->string, who))
             {
-                if(sys->debug == 1)
-                    FPS_DEBUG_PRINT("variable [%s] NOT set ON %d\n"
+                if(1 || sys->debug == 1)
+                    FPS_DEBUG_PRINT("variable [%s] uri [%s] NOT set ON %d\n"
                                     , cjit->string
+                                    , msg->uri
                                     , who
                                     );
             }
             else
             {
+                if(1 || sys->debug == 1)
+                    FPS_ERROR_PRINT("variable [%s] uri [%s] OK set ON %d\n"
+                                    , cjit->string
+                                    , msg->uri
+                                    , who
+                                    );
                 addValueToVec(dbs, sys, msg, cjit->string, cjit, flag);
             }
             cjit = cjit->next;
