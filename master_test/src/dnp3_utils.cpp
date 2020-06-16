@@ -1217,13 +1217,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         }
         if(db == NULL)
         {        
-            FPS_ERROR_PRINT("fims message msg->uri [%s] name  [%s] Not Found  sysid [%s] \n", msg->uri, dburi, sys->id);
+            FPS_ERROR_PRINT("fims message msg->uri [%s] name  [%s] Not Found  sysid [%s] \n", msg->uri, newUri, sys->id);
             //free((void*)curi);
             return body_JSON;
         }
         //int urifrags = 0;
         if(sys->debug == 1)
-            FPS_ERROR_PRINT(" %s Running with uri: [%s] flags %x  \n", __FUNCTION__, dburi, (unsigned int) flags);
+            FPS_ERROR_PRINT(" %s Running with uri: [%s] flags %x  \n", __FUNCTION__, newUri, (unsigned int) flags);
 
         if((flags & URI_FLAG_URIOK) == 0)
         {
