@@ -905,7 +905,7 @@ typedef struct sysCfg_t {
             // now look for  matching uri
             // look for "/interfaces/<id>/<someuri>"
             dburi_map::iterator it = dburiMap.find(uri);
-            bool match = false;
+            //bool match = false;
             nuri = NULL;
             for  (it = dburiMap.begin() ; it != dburiMap.end(); it++)
             {
