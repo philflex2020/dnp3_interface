@@ -322,7 +322,7 @@ typedef struct sysCfg_t {
 
         if (cj) cJSON_Delete(cj);
         if(base_uri) free(base_uri);
-        if(local_uri) free(locl_uri);
+        if(local_uri) free(local_uri);
 
         cleanUpDbMaps();
     };
