@@ -880,7 +880,7 @@ typedef struct sysCfg_t {
             {
                 flags |= URI_FLAG_REPLY;
                 flags |= URI_FLAG_SET;
-                turi = uri + strlen(tmp);
+                turi = (char*)uri + strlen(tmp);
                 free((void *)tmp);
                 tmp = NULL;
                 //nfrags -= 3;
@@ -894,7 +894,7 @@ typedef struct sysCfg_t {
                 {
                     flags |= URI_FLAG_GET;
                     flags |= URI_FLAG_SET;
-                    turi = uri + strlen("/local");
+                    turi = (char *)uri + strlen("/local");
                     free((void *)tmp);
                     tmp = NULL;
                 }
