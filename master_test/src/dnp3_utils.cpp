@@ -1154,8 +1154,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 {
     //const char* uri = NULL;
     const char* dburi = NULL;
-    int fragptr = 1;
-    int single = 0;
+    //int fragptr = 1;
+    //int single = 0;
     cJSON* body_JSON = cJSON_Parse(msg->body);
     cJSON* itypeA16 = NULL;
     cJSON* itypeA32 = NULL;
@@ -1163,7 +1163,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     cJSON* itypeValues = NULL;
     cJSON* itypeCROB = NULL;
     //cJSON* cjit = NULL;
-    int reffrags = 0; // nfrags in the reference uri 
+    //int reffrags = 0; // nfrags in the reference uri 
     DbVar* db = NULL;
 
     // msg->nfrags number of frags in the message
@@ -1201,7 +1201,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     //
     char* name = NULL;
     int flags = 0;
-    DbVar* db = NULL;
+    //DbVar* db = NULL;
     char* newUri = sys->confirmUri(db, msg->uri, who, name, flags);
     if(sys->debug == 1)
         FPS_ERROR_PRINT("fims message first test msg->uri [%s]   flags %x\n", msg->uri, flags);
@@ -1218,16 +1218,16 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         if(db == NULL)
         {        
             FPS_ERROR_PRINT("fims message msg->uri [%s] name  [%s] Not Found  sysid [%s] \n", msg->uri, dburi, sys->id);
-            free((void*)curi);
+            //free((void*)curi);
             return body_JSON;
         }
-        int urifrags = 0;
+        //int urifrags = 0;
         if(sys->debug == 1)
             FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
 
         if((flags & URI_FLAG_URIOK) == 0)
         {
-            FPS_ERROR_PRINT("fims message [%s] not for this %d [%s] and uriOK is %x \n", msg->uri, uriflags);
+            FPS_ERROR_PRINT("fims message [%s] not for this %d [%s] and uriOK is %x \n", msg->uri, flags);
             return body_JSON;
         }
 
@@ -1249,7 +1249,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         int flag = 0;
         if(sys->debug == 1)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
-        if(flags & URI_FLAG_SINGLE) == 1)
+        if((flags & URI_FLAG_SINGLE) == 1)
         {
             if(sys->debug == 1)
                 FPS_DEBUG_PRINT("Found SINGLE variable [%s] type  %d \n", db->name.c_str(), db->type); 
@@ -1305,7 +1305,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         
         //uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
         // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
-        if(flags & URI_FLAG_SYSTEM) == 1)
+        if((flags & URI_FLAG_SYSTEM) == 1)
         {
             FPS_DEBUG_PRINT("fims system command [%s] body [%s]\n", msg->uri, msg->body);
             cJSON* cjsys = cJSON_GetObjectItem(body_JSON, "debug");
@@ -1335,14 +1335,14 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 
         }
             // TODO redundant
-        if(flags & URI_FLAG_REPLY) == 1)
+        if((flags & URI_FLAG_REPLY) == 1)
         {
             //if(sys->debug == 1)
                 FPS_ERROR_PRINT("fims message reply uri ACCEPTED Body  [%s] \n", msg->body);
         }            
         
 
-        if(flags & URI_FLAG_SINGLE) == 1)
+        if((flags & URI_FLAG_SINGLE) == 1)
         //if(single == 1)
         {
             // process a single var
