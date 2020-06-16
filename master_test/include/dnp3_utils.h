@@ -1064,7 +1064,7 @@ typedef struct sysCfg_t {
 
         int getSubs(const char**subs, int num, int who)
         {
-            if (num < static_cast<int32_t>(buriMap.size()))
+            if (num < static_cast<int32_t>(dburiMap.size()))
             {
                 return dburiMap.size();
             }
@@ -1074,7 +1074,7 @@ typedef struct sysCfg_t {
             dburi_map::iterator it;
             for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
             {
-                subs[idx++]=it->first;
+                subs[idx++]=it->first.c_str();
             }
             return idx;
         }
@@ -1094,13 +1094,13 @@ typedef struct sysCfg_t {
                 //server_map->p_fims->Send("get", it->first, replyto, NULL);
                 if (it->first[0] == '/') 
                 {
-                    snprintf(replyto, sizeof(replyto),"%s/reply%s",  base_uri, it->first);
-                    snprintf(getUri,sizeof(getUri),"%s", it->first);
+                    snprintf(replyto, sizeof(replyto),"%s/reply%s",  base_uri, it->first.c_str());
+                    snprintf(getUri,sizeof(getUri),"%s", it->first.c_str());
                 } 
                 else
                 {
-                    snprintf(replyto, sizeof(replyto),"%s/reply%s",  base_uri, it->first);
-                    snprintf(getUri,sizeof(getUri),"%s", it->first);
+                    snprintf(replyto, sizeof(replyto),"%s/reply%s",  base_uri, it->first.c_str());
+                    snprintf(getUri,sizeof(getUri),"%s", it->first.c_str());
                 }
                 //if(debug == 1)
                     FPS_ERROR_PRINT(" uri : [%s] replyto: [%s]\n"
