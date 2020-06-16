@@ -912,30 +912,31 @@ typedef struct sysCfg_t {
                 if(debug)
                     FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first.c_str(), turi);
 
-                if (strncmp(turi,it->first.c_str(), strlen(it->first.c_str())) == 0)
+                if (strncmp(turi, it->first.c_str(), strlen(it->first.c_str())) == 0)
                 {
                     nuri = turi + strlen(it->first.c_str()) + 1;
                     //match = true;
                     flags |= URI_FLAG_URIOK;
-                }
-                auto dvar = it->second;
-                auto dbm = dvar->dbmap;
-                dbvar_map::iterator itd = dbm.find(nuri);
+                
+                    auto dvar = it->second;
+                    auto dbm = dvar->dbmap;
+                    dbvar_map::iterator itd = dbm.find(nuri);
 
-                if (itd != dbm.end())
-                {
-                    dbf = itd->second;
-                    if(debug)
-                        FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
-                                            , dbf->name.c_str() 
-                                            , dbf->type
-                                            , dbf->offset
-                                            );
-                    name = nuri;
-                    flags |= URI_FLAG_NAMEOK;
-                    flags |= URI_FLAG_SINGLE;
-                    db = dbf;
-                    return turi;
+                    if (itd != dbm.end())
+                    {
+                        dbf = itd->second;
+                        if(debug)
+                            FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
+                                                , dbf->name.c_str() 
+                                                , dbf->type
+                                                , dbf->offset
+                                                );
+                        name = nuri;
+                        flags |= URI_FLAG_NAMEOK;
+                        flags |= URI_FLAG_SINGLE;
+                        db = dbf;
+                        return turi;
+                    }
                 }
             }
             if(debug)
