@@ -999,7 +999,8 @@ typedef struct sysCfg_t {
             }
             return ret;
         };
-
+        
+        // get the list of subs
         int getSubs(const char**subs, int num, int who)
         {
             if (num < static_cast<int32_t>(dburiMap.size()))
@@ -1016,7 +1017,7 @@ typedef struct sysCfg_t {
             }
             return idx;
         }
-
+        // put out the start up request from fims_echo
         // only get the ones for vars applied to this application (outstation or master)
         int getUris(int who)
         {
