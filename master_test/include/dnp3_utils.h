@@ -340,6 +340,7 @@ typedef struct sysCfg_t {
             //dbMap[name] = db;
             //
             //db->idx = static_cast<int32_t>(dbVec[type].size());
+            // TODO auto assign
             db->idx = getDbIdx(type);
             dbVec[type].push_back(db);
      
@@ -711,13 +712,13 @@ typedef struct sysCfg_t {
                 dbVec[i].clear();
             }
             {
-                duri_map::iterator it;
-                for (it = uriMap.begin(); it != uriMap.end(); ++it)
+                dburi_map::iterator it;
+                for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
                 {
                     free((void *)it->first);
                     it->second.clear();
                 }
-                uriMap.clear();
+                dburiMap.clear();
             }
         }
 
@@ -1063,15 +1064,15 @@ typedef struct sysCfg_t {
 
         int getSubs(const char**subs, int num, int who)
         {
-            if (num < static_cast<int32_t>(uriMap.size()))
+            if (num < static_cast<int32_t>(buriMap.size()))
             {
-                return uriMap.size();
+                return dburiMap.size();
             }
             int idx = 0;
             subs[idx++] = base_uri;
             if(local_uri)subs[idx++] = local_uri;
-            duri_map::iterator it;
-            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            dburi_map::iterator it;
+            for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
             {
                 subs[idx++]=it->first;
             }
@@ -1084,8 +1085,8 @@ typedef struct sysCfg_t {
             //if(debug ==1)
                 FPS_ERROR_PRINT(" %s uris===>%d<=== \n\n", __FUNCTION__, who);
 
-            duri_map::iterator it;
-            for (it = uriMap.begin(); it != uriMap.end(); ++it)
+            dburi_map::iterator it;
+            for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
             {
                 char replyto[1024];
                 char getUri[1024];
@@ -1166,16 +1167,16 @@ typedef struct sysCfg_t {
         //TODO remove this
         void addUri(const char *uri, DbVar*db)
         {
-            const char *mapUri;
-            // this is a pointer to the uri 
-            // if there is not one in the map then create a new one and then add it
-            //duri_map::iterator it_uris;
-            if(uriMap.find(uri) == uriMap.end())
-            {
-                mapUri = strdup(uri);
-                uri = mapUri;
-            }
-            uriMap[uri].push_back(db);
+            // const char *mapUri;
+            // // this is a pointer to the uri 
+            // // if there is not one in the map then create a new one and then add it
+            // //duri_map::iterator it_uris;
+            // if(uriMap.find(uri) == uriMap.end())
+            // {
+            //     mapUri = strdup(uri);
+            //     uri = mapUri;
+            // }
+            // uriMap[uri].push_back(db);
         }
         
         void addUri(cJSON* uri, DbVar*db)
@@ -1221,7 +1222,7 @@ typedef struct sysCfg_t {
         //dbvar_map dbMap;
         dbvec    dbVec[Type_of_Var::NumTypes];
         dbix_map dbMapIxs[Type_of_Var::NumTypes];
-        duri_map uriMap;
+        //duri_map uriMap;
         bits_map bitsMap;
         dburi_map dburiMap;
 
