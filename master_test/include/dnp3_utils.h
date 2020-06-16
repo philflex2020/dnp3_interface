@@ -817,34 +817,6 @@ typedef struct sysCfg_t {
             }
         }
 
-        // void showUris()
-        // {
-        //     FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
-
-        //     dburi_map::iterator it;
-        //     dbvar_map::iterator itd;
-
-        //     for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
-        //     {
-        //         // dbvar_map
-        //         auto dvar = it->second;
-        //         auto dbm = dvar->dbmap;
-
-        //         FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first.c_str(), static_cast<int32_t>(dvar->size()));
-        //         for (itd = dbm.begin(); itd != dbm.end(); ++itd)
-        //         {
-        //             DbVar* db = itd->second;
-        //             FPS_ERROR_PRINT("                 [%s] %d %d\n"
-        //                             , db->name.c_str() 
-        //                             , db->type
-        //                             , db->offset
-        //                             );
-        //         }
-        //     }
-        //     FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
-        // }
-
-
         //typedef std::map<std::string, varList*> dburi_map;
         //typedef std::map<std::string, DbVar_t*> dbvar_map;
         void showNewUris()
@@ -869,6 +841,7 @@ typedef struct sysCfg_t {
         }
 
         // returns the start of the untangled uri
+        // sets flags to describe how to handle the uri 
         char* confirmUri(DbVar* &db, const char*uri, int who, char* &name, int& flags)
         {
             // first limit the uri 
@@ -934,7 +907,6 @@ typedef struct sysCfg_t {
                 {
                     nuri = turi + strlen(it->first.c_str());
                     if (nuri[0] == '/') nuri++;
-                    //match = true;
                     flags |= URI_FLAG_URIOK;
                     if(debug)
                         FPS_ERROR_PRINT("    URI FOUND [%s] checking name nuri  [%s] (len) %ld \n", it->first.c_str(), nuri, (long int)strlen(nuri));
@@ -976,7 +948,7 @@ typedef struct sysCfg_t {
         // make sure the uri is in the list
         // what about default / base uri 
         //
-        bool confirmUri(DbVar* db, const char*uri, int& nfrags)
+        bool xconfirmUri(DbVar* db, const char*uri, int& nfrags)
         {
             // first limit the uri 
             if(debug)
