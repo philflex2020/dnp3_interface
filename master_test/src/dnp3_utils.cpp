@@ -1277,7 +1277,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         if((flags & URI_FLAG_GET) == 0)
         {
             if(1 || sys->debug == 1)
-                FPS_ERROR_PRINT("Get not supported for [%s] \n", db->name.c_str()); 
+            {
+                if(db)
+                    FPS_ERROR_PRINT("Get not supported for [%s] \n", db->name.c_str()); 
+                else
+                    FPS_ERROR_PRINT("Get not supported \n"); 
+            }
             return body_JSON;
 
         }
