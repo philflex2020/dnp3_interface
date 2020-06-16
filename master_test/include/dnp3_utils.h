@@ -279,7 +279,7 @@ typedef struct varList_t {
 
 typedef std::map<std::string, varList*> dburi_map;
 
-typedef enum {
+enum {
     URI_FLAG_FLAG,
     URI_FLAG_REPLY,
     URI_FLAG_GET,
