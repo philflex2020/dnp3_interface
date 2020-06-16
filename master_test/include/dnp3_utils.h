@@ -328,27 +328,21 @@ typedef struct sysCfg_t {
     };
 
     public:
-        // now always creates one. it is added to the uri map
+        // now always creates a var. it is added to the uri map
         DbVar* newDbVar(std::string name, int type, int offset, char* uri, char* variation) 
         {
             DbVar* db = NULL;
-            // TODO check this 
-            //if (dbMap.find(name) == dbMap.end()){
-                db = new DbVar(name, type, offset, uri, variation);
-                if(uri == NULL)
-                {
-                    db->uri = defUri;
-                }
-                dbMap[name] = db;
-                //
-                //db->idx = static_cast<int32_t>(dbVec[type].size());
-                db->idx = getDbIdx(type);
-                dbVec[type].push_back(db);
-            //}
-            //else
-            //{
-            //    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMap\n", __FUNCTION__, name.c_str());
-            //}
+            db = new DbVar(name, type, offset, uri, variation);
+            if(uri == NULL)
+            {
+                db->uri = defUri;
+            }
+            dbMap[name] = db;
+            //
+            //db->idx = static_cast<int32_t>(dbVec[type].size());
+            db->idx = getDbIdx(type);
+            dbVec[type].push_back(db);
+     
             return db;
         };
 
@@ -692,22 +686,22 @@ typedef struct sysCfg_t {
         // bits_map bitsMap;
         void cleanUpDbMaps()
         {
-            FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
-            {
-                dbvar_map::iterator it;
-                for (it = dbMap.begin(); it != dbMap.end(); ++it)
-                {
-                    DbVar* db = it->second;
-                    FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
-                                , it->first.c_str()
-                                , db->type
-                                , db->offset
-                                );
-                    delete db;
-                }
-            }
-            FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
-            dbMap.clear();
+            // FPS_ERROR_PRINT(" %s DbVars===> \n\n", __FUNCTION__);
+            // {
+            //     dbvar_map::iterator it;
+            //     for (it = dbMap.begin(); it != dbMap.end(); ++it)
+            //     {
+            //         DbVar* db = it->second;
+            //         FPS_ERROR_PRINT(" name :[%s] Type :[%d] offset : [%d] ===> \n"
+            //                     , it->first.c_str()
+            //                     , db->type
+            //                     , db->offset
+            //                     );
+            //         delete db;
+            //     }
+            // }
+            // FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
+            // dbMap.clear();
             for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes); i++)
             {
                 // for (int j = 0; j < static_cast<int32_t>(dbMapIx[i].size()); j++)
@@ -1223,7 +1217,7 @@ typedef struct sysCfg_t {
         char* uri;
 
         // new way of doing this
-        dbvar_map dbMap;
+        //dbvar_map dbMap;
         dbvec    dbVec[Type_of_Var::NumTypes];
         dbix_map dbMapIxs[Type_of_Var::NumTypes];
         duri_map uriMap;
