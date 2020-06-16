@@ -1283,11 +1283,10 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
             {
                 if(sys->debug == 1)
                 {
-                    FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%d] single %d name [%s]\n"
+                    FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%d] single name [%s]\n"
                                         , msg->method
                                         , msg->uri
                                         , who
-                                        , single
                                         , db->name.c_str()
                                         );
                 }
