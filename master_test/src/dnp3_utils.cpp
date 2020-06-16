@@ -1484,7 +1484,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
         return -1;
     }
     
-    if(sys->debug == 1)
+    if(sys->debug)
         FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dburiMap\n", __FUNCTION__, name);
 
     if (cjvalue->type == cJSON_Object)
@@ -1497,14 +1497,14 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
 
     if (!cjvalue)
     {
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_ERROR_PRINT(" ************** %s value not correct\n",__FUNCTION__);
         return -1;
     }
 
     if (db->type == Type_Crob) 
     {
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_DEBUG_PRINT(" ************* %s Var [%s] CROB setting value [%s]  to %d \n"
                                                         , __FUNCTION__
                                                         , db->name.c_str()
@@ -1531,7 +1531,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
         return -1;
     }
 
-    if(sys->debug == 1 )
+    if(sys->debug)
         FPS_ERROR_PRINT( " *************** %s All Vars processed  size %d\n",__FUNCTION__, (int) dbs.size());  
 
     return dbs.size();   
