@@ -1153,7 +1153,7 @@ int countUris(const char* uri)
 cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 {
     //const char* uri = NULL;
-    const char* dburi = NULL;
+    //const char* dburi = NULL;
     //int fragptr = 1;
     //int single = 0;
     cJSON* body_JSON = cJSON_Parse(msg->body);
