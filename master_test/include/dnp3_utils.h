@@ -867,17 +867,17 @@ typedef struct sysCfg_t {
             DbVar* dbf = NULL;
             if(debug)
                 FPS_DEBUG_PRINT(" %s confirmUri===> \n", __FUNCTION__);
-            char* turi = uri;
+            char* turi = (char *)uri;
             char* nuri;
             char* tmp;
             if(strstr(uri, "/_system") != NULL) 
             {
                flags |= URI_FLAG_SYSTEM;
-               return uri;
+               return (char*)uri;
             }
             // seek reply format
             asprintf(&tmp, "/%s/%s/reply",who?"interfaces":"components", id);
-            turi = strstr(uri,tmp);
+            turi = strstr((char*)uri,tmp);
             if (turi != NULL)
             {
                 flags |= URI_FLAG_REPLY;
