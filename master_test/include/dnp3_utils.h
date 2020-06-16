@@ -931,6 +931,7 @@ typedef struct sysCfg_t {
                 if (strncmp(turi, it->first.c_str(), strlen(it->first.c_str())) == 0)
                 {
                     nuri = turi + strlen(it->first.c_str());
+                    if (nuri[0] == '/') nuri++;
                     //match = true;
                     flags |= URI_FLAG_URIOK;
                     if(1 ||debug)
