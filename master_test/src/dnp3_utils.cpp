@@ -874,7 +874,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         sys->setDbIdxMap(db);
 
         // deprecated
-        sys->addUri(nuri, db);
+        //sys->addUri(nuri, db);
 
         // new way 
         sys->addDbUri(nuri, db);
