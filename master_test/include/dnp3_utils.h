@@ -936,7 +936,7 @@ typedef struct sysCfg_t {
                     //match = true;
                     flags |= URI_FLAG_URIOK;
                     if(debug)
-                        FPS_ERROR_PRINT("    URI FOUND [%s] checking name nuri  [%s] (len) %ld \n", it->first.c_str(), nuri, strlen(nuri));
+                        FPS_ERROR_PRINT("    URI FOUND [%s] checking name nuri  [%s] (len) %ld \n", it->first.c_str(), nuri, (long int)strlen(nuri));
                     if(strlen(nuri)> 0)
                     {
                         auto dvar = it->second;
