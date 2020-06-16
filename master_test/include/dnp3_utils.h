@@ -907,7 +907,7 @@ typedef struct sysCfg_t {
             dburi_map::iterator it = dburiMap.find(uri);
             bool match = false;
             nuri = NULL;
-            for  (it = dburiMap.start() ; it != dburiMap.end(); it++)
+            for  (it = dburiMap.begin() ; it != dburiMap.end(); it++)
             {
                 if(debug)
                     FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first.c_str(), turi);
@@ -920,9 +920,9 @@ typedef struct sysCfg_t {
                 }
                 auto dvar = it->second;
                 auto dbm = dvar->dbmap;
-                if (dbm.find(nuri) != dbm.end())
+                dbf = dbm.find(nuri);
+                if (dbf != dbm.end())
                 {
-                    dbf = dbm.find(std::string(nuri));
                     if(debug)
                         FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
                                             , dbf->name.c_str() 
