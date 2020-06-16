@@ -1203,14 +1203,14 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     int flags = 0;
     //DbVar* db = NULL;
     char* newUri = sys->confirmUri(db, msg->uri, who, name, flags);
-    if(sys->debug == 1)
+    if(1 ||sys->debug == 1)
         FPS_ERROR_PRINT("fims message first test msg->uri [%s]   flags %x\n", msg->uri, flags);
 
 
-    if((flags & URI_FLAG_REPLY) ==0)
+    if((flags & URI_FLAG_REPLY) == 0)
     {
 
-        if((flags & URI_FLAG_URIOK) ==0)
+        if((flags & URI_FLAG_URIOK) == 0)
         {
             FPS_ERROR_PRINT("fims message msg->uri [%s] frag [%s] Not ACCEPTED \n", msg->uri, sys->id);
             return body_JSON;

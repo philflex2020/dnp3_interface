@@ -280,14 +280,13 @@ typedef struct varList_t {
 typedef std::map<std::string, varList*> dburi_map;
 
 enum {
-    URI_FLAG_FLAG,
-    URI_FLAG_REPLY,
-    URI_FLAG_GET,
-    URI_FLAG_SET,
-    URI_FLAG_URIOK,
-    URI_FLAG_NAMEOK,
-    URI_FLAG_SINGLE,
-    URI_FLAG_SYSTEM
+    URI_FLAG_REPLY  = 1<<1,
+    URI_FLAG_GET    = 1<<2,
+    URI_FLAG_SET    = 1<<3,
+    URI_FLAG_URIOK  = 1<<4,
+    URI_FLAG_NAMEOK = 1<<5,
+    URI_FLAG_SINGLE = 1<<6,
+    URI_FLAG_SYSTEM = 1<<7
 
 };
 
