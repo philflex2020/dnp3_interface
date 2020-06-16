@@ -177,13 +177,13 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
     cJSON_Delete(body_object);
 }
 
-DbVar* getDbVar(sysCfg *sysdb, const char * uri, const char *name)
+DbVar* getDbVar(sysCfg* sys, const char* uri, const char* name)
 {
-    return sysdb->getDbVar(uri, name);
+    return sys->getDbVar(uri, name);
 }
 
 //TODO check remove old version deprecated
-void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev)
+void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
 {
     if(cj)
     {
@@ -830,21 +830,21 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         if(clazz &&(db != NULL))
         {
             db->setClazz(clazz->valueint);
-            if(sys->debug == 1)
+            if(sys->debug)
                 FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
         }
 
         if(sign &&(db != NULL))
         {
             db->sign = (sign->type == cJSON_True);
-            if(sys->debug == 1)
+            if(sys->debug)
                 FPS_ERROR_PRINT("****** variable [%s] set to signed %d\n", db->name.c_str(), db->sign);
         }
         
         if(scale &&(db != NULL))
         {
             db->scale = (scale->valueint);
-            if(sys->debug == 1)
+            if(sys->debug)
                 FPS_ERROR_PRINT("****** variable [%s] scale set %d\n", db->name.c_str(), db->sign);
         }
 
@@ -856,7 +856,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 
         }
 
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         // keep a count of the objects.
         sys->numObjs[idx]++; 
@@ -1060,12 +1060,12 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
 {
     cJSON* itypeValues = body_JSON;
     cJSON* cjit = NULL;
-    if(sys->debug == 1)
+    if(sys->debug)
         FPS_ERROR_PRINT("Found variable list or array uri [%s] \n", msg->uri);
     // decode values may be in an array , TODO arrays are DEPRECATED
     if (cJSON_IsArray(itypeValues)) 
     {
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_DEBUG_PRINT("Found array of variables  \n");
 
         cJSON_ArrayForEach(cjit, itypeValues) 
@@ -1079,7 +1079,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
     {
         // process a simple list
         cjit = itypeValues->child;
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
         char* mcuri = msg->uri;
         mcuri = strstr(msg->uri,"/reply/");
@@ -1106,14 +1106,14 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         while(cjit != NULL)
         {
             int flag = 0;
-            if(sys->debug == 1)
+            if(sys->debug)
                 FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
                                         , cjit->string
                                         , (void *)cjit->child
                                         );
             if (!checkWho(sys, mcuri, cjit->string, who))
             {
-                if(sys->debug == 1)
+                if(sys->debug)
                     FPS_DEBUG_PRINT("variable [%s] uri [%s] NOT set ON %d\n"
                                     , cjit->string
                                     , mcuri
@@ -1122,7 +1122,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
             }
             else
             {
-                if(sys->debug == 1)
+                if(sys->debug)
                     FPS_ERROR_PRINT("variable [%s] uri [%s] OK set ON %d\n"
                                     , cjit->string
                                     , msg->uri
@@ -1133,7 +1133,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
             }
             cjit = cjit->next;
         }
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_DEBUG_PRINT("***** Done with variable list \n\n");
     }
     return body_JSON;//return dbs.size();
@@ -1198,10 +1198,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     //int reffrags = 0; // nfrags in the reference uri 
     DbVar* db = NULL;
 
-    // msg->nfrags number of frags in the message
-    // if reffrags == nfrags we have no name
-    // if msg->nfrags - reffrags == 1 and we find a var for msg->pfrags[reffrags]; we have a single
-    // 
+    
     if (body_JSON == NULL)
     {
         if((strcmp(msg->method,"set") == 0) || (strcmp(msg->method,"post") == 0))
@@ -1214,7 +1211,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
             return NULL;
         }
     }
-    if(sys->debug == 1)
+    if(sys->debug)
         FPS_ERROR_PRINT("fims message uri [%s] test for enough pfrags [%d] id [%s] \n", msg->uri, msg->nfrags, sys->id);
     
     if (msg->nfrags < 2)
@@ -1235,7 +1232,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     int flags = 0;
     //DbVar* db = NULL;
     char* newUri = sys->confirmUri(db, msg->uri, who, name, flags);
-    if(1 ||sys->debug == 1)
+    if(sys->debug)
         FPS_ERROR_PRINT("fims message first test msg->uri [%s]   flags %x\n", msg->uri, flags);
 
 
@@ -1254,7 +1251,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         //     return body_JSON;
         // }
         //int urifrags = 0;
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_ERROR_PRINT(" %s Running with uri: [%s] flags %x  \n", __FUNCTION__, newUri, (unsigned int) flags);
 
         if((flags & URI_FLAG_URIOK) == 0)
@@ -1277,12 +1274,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     //
     if((strcmp(msg->method, "set") == 0)||(strcmp(msg->method, "post") == 0))
     {
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
 
         if(((flags & URI_FLAG_SET) == 0)  && (who != DNP3_MASTER))
         {
-            if(1 || sys->debug == 1)
+            if(sys->debug)
                 FPS_ERROR_PRINT("Set not supported for [%s] \n", db->name.c_str()); 
             return body_JSON;
         }
@@ -1291,12 +1288,12 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     if(strcmp(msg->method, "get") == 0)
     {
         int flag = 0;
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
 
         if((flags & URI_FLAG_GET) == 0)
         {
-            if(1 || sys->debug == 1)
+            if(sys->debug)
             {
                 if(db)
                     FPS_ERROR_PRINT("Get not supported for [%s] \n", db->name.c_str()); 
@@ -1304,11 +1301,10 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
                     FPS_ERROR_PRINT("Get not supported \n"); 
             }
             return body_JSON;
-
         }
         if((flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
         {
-            if(sys->debug == 1)
+            if(sys->debug)
                 FPS_DEBUG_PRINT("Found SINGLE variable [%s] type  %d \n", db->name.c_str(), db->type); 
             dbs.push_back(std::make_pair(db, flag));
             return body_JSON;
@@ -1327,17 +1323,13 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     // Allow "pub" to "set" outstation
     if(strcmp(msg->method,"set") == 0 || (strcmp(msg->method,"pub") == 0 && (who == DNP3_OUTSTATION)))
     {
-        //TODO need to ignore sets on the outstation for master vars and vice versa 
-        //int single = 0;
-        //int reply = 1;
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set getting better 
-        //if(sys->debug == 1)
         if((flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
         {
             if (db != NULL)
             {
-                if(sys->debug == 1)
+                if(sys->debug)
                 {
                     FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%d] single name [%s]\n"
                                         , msg->method
@@ -1392,16 +1384,15 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
             // TODO redundant
         if((flags & URI_FLAG_REPLY) == URI_FLAG_REPLY)
         {
-            //if(sys->debug == 1)
+            if(sys->debug )
                 FPS_ERROR_PRINT("fims message reply uri ACCEPTED Body  [%s] \n", msg->body);
         }            
         
 
         if((flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
-        //if(single == 1)
         {
             // process a single var
-            if(sys->debug == 1)
+            if(sys->debug)
                 FPS_ERROR_PRINT("Found variable [%s] type  %d run set %d\n"
                                         , db->name.c_str()
                                         , db->type
@@ -1410,7 +1401,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 
             
             int flag = 0;
-            if(sys->debug == 1)
+            if(sys->debug)
                 FPS_DEBUG_PRINT("Found variable type  %d \n", db->type);
             itypeValues = body_JSON;
             // allow '"string"' OR '{"value":"string"}'
@@ -1419,7 +1410,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
                 flag |= PRINT_VALUE;
                 itypeValues = cJSON_GetObjectItem(itypeValues, "value");
             }
-            if(sys->debug == 1)
+            if(sys->debug)
             {
                 FPS_ERROR_PRINT("Found variable [%s] type  %d  sign %d body [%s]  flag %d \n"
                                         , db->name.c_str()
@@ -1490,7 +1481,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
     if (cjvalue->type == cJSON_Object)
     {
         flag |= PRINT_VALUE;
-        if(sys->debug == 1)
+        if(sys->debug)
             FPS_DEBUG_PRINT(" ************* %s Var [%s] set flag to 1 \n", __FUNCTION__, name);
         cjvalue = cJSON_GetObjectItem(cjvalue, "value");
     }
@@ -1564,21 +1555,21 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name
     return ret;
 }
 
-cJSON* sysdbFindAddArray(sysCfg* sysdb, const char* field)
+cJSON* sysdbFindAddArray(sysCfg* sys, const char* field)
 {
     // look for cJSON Object called field
-    cJSON* cjf = cJSON_GetObjectItem(sysdb->cj, field);
+    cJSON* cjf = cJSON_GetObjectItem(sys->cj, field);
     if(!cjf)
     {
         cJSON* cja =cJSON_CreateArray();
-        cJSON_AddItemToObject(sysdb->cj,field,cja);
-        cjf = cJSON_GetObjectItem(sysdb->cj, field);
+        cJSON_AddItemToObject(sys->cj, field, cja);
+        cjf = cJSON_GetObjectItem(sys->cj, field);
     }
     return cjf;
 }
 
 // this sends out sets for each command received.
-void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
+void sendCmdSet(sysCfg* sys, DbVar*db, cJSON* cj)
 {
     const char *uri;
     char turi[1024];
@@ -1593,7 +1584,7 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     }
     else
     {
-        snprintf(turi, sizeof(turi), "components/%s", sysdb->id );
+        snprintf(turi, sizeof(turi), "components/%s", sys->id );
         uri = (const char *)turi;
     }
     
@@ -1603,13 +1594,13 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
         char tmp[2048];
         snprintf(tmp, sizeof(tmp), "/%s/%s", uri, db->name.c_str() );
 
-        if(sysdb->p_fims)
+        if(sys->p_fims)
         {
-            sysdb->p_fims->Send("set", tmp, NULL, out);
+            sys->p_fims->Send("set", tmp, NULL, out);
         }
         else
         {
-            FPS_ERROR_PRINT("%s Error in sysdb->p_fims\n", __FUNCTION__ );
+            FPS_ERROR_PRINT("%s Error in sys->p_fims\n", __FUNCTION__ );
         }    
         free(out);
     }
@@ -1619,19 +1610,19 @@ void sendCmdSet(sysCfg* sysdb, DbVar*db, cJSON* cj)
     }
 }
 // possibly used in outstation comand handler to publish changes
-void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
+void sysdbAddtoRecord(sysCfg* sys, const char* field, const opendnp3::AnalogOutputInt16& cmd, uint16_t index)
 {
-    DbVar* db = sysdb->getDbVarId(AnIn16 , index);
+    DbVar* db = sys->getDbVarId(AnIn16 , index);
     if (db)
     {
-        cJSON* cjf = sysdbFindAddArray(sysdb, field);
+        cJSON* cjf = sysdbFindAddArray(sys, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
-        cJSON_AddNumberToObject(cjv,"value", cmd.value);
-        cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
+        cJSON_AddNumberToObject(cjv, "value", cmd.value);
+        cJSON_AddItemToObject(cji, db->name.c_str(), cjv);
         cJSON_AddItemToArray(cjf, cji);
-        sysdb->cjloaded++;
-        sendCmdSet(sysdb, db, cjv);
+        sys->cjloaded++;
+        sendCmdSet(sys, db, cjv);
         //cJSON_Delete(cjv);
     }
     else
@@ -1640,12 +1631,12 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const opendnp3::AnalogOu
     }    
 }
 
-void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
+void sysdbAddtoRecord(sysCfg* sys, const char* field, const opendnp3::AnalogOutputInt32& cmd, uint16_t index)
 {
-    DbVar* db = sysdb->getDbVarId(AnIn32 , index);
+    DbVar* db = sys->getDbVarId(AnIn32 , index);
     if (db)
     {
-        cJSON* cjf = sysdbFindAddArray(sysdb, field);
+        cJSON* cjf = sysdbFindAddArray(sys, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
         if(db->sign == 1)
@@ -1655,15 +1646,16 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
         else
         {
             uint32_t u32val = static_cast<uint32_t>(cmd.value);
-            FPS_ERROR_PRINT("%s usigned AnIn32 val %u at index %d\n", __FUNCTION__, u32val, static_cast<int32_t>(index) );
+            if(sys->debug)
+                FPS_ERROR_PRINT("%s unsigned AnIn32 val %u at index %d\n", __FUNCTION__, u32val, static_cast<int32_t>(index) );
 
-            cJSON_AddNumberToObject(cjv,"value", static_cast<uint32_t>(cmd.value));            
+            cJSON_AddNumberToObject(cjv, "value", static_cast<uint32_t>(cmd.value));            
         }
         
         cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
         cJSON_AddItemToArray(cjf, cji);
-        sysdb->cjloaded++;
-        sendCmdSet(sysdb, db, cjv);
+        sys->cjloaded++;
+        sendCmdSet(sys, db, cjv);
         //cJSON_Delete(cjv);
     }
     else
@@ -1673,19 +1665,19 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
 
 }
 
-void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
+void sysdbAddtoRecord(sysCfg* sys, const char* field, const opendnp3::AnalogOutputFloat32& cmd, uint16_t index)
 {
-    DbVar* db = sysdb->getDbVarId(AnF32 , index);
+    DbVar* db = sys->getDbVarId(AnF32 , index);
     if (db)
     {
-        cJSON* cjf = sysdbFindAddArray(sysdb, field);
+        cJSON* cjf = sysdbFindAddArray(sys, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
         cJSON_AddNumberToObject(cjv,"value", cmd.value);
         cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
         cJSON_AddItemToArray(cjf, cji);
-        sysdb->cjloaded++;
-        sendCmdSet(sysdb, db, cjv);
+        sys->cjloaded++;
+        sendCmdSet(sys, db, cjv);
         //cJSON_Delete(cjv);
     }
     else
@@ -1695,19 +1687,19 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const opendnp3::AnalogOut
 
 }
 
-void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_t index)
+void sysdbAddtoRecord(sysCfg* sys, const char* field, const char* cmd, uint16_t index)
 {
-    DbVar* db = sysdb->getDbVarId(Type_Crob , index);
+    DbVar* db = sys->getDbVarId(Type_Crob , index);
     if (db)
     {
-        cJSON* cjf = sysdbFindAddArray(sysdb, field);
+        cJSON* cjf = sysdbFindAddArray(sys, field);
         cJSON* cjv = cJSON_CreateObject();
         cJSON* cji = cJSON_CreateObject();
-        cJSON_AddStringToObject(cjv,"value", cmd);
-        cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
+        cJSON_AddStringToObject(cjv, "value", cmd);
+        cJSON_AddItemToObject(cji, db->name.c_str(), cjv);
         cJSON_AddItemToArray(cjf, cji);
-        sysdb->cjloaded++;
-        sendCmdSet(sysdb, db, cjv);
+        sys->cjloaded++;
+        sendCmdSet(sys, db, cjv);
     }
     else
     {
@@ -1717,7 +1709,7 @@ void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_
 }
 
 // TODO allow a setup option in the config file to supply the SOEname
-const char* cfgGetSOEName(sysCfg* sysdb, const char* fname)
+const char* cfgGetSOEName(sysCfg* sys, const char* fname)
 {
     return fname;
 }
