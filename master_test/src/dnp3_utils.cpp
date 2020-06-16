@@ -1466,7 +1466,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         // process {"valuex":xxx,"valuey":yyy} ; xxx or yyy could be a number or {"value":val}
         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
         {
-            FPS_ERROR_PRINT("fims message running parseValues \n");
+            if(sys->debug)
+                FPS_ERROR_PRINT("fims message running parseValues \n");
             return parseValues(dbs, sys, msg, who, body_JSON);
         }
     }
