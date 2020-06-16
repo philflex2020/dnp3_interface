@@ -1105,19 +1105,19 @@ typedef struct sysCfg_t {
         }
 
         //TODO remove this
-        void addUri(const char *uri, DbVar*db)
-        {
-            // const char *mapUri;
-            // // this is a pointer to the uri 
-            // // if there is not one in the map then create a new one and then add it
-            // //duri_map::iterator it_uris;
-            // if(uriMap.find(uri) == uriMap.end())
-            // {
-            //     mapUri = strdup(uri);
-            //     uri = mapUri;
-            // }
-            // uriMap[uri].push_back(db);
-        }
+        // void addUri(const char *uri, DbVar*db)
+        // {
+        //     // const char *mapUri;
+        //     // // this is a pointer to the uri 
+        //     // // if there is not one in the map then create a new one and then add it
+        //     // //duri_map::iterator it_uris;
+        //     // if(uriMap.find(uri) == uriMap.end())
+        //     // {
+        //     //     mapUri = strdup(uri);
+        //     //     uri = mapUri;
+        //     // }
+        //     // uriMap[uri].push_back(db);
+        // }
         
         void addUri(cJSON* uri, DbVar*db)
         {
@@ -1181,22 +1181,17 @@ typedef struct sysCfg_t {
         char* local_uri;        
 } sysCfg;
 
-DbVar* getDbVar(sysCfg *sysdb, const char *name);
-
-//bool process_dnp3_message(int bytes_read, int header_length, datalog* data, system_config* config, server_data* server_map, bool serial, uint8_t * query);
-//bool update_register_value(dnp3_mapping_t* map, bool* reg_type, maps** settings, cJSON* value);
+DbVar* getDbVar(sysCfg* sysdb, const char* name);
 void emit_event(fims* pFims, const char* source, const char* message, int severity);
 cJSON* get_config_json(int argc, char* argv[]);
-//server_data* create_register_map(cJSON* registers, datalog* data);
-//int parse_system(cJSON *system, system_config *config);
 
 // new mapping
 bool parse_system(cJSON* object, sysCfg* sys, int who);
 bool parse_variables(cJSON* object, sysCfg* sys, int who);
-cJSON *parseJSONConfig(char *file_path);
-void addCjTimestamp(cJSON *cj, const char* ts);
-void pubWithTimeStamp(cJSON *cj, sysCfg* sys, const char* ev);
-void pubWithTimeStamp2(cJSON *cj, sysCfg* sys, const char* ev);
+cJSON *parseJSONConfig(char* file_path);
+void addCjTimestamp(cJSON* cj, const char* ts);
+void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev);
+void pubWithTimeStamp2(cJSON* cj, sysCfg* sys, const char* ev);
 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index);
@@ -1204,19 +1199,16 @@ void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputFloat32
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const char* cmd, uint16_t index);
 const char* cfgGetSOEName(sysCfg* sysdb, const char* fname);
 
-int addVarToCj(cJSON* cj, DbVar*db);
+int addVarToCj(cJSON* cj, DbVar* db);
 int addVarToCj(sysCfg* sys, cJSON* cj, const char* dname);
 
-cJSON* parseBody( dbs_type&dbs, sysCfg*sys, fims_message*msg, int who);
-int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name, cJSON *cjvalue, int flag);
-int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON *cjvalue, int flag);
+cJSON* parseBody(dbs_type& dbs, sysCfg* sys, fims_message* msg, int who);
+int addValueToVec(dbs_type& dbs, sysCfg* sys, fims_message* msg, const char* name, cJSON* cjvalue, int flag);
+int addValueToVec(dbs_type& dbs, sysCfg* sys, char* curi, const char* name, cJSON* cjvalue, int flag);
 
-//int addValueToVec(dbs_type&dbs, sysCfg*sys, /*CommandSet& commands,*/ const char* valuestring, cJSON *cjvalue, int flag);
-// int addValueToDb(sysCfg*sys, const char* name , cJSON *cjvalue, int flag);
-//bool checkWho(sysCfg*sys, const char *name, int who);
-bool checkWho(sysCfg*sys, const char* uri, const char *name, int who);
-bool checkWho(sysCfg*sys, DbVar *db, int who);
-int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs);
+bool checkWho(sysCfg* sys, const char* uri, const char* name, int who);
+bool checkWho(sysCfg* sys, DbVar* db, int who);
+int getSysUris(sysCfg* sys, int who, const char** &subs, bool* &bpubs);
 
  
 #endif
