@@ -920,9 +920,11 @@ typedef struct sysCfg_t {
                 }
                 auto dvar = it->second;
                 auto dbm = dvar->dbmap;
-                dbf = dbm.find(nuri);
-                if (dbf != dbm.end())
+                dbvar_map::iterator itd = dbm.find(nuri);
+
+                if (itd != dbm.end())
                 {
+                    dbf = itd->second;
                     if(debug)
                         FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
                                             , dbf->name.c_str() 
