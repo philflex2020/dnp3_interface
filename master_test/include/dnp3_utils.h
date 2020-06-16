@@ -335,6 +335,10 @@ typedef struct sysCfg_t {
             // TODO check this 
             //if (dbMap.find(name) == dbMap.end()){
                 db = new DbVar(name, type, offset, uri, variation);
+                if(uri == NULL)
+                {
+                    db->uri = defUri;
+                }
                 dbMap[name] = db;
                 //
                 //db->idx = static_cast<int32_t>(dbVec[type].size());
