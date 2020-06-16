@@ -1254,7 +1254,20 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     // get is OK codewise..
     // TODO remove  readb vars 
     // find a good looking uri and find the number of frags
-    //  
+    //
+    if(strcmp(msg->method, "set") == 0)||(strcmp(msg->method, "post") == 0))
+    {
+        if(sys->debug == 1)
+            FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
+
+        if((flags & URI_FLAG_SET) == 0)
+        {
+            if(1 || sys->debug == 1)
+                FPS_ERROR_PRINT("Get not supported for [%s] \n", db->name.c_str()); 
+            return body_JSON;
+        }
+    }
+    
     if(strcmp(msg->method, "get") == 0)
     {
         int flag = 0;
