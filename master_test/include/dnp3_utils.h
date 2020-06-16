@@ -340,13 +340,13 @@ typedef struct sysCfg_t {
             //dbMap[name] = db;
             //
             //db->idx = static_cast<int32_t>(dbVec[type].size());
-            // TODO auto assign
+            // TODO auto assign see below
             db->idx = getDbIdx(type);
             dbVec[type].push_back(db);
      
             return db;
         };
-
+        // TODO allow this to auto configure for any if db->idx == -1
         void setDbIdxMap(DbVar* db)
         {
                 if(dbMapIxs[db->type].find(db->idx) == dbMapIxs[db->type].end())
@@ -1190,7 +1190,7 @@ bool parse_system(cJSON* object, sysCfg* sys, int who);
 bool parse_variables(cJSON* object, sysCfg* sys, int who);
 cJSON *parseJSONConfig(char* file_path);
 void addCjTimestamp(cJSON* cj, const char* ts);
-void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev);
+void xpubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev);
 void pubWithTimeStamp2(cJSON* cj, sysCfg* sys, const char* ev);
 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);

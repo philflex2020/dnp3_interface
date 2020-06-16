@@ -183,7 +183,7 @@ DbVar* getDbVar(sysCfg* sys, const char* uri, const char* name)
 }
 
 //TODO check remove old version deprecated
-void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
+void xpubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
 {
     if(cj)
     {
@@ -216,7 +216,7 @@ void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
 }
 
 //uses the ev field
-void pubWithTimeStamp2(cJSON *cj, sysCfg* sys, const char* ev)
+void pubWithTimeStamp2(cJSON* cj, sysCfg* sys, const char* ev)
 {
     if(cj)
     {    
@@ -251,7 +251,7 @@ void pubWithTimeStamp2(cJSON *cj, sysCfg* sys, const char* ev)
     }
 }
 
-void addCjTimestamp(cJSON *cj, const char* ts)
+void addCjTimestamp(cJSON* cj, const char* ts)
 {
     char buffer[64],time_str[256];
     struct timeval tv;
@@ -317,7 +317,7 @@ cJSON* get_config_json(int argc, char* argv[])
 }
 
 // new parser for sample2
-cJSON *parseJSONConfig(char *file_path)
+cJSON *parseJSONConfig(char* file_path)
 {
     //Open a file//
     if (file_path == NULL)
@@ -550,7 +550,7 @@ int addVarToCj(cJSON* cj, DbVar* db)
     return addVarToCj(cj, db, 0);
 }
 
-int addVarToCj(sysCfg* sys, cJSON* cj, const char *uri, const char* dname)
+int addVarToCj(sysCfg* sys, cJSON* cj, const char* uri, const char* dname)
 {
     DbVar* db = sys->getDbVar(uri, dname);
 
@@ -560,7 +560,7 @@ int addVarToCj(sysCfg* sys, cJSON* cj, const char *uri, const char* dname)
 // must match the typedef sequence
 const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary", 0 };
 
-const char *iotypToStr (int t)
+const char* iotypToStr (int t)
 {
 //    if (t < Type_of_Var::NumTypes)
     if (t < static_cast<int32_t> (sizeof(dreg_types))/static_cast<int32_t>(sizeof(dreg_types[0])))
@@ -595,7 +595,7 @@ int variation_decode(const char* ivar)
     return GroupUndef;
 }
 
-bool getCJint (cJSON *cj, const char *name, int& val, bool required)
+bool getCJint (cJSON* cj, const char* name, int& val, bool required)
 {
     bool ok = !required;
     cJSON *cji = cJSON_GetObjectItem(cj, name);
@@ -606,7 +606,7 @@ bool getCJint (cJSON *cj, const char *name, int& val, bool required)
     return ok;
 }
 
-bool getCJstr (cJSON *cj, const char *name, char *& val, bool required)
+bool getCJstr (cJSON* cj, const char* name, char* &val, bool required)
 {
     bool ok = !required;
     cJSON *cji = cJSON_GetObjectItem(cj, name);
@@ -618,7 +618,7 @@ bool getCJstr (cJSON *cj, const char *name, char *& val, bool required)
     return ok;
 }
 
-bool getCJcj (cJSON *cj, const char *name, cJSON*& val, bool required)
+bool getCJcj (cJSON* cj, const char* name, cJSON* &val, bool required)
 {
     bool ok = !required;
     cJSON *cji = cJSON_GetObjectItem(cj, name);
@@ -701,8 +701,6 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
 
     return ret;
 }
-
-
 
 // big wrinkle here.. Lets parse the modbus file  
 // "registers": 
@@ -872,11 +870,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
             db->idx = cjidx->valueint;
         }
         sys->setDbIdxMap(db);
-
-        // deprecated
-        //sys->addUri(nuri, db);
-
-        // new way 
+  
         sys->addDbUri(nuri, db);
 
         // Deal with linkback option
@@ -1007,10 +1001,12 @@ bool parse_variables(cJSON* object, sysCfg* sys, int who)
     }
     for (int idx = 0; idx< Type_of_Var::NumTypes; idx++)
         parse_object(sys, JSON_objects, idx, who);
+
+    // TODO after this is done we could auto assign the indexes here
     return true;
 }
 
-int getSysUris(sysCfg* sys, int who, const char **&subs, bool *&bpubs)
+int getSysUris(sysCfg* sys, int who, const char** &subs, bool* &bpubs)
 {
     int num = sys->getSubs(NULL, 0, who);
     subs = (const char **) malloc((num+3) * sizeof(char *));
