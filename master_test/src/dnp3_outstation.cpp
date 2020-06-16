@@ -258,15 +258,13 @@ int main(int argc, char* argv[])
         cJSON_Delete(config);
         return 1;
     }
-    sys_cfg.setupReadb(DNP3_OUTSTATION);
+    //sys_cfg.setupReadb(DNP3_OUTSTATION);
     sys_cfg.showDbMap();
     sys_cfg.showUris();
     sys_cfg.showNewUris();
     
-
     cJSON_Delete(config);
 
-    
     const char **subs = NULL;
     bool *bpubs = NULL;
     int num = getSysUris(&sys_cfg, DNP3_OUTSTATION, subs, bpubs);
