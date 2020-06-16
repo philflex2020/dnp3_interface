@@ -337,7 +337,7 @@ typedef struct sysCfg_t {
             {
                 db->uri = defUri;
             }
-            dbMap[name] = db;
+            //dbMap[name] = db;
             //
             //db->idx = static_cast<int32_t>(dbVec[type].size());
             db->idx = getDbIdx(type);
