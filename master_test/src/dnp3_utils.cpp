@@ -1223,11 +1223,11 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         }
         //int urifrags = 0;
         if(sys->debug == 1)
-            FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
+            FPS_ERROR_PRINT(" %s Running with uri: [%s] flags %x  \n", __FUNCTION__, dburi, (unsigned int) flags);
 
         if((flags & URI_FLAG_URIOK) == 0)
         {
-            FPS_ERROR_PRINT("fims message [%s] not for this %d [%s] and uriOK is %x \n", msg->uri, flags);
+            FPS_ERROR_PRINT("fims message [%s] not for this %d [%s] and uriOK is %x \n", msg->uri, (unsigned int)flags);
             return body_JSON;
         }
 
@@ -1249,7 +1249,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         int flag = 0;
         if(sys->debug == 1)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
-        if((flags & URI_FLAG_SINGLE) == 1)
+        if((flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
         {
             if(sys->debug == 1)
                 FPS_DEBUG_PRINT("Found SINGLE variable [%s] type  %d \n", db->name.c_str(), db->type); 
