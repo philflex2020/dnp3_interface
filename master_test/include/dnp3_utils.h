@@ -944,40 +944,7 @@ typedef struct sysCfg_t {
             return NULL;
         }
 
-        // make sure the uri is in the list
-        // what about default / base uri 
-        //
-        bool xconfirmUri(DbVar* db, const char*uri, int& nfrags)
-        {
-            // first limit the uri 
-            if(debug)
-                FPS_DEBUG_PRINT(" %s uris===> \n", __FUNCTION__);
-
-            dburi_map::iterator it = dburiMap.find(uri);
-            if (it != dburiMap.end())
-            {
-                // it.first is the uri
-                if(debug)
-                    FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first.c_str(), uri);
-                // dbvar_map
-                auto dvar = it->second;
-                auto dbm = dvar->dbmap;
-                if (dbm.find(db->name) != dbm.end())
-                {
-                    if(debug)
-                        FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
-                                        , db->name.c_str() 
-                                        , db->type
-                                        , db->offset
-                                        );
-                    return true;
-                }
-            }
-            if(debug)
-                FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
-            return false;
-        }
-
+    
         int addBits(DbVar *db, cJSON *bits)
         {
             int asiz = cJSON_GetArraySize(bits);
