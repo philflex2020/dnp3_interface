@@ -1260,6 +1260,14 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         int flag = 0;
         if(sys->debug == 1)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
+
+        if((flags & URI_FLAG_GET) == 0)
+        {
+            if(1 || sys->debug == 1)
+                FPS_ERROR_PRINT("Get not supported for [%s] \n", db->name.c_str()); 
+            return body_JSON;
+
+        }
         if((flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
         {
             if(sys->debug == 1)
