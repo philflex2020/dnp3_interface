@@ -1259,8 +1259,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         // else get them all
         // but only the ones associated with the uri
         else
-        {
-            
+        {            
             sys->addVarsToVec(dbs, newUri);
             return body_JSON;
         }
@@ -1293,7 +1292,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
             }
             else
             {
-                FPS_ERROR_PRINT("fims method [%s] uri [%s]  supported on [%d] NO DBVAR\n"
+                FPS_ERROR_PRINT("fims method [%s] uri [%s]  single selected  [%d] NO DBVAR\n"
                                     , msg->method
                                     , msg->uri
                                     , who
@@ -1304,7 +1303,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         
         //uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
         // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
-        if((flags & URI_FLAG_SYSTEM) == 1)
+        if((flags & URI_FLAG_SYSTEM) == URI_FLAG_SYSTEM)
         {
             FPS_DEBUG_PRINT("fims system command [%s] body [%s]\n", msg->uri, msg->body);
             cJSON* cjsys = cJSON_GetObjectItem(body_JSON, "debug");

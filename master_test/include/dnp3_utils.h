@@ -909,14 +909,16 @@ typedef struct sysCfg_t {
             nuri = NULL;
             for  (it = dburiMap.begin() ; it != dburiMap.end(); it++)
             {
-                if(debug)
-                    FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first.c_str(), turi);
+                if(1 ||debug)
+                    FPS_ERROR_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first.c_str(), turi);
 
                 if (strncmp(turi, it->first.c_str(), strlen(it->first.c_str())) == 0)
                 {
                     nuri = turi + strlen(it->first.c_str()) + 1;
                     //match = true;
                     flags |= URI_FLAG_URIOK;
+                    if(1 ||debug)
+                        FPS_ERROR_PRINT(" %s uris checking [%s] name nuri  [%s] \n ", __FUNCTION__, it->first.c_str(), nuri);
                 
                     auto dvar = it->second;
                     auto dbm = dvar->dbmap;
