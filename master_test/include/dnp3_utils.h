@@ -915,7 +915,7 @@ typedef struct sysCfg_t {
                 if (strncmp(turi,it->first.c_str(), strlen(it->first.c_str())) == 0)
                 {
                     nuri = turi + strlen(it->first.c_str()) + 1;
-                    match = true;
+                    //match = true;
                     flags |= URI_FLAG_URIOK;
                 }
                 auto dvar = it->second;
