@@ -228,9 +228,11 @@ int main(int argc, char *argv[])
 
     cJSON_Delete(config);
 
-    sys_cfg.setupReadb(DNP3_MASTER);
+    //sys_cfg.setupReadb(DNP3_MASTER);
     sys_cfg.showDbMap();
     sys_cfg.showUris();
+    sys_cfg.showNewUris();
+    
 
     const char **subs = NULL;
     bool *bpubs = NULL;
