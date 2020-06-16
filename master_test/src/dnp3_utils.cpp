@@ -1227,7 +1227,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 
         if((flags & URI_FLAG_URIOK) == 0)
         {
-            FPS_ERROR_PRINT("fims message [%s] not for this %d [%s] and uriOK is %x \n", msg->uri, (unsigned int)flags);
+            FPS_ERROR_PRINT("fims message [%s] not for this system and uriOK is %x \n", msg->uri, (unsigned int)flags);
             return body_JSON;
         }
 
@@ -1277,7 +1277,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set getting better 
         //if(sys->debug == 1)
-        if(flags & URI_FLAG_SINGLE) == 1)
+        if(flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
         {
             if (db != NULL)
             {
