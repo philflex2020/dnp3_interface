@@ -1411,7 +1411,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         if ((itypeA16 == NULL) && (itypeA32 == NULL) && (itypeF32 == NULL) && (itypeCROB == NULL)) 
         {
             FPS_ERROR_PRINT("fims message running parseValues \n");
-
             return parseValues(dbs, sys, msg, who, body_JSON);
         }
     }
@@ -1424,12 +1423,12 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
     DbVar* db = getDbVar(sys, (const char*)curi, name); 
     if (db == NULL)
     {
-        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dbMap\n", __FUNCTION__, name);
+        FPS_ERROR_PRINT( " ************* %s Var [%s] not found in dburiMap\n", __FUNCTION__, name);
         return -1;
     }
     
-    if(sys->debug == 1)
-        FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dbMap\n", __FUNCTION__, name);
+    if(1||sys->debug == 1)
+        FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dburiMap\n", __FUNCTION__, name);
 
     if (cjvalue->type == cJSON_Object)
     {
@@ -1485,6 +1484,9 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
         FPS_ERROR_PRINT( " *************** %s Var [%s] not processed \n",__FUNCTION__, name);  
         return -1;
     }
+    
+    FPS_ERROR_PRINT( " *************** %s All Vars processed  size %d\n",__FUNCTION__, (int) dbs.size());  
+
     return dbs.size();   
 }
 // TODO need no dbs option
