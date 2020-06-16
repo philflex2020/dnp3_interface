@@ -919,26 +919,34 @@ typedef struct sysCfg_t {
                     flags |= URI_FLAG_URIOK;
                     if(1 ||debug)
                         FPS_ERROR_PRINT("    URI FOUND [%s] checking name nuri  [%s] (len) %ld \n ", it->first.c_str(), nuri, strlen(nuri));
-                
-                    auto dvar = it->second;
-                    auto dbm = dvar->dbmap;
-                    dbvar_map::iterator itd = dbm.find(nuri);
-
-                    if (itd != dbm.end())
+                    if(strlen(nuri)> 0)
                     {
-                        dbf = itd->second;
-                        if(debug)
-                            FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
-                                                , dbf->name.c_str() 
-                                                , dbf->type
-                                                , dbf->offset
-                                                );
-                        name = nuri;
-                        flags |= URI_FLAG_NAMEOK;
-                        flags |= URI_FLAG_SINGLE;
-                        db = dbf;
+                        auto dvar = it->second;
+                        auto dbm = dvar->dbmap;
+                        dbvar_map::iterator itd = dbm.find(nuri);
+
+                        if (itd != dbm.end())
+                        {
+                            dbf = itd->second;
+                            if(1 || debug)
+                                FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
+                                                    , dbf->name.c_str() 
+                                                    , dbf->type
+                                                    , dbf->offset
+                                                    );
+                            name = nuri;
+                            flags |= URI_FLAG_NAMEOK;
+                            flags |= URI_FLAG_SINGLE;
+                            db = dbf;
+                            return turi;
+                        }
+                    }
+                    else
+                    {
+                        db = NULL;
                         return turi;
                     }
+                    
                 }
             }
             if(debug)
