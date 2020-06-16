@@ -999,7 +999,7 @@ typedef struct sysCfg_t {
             }
             return ret;
         };
-        
+
         // get the list of subs
         int getSubs(const char**subs, int num, int who)
         {
@@ -1021,7 +1021,7 @@ typedef struct sysCfg_t {
         // only get the ones for vars applied to this application (outstation or master)
         int getUris(int who)
         {
-            //if(debug ==1)
+            if(debug)
                 FPS_ERROR_PRINT(" %s uris===>%d<=== \n\n", __FUNCTION__, who);
 
             dburi_map::iterator it;
@@ -1041,7 +1041,7 @@ typedef struct sysCfg_t {
                     snprintf(replyto, sizeof(replyto),"%s/reply%s",  base_uri, it->first.c_str());
                     snprintf(getUri,sizeof(getUri),"%s", it->first.c_str());
                 }
-                //if(debug == 1)
+                if(debug)
                     FPS_ERROR_PRINT(" uri : [%s] replyto: [%s]\n"
                         , getUri
                         , replyto
@@ -1049,12 +1049,13 @@ typedef struct sysCfg_t {
         
                 p_fims->Send("get", getUri, replyto, NULL);
             }
-            //if(debug ==1)
+            if(debug)
                 FPS_ERROR_PRINT(" %s<=== get uris DONE\n\n", __FUNCTION__);
             return 0;
         }
 
         // new way of doing this
+        // we may not need this structure in the end
         // new structure varList  uri name, map of dbVars
         // struct varList {
         //    const char* uri;
