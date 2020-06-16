@@ -1135,6 +1135,20 @@ int countUris(const char* uri)
 }
 
 // we have an incoming uri
+// outstation normal    
+//       /<uri>             set values on pubs
+// outstation reply
+//       /reply/id/<uri>    set reply flag , remove /<id>/reply from the uri
+// outstation exception
+//       /id/<uri>           allow gets and sets as well
+
+// master normal    
+//       /<uri>             set values on sets
+// master reply
+//       /reply/id/<uri>    set reply flag , remove /reply from the uri
+// master exception
+//       /id/<uri>           allow gets aas well
+//
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
 cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 {
@@ -1158,7 +1172,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     // 
     if (body_JSON == NULL)
     {
-        if(strcmp(msg->method,"set") == 0)
+        if((strcmp(msg->method,"set") == 0) || (strcmp(msg->method,"post") == 0))
         {
             FPS_ERROR_PRINT("fims message body is NULL or incorrectly formatted for  method (%s) uri (%s) \n", msg->method, msg->uri);
             if(msg->body != NULL)
@@ -1185,7 +1199,9 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     // /assets/feeders/feed_6                      ==> process list
     // /assets/feeders/feed_6/test/feeder_kW_slew_rate    == reject unless we have a var called "test/feeder_kW_slew_rate"
     //
-    bool uriOK = sys->confirmUri(NULL, msg->uri, reffrags);
+    char* name = NULL;
+    int flags = 0;
+    char* newUri = sys->confirmUri(NULL, msg->uri, name, flags);
     bool isReply = false;
     if(sys->debug == 1)
         FPS_ERROR_PRINT("fims message first test msg->uri [%s]  uriOK %d nfags %d reffrags %d\n", msg->uri, uriOK, msg->nfrags, reffrags);
@@ -1233,17 +1249,22 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         int urifrags = 0;
         if(sys->debug == 1)
             FPS_ERROR_PRINT(" %s Running with uri: [%s] single %d  \n", __FUNCTION__, dburi, single);
-        uriOK = sys->confirmUri(db, msg->uri, urifrags);
+         // returns the start of the untangled uri
+        DbVar* db = NULL;
+        char * nuri = NULL;
+        int uriflags = 0;
+        char* turi = confirmUri(db, msg->uri, who, nuri, uriflags)
         if(sys->debug == 1)
-            FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%d]/[%s] uriOK is %d uriflags [%d]\n", dburi, who, sys->id, uriOK, urifrags);
+            FPS_ERROR_PRINT("   RECHECK fims message uri [%s] on  [%d]/[%s] uriOK uriflags [%x]\n", turi, who, sys->id, uriflags);
 
-        if(uriOK == false)
+        if((uriflags & URI_FLAG_URIOK) == 0)
         {
             
-            FPS_ERROR_PRINT("fims message frag %d [%s] not for this %d [%s] and uriOK is %d \n", fragptr+1, dburi, who, sys->id, uriOK);
+            FPS_ERROR_PRINT("fims message [%s] not for this %d [%s] and uriOK is %x \n", msg->uri, uriflags);
             free((void*)curi);
             return body_JSON;
-        }   
+        }
+
         if((strcmp(msg->method,"set") != 0) && (strcmp(msg->method,"get") != 0) && (strcmp(msg->method,"pub") != 0) && (strcmp(msg->method,"post") != 0))
         {
             FPS_ERROR_PRINT("fims unsupported method [%s] \n", msg->method);
@@ -1260,25 +1281,23 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     //  
     if(strcmp(msg->method, "get") == 0)
     {
-        
-
         int flag = 0;
         if(sys->debug == 1)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
-        if(single ==1)
+        if(uriflags & URI_FLAG_SINGLE) == 1)
         {
             if(sys->debug == 1)
                 FPS_DEBUG_PRINT("Found SINGLE variable [%s] type  %d \n", db->name.c_str(), db->type); 
             dbs.push_back(std::make_pair(db, flag));
+            free((void*)curi);
             return body_JSON;
         }
         // else get them all
         // but only the ones associated with the uri
         else
         {
-            char* curi = strdup(msg->uri);
             
-            sys->addVarsToVec(dbs, curi);
+            sys->addVarsToVec(dbs, turi);
             free((void*)curi);
             return body_JSON;
         }
@@ -1295,7 +1314,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set getting better 
         //if(sys->debug == 1)
-        if(single == 1)
+        if(uriflags & URI_FLAG_SINGLE) == 1)
         {
             if (db != NULL)
             {
@@ -1321,15 +1340,10 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
             }
         }
         
-        if(strstr(msg->uri, "/reply/") != NULL)
-        {
-             FPS_ERROR_PRINT("fims message reply uri DETECTED  [%s] \n", msg->uri);
-             single = 0;
-        }
-
         //uri = msg->pfrags[fragptr+2];  // TODO check for delim. //components/master/dnp3_outstation/line_voltage/stuff
         // look for '{"debug":"on"/"off"}' or '{"scan":1,2 or 3} {"unsol": true or false} {"class" '{"<varname>":newclass}}
-        if(strstr(msg->uri, "/_system") != NULL)
+        if(uriflags & URI_FLAG_SYSTEM) == 1)
+//        if(strstr(msg->uri, "/_system") != NULL)
         {
             FPS_DEBUG_PRINT("fims system command [%s] body [%s]\n", msg->uri, msg->body);
             cJSON* cjsys = cJSON_GetObjectItem(body_JSON, "debug");
@@ -1367,7 +1381,8 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         }            
         
 
-        if(single == 1)
+        if(uriflags & URI_FLAG_SINGLE) == 1)
+        //if(single == 1)
         {
             // process a single var
             if(sys->debug == 1)
@@ -1415,26 +1430,9 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
                                         );
                     }
                 // TODO any other strings
-                // do we have to convert strings into numbers ??
                 }
                 else
                 {
-                    // handle readb
-                    //if(sys->useReadb[db->type] && (db->readb != NULL))
-                    if(db->readb != NULL)
-                    {
-                        FPS_ERROR_PRINT(" ***** %s using readb (%s) as [%s] for a set to [%s]\n"
-                                        , __FUNCTION__
-                                        , sys->useReadb[db->type]?"true":"false"
-                                        , db->readb->name.c_str()
-                                        , db->name.c_str()
-                                        );
-                        if(sys->useReadb[db->type])
-                        {
-                            flag |= PRINT_PARENT;
-                            db = db->readb;
-                        }
-                    }
                     sys->setDbVar(db, itypeValues);
                     dbs.push_back(std::make_pair(db, flag));
                 }     

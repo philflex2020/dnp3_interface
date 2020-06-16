@@ -279,6 +279,18 @@ typedef struct varList_t {
 
 typedef std::map<std::string, varList*> dburi_map;
 
+typedef enum {
+    URI_FLAG_FLAG,
+    URI_FLAG_REPLY,
+    URI_FLAG_GET,
+    URI_FLAG_SET,
+    URI_FLAG_URIOK,
+    URI_FLAG_NAMEOK,
+    URI_FLAG_SINGLE,
+    URI_FLAG_SYSTEM
+
+};
+
 typedef struct sysCfg_t {
 
     sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
@@ -846,6 +858,87 @@ typedef struct sysCfg_t {
                 }
             }
             FPS_ERROR_PRINT(" %s<=== New uris \n\n", __FUNCTION__);
+        }
+
+        // returns the start of the untangled uri
+        char* confirmUri(DbVar* &db, const char*uri, int who, char* &name, int& flags)
+        {
+            // first limit the uri 
+            DbVar* dbf = NULL;
+            if(debug)
+                FPS_DEBUG_PRINT(" %s confirmUri===> \n", __FUNCTION__);
+            char* turi = uri;
+            char* nuri;
+            char* tmp;
+            if(strstr(uri, "/_system") != NULL) 
+            {
+               flags |= URI_FLAG_SYSTEM;
+               return uri;
+            }
+            // seek reply format
+            asprintf(&tmp, "/%s/%s/reply",who?"interfaces":"components", id);
+            turi = strstr(uri,tmp);
+            if (turi != NULL)
+            {
+                flags |= URI_FLAG_REPLY;
+                flags |= URI_FLAG_SET;
+                turi += strlen(tmp);
+                free((void *)tmp);
+                //nfrags -= 3;
+                //return turi;
+            }
+            else
+            {
+                // seek extended format
+                asprintf(&tmp, "/%s/%s",(who == DNP3_OUTSTATION)?"interfaces":"components", id);
+                turi = strstr(uri,tmp);
+                if (turi != NULL)
+                {
+                    flags |= URI_FLAG_GET;
+                    flags |= URI_FLAG_SET;
+                    turi += strlen(tmp);
+                    free((void *)tmp);
+                    //nfrags -= 2;
+                //return turi;
+                }
+            }
+            // now look for  matching uri
+            // look for "/interfaces/<id>/<someuri>"
+            dburi_map::iterator it = dburiMap.find(uri);
+            bool match = false;
+            nuri = NULL;
+            for  (it = dburiMap.start() ; it != dburiMap.end(); it++)
+            {
+                if(debug)
+                    FPS_DEBUG_PRINT(" %s uris checking [%s] uri [%s] \n ", __FUNCTION__, it->first.c_str(), turi);
+
+                if (strncmp(turi,it->first.c_str(), strlen(it->first.c_str())) == 0)
+                {
+                    nuri = turi + strlen(it->first.c_str()) + 1;
+                    match = true;
+                    flags |= URI_FLAG_URIOK;
+                }
+                auto dvar = it->second;
+                auto dbm = dvar->dbmap;
+                if (dbm.find(nuri) != dbm.end())
+                {
+                    dbf = dbm.find(nuri);
+                    if(debug)
+                        FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
+                                            , dbf->name.c_str() 
+                                            , dbf->type
+                                            , dbf->offset
+                                            );
+                    name = nuri;
+                    flags |= URI_FLAG_NAMEOK;
+                    flags |= URI_FLAG_SINGLE;
+                    db = dbf;
+                    return turi;
+                }
+            }
+            if(debug)
+                FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+            return NULL;
         }
 
         // make sure the uri is in the list
