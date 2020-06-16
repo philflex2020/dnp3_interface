@@ -898,21 +898,20 @@ typedef struct sysCfg_t {
             }
             else
             {
+                turi = (char *)uri;
                 // seek extended format
-                asprintf(&tmp, "/local/%s/%s",(who == DNP3_OUTSTATION)?"interfaces":"components", id);
-                if (strncmp(uri, tmp, strlen(tmp) )== 0)
+                if(local_uri ! = NULL)
                 {
-                    flags |= URI_FLAG_GET;
-                    flags |= URI_FLAG_SET;
-                    turi = (char *)uri + strlen("/local");
-                    free((void *)tmp);
-                    tmp = NULL;
+                    asprintf(&tmp, "%s", local_uri);
+                    if (strncmp(uri, tmp, strlen(tmp) )== 0)
+                    {
+                        flags |= URI_FLAG_GET;
+                        flags |= URI_FLAG_SET;
+                        turi = (char *)uri + strlen("/local");
+                        free((void *)tmp);
+                        tmp = NULL;
+                    }
                 }
-                else
-                {
-                    turi = (char *)uri;
-                }
-                
             }
 
             if (tmp != NULL)
