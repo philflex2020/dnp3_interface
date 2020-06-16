@@ -715,8 +715,8 @@ typedef struct sysCfg_t {
                 dburi_map::iterator it;
                 for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
                 {
-                    free((void *)it->first);
-                    it->second.clear();
+                    //free((void *)it->first);
+                    delete it->second;
                 }
                 dburiMap.clear();
             }
