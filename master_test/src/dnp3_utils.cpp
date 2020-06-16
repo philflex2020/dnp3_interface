@@ -1070,16 +1070,16 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         {
             mcuri = msg->uri;
         }
-        
-        mcuri = strstr(msg->uri,"/local/");
-        if (mcuri != NULL)
-        {
-            mcuri += strlen("/local");
-        }
-        else
-        {
-            mcuri = msg->uri;
-        }
+
+        // mcuri = strstr(msg->uri,"/local/");
+        // if (mcuri != NULL)
+        // {
+        //     mcuri += strlen("/local");
+        // }
+        // else
+        // {
+        //     mcuri = msg->uri;
+        // }
         
         while(cjit != NULL)
         {
