@@ -1255,7 +1255,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     // TODO remove  readb vars 
     // find a good looking uri and find the number of frags
     //
-    if(strcmp(msg->method, "set") == 0)||(strcmp(msg->method, "post") == 0))
+    if((strcmp(msg->method, "set") == 0)||(strcmp(msg->method, "post") == 0))
     {
         if(sys->debug == 1)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
@@ -1267,7 +1267,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
             return body_JSON;
         }
     }
-    
+
     if(strcmp(msg->method, "get") == 0)
     {
         int flag = 0;
