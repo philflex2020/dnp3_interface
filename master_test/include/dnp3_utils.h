@@ -876,7 +876,7 @@ typedef struct sysCfg_t {
             }
             // seek reply format
             asprintf(&tmp, "/%s/%s/reply",who?"interfaces":"components", id);
-            turi = strstr((char*)uri,tmp);
+            turi = strstr((char*)uri, tmp);
             if (turi != NULL)
             {
                 flags |= URI_FLAG_REPLY;
@@ -890,7 +890,7 @@ typedef struct sysCfg_t {
             {
                 // seek extended format
                 asprintf(&tmp, "/%s/%s",(who == DNP3_OUTSTATION)?"interfaces":"components", id);
-                turi = strstr((char*)uri,tmp);
+                turi = strstr((char*)uri, tmp);
                 if (turi != NULL)
                 {
                     flags |= URI_FLAG_GET;
@@ -900,6 +900,11 @@ typedef struct sysCfg_t {
                     //nfrags -= 2;
                 //return turi;
                 }
+                else
+                {
+                    turi = (char *)uri;
+                }
+                
             }
             // now look for  matching uri
             // look for "/interfaces/<id>/<someuri>"
