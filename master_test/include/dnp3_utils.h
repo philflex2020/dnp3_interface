@@ -588,7 +588,7 @@ typedef struct sysCfg_t {
             return setDbVar(getDbVar(uri, name),cj);
         };
 
-        int setDbVar(const char * uri, const char *name, double dval)
+        int setDbVar(const char* uri, const char *name, double dval)
         {
             DbVar* db = getDbVar(uri, name);
             if(db != NULL)
