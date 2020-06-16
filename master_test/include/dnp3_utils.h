@@ -891,7 +891,7 @@ typedef struct sysCfg_t {
             {
                 // seek extended format
                 asprintf(&tmp, "/%s/%s",(who == DNP3_OUTSTATION)?"interfaces":"components", id);
-                turi = strstr(uri,tmp);
+                turi = strstr((char*)uri,tmp);
                 if (turi != NULL)
                 {
                     flags |= URI_FLAG_GET;
@@ -922,7 +922,7 @@ typedef struct sysCfg_t {
                 auto dbm = dvar->dbmap;
                 if (dbm.find(nuri) != dbm.end())
                 {
-                    dbf = dbm.find(nuri);
+                    dbf = dbm.find((const char*)nuri);
                     if(debug)
                         FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
                                             , dbf->name.c_str() 
