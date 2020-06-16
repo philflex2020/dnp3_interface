@@ -1277,7 +1277,7 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         // watch out for sets on /interfaces/outstation/dnp3_outstation/reply/dnp3_outstation
         // handle a single item set getting better 
         //if(sys->debug == 1)
-        if(flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
+        if((flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
         {
             if (db != NULL)
             {
@@ -1335,14 +1335,14 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
 
         }
             // TODO redundant
-        if((flags & URI_FLAG_REPLY) == 1)
+        if((flags & URI_FLAG_REPLY) == URI_FLAG_REPLY)
         {
             //if(sys->debug == 1)
                 FPS_ERROR_PRINT("fims message reply uri ACCEPTED Body  [%s] \n", msg->body);
         }            
         
 
-        if((flags & URI_FLAG_SINGLE) == 1)
+        if((flags & URI_FLAG_SINGLE) == URI_FLAG_SINGLE)
         //if(single == 1)
         {
             // process a single var
