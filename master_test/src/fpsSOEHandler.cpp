@@ -78,7 +78,7 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         if (db != NULL) 
         {
             const char* vname = db->name.c_str();// static_sysdb->getBinary(pair.index);
-            if(1||static_sysdb->debug == 1)
+            if(static_sysdb->debug == 1)
                 FPS_ERROR_PRINT("***************************** analog idx %d name [%s] uri [%s] value [%f]\n", pair.index, db->name.c_str(), db->uri, pair.value.value);
             if(strcmp(vname,"Unknown")!= 0) 
             {
@@ -89,7 +89,7 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         }
         else
         {
-            if(1 || static_sysdb->debug == 1)
+            if(static_sysdb->debug == 1)
                 FPS_ERROR_PRINT("***************************** analog idx %d No Var Found\n", pair.index);
         }
     };
