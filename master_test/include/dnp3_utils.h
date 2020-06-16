@@ -936,8 +936,7 @@ typedef struct sysCfg_t {
                     {
                         db = NULL;
                         return turi;
-                    }
-                    
+                    }                   
                 }
             }
             if(debug)
