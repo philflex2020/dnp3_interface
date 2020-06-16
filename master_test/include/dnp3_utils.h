@@ -909,7 +909,10 @@ typedef struct sysCfg_t {
             for  (it = dburiMap.begin() ; it != dburiMap.end(); it++)
             {
                 if(1 ||debug)
-                    FPS_ERROR_PRINT(" %s uris checking [%s] uri [%s] turi [%s] \n ", __FUNCTION__, it->first.c_str(), uri, turi);
+                    FPS_ERROR_PRINT(" %s uris checking [%s] uri [%s] turi [%s]  value %d\n"
+                            , __FUNCTION__, it->first.c_str(), uri, turi
+                            , (int) strncmp(turi, it->first.c_str(), strlen(it->first.c_str()))
+                                );
 
                 if (strncmp(turi, it->first.c_str(), strlen(it->first.c_str())) == 0)
                 {
@@ -917,7 +920,7 @@ typedef struct sysCfg_t {
                     //match = true;
                     flags |= URI_FLAG_URIOK;
                     if(1 ||debug)
-                        FPS_ERROR_PRINT("    URI FOUND [%s] checking name nuri  [%s] (len) %ld \n ", it->first.c_str(), nuri, strlen(nuri));
+                        FPS_ERROR_PRINT("    URI FOUND [%s] checking name nuri  [%s] (len) %ld \n", it->first.c_str(), nuri, strlen(nuri));
                     if(strlen(nuri)> 0)
                     {
                         auto dvar = it->second;
