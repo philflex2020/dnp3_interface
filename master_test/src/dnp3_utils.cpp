@@ -1483,7 +1483,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
         return -1;
     }
     
-    if(1||sys->debug == 1)
+    if(sys->debug == 1)
         FPS_DEBUG_PRINT(" ************* %s Var [%s] found in dburiMap\n", __FUNCTION__, name);
 
     if (cjvalue->type == cJSON_Object)
