@@ -817,32 +817,32 @@ typedef struct sysCfg_t {
             }
         }
 
-        void showUris()
-        {
-            FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
+        // void showUris()
+        // {
+        //     FPS_ERROR_PRINT(" %s uris===> \n\n", __FUNCTION__);
 
-            dburi_map::iterator it;
-            dbvar_map::iterator itd;
+        //     dburi_map::iterator it;
+        //     dbvar_map::iterator itd;
 
-            for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
-            {
-                // dbvar_map
-                auto dvar = it->second;
-                auto dbm = dvar->dbmap;
+        //     for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
+        //     {
+        //         // dbvar_map
+        //         auto dvar = it->second;
+        //         auto dbm = dvar->dbmap;
 
-                FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first.c_str(), static_cast<int32_t>(dvar->size()));
-                for (itd = dbm.begin(); itd != dbm.end(); ++itd)
-                {
-                    DbVar* db = itd->second;
-                    FPS_ERROR_PRINT("                 [%s] %d %d\n"
-                                    , db->name.c_str() 
-                                    , db->type
-                                    , db->offset
-                                    );
-                }
-            }
-            FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
-        }
+        //         FPS_ERROR_PRINT(" %s uri [%s] num vars %d\n", __FUNCTION__, it->first.c_str(), static_cast<int32_t>(dvar->size()));
+        //         for (itd = dbm.begin(); itd != dbm.end(); ++itd)
+        //         {
+        //             DbVar* db = itd->second;
+        //             FPS_ERROR_PRINT("                 [%s] %d %d\n"
+        //                             , db->name.c_str() 
+        //                             , db->type
+        //                             , db->offset
+        //                             );
+        //         }
+        //     }
+        //     FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+        // }
 
 
         //typedef std::map<std::string, varList*> dburi_map;

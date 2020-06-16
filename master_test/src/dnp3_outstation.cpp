@@ -260,7 +260,7 @@ int main(int argc, char* argv[])
     }
     //sys_cfg.setupReadb(DNP3_OUTSTATION);
     sys_cfg.showDbMap();
-    sys_cfg.showUris();
+    //sys_cfg.showUris();
     sys_cfg.showNewUris();
     
     cJSON_Delete(config);
