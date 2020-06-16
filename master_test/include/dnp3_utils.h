@@ -868,7 +868,7 @@ typedef struct sysCfg_t {
                 FPS_DEBUG_PRINT(" %s confirmUri===> \n", __FUNCTION__);
             char* turi = (char *)uri;
             char* nuri;
-            char* tmp;
+            char* tmp = NULL;
             if(strstr(uri, "/_system") != NULL) 
             {
                flags |= URI_FLAG_SYSTEM;
@@ -876,35 +876,38 @@ typedef struct sysCfg_t {
             }
             // seek reply format
             asprintf(&tmp, "/%s/%s/reply",who?"interfaces":"components", id);
-            turi = strstr((char*)uri, tmp);
-            if (turi != NULL)
+            if (strncmp(uri, tmp, strlen(tmp) )== 0)
             {
                 flags |= URI_FLAG_REPLY;
                 flags |= URI_FLAG_SET;
-                turi += strlen(tmp);
+                turi = uri + strlen(tmp);
                 free((void *)tmp);
+                tmp = NULL;
                 //nfrags -= 3;
                 //return turi;
             }
             else
             {
                 // seek extended format
-                asprintf(&tmp, "/%s/%s",(who == DNP3_OUTSTATION)?"interfaces":"components", id);
-                turi = strstr((char*)uri, tmp);
-                if (turi != NULL)
+                asprintf(&tmp, "/local/%s/%s",(who == DNP3_OUTSTATION)?"interfaces":"components", id);
+                if (strncmp(uri, tmp, strlen(tmp) )== 0)
                 {
                     flags |= URI_FLAG_GET;
                     flags |= URI_FLAG_SET;
-                    turi += strlen(tmp);
+                    turi = uri + strlen("/local");
                     free((void *)tmp);
-                    //nfrags -= 2;
-                //return turi;
+                    tmp = NULL;
                 }
                 else
                 {
                     turi = (char *)uri;
                 }
                 
+            }
+
+            if (tmp != NULL)
+            {
+                free((void *)tmp);
             }
             // now look for  matching uri
             // look for "/interfaces/<id>/<someuri>"
