@@ -96,7 +96,7 @@ typedef struct DbVar_t {
         bit = -1;
         parent = NULL;
         initSet = 0;
-        readb = NULL;
+        //readb = NULL;
         linkb = NULL;  // used to link outstation responses to master vars
         linkback = NULL;
         clazz = 0;
@@ -199,7 +199,7 @@ typedef struct DbVar_t {
     std::vector<std::pair<const char*,int>>/*bits_map*/dbBits;
 
     uint8_t initSet;
-    DbVar_t* readb;      // we have a readb linked to this  
+    //DbVar_t* readb;      // we have a readb linked to this  
     DbVar_t* linkb;
     const char* linkback;
     bool sign;
@@ -304,10 +304,10 @@ typedef struct sysCfg_t {
         local_uri = NULL;
         defUri = NULL;
 
-        for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
-        {
-            useReadb[i] = false;
-        }
+        // for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
+        // {
+        //     useReadb[i] = false;
+        // }
     }
     ~sysCfg_t()
     {
@@ -664,22 +664,22 @@ typedef struct sysCfg_t {
             return NULL;
         };
 
-        void setupReadb(int who)
-        {
-            if (who == DNP3_OUTSTATION)
-            {
-               useReadb[AnF32] = true;
-               useReadb[AnIn16] = true;
-               useReadb[AnIn32] = true;
-               useReadb[Type_Crob] = true;
-            }
-            else // master
-            {
-                useReadb[Type_Analog] = true;
-                useReadb[Type_Binary] = true;
-            }
+        // void setupReadb(int who)
+        // {
+        //     if (who == DNP3_OUTSTATION)
+        //     {
+        //        useReadb[AnF32] = true;
+        //        useReadb[AnIn16] = true;
+        //        useReadb[AnIn32] = true;
+        //        useReadb[Type_Crob] = true;
+        //     }
+        //     else // master
+        //     {
+        //         useReadb[Type_Analog] = true;
+        //         useReadb[Type_Binary] = true;
+        //     }
             
-        }
+        // }
         // dbvar_map dbMap;
         // dbix_map dbMapIx[Type_of_Var::NumTypes];
         // duri_map uriMap;  it->first is from a strdup it->second is a vector
@@ -1227,7 +1227,7 @@ typedef struct sysCfg_t {
 
 
         int numObjs[Type_of_Var::NumTypes];
-        bool useReadb[Type_of_Var::NumTypes]; // set true if writes to this type should be diverted to readb if setup
+        //bool useReadb[Type_of_Var::NumTypes]; // set true if writes to this type should be diverted to readb if setup
 
         fims* p_fims;
         cJSON* cj;  

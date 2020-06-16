@@ -780,7 +780,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         // use the SEL output variation designation 
         if (opvar)
         {
-            swtich (opvar->valueint) 
+            switch (opvar->valueint) 
             {
                 case 1:
                     myidx = AnIn16;
@@ -830,21 +830,21 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         if(clazz &&(db != NULL))
         {
             db->setClazz(clazz->valueint);
-            if(debug == 1)
+            if(sys->debug == 1)
                 FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
         }
 
         if(sign &&(db != NULL))
         {
             db->sign = (sign->type == cJSON_True);
-            if(debug == 1)
+            if(sys->debug == 1)
                 FPS_ERROR_PRINT("****** variable [%s] set to signed %d\n", db->name.c_str(), db->sign);
         }
         
         if(scale &&(db != NULL))
         {
             db->scale = (scale->valueint);
-            if(debug == 1)
+            if(sys->debug == 1)
                 FPS_ERROR_PRINT("****** variable [%s] scale set %d\n", db->name.c_str(), db->sign);
         }
 
@@ -856,11 +856,12 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 
         }
 
-        FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
+        if(sys->debug == 1)
+            FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         // keep a count of the objects.
         sys->numObjs[idx]++; 
 
-        // set up uri
+        // set up name uri
         char* nuri = sys->getDefUri(who);
         if (uri && uri->valuestring) 
         {
@@ -878,7 +879,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         // new way 
         sys->addDbUri(nuri, db);
 
-        // Deal with linkback option ( which replaces readback function)
+        // Deal with linkback option
         // the master SOEhandler will cause the linkback value to be updated.
         // we may mirror this in the outstation handler too.  
         // master and outstation have different linkback types
@@ -920,9 +921,6 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
                 }
             }
         }
-        //if we see a readback, decode the readback type and add that to the status vars
-        // if readbidx == analog then readbtype =  Type_AnalogOS
-        //db = sys->newDbVar(id->valuestring+"_OS", readbtype, offset->valueint, uri?uri->valuestring:NULL, NULL);//variation?variation->valuestring:NULL);
     }
     return  sys->numObjs[idx]; 
 }
@@ -1275,7 +1273,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
     //-m set -u "/components/<some_master_id>/[<some_outstation_id>] '{"AnalogInt32": [{"index":<index>,"value":52},{"index":2,"value":5}]}' 
 
     // get is OK codewise..
-    // TODO remove  readb vars 
     // find a good looking uri and find the number of frags
     //
     if((strcmp(msg->method, "set") == 0)||(strcmp(msg->method, "post") == 0))
@@ -1441,7 +1438,6 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
                         uint8_t cval = ControlCodeToType(StringToControlCode(itypeValues->valuestring));
                         sys->setDbVarIx(Type_Crob, db->idx, cval);
                         db->initSet = 1;
-                        // send the readback
                         dbs.push_back(std::make_pair(db, flag));
                         FPS_DEBUG_PRINT(" ***** %s Adding Direct CROB value %s offset %d idx %d uint8 cval 0x%02x\n"
                                         , __FUNCTION__, itypeValues->valuestring, db->offset, db->idx
@@ -1525,17 +1521,6 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
             (db->type == AnF32)
             )
     {
-        if(sys->useReadb[db->type] && (db->readb != NULL))
-        {
-            FPS_ERROR_PRINT(" ***** %s using readb [%s] for a set to [%s]\n"
-                            , __FUNCTION__
-                            , db->readb->name.c_str()
-                            , db->name.c_str()
-                            );
-            db = db->readb;
-            flag |= PRINT_PARENT;
-        }
-
         sys->setDbVar(curi, name, cjvalue);
         dbs.push_back(std::make_pair(db, flag));
     }
@@ -1545,12 +1530,12 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
         return -1;
     }
 
-    FPS_ERROR_PRINT( " *************** %s All Vars processed  size %d\n",__FUNCTION__, (int) dbs.size());  
+    if(sys->debug == 1 )
+        FPS_ERROR_PRINT( " *************** %s All Vars processed  size %d\n",__FUNCTION__, (int) dbs.size());  
 
     return dbs.size();   
 }
 // TODO need no dbs option
-// TODO handle readb code
 // add who to sys
 int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name, cJSON *cjvalue, int flag)
 {
