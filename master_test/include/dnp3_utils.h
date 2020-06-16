@@ -1190,8 +1190,7 @@ bool parse_system(cJSON* object, sysCfg* sys, int who);
 bool parse_variables(cJSON* object, sysCfg* sys, int who);
 cJSON *parseJSONConfig(char* file_path);
 void addCjTimestamp(cJSON* cj, const char* ts);
-void xpubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev);
-void pubWithTimeStamp2(cJSON* cj, sysCfg* sys, const char* ev);
+void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev);
 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index);

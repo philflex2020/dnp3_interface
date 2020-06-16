@@ -182,41 +182,41 @@ DbVar* getDbVar(sysCfg* sys, const char* uri, const char* name)
     return sys->getDbVar(uri, name);
 }
 
-//TODO check remove old version deprecated
-void xpubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
-{
-    if(cj)
-    {
-        addCjTimestamp(cj, "Timestampxx");
-        char *out = cJSON_PrintUnformatted(cj);
-        //cJSON_Delete(cj);
-        //cj = NULL;
-        if (out) 
-        {
-            char tmp[1024];
-            if(ev) 
-            {
-                snprintf(tmp,1024,"/%s/%s/%s/%s", "id", "components", ev, sys->id);
-            }
-            else
-            {
-                snprintf(tmp,1024,"/%s/%s/%s", "id", "components", sys->id);
-            }
-            if(sys->p_fims)
-            {
-               sys->p_fims->Send("pub", tmp, NULL, out);
-            }
-            else
-            {
-                std::cout << __FUNCTION__ << " Error in sys->p_fims\n";
-            }
-            free(out);
-        }
-    }
-}
+// //TODO check remove old version deprecated
+// void xpubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
+// {
+//     if(cj)
+//     {
+//         addCjTimestamp(cj, "Timestampxx");
+//         char *out = cJSON_PrintUnformatted(cj);
+//         //cJSON_Delete(cj);
+//         //cj = NULL;
+//         if (out) 
+//         {
+//             char tmp[1024];
+//             if(ev) 
+//             {
+//                 snprintf(tmp,1024,"/%s/%s/%s/%s", "id", "components", ev, sys->id);
+//             }
+//             else
+//             {
+//                 snprintf(tmp,1024,"/%s/%s/%s", "id", "components", sys->id);
+//             }
+//             if(sys->p_fims)
+//             {
+//                sys->p_fims->Send("pub", tmp, NULL, out);
+//             }
+//             else
+//             {
+//                 std::cout << __FUNCTION__ << " Error in sys->p_fims\n";
+//             }
+//             free(out);
+//         }
+//     }
+// }
 
 //uses the ev field
-void pubWithTimeStamp2(cJSON* cj, sysCfg* sys, const char* ev)
+void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
 {
     if(cj)
     {    
