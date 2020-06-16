@@ -15,7 +15,7 @@ INCLUDES_BUILD = -Iinclude/
 INCLUDES = -I$(INCLUDES_DIR) -I$(SINCLUDES_DIR)
 
 
-CPPFLAGS += -std=c++11 
+CPPFLAGS += -std=c++11 -g
 CPPFLAGS += -Wall -pedantic -Werror
 
 # BUILD_MODE = debug
