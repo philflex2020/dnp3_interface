@@ -301,6 +301,7 @@ typedef struct sysCfg_t {
         unsol = -1;
         cjclass = NULL;
         base_uri = NULL;
+        local_uri = NULL;
         defUri = NULL;
 
         for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
@@ -320,6 +321,9 @@ typedef struct sysCfg_t {
         if (name) free(name);
 
         if (cj) cJSON_Delete(cj);
+        if(base_uri) free(base_uri);
+        if(local_uri) free(locl_uri);
+
         cleanUpDbMaps();
     };
 
@@ -1068,6 +1072,7 @@ typedef struct sysCfg_t {
             }
             int idx = 0;
             subs[idx++] = base_uri;
+            if(local_uri)subs[idx++] = local_uri;
             duri_map::iterator it;
             for (it = uriMap.begin(); it != uriMap.end(); ++it)
             {
@@ -1233,7 +1238,8 @@ typedef struct sysCfg_t {
         int scanreq;     //used to request a class 1, 2 or 3 scan 
         int unsol;       // set to 1 to allow unsol in oustation
         cJSON* cjclass;  // used to change class of a var in outstation
-        char* base_uri;        
+        char* base_uri;
+        char* local_uri;        
 } sysCfg;
 
 DbVar* getDbVar(sysCfg *sysdb, const char *name);
