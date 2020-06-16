@@ -900,7 +900,7 @@ typedef struct sysCfg_t {
             {
                 turi = (char *)uri;
                 // seek extended format
-                if(local_uri ! = NULL)
+                if(local_uri != NULL)
                 {
                     asprintf(&tmp, "%s", local_uri);
                     if (strncmp(uri, tmp, strlen(tmp) )== 0)
