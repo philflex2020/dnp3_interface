@@ -1260,10 +1260,10 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
         if(sys->debug == 1)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
 
-        if((flags & URI_FLAG_SET) == 0)
+        if((flags & URI_FLAG_SET) == 0)  && (who != DNP3_MASTER)
         {
             if(1 || sys->debug == 1)
-                FPS_ERROR_PRINT("Get not supported for [%s] \n", db->name.c_str()); 
+                FPS_ERROR_PRINT("Set not supported for [%s] \n", db->name.c_str()); 
             return body_JSON;
         }
     }
