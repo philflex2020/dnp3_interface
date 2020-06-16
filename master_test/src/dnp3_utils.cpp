@@ -733,7 +733,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
     {
         cJSON *id, *offset, *uri, *bf, *bits, *variation;
         cJSON *evariation, *linkback, *clazz, *rsize, *sign;
-        cJSON *scale, *cjidx;
+        cJSON *scale, *cjidx, *opvar;
 
         if(obj == NULL)
         {
@@ -755,6 +755,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         clazz      = cJSON_GetObjectItem(obj, "clazz");
         sign       = cJSON_GetObjectItem(obj, "signed");
         scale      = cJSON_GetObjectItem(obj, "scale");
+        opvar      = cJSON_GetObjectItem(obj, "OPvar");  //1 = 16 bit , 2 = 32 bit , 3 float32
         
 
         if (id == NULL || offset == NULL || id->valuestring == NULL)
@@ -762,6 +763,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
             FPS_ERROR_PRINT("NULL variables or component_id \n");
             continue;
         }
+
         // allow 32 bit systems ints
         // TODO rework this
         int myidx = idx;
@@ -774,6 +776,25 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
                     myidx = AnIn32; 
                 }
             } 
+        }
+        // use the SEL output variation designation 
+        if (opvar)
+        {
+            swtich (opvar->valueint) 
+            {
+                case 1:
+                    myidx = AnIn16;
+                    break;
+                case 2:
+                    myidx = AnIn32;
+                    break;
+                case 3:
+                    myidx = AnF32;
+                    break;
+                default:
+                    myidx = AnIn32;
+                    break;
+            }
         }
 
         // rework
@@ -796,7 +817,6 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         //   3.. get the int, DbVar* search / map  running to find vars for outstation builder.
         //   4.. get the  mapping working for the incoming commands.
         //    
-        // TODO No central map any more.
         // 
 
         // the cjidx fielcs will ovride the auto idx.
@@ -810,19 +830,22 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         if(clazz &&(db != NULL))
         {
             db->setClazz(clazz->valueint);
-            FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
+            if(debug == 1)
+                FPS_ERROR_PRINT("****** variable [%s] set to clazz %d\n", db->name.c_str(), db->clazz);
         }
 
         if(sign &&(db != NULL))
         {
             db->sign = (sign->type == cJSON_True);
-            FPS_ERROR_PRINT("****** variable [%s] set to signed %d\n", db->name.c_str(), db->sign);
+            if(debug == 1)
+                FPS_ERROR_PRINT("****** variable [%s] set to signed %d\n", db->name.c_str(), db->sign);
         }
         
         if(scale &&(db != NULL))
         {
             db->scale = (scale->valueint);
-            FPS_ERROR_PRINT("****** variable [%s] scale set %d\n", db->name.c_str(), db->sign);
+            if(debug == 1)
+                FPS_ERROR_PRINT("****** variable [%s] scale set %d\n", db->name.c_str(), db->sign);
         }
 
         if (bf && bits && (bits->type == cJSON_Array))
