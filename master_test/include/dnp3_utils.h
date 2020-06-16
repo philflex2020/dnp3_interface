@@ -1141,15 +1141,15 @@ typedef struct sysCfg_t {
             //duri_map::iterator it_uris;
             if(dburiMap.find(uri) == dburiMap.end())
             {
-
-                FPS_ERROR_PRINT("     %s  ==> ADDED varlist [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
+                if(debug == 1)
+                    FPS_ERROR_PRINT("     %s  ==> ADDED varlist [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
                 //dbvar_map dvar;
                 dburiMap[mapUri] = new varList_t(uri); 
             }
             else
             {
-
-                FPS_ERROR_PRINT("     %s  ==> FOUND varlist [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
+                if(debug == 1)
+                    FPS_ERROR_PRINT("     %s  ==> FOUND varlist [%s]  dburi size %d \n", __FUNCTION__, uri, (int) dburiMap.size());
             }
             //mymap.insert ( std::pair<char,int>('a',100) );
             varList_t *vl = dburiMap[mapUri];
@@ -1158,11 +1158,12 @@ typedef struct sysCfg_t {
             //dbvar_map dbm = dburiMap[mapUri]->dbmap;
             //dbm.insert(std::pair<std::string,DbVar*>(db->name, db));
 
-            //if(debug ==1)
+            if(debug == 1)
                 FPS_ERROR_PRINT(" %s  ==> added var [%s]  dbm size %d \n", __FUNCTION__, db->name.c_str(), (int) vl->size());
 
         }
 
+        //TODO remove this
         void addUri(const char *uri, DbVar*db)
         {
             const char *mapUri;
