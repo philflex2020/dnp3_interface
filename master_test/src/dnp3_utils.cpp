@@ -1071,6 +1071,16 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
             mcuri = msg->uri;
         }
         
+        mcuri = strstr(msg->uri,"/local/");
+        if (mcuri != NULL)
+        {
+            mcuri += strlen("/local");
+        }
+        else
+        {
+            mcuri = msg->uri;
+        }
+        
         while(cjit != NULL)
         {
             int flag = 0;
@@ -1484,7 +1494,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
         FPS_ERROR_PRINT( " *************** %s Var [%s] not processed \n",__FUNCTION__, name);  
         return -1;
     }
-    
+
     FPS_ERROR_PRINT( " *************** %s All Vars processed  size %d\n",__FUNCTION__, (int) dbs.size());  
 
     return dbs.size();   
@@ -1495,6 +1505,7 @@ int addValueToVec(dbs_type& dbs, sysCfg*sys, char* curi, const char* name, cJSON
 int addValueToVec(dbs_type& dbs, sysCfg*sys, fims_message* msg, const char* name, cJSON *cjvalue, int flag)
 {
     int ret;
+    //sys->confirmUri(db, msg->uri, who, name, flags);
     // cjoffset must be a name
     // cjvalue may be an object
     // msg->uri // just take it up to the name
