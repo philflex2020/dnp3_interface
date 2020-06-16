@@ -922,7 +922,7 @@ typedef struct sysCfg_t {
                 auto dbm = dvar->dbmap;
                 if (dbm.find(nuri) != dbm.end())
                 {
-                    dbf = dbm.find((const char*)nuri);
+                    dbf = dbm.find(std:string(nuri));
                     if(debug)
                         FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
                                             , dbf->name.c_str() 
