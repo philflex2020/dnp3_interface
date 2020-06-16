@@ -1016,8 +1016,6 @@ bool checkWho(sysCfg*sys, DbVar* db, int who)
     if (who == DNP3_OUTSTATION)
     {
        if((db->type == Type_Analog ) || (db->type == Type_Binary)) return true;
-       // if we have a readb registers then we can set it
-       if(db->readb != NULL) return true;
     }
     else
     {
@@ -1035,17 +1033,18 @@ bool checkWho(sysCfg*sys, const char* uri, const char *name, int who)
     DbVar* db = sys->getDbVar(uri, name);
     return checkWho(sys, db, who);
 }
+
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
 cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* body_JSON)
 {
     cJSON* itypeValues = body_JSON;
     cJSON* cjit = NULL;
-    if(1 ||sys->debug == 1)
+    if(sys->debug == 1)
         FPS_ERROR_PRINT("Found variable list or array uri [%s] \n", msg->uri);
     // decode values may be in an array , TODO arrays are DEPRECATED
     if (cJSON_IsArray(itypeValues)) 
     {
-        if(1 ||sys->debug == 1)
+        if(sys->debug == 1)
             FPS_DEBUG_PRINT("Found array of variables  \n");
 
         cJSON_ArrayForEach(cjit, itypeValues) 
@@ -1059,8 +1058,8 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
     {
         // process a simple list
         cjit = itypeValues->child;
-        if(1 || sys->debug == 1)
-            FPS_ERROR_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
+        if(sys->debug == 1)
+            FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
         char* mcuri = msg->uri;
         mcuri = strstr(msg->uri,"/reply/");
         if (mcuri != NULL)
@@ -1070,28 +1069,30 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         else
         {
             //mcuri = msg->uri;
-            mcuri = strstr(msg->uri,"/local/");
-            if (mcuri != NULL)
+            if(sys->local_uri)
             {
-                mcuri += strlen("/local");
-            }
-            else
-            {
-                mcuri = msg->uri;
-            }        
+                if(strncmp(msg->uri,sys->local_uri, strlen(sys->local_uri))== 0)
+                {
+                    mcuri = (char *)msg->uri + strlen(sys->local_uri);
+                }
+                else
+                {
+                    mcuri = msg->uri;
+                } 
+            }       
         }
         
         while(cjit != NULL)
         {
             int flag = 0;
-            if(1 || sys->debug == 1)
+            if(sys->debug == 1)
                 FPS_DEBUG_PRINT("Found variable name  [%s] child %p \n"
                                         , cjit->string
                                         , (void *)cjit->child
                                         );
             if (!checkWho(sys, mcuri, cjit->string, who))
             {
-                if(1 || sys->debug == 1)
+                if(sys->debug == 1)
                     FPS_DEBUG_PRINT("variable [%s] uri [%s] NOT set ON %d\n"
                                     , cjit->string
                                     , mcuri
@@ -1100,7 +1101,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
             }
             else
             {
-                if(1 || sys->debug == 1)
+                if(sys->debug == 1)
                     FPS_ERROR_PRINT("variable [%s] uri [%s] OK set ON %d\n"
                                     , cjit->string
                                     , msg->uri
