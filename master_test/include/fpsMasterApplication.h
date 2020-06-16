@@ -68,7 +68,7 @@ public:
         {
             if (sysdb->cjloaded > 0) 
             {
-                pubWithTimeStamp2(sysdb->cj, sysdb, "components");
+                pubWithTimeStamp(sysdb->cj, sysdb, "components");
                 sysdb->cjloaded = 0;
             }
             cJSON_Delete(sysdb->cj);
