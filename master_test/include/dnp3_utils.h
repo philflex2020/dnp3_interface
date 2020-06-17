@@ -372,7 +372,7 @@ typedef struct sysCfg_t {
                 || (db->type == AnIn16) 
                 || (db->type == AnIn32)) 
             {
-                opType = AnIn16;
+                opType = NumTypes;
             }
 
 
@@ -383,8 +383,8 @@ typedef struct sysCfg_t {
             }
             dbMapIxs[opType][db->idx] = db;
             // repat here just to make sure
-            if(opType != db->type)
-                dbMapIxs[db->type][db->idx] = db;
+            //if(opType != db->type)
+            dbMapIxs[db->type][db->idx] = db;
         } 
 
         int getDbIdx(int type)
@@ -1223,7 +1223,7 @@ typedef struct sysCfg_t {
         // new way of doing this
         //dbvar_map dbMap;
         dbvec    dbVec[Type_of_Var::NumTypes];
-        dbix_map dbMapIxs[Type_of_Var::NumTypes];
+        dbix_map dbMapIxs[Type_of_Var::NumTypes+1];
         //duri_map uriMap;
         bits_map bitsMap;
         dburi_map dburiMap;
