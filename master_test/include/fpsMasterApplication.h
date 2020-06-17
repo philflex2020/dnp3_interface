@@ -62,9 +62,7 @@ public:
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
         if(sysdb->debug == 1)
             std::cout << "Running ["<<__FUNCTION__<<"]\n";    //Code for adding timestamp
-
         sysdb->pubUris();
-
     }
 
     virtual bool AssignClassDuringStartup() override final
@@ -78,7 +76,7 @@ public:
 
     virtual void OnStateChange(opendnp3::LinkStatus value) override final 
     {  
-        std::cout << "Running ["<<__FUNCTION__<<"] status ["<<LinkStatusToString(value)<<"]\n";
+        //std::cout << "Running ["<<__FUNCTION__<<"] status ["<<LinkStatusToString(value)<<"]\n";
 
         std::string cstate = LinkStatusToString(value);
         char message[1024];
