@@ -30,9 +30,11 @@ using namespace opendnp3;
 #define DNP3_UTILS_VERSION "0.9.1"
 
 const ControlCode StringToControlCode(const char* codeWord);
+void addCjTimestamp(cJSON* cj, const char* ts);
 
-struct char_cmp {
-    bool operator () (const char *a,const char *b) const
+struct char_cmp 
+{
+    bool operator () (const char* a,const char* b) const
     {
         return strcmp(a,b)<0;
     }
@@ -1315,7 +1317,7 @@ cJSON* get_config_json(int argc, char* argv[]);
 bool parse_system(cJSON* object, sysCfg* sys, int who);
 bool parse_variables(cJSON* object, sysCfg* sys, int who);
 cJSON* parseJSONConfig(char* file_path);
-void addCjTimestamp(cJSON* cj, const char* ts);
+
 void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev);
 
 void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);
