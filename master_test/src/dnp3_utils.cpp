@@ -700,6 +700,8 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
 int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
 {
     cJSON* obj;
+    int mytype = type;
+
     cJSON_ArrayForEach(obj, objs)
     {
         cJSON *id, *offset, *uri, *bf, *bits, *variation;
@@ -737,7 +739,6 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
 
         // allow 32 bit systems ints
         // TODO rework this
-        int mytype = type;
         if (rsize != NULL) 
         {
             if (type == AnIn16)
@@ -763,7 +764,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
                     mytype = AnF32;
                     break;
                 default:
-                    mytyp = AnIn32;
+                    mytype = AnIn32;
                     break;
             }
         }
@@ -830,7 +831,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
         if(sys->debug)
             FPS_DEBUG_PRINT(" config adding name [%s] id [%d]\n", id->valuestring, offset->valueint);
         // keep a count of the objects.
-        sys->numObjs[idx]++; 
+        sys->numObjs[mytype]++; 
 
         // set up name uri
         char* nuri = sys->getDefUri(who);
