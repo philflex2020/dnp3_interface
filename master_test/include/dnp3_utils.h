@@ -1329,10 +1329,10 @@ cJSON* parseJSONConfig(char* file_path);
 
 void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev);
 
-void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt16& cmd, uint16_t index);
-void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputInt32& cmd, uint16_t index);
-void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const AnalogOutputFloat32& cmd, uint16_t index);
-void sysdbAddtoRecord(sysCfg* sysdb,const char* field, const char* cmd, uint16_t index);
+void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const AnalogOutputInt16& cmd, uint16_t index);
+void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const AnalogOutputInt32& cmd, uint16_t index);
+void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const AnalogOutputFloat32& cmd, uint16_t index);
+void sysdbAddtoRecord(sysCfg* sysdb, const char* field, const char* cmd, uint16_t index);
 const char* cfgGetSOEName(sysCfg* sysdb, const char* fname);
 
 int addVarToCj(cJSON* cj, DbVar* db);

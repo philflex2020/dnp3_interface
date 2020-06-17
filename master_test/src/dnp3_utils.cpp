@@ -1596,14 +1596,14 @@ void sysdbAddtoRecord(sysCfg* sys, const char* field, const opendnp3::AnalogOutp
     DbVar* db = sys->getDbVarId(AnIn16 , index);
     if (db)
     {
-        cJSON* cjf = sysdbFindAddArray(sys, field);
-        cJSON* cjv = cJSON_CreateObject();
-        cJSON* cji = cJSON_CreateObject();
-        cJSON_AddNumberToObject(cjv, "value", cmd.value);
-        cJSON_AddItemToObject(cji, db->name.c_str(), cjv);
-        cJSON_AddItemToArray(cjf, cji);
-        sys->cjloaded++;
-        sendCmdSet(sys, db, cjv);
+        // cJSON* cjf = sysdbFindAddArray(sys, field);
+        // cJSON* cjv = cJSON_CreateObject();
+        // cJSON* cji = cJSON_CreateObject();
+        // cJSON_AddNumberToObject(cjv, "value", cmd.value);
+        // cJSON_AddItemToObject(cji, db->name.c_str(), cjv);
+        // cJSON_AddItemToArray(cjf, cji);
+        // sys->cjloaded++;
+        //sendCmdSet(sys, db, cjv);
         //cJSON_Delete(cjv);
     }
     else
@@ -1617,26 +1617,26 @@ void sysdbAddtoRecord(sysCfg* sys, const char* field, const opendnp3::AnalogOutp
     DbVar* db = sys->getDbVarId(AnIn32 , index);
     if (db)
     {
-        cJSON* cjf = sysdbFindAddArray(sys, field);
-        cJSON* cjv = cJSON_CreateObject();
-        cJSON* cji = cJSON_CreateObject();
-        if(db->sign == 1)
-        {
-            cJSON_AddNumberToObject(cjv,"value", cmd.value);
-        }
-        else
-        {
-            uint32_t u32val = static_cast<uint32_t>(cmd.value);
-            if(sys->debug)
-                FPS_ERROR_PRINT("%s unsigned AnIn32 val %u at index %d\n", __FUNCTION__, u32val, static_cast<int32_t>(index) );
+        // cJSON* cjf = sysdbFindAddArray(sys, field);
+        // cJSON* cjv = cJSON_CreateObject();
+        // cJSON* cji = cJSON_CreateObject();
+        // if(db->sign == 1)
+        // {
+        //     cJSON_AddNumberToObject(cjv,"value", cmd.value);
+        // }
+        // else
+        // {
+        //     uint32_t u32val = static_cast<uint32_t>(cmd.value);
+        //     if(sys->debug)
+        //         FPS_ERROR_PRINT("%s unsigned AnIn32 val %u at index %d\n", __FUNCTION__, u32val, static_cast<int32_t>(index) );
 
-            cJSON_AddNumberToObject(cjv, "value", static_cast<uint32_t>(cmd.value));            
-        }
+        //     cJSON_AddNumberToObject(cjv, "value", static_cast<uint32_t>(cmd.value));            
+        // }
         
-        cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
-        cJSON_AddItemToArray(cjf, cji);
-        sys->cjloaded++;
-        sendCmdSet(sys, db, cjv);
+        // cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
+        // cJSON_AddItemToArray(cjf, cji);
+        // sys->cjloaded++;
+        //sendCmdSet(sys, db, cjv);
         //cJSON_Delete(cjv);
     }
     else
@@ -1651,14 +1651,14 @@ void sysdbAddtoRecord(sysCfg* sys, const char* field, const opendnp3::AnalogOutp
     DbVar* db = sys->getDbVarId(AnF32 , index);
     if (db)
     {
-        cJSON* cjf = sysdbFindAddArray(sys, field);
-        cJSON* cjv = cJSON_CreateObject();
-        cJSON* cji = cJSON_CreateObject();
-        cJSON_AddNumberToObject(cjv,"value", cmd.value);
-        cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
-        cJSON_AddItemToArray(cjf, cji);
-        sys->cjloaded++;
-        sendCmdSet(sys, db, cjv);
+        // cJSON* cjf = sysdbFindAddArray(sys, field);
+        // cJSON* cjv = cJSON_CreateObject();
+        // cJSON* cji = cJSON_CreateObject();
+        // cJSON_AddNumberToObject(cjv,"value", cmd.value);
+        // cJSON_AddItemToObject(cji,db->name.c_str(),cjv);
+        // cJSON_AddItemToArray(cjf, cji);
+        // sys->cjloaded++;
+        //sendCmdSet(sys, db, cjv);
         //cJSON_Delete(cjv);
     }
     else
@@ -1673,14 +1673,14 @@ void sysdbAddtoRecord(sysCfg* sys, const char* field, const char* cmd, uint16_t 
     DbVar* db = sys->getDbVarId(Type_Crob , index);
     if (db)
     {
-        cJSON* cjf = sysdbFindAddArray(sys, field);
-        cJSON* cjv = cJSON_CreateObject();
-        cJSON* cji = cJSON_CreateObject();
-        cJSON_AddStringToObject(cjv, "value", cmd);
-        cJSON_AddItemToObject(cji, db->name.c_str(), cjv);
-        cJSON_AddItemToArray(cjf, cji);
-        sys->cjloaded++;
-        sendCmdSet(sys, db, cjv);
+        // cJSON* cjf = sysdbFindAddArray(sys, field);
+        // cJSON* cjv = cJSON_CreateObject();
+        // cJSON* cji = cJSON_CreateObject();
+        // cJSON_AddStringToObject(cjv, "value", cmd);
+        // cJSON_AddItemToObject(cji, db->name.c_str(), cjv);
+        // cJSON_AddItemToArray(cjf, cji);
+        // sys->cjloaded++;
+        //sendCmdSet(sys, db, cjv);
     }
     else
     {

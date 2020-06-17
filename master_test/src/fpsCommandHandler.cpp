@@ -27,14 +27,9 @@
 using namespace opendnp3;
 
 void fpsCommandHandler::Start()
-{
-  if(sysdb->cj)
-  {
-      cJSON_Delete(sysdb->cj);
-  }
-  sysdb->cj = cJSON_CreateObject();
-  sysdb->cjloaded = 0;
-  
+{  
+    if(sysdb->debug)
+        FPS_DEBUG_PRINT("                     ************ %s  \n",  __FUNCTION__ );
 }
 // Uri:     /components/dnp3_outstation
 // ReplyTo: (null)
@@ -42,24 +37,14 @@ void fpsCommandHandler::Start()
 // Met
 void fpsCommandHandler::End()
 {
-    //std::cout << "               ************" <<__FUNCTION__ << " called loaded = "<< sysdb->cjloaded << std::endl;
-    if(sysdb->cjloaded) 
-    {
-      if(sysdb->cj)
-        {
-            // make sure we want to do this. Look at modbus
-            pubWithTimeStamp(sysdb->cj, sysdb, "components");
-            cJSON_Delete(sysdb->cj);
-            sysdb->cj = NULL;
-        }
-        sysdb->cjloaded = 0; 
-   }
+    if(sysdb->debug)
+        FPS_DEBUG_PRINT("                     ************ %s  \n",  __FUNCTION__ );
+
 }
 
 CommandStatus fpsCommandHandler::Select(const ControlRelayOutputBlock& command, uint16_t index)
 {
     const char* cmd = ControlCodeToString(command.functionCode);
-
     sysdbAddtoRecord(sysdb,"CROB_SELECT", cmd, index);
     return CommandStatus::SUCCESS; 
 }
@@ -81,7 +66,8 @@ CommandStatus fpsCommandHandler::Select(const AnalogOutputInt16& command, uint16
  
 CommandStatus fpsCommandHandler::Operate(const AnalogOutputInt16& command, uint16_t index, OperateType opType)
 { 
-    FPS_DEBUG_PRINT("                     ************ %s  AnInt16 called, index: %d \n", __FUNCTION__, (int) index );
+    if(sysdb->debug)
+        FPS_DEBUG_PRINT("                     ************ %s  AnInt16 called, index: %d \n", __FUNCTION__, (int) index );
     sysdbAddtoRecord(sysdb,"AnOPInt16", command, index);
     sysdb->setDbVarIx(AnIn16, index, command.value);
     return CommandStatus::SUCCESS; 
@@ -95,7 +81,8 @@ CommandStatus fpsCommandHandler::Select(const AnalogOutputInt32& command, uint16
 
 CommandStatus fpsCommandHandler::Operate(const AnalogOutputInt32& command, uint16_t index, OperateType opType)
 { 
-    FPS_DEBUG_PRINT("                     ************ %s  AnInt32 called, index: %d \n", __FUNCTION__, (int) index );
+    if(sysdb->debug)
+        FPS_DEBUG_PRINT("                     ************ %s  AnInt32 called, index: %d \n", __FUNCTION__, (int) index );
     sysdbAddtoRecord(sysdb, "AnOPInt32", command, index);
     sysdb->setDbVarIx(AnIn32, index, command.value);
     return CommandStatus::SUCCESS; 
@@ -108,8 +95,9 @@ CommandStatus fpsCommandHandler::Select(const AnalogOutputFloat32& command, uint
 }
 
 CommandStatus fpsCommandHandler::Operate(const AnalogOutputFloat32& command, uint16_t index, OperateType opType)
-{ 
-    FPS_DEBUG_PRINT("                     ************ %s  AnF32 called, index: %d \n", __FUNCTION__, (int) index );
+{
+    if(sysdb->debug)
+        FPS_DEBUG_PRINT("                     ************ %s  AnF32 called, index: %d \n", __FUNCTION__, (int) index );
     sysdbAddtoRecord(sysdb, "AnOPF32", command, index);
     sysdb->setDbVarIx(AnF32, index, command.value);    
     return CommandStatus::SUCCESS; 

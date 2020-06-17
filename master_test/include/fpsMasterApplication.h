@@ -56,10 +56,8 @@ public:
     {
         if(sysdb->debug == 1)
             std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
-        //sysdb->cj = cJSON_CreateObject();
-        sysdb->cjloaded = 0; 
     }
-    // if cjloaded is well loaded then send out the pub
+    
     virtual void OnTaskComplete(const opendnp3::TaskInfo& info) override final {
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
         if(sysdb->debug == 1)
@@ -67,16 +65,6 @@ public:
 
         sysdb->pubUris();
 
-        if(sysdb->cj)
-        {
-            if (sysdb->cjloaded > 0) 
-            {
-                //pubWithTimeStamp(sysdb->cj, sysdb, "components");
-                sysdb->cjloaded = 0;
-            }
-            //cJSON_Delete(sysdb->cj);
-            //sysdb->cj = NULL;
-        }  
     }
 
     virtual bool AssignClassDuringStartup() override final
@@ -91,11 +79,7 @@ public:
     virtual void OnStateChange(opendnp3::LinkStatus value) override final 
     {  
         std::cout << "Running ["<<__FUNCTION__<<"] status ["<<LinkStatusToString(value)<<"]\n";
-        //cJSON* cj = cJSON_CreateObject();
-        //cJSON_AddStringToObject(cj, "LinkStatus", LinkStatusToString(value));
-        //pubWithTimeStamp(cj, sysdb,"StateChange");
-        //cJSON_Delete(cj);
-        //cj = NULL;
+
         std::string cstate = LinkStatusToString(value);
         char message[1024];
         snprintf(message, sizeof(message), "DNP3  %s Link Status Change [%s]\n"
