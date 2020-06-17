@@ -87,7 +87,7 @@ public:
 
     virtual void OnStateChange(opendnp3::LinkStatus value) override final 
     {  
-        //std::cout << "Running ["<<__FUNCTION__<<"] status ["<<LinkStatusToString(value)<<"]\n";
+        std::cout << "Running ["<<__FUNCTION__<<"] status ["<<LinkStatusToString(value)<<"]\n";
         //cJSON* cj = cJSON_CreateObject();
         //cJSON_AddStringToObject(cj, "LinkStatus", LinkStatusToString(value));
         //pubWithTimeStamp(cj, sysdb,"StateChange");
