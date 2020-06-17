@@ -788,12 +788,12 @@ typedef struct sysCfg_t {
             if (cjPub == NULL)
             {
                 cjPub = cJSON_CreateObject();
-                FPS_ERROR_PRINT(" %s  created cjPub (double) \n", __FUNCTION__);
+                //FPS_ERROR_PRINT(" %s  created cjPub (double) \n", __FUNCTION__);
             }
             cJSON* cjuri = cJSON_GetObjectItem(cjPub, db->uri);
             if(cjuri == NULL)
             {
-                FPS_ERROR_PRINT(" %s  created cjuri [%s] \n", __FUNCTION__, db->uri);
+                //FPS_ERROR_PRINT(" %s  created cjuri [%s] \n", __FUNCTION__, db->uri);
                 cjuri = cJSON_CreateObject();
                 //cJSON_AddNumberToObject(cjv,"value", cmd.value);
                 cJSON_AddItemToObject(cjPub, db->uri, cjuri);
@@ -808,16 +808,15 @@ typedef struct sysCfg_t {
             if (cjPub == NULL)
             {
                 cjPub = cJSON_CreateObject();
-                FPS_ERROR_PRINT(" %s  created cjPub (bool) \n", __FUNCTION__);
+                //FPS_ERROR_PRINT(" %s  created cjPub (bool) \n", __FUNCTION__);
             }
             cJSON* cjuri = cJSON_GetObjectItem(cjPub, db->uri);
             if(cjuri == NULL)
             {
-                FPS_ERROR_PRINT(" %s  created cjuri [%s] \n", __FUNCTION__, db->uri);
+                //FPS_ERROR_PRINT(" %s  created cjuri [%s] \n", __FUNCTION__, db->uri);
                 cjuri = cJSON_CreateObject();
                 cJSON_AddItemToObject(cjPub, db->uri, cjuri);
                 cjuri = cJSON_GetObjectItem(cjPub, db->uri);
-     
             }
             if(cjuri != NULL)
                 cJSON_AddBoolToObject(cjuri, db->name.c_str(), val);            

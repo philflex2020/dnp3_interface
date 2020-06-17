@@ -56,7 +56,7 @@ public:
     {
         if(sysdb->debug == 1)
             std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
-        sysdb->cj = cJSON_CreateObject();
+        //sysdb->cj = cJSON_CreateObject();
         sysdb->cjloaded = 0; 
     }
     // if cjloaded is well loaded then send out the pub
@@ -68,12 +68,12 @@ public:
         {
             if (sysdb->cjloaded > 0) 
             {
-                pubWithTimeStamp(sysdb->cj, sysdb, "components");
+                //pubWithTimeStamp(sysdb->cj, sysdb, "components");
                 sysdb->pubUris();
                 sysdb->cjloaded = 0;
             }
-            cJSON_Delete(sysdb->cj);
-            sysdb->cj = NULL;
+            //cJSON_Delete(sysdb->cj);
+            //sysdb->cj = NULL;
         }  
     }
 
