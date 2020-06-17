@@ -834,7 +834,7 @@ typedef struct sysCfg_t {
             {
                 //obj->string is the URI 
                 //obj->child are the data points
-                //addCjTimestamp(obj->child, "Timestamp");
+                addCjTimestamp(obj, "Timestamp");
                 //char* out = cJSON_PrintUnformatted(obj->child);
                 char* out = cJSON_PrintUnformatted(obj);
                 if (out) 
