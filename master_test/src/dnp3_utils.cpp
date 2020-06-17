@@ -182,38 +182,6 @@ DbVar* getDbVar(sysCfg* sys, const char* uri, const char* name)
     return sys->getDbVar(uri, name);
 }
 
-// //TODO check remove old version deprecated
-// void xpubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
-// {
-//     if(cj)
-//     {
-//         addCjTimestamp(cj, "Timestampxx");
-//         char *out = cJSON_PrintUnformatted(cj);
-//         //cJSON_Delete(cj);
-//         //cj = NULL;
-//         if (out) 
-//         {
-//             char tmp[1024];
-//             if(ev) 
-//             {
-//                 snprintf(tmp,1024,"/%s/%s/%s/%s", "id", "components", ev, sys->id);
-//             }
-//             else
-//             {
-//                 snprintf(tmp,1024,"/%s/%s/%s", "id", "components", sys->id);
-//             }
-//             if(sys->p_fims)
-//             {
-//                sys->p_fims->Send("pub", tmp, NULL, out);
-//             }
-//             else
-//             {
-//                 std::cout << __FUNCTION__ << " Error in sys->p_fims\n";
-//             }
-//             free(out);
-//         }
-//     }
-// }
 
 //uses the ev field
 void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev)
@@ -1166,16 +1134,16 @@ int countUris(const char* uri)
 // outstation normal    
 //       /<uri>             set values on pubs
 // outstation reply
-//       /reply/id/<uri>    set reply flag , remove /<id>/reply from the uri
+//       /interfaces/id/reply/<uri>    set reply flag , remove /<id>/reply from the uri
 // outstation exception
-//       /id/<uri>           allow gets and sets as well
+//       /local/<uri>           allow gets and sets as well
 
 // master normal    
-//       /<uri>             set values on sets
+//       /<uri>             get/ set values on sets
 // master reply
 //       /reply/id/<uri>    set reply flag , remove /reply from the uri
 // master exception
-//       /id/<uri>           allow gets aas well
+//       
 //
 //std::vector<std::pair<DbVar*,int>>dbs; // collect all the parsed vars here
 cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
@@ -1280,14 +1248,15 @@ cJSON* parseBody(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who)
             return body_JSON;
         }
     }
-
+    // allow sets and gets on master
     if(strcmp(msg->method, "get") == 0)
-    {
+        {
         int flag = 0;
         if(sys->debug)
             FPS_ERROR_PRINT("fims method [%s] almost  supported for [%d]\n", msg->method, who);
 
-        if((flags & URI_FLAG_GET) == 0)
+        if(((flags & URI_FLAG_GET) == 0)&& (who != DNP3_MASTER))
+
         {
             if(sys->debug)
             {
