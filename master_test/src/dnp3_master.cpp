@@ -196,12 +196,12 @@ void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
 
 int main(int argc, char *argv[])
 {
-    if (!checkVersion(DNP3_UTILS_VERSION))
+    if (strcmp(DNP3_UTILS_VERSION, getVersion())!=0)
     {
         FPS_ERROR_PRINT("Error with installed DNP3_UTILS_VERSION\n");
         return 1;
     }
-    
+
     fims* p_fims;
     p_fims = new fims();
     
