@@ -700,7 +700,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
 int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
 {
     cJSON* obj;
-    int mytype;
+    int mytype = type;
 
     cJSON_ArrayForEach(obj, objs)
     {
