@@ -360,7 +360,7 @@ typedef struct sysCfg_t {
                     return;
             }
             // no need to repeat this
-            if ((inParse == 0) && (db-idx != -1))
+            if ((inParse == 0) && (db->idx != -1))
                 return;
             if(db->idx == -1)
             {
@@ -784,8 +784,8 @@ typedef struct sysCfg_t {
             for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes); i++)
             {
                 // for outputs they are all on the Ain16 Vec
-                if (i == Ain32) continue;
-                if (i == AF32) continue;
+                if (i == AnIn32) continue;
+                if (i == AnF32) continue;
                 if (i == Type_Crob) continue;
 
                 if (dbVec[i].size() > 0)
