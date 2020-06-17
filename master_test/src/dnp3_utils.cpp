@@ -115,7 +115,7 @@ using namespace std;
 //     return sock;
 // }
 // uses unsigned int to extend the range for int
-const char *getVersion(const char* version)
+const char *getVersion()
 {
     return  DNP3_UTILS_VERSION;
 } 
