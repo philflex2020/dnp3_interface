@@ -348,7 +348,7 @@ typedef struct sysCfg_t {
         // allow this to auto configure for any if db->idx == -1
         void setDbIdxMap(DbVar* db, int inParse)
         {
-            int opType;
+            int opType = db->type;
             // do these ones after parsing
             if (((db->type == Type_Crob) 
                 || (db->type == AnF32) 
@@ -357,7 +357,8 @@ typedef struct sysCfg_t {
                 && (db->idx == -1)
                 && inParse)
             {
-                    return;
+                // set the db->ix later
+                return;
             }
             // no need to repeat this
             if ((inParse == 0) && (db->idx != -1))
@@ -367,6 +368,7 @@ typedef struct sysCfg_t {
                 db->idx = 0;//getDbIdx(db->type);
             }
             opType = db->type;
+
             if ((db->type == Type_Crob) 
                 || (db->type == AnF32) 
                 || (db->type == AnIn16) 
@@ -784,9 +786,9 @@ typedef struct sysCfg_t {
             for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes); i++)
             {
                 // for outputs they are all on the Ain16 Vec
-                if (i == AnIn32) continue;
-                if (i == AnF32) continue;
-                if (i == Type_Crob) continue;
+                //if (i == AnIn32) continue;
+                //if (i == AnF32) continue;
+                //if (i == Type_Crob) continue;
 
                 if (dbVec[i].size() > 0)
                 {

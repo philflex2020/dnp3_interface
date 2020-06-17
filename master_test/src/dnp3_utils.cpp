@@ -697,7 +697,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
 //  ]
 
 // parse a map of items
-int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
+int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
 {
     cJSON* obj;
     cJSON_ArrayForEach(obj, objs)
@@ -737,14 +737,14 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 
         // allow 32 bit systems ints
         // TODO rework this
-        int myidx = idx;
+        int mytype = type;
         if (rsize != NULL) 
         {
-            if (idx == AnIn16)
+            if (type == AnIn16)
             {
                 if (rsize->valueint > 1)
                 {
-                    myidx = AnIn32; 
+                    mytype = AnIn32; 
                 }
             } 
         }
@@ -754,16 +754,16 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
             switch (opvar->valueint) 
             {
                 case 1:
-                    myidx = AnIn16;
+                    mytype = AnIn16;
                     break;
                 case 2:
-                    myidx = AnIn32;
+                    mytype = AnIn32;
                     break;
                 case 3:
-                    myidx = AnF32;
+                    mytype = AnF32;
                     break;
                 default:
-                    myidx = AnIn32;
+                    mytyp = AnIn32;
                     break;
             }
         }
@@ -792,7 +792,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
 
         // the cjidx fielcs will ovride the auto idx.
 
-        DbVar* db = sys->newDbVar(id->valuestring, myidx, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
+        DbVar* db = sys->newDbVar(id->valuestring, mytype, offset->valueint, uri?uri->valuestring:NULL, variation?variation->valuestring:NULL);
 
         if(evariation &&(db != NULL))
         {
@@ -856,7 +856,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         // the master SOEhandler will cause the linkback value to be updated.
         // we may mirror this in the outstation handler too.  
         // master and outstation have different linkback types
-        if((idx == Type_Analog) || (idx == Type_Binary)) 
+        if((mytype == Type_Analog) || (mytype == Type_Binary)) 
         {
             if (who == DNP3_MASTER)
             {
@@ -895,7 +895,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
             }
         }
     }
-    return  sys->numObjs[idx]; 
+    return  sys->numObjs[mytype]; 
 }
 
 int  parse_object(sysCfg* sys, cJSON* objs, int idx, int who)
