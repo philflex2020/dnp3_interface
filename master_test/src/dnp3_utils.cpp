@@ -115,6 +115,11 @@ using namespace std;
 //     return sock;
 // }
 // uses unsigned int to extend the range for int
+bool checkVersion(const char* version)
+{
+    return strcmp(version, DNP3_UTILS_VERSION) ==0);
+} 
+
 int32_t getInt32Val(DbVar *db)
 {
     int32_t ival = static_cast<int32_t>(db->valuedouble); 

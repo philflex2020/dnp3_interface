@@ -27,6 +27,7 @@ using namespace opendnp3;
 #define DNP3_MASTER 0
 #define DNP3_OUTSTATION 1
 
+#define DNP3_UTILS_VERSION "0.9.1"
 
 const ControlCode StringToControlCode(const char* codeWord);
 
