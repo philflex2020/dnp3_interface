@@ -364,16 +364,16 @@ typedef struct sysCfg_t {
                 return;
             if(db->idx == -1)
             {
-                db->idx = getDbIdx(db->type);
+                db->idx = 0;//getDbIdx(db->type);
             }
             opType = db->type;
             if ((db->type == Type_Crob) 
                 || (db->type == AnF32) 
                 || (db->type == AnIn16) 
                 || (db->type == AnIn32)) 
-                {
-                    opType = AnIn16;
-                }
+            {
+                opType = AnIn16;
+            }
 
 
             // all outputs are merged into one type to ensure unique indexes
@@ -763,7 +763,7 @@ typedef struct sysCfg_t {
                     for (int j = 0; j < static_cast<int32_t>(dbVec[i].size()); j++)
                     {
                         DbVar* db = dbVec[i][j];
-                        if(db != NULL)
+                        if((db != NULL) &&(db->type == i))
                         {
                             FPS_ERROR_PRINT(" idx [%s.%d] ->name :[%s] offset : [%d] ===> \n"
                                 , iotypToStr(db->type)
@@ -790,7 +790,7 @@ typedef struct sysCfg_t {
 
                 if (dbVec[i].size() > 0)
                 {
-                    FPS_ERROR_PRINT(" dnp3 type [%s]\n", iotypToStr(i)); 
+                    FPS_ERROR_PRINT(" Assign dnp3 type [%s]\n", iotypToStr(i)); 
                     for (int j = 0; j < static_cast<int32_t>(dbVec[i].size()); j++)
                     {
                         
