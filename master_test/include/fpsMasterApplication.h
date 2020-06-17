@@ -64,12 +64,14 @@ public:
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
         if(sysdb->debug == 1)
             std::cout << "Running ["<<__FUNCTION__<<"]\n";    //Code for adding timestamp
+
+        sysdb->pubUris();
+
         if(sysdb->cj)
         {
             if (sysdb->cjloaded > 0) 
             {
                 //pubWithTimeStamp(sysdb->cj, sysdb, "components");
-                sysdb->pubUris();
                 sysdb->cjloaded = 0;
             }
             //cJSON_Delete(sysdb->cj);
