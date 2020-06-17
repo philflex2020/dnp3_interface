@@ -794,7 +794,7 @@ typedef struct sysCfg_t {
                 //cJSON_AddNumberToObject(cjv,"value", cmd.value);
                 cJSON_AddItemToObject(cjPub, db->uri, cjuri);
             }
-            cJSON_AddNumberToObject(cjv,db->name.c_str(), val);
+            cJSON_AddNumberToObject(cjuri, db->name.c_str(), val);
         }
 
         void addPubVar(DbVar* db, bool val)
@@ -809,7 +809,7 @@ typedef struct sysCfg_t {
                 cjuri = cJSON_CreateObject();
                 cJSON_AddItemToObject(cjPub, db->uri, cjuri);
             }
-            cJSON_AddBoolToObject(cjv,db->name.c_str(), val);            
+            cJSON_AddBoolToObject(cjuri, db->name.c_str(), val);            
         }
 
         void pubUris(void)
