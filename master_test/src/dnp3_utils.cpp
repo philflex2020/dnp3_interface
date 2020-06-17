@@ -700,14 +700,14 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
 int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
 {
     cJSON* obj;
-    int mytype = type;
+    int mytype;
 
     cJSON_ArrayForEach(obj, objs)
     {
         cJSON *id, *offset, *uri, *bf, *bits, *variation;
         cJSON *evariation, *linkback, *clazz, *rsize, *sign;
         cJSON *scale, *cjidx, *opvar;
-
+        
         if(obj == NULL)
         {
             FPS_ERROR_PRINT("Invalid or NULL obj\n");
@@ -738,7 +738,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
         }
 
         // allow 32 bit systems ints
-        // TODO rework this
+        mytype = type;
         if (rsize != NULL) 
         {
             if (type == AnIn16)
