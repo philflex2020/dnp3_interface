@@ -780,7 +780,7 @@ typedef struct sysCfg_t {
                     }
                 }
             }
-            FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
+            
         }
 
         void addPubVar(DbVar* db, double val)
@@ -788,15 +788,19 @@ typedef struct sysCfg_t {
             if (cjPub == NULL)
             {
                 cjPub = cJSON_CreateObject();
+                FPS_ERROR_PRINT(" %s  created cjPub (double) \n", __FUNCTION__);
             }
             cJSON* cjuri = cJSON_GetObjectItem(cjPub, db->uri);
             if(cjuri == NULL)
             {
+                FPS_ERROR_PRINT(" %s  created cjuri [%s] \n", __FUNCTION__, db->uri);
                 cjuri = cJSON_CreateObject();
                 //cJSON_AddNumberToObject(cjv,"value", cmd.value);
                 cJSON_AddItemToObject(cjPub, db->uri, cjuri);
+                cjuri = cJSON_GetObjectItem(cjPub, db->uri);
             }
-            cJSON_AddNumberToObject(cjuri, db->name.c_str(), val);
+            if(cjuri != NULL)
+                cJSON_AddNumberToObject(cjuri, db->name.c_str(), val);
         }
 
         void addPubVar(DbVar* db, bool val)
@@ -804,14 +808,19 @@ typedef struct sysCfg_t {
             if (cjPub == NULL)
             {
                 cjPub = cJSON_CreateObject();
+                FPS_ERROR_PRINT(" %s  created cjPub (bool) \n", __FUNCTION__);
             }
             cJSON* cjuri = cJSON_GetObjectItem(cjPub, db->uri);
             if(cjuri == NULL)
             {
+                FPS_ERROR_PRINT(" %s  created cjuri [%s] \n", __FUNCTION__, db->uri);
                 cjuri = cJSON_CreateObject();
                 cJSON_AddItemToObject(cjPub, db->uri, cjuri);
+                cjuri = cJSON_GetObjectItem(cjPub, db->uri);
+     
             }
-            cJSON_AddBoolToObject(cjuri, db->name.c_str(), val);            
+            if(cjuri != NULL)
+                cJSON_AddBoolToObject(cjuri, db->name.c_str(), val);            
         }
 
         void pubUris(void)
