@@ -295,6 +295,7 @@ typedef struct sysCfg_t {
     sysCfg_t() :name(NULL), protocol(NULL), id(NULL), ip_address(NULL), p_fims(NULL)
     {
         cj = NULL;
+        cjPub = NULL;
         cjloaded = 0;
         debug = 0;
         scanreq = 0;
@@ -780,6 +781,66 @@ typedef struct sysCfg_t {
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
         }
 
+        void addPubVar(DbVar* db, double val)
+        {
+            if (cjPub == NULL)
+            {
+                cjPub = cJSON_CreateObject();
+            }
+            cJSON* cjuri = cJSON_GetObjectItem(cjPub, db->uri);
+            if(cjuri == NULL)
+            {
+                cjuri = cJSON_CreateObject();
+                //cJSON_AddNumberToObject(cjv,"value", cmd.value);
+                cJSON_AddItemToObject(cjPub, db->uri, cjuri);
+            }
+            cJSON_AddNumberToObject(cjv,db->name.c_str(), val);
+        }
+
+        void addPubVar(DbVar* db, bool val)
+        {
+            if (cjPub == NULL)
+            {
+                cjPub = cJSON_CreateObject();
+            }
+            cJSON* cjuri = cJSON_GetObjectItem(cjPub, db->uri);
+            if(cjuri == NULL)
+            {
+                cjuri = cJSON_CreateObject();
+                cJSON_AddItemToObject(cjPub, db->uri, cjuri);
+            }
+            cJSON_AddBoolToObject(cjv,db->name.c_str(), val);            
+        }
+
+        void pubUris(void)
+        {
+            if (cjPub == NULL)
+            {
+                return;
+            }
+            cJSON* obj;
+            cJSON_ArrayForEach(obj, cjPub)
+            {
+                //obj->string is the URI 
+                //obj->child are the data points
+                addCjTimestamp(obj->child, "Timestamp");
+                char* out = cJSON_PrintUnformatted(obj->child);
+                if (out) 
+                {
+                    char tmp[1024];
+                    snprintf(tmp, 1024,"%s", obj->string);
+
+                    if(p_fims)
+                    {
+                        p_fims->Send("pub", tmp, NULL, out);
+                    }
+                    free(out);
+                }
+            }
+            cJSON_Delete(cjPub);
+            cjPub =  NULL;
+        }
+
         void assignIdx()
         {
             FPS_ERROR_PRINT(" %s Assign DbVar idx ===> \n\n", __FUNCTION__);
@@ -1236,6 +1297,7 @@ typedef struct sysCfg_t {
 
         fims* p_fims;
         cJSON* cj;  
+        cJSON* cjPub;
         int cjloaded;
         int debug;
         int scanreq;     //used to request a class 1, 2 or 3 scan 

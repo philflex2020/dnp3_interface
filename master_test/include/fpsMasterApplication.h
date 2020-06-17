@@ -69,6 +69,7 @@ public:
             if (sysdb->cjloaded > 0) 
             {
                 pubWithTimeStamp(sysdb->cj, sysdb, "components");
+                sysdb->pubUris();
                 sysdb->cjloaded = 0;
             }
             cJSON_Delete(sysdb->cj);

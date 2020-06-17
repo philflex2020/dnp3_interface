@@ -31,6 +31,7 @@ void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
+                static_sysdb->addPubVar(db, pair.value.value);
                 cJSON_AddBoolToObject(static_sysdb->cj, vname, pair.value.value);
                 static_sysdb->setDbVar(db->uri, vname, pair.value.value);
                 items++;
@@ -82,6 +83,8 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
                 FPS_ERROR_PRINT("***************************** analog idx %d name [%s] uri [%s] value [%f]\n", pair.index, db->name.c_str(), db->uri, pair.value.value);
             if(strcmp(vname,"Unknown")!= 0) 
             {
+                // TODO find cj for db->uri then add to that object
+                static_sysdb->addPubVar(db, pair.value.value);
                 cJSON_AddNumberToObject(static_sysdb->cj, vname, pair.value.value);
                 static_sysdb->setDbVar(db->uri, vname, pair.value.value);
                 items++;
