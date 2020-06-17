@@ -234,6 +234,13 @@ int main(int argc, char* argv[])
     int rc = 0;
     int fims_connect = 0;
     int ttick = 0; // timeout tick
+
+    if (strcmp(DNP3_UTILS_VERSION, getVersion())!=0)
+    {
+        FPS_ERROR_PRINT("Error with installed DNP3_UTILS_VERSION\n");
+        return 1;
+    }
+
     p_fims = new fims();
     
     bool running = true;
