@@ -842,7 +842,13 @@ int parse_items(sysCfg* sys, cJSON* objs, int idx, int who)
         {
             db->idx = cjidx->valueint;
         }
-        sys->setDbIdxMap(db);
+        else
+        {
+            db->idx = -1;
+        }
+        // do it first time in parsing
+        // need to follow up after parse complete to pick up remaining allocations
+        sys->setDbIdxMap(db, 1);
   
         sys->addDbUri(nuri, db);
 
@@ -975,7 +981,9 @@ bool parse_variables(cJSON* object, sysCfg* sys, int who)
     for (int idx = 0; idx< Type_of_Var::NumTypes; idx++)
         parse_object(sys, JSON_objects, idx, who);
 
-    // TODO after this is done we could auto assign the indexes here
+    // after this is done we auto assign the indexes here
+    sys->assignIdx();
+
     return true;
 }
 

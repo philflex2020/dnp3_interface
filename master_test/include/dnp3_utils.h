@@ -31,7 +31,6 @@ using namespace opendnp3;
 
 const ControlCode StringToControlCode(const char* codeWord);
 
-
 struct char_cmp {
     bool operator () (const char *a,const char *b) const
     {
@@ -342,22 +341,50 @@ typedef struct sysCfg_t {
             //
             //db->idx = static_cast<int32_t>(dbVec[type].size());
             // TODO auto assign see below
-            db->idx = getDbIdx(type);
             dbVec[type].push_back(db);
      
             return db;
         };
-        // TODO allow this to auto configure for any if db->idx == -1
-        void setDbIdxMap(DbVar* db)
+        // allow this to auto configure for any if db->idx == -1
+        void setDbIdxMap(DbVar* db, int inParse)
         {
-                if(dbMapIxs[db->type].find(db->idx) == dbMapIxs[db->type].end())
-                {   
-                    dbMapIxs[db->type][db->idx] = db;
-                }
-                else
+            int opType;
+            // do these ones after parsing
+            if (((db->type == Type_Crob) 
+                || (db->type == AnF32) 
+                || (db->type == AnIn16) 
+                || (db->type == AnIn32)) 
+                && (db->idx == -1)
+                && inParse)
+            {
+                    return;
+            }
+            // no need to repeat this
+            if ((inParse == 0) && (db-idx != -1))
+                return;
+            if(db->idx == -1)
+            {
+                db->idx = getDbIdx(db->type);
+            }
+            opType = db->type;
+            if ((db->type == Type_Crob) 
+                || (db->type == AnF32) 
+                || (db->type == AnIn16) 
+                || (db->type == AnIn32)) 
                 {
-                    FPS_ERROR_PRINT(" %s name [%s] already defined in dbMapIx\n", __FUNCTION__, db->name.c_str());
+                    opType = AnIn16;
                 }
+
+
+            // all outputs are merged into one type to ensure unique indexes
+            while (dbMapIxs[opType].find(db->idx) != dbMapIxs[opType].end())
+            {   
+                db->idx++;
+            }
+            dbMapIxs[opType][db->idx] = db;
+            // repat here just to make sure
+            if(opType != db->type)
+                dbMapIxs[db->type][db->idx] = db;
         } 
 
         int getDbIdx(int type)
@@ -367,16 +394,17 @@ typedef struct sysCfg_t {
             {
                 case Type_Analog:
                 case Type_Binary:
-                case Type_Crob:
                     return static_cast<int32_t>(dbVec[type].size());
                     break;
 
                 case AnF32:
                 case AnIn16:
                 case AnIn32:
+                case Type_Crob:
                     idx = static_cast<int32_t>(dbVec[AnF32].size());
                     idx += static_cast<int32_t>(dbVec[AnIn16].size());
                     idx += static_cast<int32_t>(dbVec[AnIn32].size());
+                    idx += static_cast<int32_t>(dbVec[Type_Crob].size());
                     return idx;
                     break;
                 
@@ -737,8 +765,8 @@ typedef struct sysCfg_t {
                         DbVar* db = dbVec[i][j];
                         if(db != NULL)
                         {
-                            FPS_ERROR_PRINT(" idx [%d.%d] ->name :[%s] offset : [%d] ===> \n"
-                                , db->type
+                            FPS_ERROR_PRINT(" idx [%s.%d] ->name :[%s] offset : [%d] ===> \n"
+                                , iotypToStr(db->type)
                                 , db->idx
                                 , db->name.c_str()
                                 , db->offset
@@ -750,6 +778,39 @@ typedef struct sysCfg_t {
             FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
         }
 
+        void assignIdx()
+        {
+            FPS_ERROR_PRINT(" %s Assign DbVar idx ===> \n\n", __FUNCTION__);
+            for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes); i++)
+            {
+                // for outputs they are all on the Ain16 Vec
+                if (i == Ain32) continue;
+                if (i == AF32) continue;
+                if (i == Type_Crob) continue;
+
+                if (dbVec[i].size() > 0)
+                {
+                    FPS_ERROR_PRINT(" dnp3 type [%s]\n", iotypToStr(i)); 
+                    for (int j = 0; j < static_cast<int32_t>(dbVec[i].size()); j++)
+                    {
+                        
+                        DbVar* db = dbVec[i][j];
+                        setDbIdxMap(db, 0);
+
+                        if(db != NULL)
+                        {
+                            FPS_ERROR_PRINT(" idx set [%s.%d] ->name :[%s] offset : [%d] ===> \n"
+                                , iotypToStr(db->type)
+                                , db->idx
+                                , db->name.c_str()
+                                , db->offset
+                                );
+                        }
+                    }
+                }
+            }
+            FPS_ERROR_PRINT(" %s DbVars<=== \n\n", __FUNCTION__);
+        }
         // void addVarsToCj(cJSON* cj)
         // {
         //     dbvar_map::iterator it;
@@ -1189,7 +1250,7 @@ cJSON* get_config_json(int argc, char* argv[]);
 // new mapping
 bool parse_system(cJSON* object, sysCfg* sys, int who);
 bool parse_variables(cJSON* object, sysCfg* sys, int who);
-cJSON *parseJSONConfig(char* file_path);
+cJSON* parseJSONConfig(char* file_path);
 void addCjTimestamp(cJSON* cj, const char* ts);
 void pubWithTimeStamp(cJSON* cj, sysCfg* sys, const char* ev);
 
