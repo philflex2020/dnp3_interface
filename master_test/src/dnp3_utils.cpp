@@ -117,7 +117,7 @@ using namespace std;
 // uses unsigned int to extend the range for int
 bool checkVersion(const char* version)
 {
-    return strcmp(version, DNP3_UTILS_VERSION) ==0);
+    return (strcmp(version, DNP3_UTILS_VERSION) ==0);
 } 
 
 int32_t getInt32Val(DbVar *db)
