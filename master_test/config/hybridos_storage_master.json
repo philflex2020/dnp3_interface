@@ -5,7 +5,9 @@
         "port2": 502,
         "id": "hybridos_m",
         "ip_address": "127.0.0.1",
-        "port": 12502
+        "port": 12502,
+        "local_uri": "/local",
+        "frequency":1000
     },
     "registers": [
         {
@@ -15,48 +17,57 @@
             "number_of_registers": 21,
             "map": [
                 {
+                    "idx":0,
                     "id": "remote_enable_flag",
                     "offset": 0,
                     "name": "Start Flag"
                 },
                 {
+                    "idx":1,
                     "id": "remote_disable_flag",
                     "offset": 1,
                     "name": "Disable/Enable Flag"
                 },
                 {
+                    "idx":2,
                     "id": "remote_standby_flag",
                     "offset": 2,
                     "name": "Standby Flag"
                 },
                 {
+                    "idx":3,
                     "id": "remote_features_kW_mode_cmd",
                     "offset": 3,
                     "name": "Active Power Mode"
                 },
                 {
+                    "idx":4,
                     "id": "remote_features_kVAR_mode_cmd",
                     "offset": 4,
                     "name": "Reactive Power Mode"
                 },
                 {
+                    "idx":5,
                     "id": "rated_active_power",
                     "offset": 5,
                     "size": 2,
                     "name": "Peak Power Limit"
                 },
                 {
+                    "idx":7,
                     "id": "feeder_kW_slew_rate",
                     "offset": 7,
                     "name": "Max System Ramp Rate"
                 },
                 {
+                    "idx":8,
                     "id": "remote_ess_charge_control_target_soc",
                     "offset": 8,
                     "scale": 100,
                     "name": "Target SOC"
                 },
                 {
+                    "idx":9,
                     "id": "remote_export_target_kW_cmd",
                     "offset": 9,
                     "size": 2,
@@ -64,6 +75,7 @@
                     "signed": true
                 },
                 {
+                    "idx":11,
                     "id": "remote_manual_ess_kW_cmd",
                     "offset": 11,
                     "size": 2,
@@ -71,35 +83,41 @@
                     "signed": true
                 },
                 {
+                    "idx":13,
                     "id": "remote_manual_solar_kW_cmd",
                     "offset": 13,
                     "size": 2,
                     "name": "PV Curtailment Target"
                 },
                 {
+                    "idx":15,
                     "id": "remote_active_voltage_cmd",
                     "offset": 15,
                     "scale": 1,
                     "name": "AVR setpoint voltage"
                 },
                 {
+                    "idx":16,
                     "id": "remote_reactive_setpoint_kVAR_cmd",
                     "offset": 16,
                     "name": "Reactive Power Target",
                     "signed": true
                 },
                 {
+                    "idx":17,
                     "id": "remote_power_factor_cmd",
                     "offset": 17,
                     "scale": 100,
                     "name": "Power Factor Target"
                 },
                 {
+                    "idx":18,
                     "id": "heartbeat",
                     "offset": 18,
                     "name": "Heartbeat"
                 },
                 {
+                    "idx":19,
                     "id": "substation_active_power",
                     "offset": 19,
                     "size": 2,
