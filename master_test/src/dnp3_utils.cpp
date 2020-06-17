@@ -956,6 +956,8 @@ bool parse_modbus(cJSON* cj, sysCfg* sys, int who)
         }
         parse_items(sys, cjmap, idx, who);
     }
+    sys->assignIdx();
+
     return true;
 }
 
