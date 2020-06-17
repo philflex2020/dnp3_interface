@@ -1210,5 +1210,5 @@ bool checkWho(sysCfg* sys, const char* uri, const char* name, int who);
 bool checkWho(sysCfg* sys, DbVar* db, int who);
 int getSysUris(sysCfg* sys, int who, const char** &subs, bool* &bpubs);
 
- const char *geVersion(const char* version);
+ const char *getVersion(const char* version);
 #endif
