@@ -38,13 +38,13 @@ using namespace asiodnp3;
 
 fims *p_fims;
 //TODO fill out from system config
-void ConfigureDatabase(DatabaseConfig& config, sysCfg* fpsDB)
+void ConfigureDatabase(DatabaseConfig& config, sysCfg* sys)
 {
     // just deal with analog vars and Group30Var5, this allows floating point numbers through the system
-    auto dsize = fpsDB->dbVec[Type_Analog].size();
+    auto dsize = sys->dbVec[Type_Analog].size();
     for (int i = 0; i < static_cast<int32_t>(dsize); i++)
     {
-        DbVar* db = fpsDB->getDbVarId(Type_Analog, i);
+        DbVar* db = sys->getDbVarId(Type_Analog, i);
         if(db != NULL)
         {
             if(db->variation == Group30Var5)
@@ -96,13 +96,13 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* fpsDB)
     //config.analog[0].deadband = 1.0; ///EventAnalogVariation::Group32Var7;   
 }
 
-DNP3Manager* setupDNP3Manager(sysCfg* fpsDB)
+DNP3Manager* setupDNP3Manager(sysCfg* sys)
 {
-    auto manager = new DNP3Manager(1, fpsLogger::Create(fpsDB));
+    auto manager = new DNP3Manager(1, fpsLogger::Create(sys));
     return manager;
 }
 
-std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* fpsDB) {
+std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* sys) {
     // Specify what log levels to use. NORMAL is warning and above
     // You can add all the comms logging by uncommenting below.
     const uint32_t FILTERS = levels::NORMAL | levels::ALL_COMMS;
@@ -111,9 +111,9 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     auto channel = manager->AddTCPServer(cname, 
                                         FILTERS, 
                                         ServerAcceptMode::CloseExisting, 
-                                        fpsDB->ip_address, 
-                                        fpsDB->port,
-                                        fpsChannelListener::Create(fpsDB)
+                                        sys->ip_address, 
+                                        sys->port,
+                                        fpsChannelListener::Create(sys)
                                         );
     return channel;
 }
@@ -130,7 +130,7 @@ void setConfigUnsol(sysCfg* sys, OutstationStackConfig &config)
     }
 }
 
-std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* fpsDB, OutstationStackConfig &config)
+std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* sys, OutstationStackConfig &config)
 {
     // The main object for a outstation. The defaults are useable,
     // but understanding the options are important.
@@ -167,30 +167,30 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // in this example, we've enabled the oustation to use unsolicted reporting
     // if the master enables it
     config.outstation.params.allowUnsolicited = true;
-    fpsDB->unsol = 1;
+    sys->unsol = 1;
     // allow sys to over rule
-    setConfigUnsol(fpsDB, config);
+    setConfigUnsol(sys, config);
 
     //config.outstation.params.allowUnsolicited = false;
 
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
     // 
-    config.link.LocalAddr = fpsDB->local_address;   // was 10
-    config.link.RemoteAddr = fpsDB->remote_address;//  was 1;
+    config.link.LocalAddr = sys->local_address;   // was 10
+    config.link.RemoteAddr = sys->remote_address;//  was 1;
 
     config.link.KeepAliveTimeout = openpal::TimeDuration::Max();
 
     // You can optionally change the default reporting variations or class assignment prior to enabling the outstation
-    ConfigureDatabase(config.dbConfig, fpsDB);
+    ConfigureDatabase(config.dbConfig, sys);
 
     // Create a new outstation with a log level, command handler, and
     // config info this	returns a thread-safe interface used for
     // updating the outstation's database.
     // TODO fpsOutStationApplication
     auto outstation = channel->AddOutstation("outstation" 
-                                            , fpsCommandHandler::Create(fpsDB)
-                                            , fpsOutstationApplication::Create(fpsDB)
+                                            , fpsCommandHandler::Create(sys)
+                                            , fpsOutstationApplication::Create(sys)
                                             , config);
 
     // Enable the outstation and start communications
@@ -337,19 +337,19 @@ int main(int argc, char* argv[])
         return 1;
     }
     // TODO fix this
-    sysCfg* fpsDB = &sys_cfg;
-    cout<<"Binaries: "<<fpsDB->dbVec[Type_Binary].size()<<" Analogs: "<<fpsDB->dbVec[Type_Analog].size()<<endl;
-    OutstationStackConfig OSconfig(DatabaseSizes( fpsDB->dbVec[Type_Binary].size(),
+    sysCfg* sys = &sys_cfg;
+    cout<<"Binaries: "<<sys->dbVec[Type_Binary].size()<<" Analogs: "<<sys->dbVec[Type_Analog].size()<<endl;
+    OutstationStackConfig OSconfig(DatabaseSizes( sys->dbVec[Type_Binary].size(),
                                                 0,
-                                                fpsDB->dbVec[Type_Analog].size(),
+                                                sys->dbVec[Type_Analog].size(),
                                                 0,
                                                 0,
-                                                fpsDB->dbVec[Type_BinaryOS].size(),
-                                                fpsDB->dbVec[Type_AnalogOS].size(),
+                                                sys->dbVec[Type_BinaryOS].size(),
+                                                sys->dbVec[Type_AnalogOS].size(),
                                                 0,
                                                 0));
 
-    auto outstation = setupDNP3outstation(channel, "outstation", &sys_cfg, OSconfig);
+    auto outstation = setupDNP3outstation(channel, "outstation", sys, OSconfig);
     if (!outstation){
         FPS_ERROR_PRINT( "Outstation setup failed.\n");
         return 1;
@@ -361,7 +361,7 @@ int main(int argc, char* argv[])
     //ssys_cfg.subsUris();
     // send out intial gets
     // set max ticks
-    sys_cfg.getUris(DNP3_OUTSTATION);
+    sys->getUris(DNP3_OUTSTATION);
     // set all values to inval  done at the start
     // start time to complete gets
     // TODO set for all the getURI responses as todo
@@ -376,7 +376,7 @@ int main(int argc, char* argv[])
             // TODO check for all the getURI resposes
             FPS_DEBUG_PRINT("Timeout tick %d\n", ttick);
             ttick++;
-            bool ok = sys_cfg.checkUris(DNP3_OUTSTATION);
+            bool ok = sys->checkUris(DNP3_OUTSTATION);
             if(ok == false)
             {
                 if (ttick > MAX_SETUP_TICKS)
@@ -388,11 +388,11 @@ int main(int argc, char* argv[])
         }
         else
         {
-            if (sys_cfg.debug == 1)
+            if (sys->debug == 1)
                 FPS_ERROR_PRINT("****** Hey %s got a message uri [%s] \n", __FUNCTION__, msg->uri);
             dbs_type dbs; // collect all the parsed vars here
 
-            cJSON* cjb = parseBody(dbs, &sys_cfg, msg, DNP3_OUTSTATION);
+            cJSON* cjb = parseBody(dbs, sys, msg, DNP3_OUTSTATION);
             if(dbs.size() > 0)
             {
                 cJSON* cj = NULL;                
@@ -438,26 +438,26 @@ int main(int argc, char* argv[])
                 }
             }
 
-            if (sys_cfg.scanreq > 0)
+            if (sys->scanreq > 0)
             {
-                FPS_ERROR_PRINT("****** outstation scanreq %d ignored \n", sys_cfg.scanreq);
-                sys_cfg.scanreq = 0;
+                FPS_ERROR_PRINT("****** outstation scanreq %d ignored \n", sys->scanreq);
+                sys->scanreq = 0;
             }
 
-            if (sys_cfg.unsol >= 0)
+            if (sys->unsol >= 0)
             {
-                FPS_ERROR_PRINT("****** outstation unsol %d handled \n", sys_cfg.unsol);
-                setConfigUnsol(&sys_cfg, OSconfig);                
+                FPS_ERROR_PRINT("****** outstation unsol %d handled \n", sys->unsol);
+                setConfigUnsol(sys, OSconfig);                
             }
 
-            if (sys_cfg.cjclass != NULL)
+            if (sys->cjclass != NULL)
             {
-                const char*tmp = cJSON_PrintUnformatted(sys_cfg.cjclass);
+                const char*tmp = cJSON_PrintUnformatted(sys->cjclass);
                 if(tmp != NULL)
                 {                
                     FPS_ERROR_PRINT("****** outstation class change [%s] handled \n", tmp);
                     free((void*)tmp);
-                    sys_cfg.cjclass = NULL;
+                    sys->cjclass = NULL;
                 }
             }
 
