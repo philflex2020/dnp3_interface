@@ -55,11 +55,41 @@ gets a pub
                                                     recieves value in analogs at the designated point index 
 
 
+
+default uri
+
 If no uri is specified for an individual variable it will assume the default url.
-</<base_url>/<system_id>
 
-These vales can be defined in the system set up of the config file.
 
+for master 
+  /components/<system_id>
+for outstation
+  /interfaces/<system_id>
+
+if the base_uri is defined this will be used.
+NOTE the base_uri Must have a leading '/'
+
+<base_url>/<system_id>
+
+These values can be defined in the system set up of the config file.
+    "system": {
+        "ip_address2": "127.0.0.1",
+        "port2": 502,
+        "id": "fm_master",
+        "ip_address": "127.0.0.1",
+        "port": 12502,
+        "local_uri": "/fm_master_local",
+        "base_uri": "/comp/master",
+        "frequency":1000
+    },
+
+
+local uri
+
+Normally the master will only respond to "sets" (and "posts")
+
+The master does contain a copy of the full variable database. 
+The local_uri is used to permit access to that data
 
 
 

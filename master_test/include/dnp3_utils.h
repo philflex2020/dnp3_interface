@@ -980,6 +980,8 @@ typedef struct sysCfg_t {
         // sets flags to describe how to handle the uri 
         char* confirmUri(DbVar* &db, const char*uri, int who, char* &name, int& flags)
         {
+            int old_debug = debug;
+            debug = 1;
             // first limit the uri 
             DbVar* dbf = NULL;
             if(debug)
@@ -990,10 +992,11 @@ typedef struct sysCfg_t {
             if(strstr(uri, "/_system") != NULL) 
             {
                flags |= URI_FLAG_SYSTEM;
+               debug=old_debug;
                return (char*)uri;
             }
             // seek reply format
-            asprintf(&tmp, "/%s/%s/reply",who?"interfaces":"components", id);
+            asprintf(&tmp, "/%s/reply",base_uri;
             if (strncmp(uri, tmp, strlen(tmp) )== 0)
             {
                 flags |= URI_FLAG_REPLY;
@@ -1015,7 +1018,7 @@ typedef struct sysCfg_t {
                     {
                         flags |= URI_FLAG_GET;
                         flags |= URI_FLAG_SET;
-                        turi = (char *)uri + strlen("/local");
+                        turi = (char *)uri + strlen(local_uri);
                         free((void *)tmp);
                         tmp = NULL;
                     }
@@ -1028,7 +1031,7 @@ typedef struct sysCfg_t {
             }
             // now look for  matching uri
             // look for "/interfaces/<id>/<someuri>"
-            dburi_map::iterator it = dburiMap.find(uri);
+            dburi_map::iterator it = dburiMap.find(turi);
             //bool match = false;
             nuri = NULL;
             for  (it = dburiMap.begin() ; it != dburiMap.end(); it++)
@@ -1055,7 +1058,7 @@ typedef struct sysCfg_t {
                         if (itd != dbm.end())
                         {
                             dbf = itd->second;
-                            if(1 || debug)
+                            if(debug)
                                 FPS_ERROR_PRINT(" URI Match                [%s] %d %d\n"
                                                     , dbf->name.c_str() 
                                                     , dbf->type
@@ -1065,18 +1068,22 @@ typedef struct sysCfg_t {
                             flags |= URI_FLAG_NAMEOK;
                             flags |= URI_FLAG_SINGLE;
                             db = dbf;
+                            debug = old_debug;
                             return turi;
                         }
                     }
                     else
                     {
                         db = NULL;
+                        debug = old_debug;
+
                         return turi;
                     }                   
                 }
             }
             if(debug)
                 FPS_ERROR_PRINT(" %s<=== uris \n\n", __FUNCTION__);
+            debug = old_debug;
             return NULL;
         }
 
