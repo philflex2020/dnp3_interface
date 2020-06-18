@@ -991,12 +991,14 @@ typedef struct sysCfg_t {
             char* tmp = NULL;
             if(strstr(uri, "/_system") != NULL) 
             {
-               flags |= URI_FLAG_SYSTEM;
+                flags |= URI_FLAG_SYSTEM;
+                if(debug)
+                    FPS_ERROR_PRINT(" %s confirmUri SYSTEM [_system] found in  [%s]\n",__FUNCTION__, uri);
                debug=old_debug;
                return (char*)uri;
             }
             // seek reply format
-            asprintf(&tmp, "/%s/reply",base_uri);
+            asprintf(&tmp, "%s/reply",base_uri);
             if(debug)
                 FPS_ERROR_PRINT(" %s confirmUri seeking REPLY [%s] in [%s]\n",__FUNCTION__, tmp, uri);
 
