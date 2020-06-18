@@ -997,6 +997,9 @@ typedef struct sysCfg_t {
             }
             // seek reply format
             asprintf(&tmp, "/%s/reply",base_uri);
+            if(debug)
+                FPS_ERROR_PRINT(" %s confirmUri seeking REPLY [%s] in [%s]\n",__FUNCTION__, tmp, uri);
+
             if (strncmp(uri, tmp, strlen(tmp) )== 0)
             {
 
@@ -1004,10 +1007,8 @@ typedef struct sysCfg_t {
                 flags |= URI_FLAG_SET;
                 turi = (char*)uri + strlen(tmp);
                 if(debug)
-                    FPS_DEBUG_PRINT(" %s confirmUri REPLY found uri now [%s]\n",__FUNCTION__, turi);
+                    FPS_ERROR_PRINT(" %s confirmUri REPLY found uri now [%s]\n",__FUNCTION__, turi);
 
-                free((void *)tmp);
-                tmp = NULL;
             }
             else
             {
@@ -1021,8 +1022,8 @@ typedef struct sysCfg_t {
                         flags |= URI_FLAG_GET;
                         flags |= URI_FLAG_SET;
                         turi = (char *)uri + strlen(local_uri);
-                        free((void *)tmp);
-                        tmp = NULL;
+                        if(debug)
+                            FPS_ERROR_PRINT(" %s confirmUri LOCAL [%s] found uri now [%s]\n",__FUNCTION__, tmp, turi);
                     }
                 }
             }
