@@ -1162,7 +1162,7 @@ typedef struct sysCfg_t {
 
                 for (int i = 0 ; i < idx; i++)
                 {
-                    FPS_ERROR_PRINT("      ===>[%s]<=== \n", subs[i];
+                    FPS_ERROR_PRINT("      ===>[%s]<=== \n", subs[i]);
                 }
             }
             return idx;
