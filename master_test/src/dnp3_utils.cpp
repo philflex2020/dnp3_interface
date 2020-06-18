@@ -1096,7 +1096,7 @@ cJSON* parseValues(dbs_type& dbs, sysCfg*sys, fims_message*msg, int who, cJSON* 
         // process a simple list
         cjit = itypeValues->child;
         if(sys->debug)
-            FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit->type);
+            FPS_DEBUG_PRINT("****** Start with variable list iterator->type %d\n\n", cjit?cjit->type:-1);
         char* mcuri = msg->uri;
         mcuri = strstr(msg->uri,"/reply/");
         if (mcuri != NULL)
