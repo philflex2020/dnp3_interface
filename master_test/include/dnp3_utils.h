@@ -999,9 +999,13 @@ typedef struct sysCfg_t {
             asprintf(&tmp, "/%s/reply",base_uri);
             if (strncmp(uri, tmp, strlen(tmp) )== 0)
             {
+
                 flags |= URI_FLAG_REPLY;
                 flags |= URI_FLAG_SET;
                 turi = (char*)uri + strlen(tmp);
+                if(debug)
+                    FPS_DEBUG_PRINT(" %s confirmUri REPLY found uri now [%s]\n",__FUNCTION__, turi);
+
                 free((void *)tmp);
                 tmp = NULL;
             }
