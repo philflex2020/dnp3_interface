@@ -981,7 +981,7 @@ typedef struct sysCfg_t {
         char* confirmUri(DbVar* &db, const char*uri, int who, char* &name, int& flags)
         {
             int old_debug = debug;
-            debug = 1;
+            //debug = 1;
             // first limit the uri 
             DbVar* dbf = NULL;
             if(debug)
@@ -1004,8 +1004,6 @@ typedef struct sysCfg_t {
                 turi = (char*)uri + strlen(tmp);
                 free((void *)tmp);
                 tmp = NULL;
-                //nfrags -= 3;
-                //return turi;
             }
             else
             {
