@@ -86,12 +86,58 @@ These values can be defined in the system set up of the config file.
 
 local uri
 
-Normally the master will only respond to "sets" (and "posts")
+Normally the outstation will only respond to "pubs" (and not "posts", yet)
 
-The master does contain a copy of the full variable database. 
+The outstation does contain a copy of the full variable database. 
+
 The local_uri is used to permit access to that data
+"system": {
+        "id": "hybridos",
+        "id": "hybridos",
+        "ip_address": "127.0.0.1",
+        "port": 12502,
+        "local_uri":"/local/outstation"
+    },
+
+$ fims_send -m set -u /interfaces/hybridos/ess_average_soc 3344 -r /me
+Receive Timeout.
+
+$ fims_send -m get -u /interfaces/hybridos/ess_average_soc  -r /me
+Receive Timeout.
+
+$ fims_send -m set -u /local/outstation/interfaces/hybridos/ess_average_soc 3344 -r /me
+{"ess_average_soc":3344}
+
+$ fims_send -m get -u /local/outstation/interfaces/hybridos/ess_average_soc  -r /me
+{"ess_average_soc":3344}
+
+The outstation will set its local variables frpm a pub uri 
+
+$ fims_send -m get -u /local/outstation/interfaces/hybridos/ess_average_soc  -r /me
+{"ess_average_soc":3344}
+
+$ fims_send -m pub -u /interfaces/hybridos/ess_average_soc 10023
+
+$ fims_send -m get -u /local/outstation/interfaces/hybridos/ess_average_soc  -r /me
+{"ess_average_soc":10023}
 
 
+
+The local_uri option is also available on the master but there is no similar restriction on the get and set uris on the master
+
+
+
+Variables
+
+Variables are defined in the config file.
+
+There are two major classes of variables
+
+The Master will receive data from the outstation as one of two data types.
+Analog and Binary.
+This outstation listens to pubs on the registered uris.
+It also checks that the data items in the pubs have been defined in the config file.
+If a match is found 
 
 June 1, 2020
 
