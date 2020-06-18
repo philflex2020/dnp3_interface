@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
     const char **subs = NULL;
     bool *bpubs = NULL;
 
-    // "components is pulled in as the default uri "
+    // components is pulled by uri  
     int num = getSysUris(&sys_cfg, DNP3_MASTER, subs, bpubs);
     if(num < 0)
     {
@@ -258,19 +258,21 @@ int main(int argc, char *argv[])
         //rc = 1;
         return 1;//goto cleanup;
     }
-    // could alternatively fims connect using a stored name for the server
-    while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(sys_cfg.id) == false)
+    // use the id for fims connect bt also add master designation 
     {
-        fims_connect++;
-        sleep(1);
+        char tmp[1024];
+        snprintf(tmp, sizeof(tmp),"DNP3_M_%s", sys_cfg.id);
+        while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(tmp) == false)
+        {
+            fims_connect++;
+            sleep(1);
+        }
     }
 
     if(fims_connect >= MAX_FIMS_CONNECT)
     {
         FPS_ERROR_PRINT("Failed to establish connection to FIMS server.\n");
-        //rc = 1;
         return 1;
-        //goto cleanup;
     }
 
     FPS_DEBUG_PRINT("Map configured: Initializing data.\n");

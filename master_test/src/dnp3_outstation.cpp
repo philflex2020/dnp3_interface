@@ -265,9 +265,8 @@ int main(int argc, char* argv[])
         cJSON_Delete(config);
         return 1;
     }
-    //sys_cfg.setupReadb(DNP3_OUTSTATION);
+
     sys_cfg.showDbMap();
-    //sys_cfg.showUris();
     sys_cfg.showNewUris();
     
     cJSON_Delete(config);
@@ -296,12 +295,15 @@ int main(int argc, char* argv[])
         return 1;
         //goto cleanup;
     }
-    
-    // could alternatively fims connect using a stored name for the server
-    while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(sys_cfg.id) == false)
+    // use the id for fims connect but also add outsttion designation 
     {
-        fims_connect++;
-        sleep(1);
+        char tmp[1024];
+        snprintf(tmp, sizeof(tmp),"DNP3_O_%s", sys_cfg.id);
+        while(fims_connect < MAX_FIMS_CONNECT && p_fims->Connect(tmp) == false)
+        {
+            fims_connect++;
+            sleep(1);
+        }
     }
 
     if(fims_connect >= MAX_FIMS_CONNECT)
