@@ -205,9 +205,9 @@ typedef struct DbVar_t {
     uint8_t initSet;
     //DbVar_t* readb;      // we have a readb linked to this  
     DbVar_t* linkb;
-    if(linkback) free((void *)linkback);
-    if(linkuri) free((void *)linkuri);
-   bool sign;
+    const char* linkback;
+    const char* linkuri;
+    bool sign;
     int scale;
 
 } DbVar;
