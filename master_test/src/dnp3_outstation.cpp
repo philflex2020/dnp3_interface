@@ -167,7 +167,7 @@ std::shared_ptr<IOutstation> setupDNP3outstation (std::shared_ptr<IChannel> chan
     // in this example, we've enabled the oustation to use unsolicted reporting
     // if the master enables it
     config.outstation.params.allowUnsolicited = true;
-    sys->unsol = 1;
+    fpsDB->unsol = 1;
     // allow sys to over rule
     setConfigUnsol(fpsDB, config);
 
