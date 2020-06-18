@@ -1,0 +1,116 @@
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449007315) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos message [WARN   ] --[fps Logger ms(1592449007315) WARN    xxhybridos - Error Connecting: Connection refused]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  hybridos message [INFO   ] --[fps Logger ms(1592449037728) INFO    manager - Starting thread (0)]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  hybridos state change [OPENING]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  hybridos message [INFO   ] --[fps Logger ms(1592449037729) INFO    server - Listening on: 127.0.0.1:12502]\n","severity":1}
+Method:  get
+Uri:     /assets/feeders/feed_6
+ReplyTo: /interfaces/hybridos/reply/assets/feeders/feed_6
+Body:    (null)
+Method:  get
+Uri:     /features/reactive_power
+ReplyTo: /interfaces/hybridos/reply/features/reactive_power
+Body:    (null)
+Method:  get
+Uri:     /interfaces/hybridos
+ReplyTo: /interfaces/hybridos/reply/interfaces/hybridos
+Body:    (null)
+Method:  get
+Uri:     /site/operation
+ReplyTo: /interfaces/hybridos/reply/site/operation
+Body:    (null)
+Method:  get
+Uri:     /site/power
+ReplyTo: /interfaces/hybridos/reply/site/power
+Body:    (null)
+Method:  set
+Uri:     /interfaces/hybridos/reply/site/power
+ReplyTo: (null)
+Body:    {"pv_reactive_power":0}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067320) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067321) INFO    xxhybridos - Connected to: 127.0.0.1, port 12502]\n","severity":1}
+
+
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449007315) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos message [WARN   ] --[fps Logger ms(1592449007315) WARN    xxhybridos - Error Connecting: Connection refused]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  hybridos message [INFO   ] --[fps Logger ms(1592449037728) INFO    manager - Starting thread (0)]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  hybridos state change [OPENING]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  hybridos message [INFO   ] --[fps Logger ms(1592449037729) INFO    server - Listening on: 127.0.0.1:12502]\n","severity":1}
+Method:  get
+Uri:     /assets/feeders/feed_6
+ReplyTo: /interfaces/hybridos/reply/assets/feeders/feed_6
+Body:    (null)
+Method:  get
+Uri:     /features/reactive_power
+ReplyTo: /interfaces/hybridos/reply/features/reactive_power
+Body:    (null)
+Method:  get
+Uri:     /interfaces/hybridos
+ReplyTo: /interfaces/hybridos/reply/interfaces/hybridos
+Body:    (null)
+Method:  get
+Uri:     /site/operation
+ReplyTo: /interfaces/hybridos/reply/site/operation
+Body:    (null)
+Method:  get
+Uri:     /site/power
+ReplyTo: /interfaces/hybridos/reply/site/power
+Body:    (null)
+Method:  set
+Uri:     /interfaces/hybridos/reply/site/power
+ReplyTo: (null)
+Body:    {"pv_reactive_power":0}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067320) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067321) INFO    xxhybridos - Connected to: 127.0.0.1, port 12502]\n","severity":1}
+
+s
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos state change [CLOSED]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos Link Status Change [UNRESET]\n","severity":1}
+Method:  post
+Uri:     /events
+ReplyTo: (null)
+Body:    {"source":"DNP3","message":"DNP3  xxhybridos state change [OPENING]\n","severity":1}
+
