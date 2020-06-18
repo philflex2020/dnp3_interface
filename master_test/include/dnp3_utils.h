@@ -992,7 +992,7 @@ typedef struct sysCfg_t {
             if(strstr(uri, "/_system") != NULL) 
             {
                 flags |= URI_FLAG_SYSTEM;
-                if(debug)
+                if(1||debug)
                     FPS_ERROR_PRINT(" %s confirmUri SYSTEM [_system] found in  [%s]\n",__FUNCTION__, uri);
                debug=old_debug;
                return (char*)uri;
@@ -1008,7 +1008,7 @@ typedef struct sysCfg_t {
                 flags |= URI_FLAG_REPLY;
                 flags |= URI_FLAG_SET;
                 turi = (char*)uri + strlen(tmp);
-                if(debug)
+                if(1||debug)
                     FPS_ERROR_PRINT(" %s confirmUri REPLY found uri now [%s]\n",__FUNCTION__, turi);
 
             }
@@ -1024,7 +1024,7 @@ typedef struct sysCfg_t {
                         flags |= URI_FLAG_GET;
                         flags |= URI_FLAG_SET;
                         turi = (char *)uri + strlen(local_uri);
-                        if(debug)
+                        if(1||debug)
                             FPS_ERROR_PRINT(" %s confirmUri LOCAL [%s] found uri now [%s]\n",__FUNCTION__, tmp, turi);
                     }
                 }
