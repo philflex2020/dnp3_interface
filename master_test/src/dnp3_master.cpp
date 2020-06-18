@@ -103,7 +103,7 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     return channel;
 }
 
-std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* ourDB )
+std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* sys )
 {
     MasterStackConfig stackConfig;
     // you can override application layer settings for the master here
@@ -112,26 +112,26 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     stackConfig.master.disableUnsolOnStartup = true;
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
-    stackConfig.link.LocalAddr = ourDB->local_address;//localAddr; // 1
-    stackConfig.link.RemoteAddr = ourDB->remote_address;//remoteAddr; //10;
+    stackConfig.link.LocalAddr = sys->local_address;//localAddr; // 1
+    stackConfig.link.RemoteAddr = sys->remote_address;//remoteAddr; //10;
     // Create a new master on a previously declared port, with a
     // name, log level, command acceptor, and config info. This
     // returns a thread-safe interface used for sending commands.
     
     auto master = channel->AddMaster("master", // id for logging
-                                     fpsSOEHandler::Create(ourDB), // callback for data processing  this generates the pub elements when we get data
-                                     fpsMasterApplication::Create(ourDB), // master application instance this manages the collection of all the pub elements 
+                                     fpsSOEHandler::Create(sys), // callback for data processing  this generates the pub elements when we get data
+                                     fpsMasterApplication::Create(sys), // master application instance this manages the collection of all the pub elements 
                                      stackConfig // stack configuration
                                     );
 
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
-    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Milliseconds(ourDB->frequency));
+    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Milliseconds(sys->frequency));
     //void Scan(const HeaderBuilderT& builder, TaskConfig config = TaskConfig::Default());
 
     //void ScanClasses(const opendnp3::ClassField& field, const opendnp3::TaskConfig& config) override;
     // do a Class 1 exception poll every 5 seconds
-    //auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(60));
+    auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(5));
     //auto exceptionScan = master->Scan(ClassField(ClassField::CLASS_1);
     
     //auto binscan = master->AddAllObjectsScan(GroupVariationID(1,1),
