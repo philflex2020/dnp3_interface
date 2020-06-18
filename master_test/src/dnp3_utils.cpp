@@ -710,6 +710,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
         cJSON *id, *offset, *uri, *bf, *bits, *variation;
         cJSON *evariation, *linkback, *clazz, *rsize, *sign;
         cJSON *scale, *cjidx, *opvar;
+        cJSON *linkuri;
         
         if(obj == NULL)
         {
@@ -728,6 +729,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
         bf         = cJSON_GetObjectItem(obj, "bit_field");
         bits       = cJSON_GetObjectItem(obj, "bit_strings");
         linkback   = cJSON_GetObjectItem(obj, "linkback");
+        linkuri   = cJSON_GetObjectItem(obj, "linkuri");
         clazz      = cJSON_GetObjectItem(obj, "clazz");
         sign       = cJSON_GetObjectItem(obj, "signed");
         scale      = cJSON_GetObjectItem(obj, "scale");
@@ -865,6 +867,20 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
         {
             if (who == DNP3_MASTER)
             {
+                
+                if(linkuri)
+                {
+                    // copy the variable uri into the linkuri string.
+                    // char* linkback; 
+                    // DbVar* linkb
+                    // the variable may not exist yet so it will be found later.
+                    if (linkuri->valuestring != NULL)
+                    {
+                        FPS_ERROR_PRINT(" Setting linkuri  name to [%s]\n", linkuri->valuestring);
+                        db->linkuri = strdup(linkuri->valuestring);
+                        //db->linkb = sys->getDbVar(nuri, linkback->valuestring);
+                    }
+                }
                 if(linkback)
                 {
                     // copy the variable name into the linkback string.
@@ -875,7 +891,10 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
                     {
                         FPS_ERROR_PRINT(" Setting linkback variable name to [%s]\n", linkback->valuestring);
                         db->linkback = strdup(linkback->valuestring);
-                        db->linkb = sys->getDbVar(nuri, linkback->valuestring);
+                        const char* luri = db->linkuri;
+                        if (luri == NULL)
+                            luri = nuri;
+                        db->linkb = sys->getDbVar(luri, linkback->valuestring);
                     }
                 }
             }
@@ -884,6 +903,16 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
         {
             if (who == DNP3_OUTSTATION)
             {
+                if(linkuri)
+                {
+                    if (linkuri->valuestring != NULL)
+                    {
+                        FPS_ERROR_PRINT(" Setting linkuri  name to [%s]\n", linkuri->valuestring);
+                        db->linkuri = strdup(linkuri->valuestring);
+                        //db->linkb = sys->getDbVar(nuri, linkback->valuestring);
+                    }
+                }
+
                 if(linkback)
                 {
                     // copy the variable name into the linkback string.
@@ -893,8 +922,11 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
                     if (linkback->valuestring != NULL)
                     {
                         FPS_ERROR_PRINT(" Setting linkback variable name to [%s]\n", linkback->valuestring);
+                        const char* luri = db->linkuri;
+                        if (luri == NULL)
+                            luri = nuri;
                         db->linkback = strdup(linkback->valuestring);
-                        db->linkb = sys->getDbVar(nuri, linkback->valuestring);
+                        db->linkb = sys->getDbVar(luri, linkback->valuestring);
                     }
                 }
             }

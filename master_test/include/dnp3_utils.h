@@ -101,6 +101,7 @@ typedef struct DbVar_t {
         //readb = NULL;
         linkb = NULL;  // used to link outstation responses to master vars
         linkback = NULL;
+        linkuri = NULL;        
         clazz = 0;
         sign = false;
         scale = 0;
@@ -121,6 +122,7 @@ typedef struct DbVar_t {
     {
         if(uri)free((void *)uri);
         if(linkback) free((void *)linkback);
+        if(linkuri) free((void *)linkuri);
     }
 
     void setEvar(const char* evar)
@@ -203,8 +205,9 @@ typedef struct DbVar_t {
     uint8_t initSet;
     //DbVar_t* readb;      // we have a readb linked to this  
     DbVar_t* linkb;
-    const char* linkback;
-    bool sign;
+    if(linkback) free((void *)linkback);
+    if(linkuri) free((void *)linkuri);
+   bool sign;
     int scale;
 
 } DbVar;
@@ -446,7 +449,10 @@ typedef struct sysCfg_t {
                 {
                     if (db->linkb == NULL)
                     {
-                        db->linkb = getDbVar(db->uri, db->linkback);
+                        const char* luri = db->linkuri;
+                        if (luri == NULL)
+                            luri = db->uri;
+                        db->linkb = getDbVar(luri, db->linkback);
                     }
                     if (db->linkb != NULL)
                     {
@@ -518,7 +524,10 @@ typedef struct sysCfg_t {
                 {
                     if (db->linkb == NULL)
                     {
-                        db->linkb = getDbVar(db->uri, db->linkback);
+                        const char* luri = db->linkuri;
+                        if (luri == NULL)
+                            luri = db->uri;
+                        db->linkb = getDbVar(luri, db->linkback);
                     }
                     if(db->linkb != NULL)
                     { 

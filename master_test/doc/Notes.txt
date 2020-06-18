@@ -54,9 +54,31 @@ gets a pub
                                              ERCOT Master
                                                     recieves value in analogs at the designated point index 
 
+The data flow in the opposite direction could look like this.
+
+ERCOT Master 
+sets a variable 
+   /components/site/site_735_voltage_setpoint 240
+
+                Fleet Manager ERCOT outstation recieved the output request 
+                    as type/index AnOutInt32/23  value 240
+                            voltage_setpoint
+                            <uri /interfaces/site_735>
+                            issues a set /interfaces/site_735/voltage_setpoint 240 
+                                     sends it to Site 735 outstation  
+                                    renames it to voltage_setpoint
+
+                                                Site 735  outstation
+                                                creates a set 
+                                                /interfaces/site_735/voltage_setpoint 240
+
+
+
+
 
 
 default uri
+===========
 
 If no uri is specified for an individual variable it will assume the default url.
 
@@ -128,14 +150,170 @@ The local_uri option is also available on the master but there is no similar res
 
 
 Variables
+=========
 
 Variables are defined in the config file.
 
-There are two major classes of variables
+There are two major classes of variables those collected by the outstation and those sent to the outstation.
+The outstation has a local copy of all its variables. The master can initiate a scan of these variables to get the current or "Static" values.
+
+The second major class is the master output variables.
+Unlike the outstation variables these are not kept in any local database (by DNP3) and there is no way (within DNP3) of getting the current values.
+
+HybridOS manitains a state database of all the variables being used.
+The database is almost identical for both outstation and master systems. Methods are available to get the current values of all types of data for both systems.
+In general use the outstation will listen for pubs and update its values from the pub data.
+
+Within DNP3 data is only referenced b data type and point index.
+An Analog value is set in the outstation and sent to the master as a value / index combination.
+The real world needs the tag or name of the data point to recognise the data.
+The DNP3 system maintains an identical ordered data base of data points in both systems to relate the data transferred between the outstation and master to actual 
+tagged or named data points.
+In addition data can be sent as integer or floating point values. This data formtting is known as a variation.
+
+Currently the definition of a data point in the config file has the following options :
+
+
+        // note that id translates to name
+        id         = cJSON_GetObjectItem(obj, "id");               the name used to define the data point
+        cjidx      = cJSON_GetObjectItem(obj, "idx");              used for forcing an index into the data type array
+        offset     = cJSON_GetObjectItem(obj, "offset");           the original modbus offset not used by DNP3
+        rsize      = cJSON_GetObjectItem(obj, "size");             th size variable used mainly for MODBUS systems
+        variation  = cJSON_GetObjectItem(obj, "variation");        This is the DNP3 variation. More later
+        evariation = cJSON_GetObjectItem(obj, "evariation");       This is the DNP3 event variation again more later
+        uri        = cJSON_GetObjectItem(obj, "uri");              THis is the uri used to group daa items to a system or function ., If not defined the default will be used 
+        bf         = cJSON_GetObjectItem(obj, "bit_field");        This is the MODBUS bit field. Not yet fully developed for DNP3
+        bits       = cJSON_GetObjectItem(obj, "bit_strings");      These are the strings associated with the bit_field (not yet fully developed for DNP3)
+        linkback   = cJSON_GetObjectItem(obj, "linkback");         See description  Feedback for an output variable
+        linkuri    = cJSON_GetObjectItem(obj, "linkuri");          See description 
+        clazz      = cJSON_GetObjectItem(obj, "clazz");            Add this variable to a DNP3 event  class 1, 2 or 3  
+        sign       = cJSON_GetObjectItem(obj, "signed");           This indicicates that the system will treat this value as a signed number
+        scale      = cJSON_GetObjectItem(obj, "scale");            Not used 
+        opvar      = cJSON_GetObjectItem(obj, "OPvar");            Define the data type for an outstation output  //1 = 16 bit , 2 = 32 bit , 3 float32,  4 coil.
+
+
+
+        idx/OPvar  operation.
+
+        The variable array can be used with self indexing.
+        As variables ae added to each data type , the order in the config file can be used to determine the index used by DNP3 to transmit the data.
+        The problem comes when interfacing to a Real Hardware system.
+        The SEL systems for example ignored hte data type and indexed All the different data types under a single index.
+        DNP3 has to define a "point index"  and a data type for each variable.
+        The idx and OPvar fields are used to do this.
+        These fields allow the used to state that a 32 bit output variable is present at index xxx.
+
+        The idx field can also be used for outstation sourced variables. If the sequence in the json config file cannot be guarenteed to be always the same and the point index needs to be 
+        fixed then the idx field should be used.
+        (TODO NOte we may allow OPvar values of 5(analog) and 6(binary) for these cases)
+
+
+        here is a typical use of the idx/OPvar fields
+
+
+                {
+                    "idx":0,
+                    "id": "remote_enable_flag",
+                    "offset": 0,
+                    "OPvar": 2,
+                    "name": "Start Flag"
+                },
+                {
+                    "idx":10,
+                    "id": "open_main_breaker",
+                    "offset": 10,
+                    "OPvar": 1,
+                    "name": "Open Main Breaker"
+                },
+
+        In this case the two sequential data point definitions will not result in sequential index assignemnts.
+
+        The actual assignemnts used are shown as the system starts up.
+
+    assignIdx Assign DbVar idx ===>
+
+    Assign dnp3 type [AnOPInt16]
+    idx set [AnOPInt16.0] ->name :[remote_enable_flag] offset : [0] ===>
+    idx set [AnOPInt16.1] ->name :[remote_disable_flag] offset : [1] ===>
+    idx set [AnOPInt16.2] ->name :[remote_standby_flag] offset : [2] ===>
+    idx set [AnOPInt16.3] ->name :[remote_features_kW_mode_cmd] offset : [3] ===>
+    idx set [AnOPInt16.4] ->name :[remote_features_kVAR_mode_cmd] offset : [4] ===>
+    idx set [AnOPInt16.7] ->name :[feeder_kW_slew_rate] offset : [7] ===>
+    idx set [AnOPInt16.8] ->name :[remote_ess_charge_control_target_soc] offset : [8] ===>
+    idx set [AnOPInt16.15] ->name :[remote_active_voltage_cmd] offset : [15] ===>
+    idx set [AnOPInt16.16] ->name :[remote_reactive_setpoint_kVAR_cmd] offset : [16] ===>
+    idx set [AnOPInt16.17] ->name :[remote_power_factor_cmd] offset : [17] ===>
+    idx set [AnOPInt16.6] ->name :[heartbeat] offset : [18] ===>
+    Assign dnp3 type [AnOPInt32]
+    idx set [AnOPInt32.5] ->name :[rated_active_power] offset : [5] ===>
+    idx set [AnOPInt32.9] ->name :[remote_export_target_kW_cmd] offset : [9] ===>
+    idx set [AnOPInt32.11] ->name :[remote_manual_ess_kW_cmd] offset : [11] ===>
+    idx set [AnOPInt32.13] ->name :[remote_manual_solar_kW_cmd] offset : [13] ===>
+    idx set [AnOPInt32.19] ->name :[substation_active_power] offset : [19] ===>
+    Assign dnp3 type [analog]
+    idx set [analog.0] ->name :[present_enable_flag] offset : [0] ===>
+    idx set [analog.1] ->name :[present_disable_flag] offset : [1] ===>
+    idx set [analog.2] ->name :[present_standby_flag] offset : [2] ===>
+    idx set [analog.3] ->name :[site_state] offset : [3] ===>
+    idx set [analog.4] ->name :[alarm_status_flag] offset : [4] ===>
+
+
+
+LinkBack  -- output fedback 
+========
+
+        linkback   = cJSON_GetObjectItem(obj, "linkback");         See description  Feedback for an output variable
+        linkuri    = cJSON_GetObjectItem(obj, "linkuri");          See description 
+
+        config examples
+
+"analog":   [
+            {
+                "id": "site_voltageSP",
+                "offset": 20,
+                "name": "site_voltageSP",
+                "unit": "kV",
+                "signed": true,
+                "linkback":"voltageSP",
+                "linkuri":"/site/voltage",
+                "uri":"/site/data"
+                
+            }
+            ]
+"AnOPInt32": [
+            {
+                "id": "voltageSP",
+                "offset": 3,
+                "name": "voltageSP",
+                "unit": "MW",
+                "signed": true,
+                "uri": "/site/voltage",
+                "linkback":"site_voltageSP"
+                "linkuri":"/site/data"
+
+            }
+            ]
+
+The master will get a set for /site/voltage/voltageSP valu 480
+The outstation will issue a set for /site/data/voltageSP  480
+This value will be sent to the hardware 
+
+the outstation wll receive feedback as a pub on site_voltageSP.
+                    pub /site/voltage/site_voltageSP 440
+this will be returned to the master.
+When an applicatin reads the master value
+   get /site/data/voltageSP 
+      the linkback value of 440 wil be read , The original request of 480  will be overwritten by the linkback value returned from the outstation.
+      
+
+
+
+
 
 The Master will receive data from the outstation as one of two data types.
 
 Analog and Binary.
+
 This outstation listens to pubs on the registered uris.
 It also checks that the data items in the pubs have been defined in the config file.
 If a match is found the value in the outstation dtabase  is updated and a message sent to the master with the new data.
