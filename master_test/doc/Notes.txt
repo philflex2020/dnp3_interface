@@ -134,10 +134,23 @@ Variables are defined in the config file.
 There are two major classes of variables
 
 The Master will receive data from the outstation as one of two data types.
+
 Analog and Binary.
 This outstation listens to pubs on the registered uris.
 It also checks that the data items in the pubs have been defined in the config file.
-If a match is found 
+If a match is found the value in the outstation dtabase  is updated and a message sent to the master with the new data.
+More than one data item can be changed at the same time by specifing a list of items and values in the body of the pub message.
+
+$ fims_send -m pub -u /interfaces/hybridos '{"ess_average_soc": 510023, "available_ess_num":{"value":4567}}'
+$ fims_send -m get -u /local/outstation/interfaces/hybridos/available_ess_num  -r /me
+{"available_ess_num":4567}
+$ fims_send -m get -u /local/outstation/interfaces/hybridos/ess_average_soc  -r /me
+{"ess_average_soc":510023}
+
+When sent to the master DNP3 ONLY sends a point index and a value to the master.
+
+After a data update the master will issue a pub with the new data
+
 
 June 1, 2020
 
