@@ -981,7 +981,7 @@ typedef struct sysCfg_t {
         char* confirmUri(DbVar* &db, const char*uri, int who, char* &name, int& flags)
         {
             int old_debug = debug;
-            //debug = 1;
+            debug = 1;
             // first limit the uri 
             DbVar* dbf = NULL;
             if(debug)
@@ -1155,6 +1155,15 @@ typedef struct sysCfg_t {
             for (it = dburiMap.begin(); it != dburiMap.end(); ++it)
             {
                 subs[idx++]=it->first.c_str();
+            }
+            if(1 || debug)
+            {
+                FPS_ERROR_PRINT(" %s sub uris===>[       ]<=== \n", __FUNCTION__);
+
+                for (int i = 0 ; i < idx; i++)
+                {
+                    FPS_ERROR_PRINT("      ===>[%s]<=== \n", subs[i];
+                }
             }
             return idx;
         }
