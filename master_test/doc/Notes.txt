@@ -1,4 +1,68 @@
 pwilshire
+june 18, 2020
+
+Following a detailed 3 way demo and more understanding on the role in the ERCOT BRP domain the following changes have been made to the 
+system design.
+
+1/ URI/Varname Combination
+Original assumption ... all variables are unique has been modified.
+The unique identifier is the uri / var name combination.
+
+so a variable called "sel_active_power"
+could be present on "sel_735" and "sel_761"
+Here are two possible definitions:
+
+
+            "id": "active_power",
+            "name": "Sel 735 Active Power",
+            "variation":"Group30Var5",
+            "evariation":"Group32Var7",
+            "uri":"/metrics/misc/sel_735",
+            "signed": true
+
+            "id": "active_power",
+            "name": "Sel 761 Active Power",
+            "variation":"Group30Var5",
+            "evariation":"Group32Var7",
+            "uri":"/metrics/misc/sel_761",
+            "signed": true
+
+Each of these represents the same value but from two different sites.
+The uri allows the variable to be accessed individually.
+
+This also means that , with careful uri naming , the system can provide "flow through" routing where needed.
+The uri name can be changed for different uses (outstation or master) of the same varible .
+
+Consider telemtry back from a site haaded directly to the control master (ERCOT)
+
+Site 735  outstation
+<default uri>
+gets a pub 
+   /interfaces/site_735/active_power 2345
+
+                Fleet Manager Site 735 Master
+                < uri /components/site_735 active_power>
+                issues a pub 
+                /components/site_735/active_power 2345
+
+                                     Fleet Manager ERCOT outstation renames the var to 
+                                         sel_735_active_power
+                                     <uri /components/site_735]
+                                     sends it to ERCOT master
+
+
+                                             ERCOT Master
+                                                    recieves value in analogs at the designated point index 
+
+
+If no uri is specified for an individual variable it will assume the default url.
+</<base_url>/<system_id>
+
+These vales can be defined in the system set up of the config file.
+
+
+
+
 June 1, 2020
 
 Linkback

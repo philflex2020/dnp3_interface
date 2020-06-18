@@ -1268,14 +1268,22 @@ typedef struct sysCfg_t {
         {
             if(defUri == NULL)
             {
-                if(who == DNP3_MASTER)
+                if(base_uri == NULL)
                 {
-                    asprintf(&defUri,"/components/%s",id);
+                    if(who == DNP3_MASTER)
+                    {
+                        asprintf(&defUri,"/components/%s",id);
+                    }
+                    else
+                    {
+                        asprintf(&defUri,"/interfaces/%s",id);
+                    }
                 }
                 else
                 {
-                    asprintf(&defUri,"/interfaces/%s",id);
+                    asprintf(&defUri,"%s/%s", base_uri, id);
                 }
+                
             }
             return defUri;
         }   

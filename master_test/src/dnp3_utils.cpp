@@ -636,6 +636,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
     
     // todo add different frequencies for each zone
     sys->frequency  = 1000; // default once a second
+    char* tmp_uri = NULL;
     if(ret) ret = getCJint(cj,"version",         sys->version,        false );
     if(ret) ret = getCJint(cj,"frequency",       sys->frequency,      false);
     if(ret) ret = getCJint(cj,"port",            sys->port,           true);
@@ -648,16 +649,18 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
     if(ret) ret = getCJstr(cj,"name",            sys->name,           false);
     if(ret) ret = getCJint(cj,"debug",           sys->debug,          false);
     //TODO use this
-    if(ret) ret = getCJstr(cj,"base_uri",         sys->base_uri,      false);
+    if(ret) ret = getCJstr(cj,"base_uri",         tmp_uri,             false);
     if(ret) ret = getCJstr(cj,"local_uri",        sys->local_uri,      false);
 
     // fixup base_uri
     char tmp[1024];
     const char* sys_id = sys->id;
     if(sys->base_uri)
-    {
-        snprintf(tmp, sizeof(tmp),"%s/%s", sys->base_uri, sys_id);
         free((void *) sys->base_uri);
+
+    if(tmp_uri)
+    {
+        snprintf(tmp, sizeof(tmp),"%s/%s", tmp_uri, sys_id);
     }
     else
     {
@@ -839,6 +842,7 @@ int parse_items(sysCfg* sys, cJSON* objs, int type, int who)
         {
             nuri = uri->valuestring;
         }
+
         if(cjidx)
         {
             db->idx = cjidx->valueint;
