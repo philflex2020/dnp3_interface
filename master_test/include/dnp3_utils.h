@@ -1281,7 +1281,7 @@ typedef struct sysCfg_t {
                 }
                 else
                 {
-                    asprintf(&defUri,"%s/%s", base_uri, id);
+                    asprintf(&defUri,"%s", base_uri);
                 }
                 
             }
