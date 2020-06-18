@@ -996,7 +996,7 @@ typedef struct sysCfg_t {
                return (char*)uri;
             }
             // seek reply format
-            asprintf(&tmp, "/%s/reply",base_uri;
+            asprintf(&tmp, "/%s/reply",base_uri);
             if (strncmp(uri, tmp, strlen(tmp) )== 0)
             {
                 flags |= URI_FLAG_REPLY;
