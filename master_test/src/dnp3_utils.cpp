@@ -531,7 +531,7 @@ int addVarToCj(sysCfg* sys, cJSON* cj, const char* uri, const char* dname)
 }
 // these are the types decoded from the config file
 // must match the typedef sequence
-const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary", 0 };
+const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary", "analogOS","binaryOS", 0 };
 
 const char* iotypToStr (int t)
 {

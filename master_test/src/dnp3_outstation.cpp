@@ -339,15 +339,17 @@ int main(int argc, char* argv[])
     // TODO fix this
     sysCfg* sys = &sys_cfg;
     cout<<"Binaries: "<<sys->dbVec[Type_Binary].size()<<" Analogs: "<<sys->dbVec[Type_Analog].size()<<endl;
-    OutstationStackConfig OSconfig(DatabaseSizes( sys->dbVec[Type_Binary].size(),
-                                                0,
-                                                sys->dbVec[Type_Analog].size(),
-                                                0,
-                                                0,
-                                                sys->dbVec[Type_BinaryOS].size(),
-                                                sys->dbVec[Type_AnalogOS].size(),
-                                                0,
-                                                0));
+    OutstationStackConfig OSconfig(DatabaseSizes( 
+                                                sys->getTypSize(Type_Binary),
+                                                0,                               // no double binaries
+                                                sys->getTypSize(Type_Analog),
+                                                0,                               // no counters
+                                                0,                               // no frozen counters
+                                                sys->getTypSize(Type_BinaryOS),
+                                                sys->getTypSize(Type_AnalogyOS),
+                                                0,                               // no timers
+                                                0                                // no octet streams
+                                                )); 
 
     auto outstation = setupDNP3outstation(channel, "outstation", sys, OSconfig);
     if (!outstation){

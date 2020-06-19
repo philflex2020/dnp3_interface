@@ -280,31 +280,122 @@ LinkBack  -- output fedback
                 
             }
             ]
-"AnOPInt32": [
-            {
-                "id": "voltageSP",
-                "offset": 3,
-                "name": "voltageSP",
-                "unit": "MW",
-                "signed": true,
-                "uri": "/site/voltage",
-                "linkback":"site_voltageSP"
-                "linkuri":"/site/data"
+"AnOPInt32": 
+            [
+                {
+                    "id": "voltageSP",
+                    "offset": 3,
+                    "name": "voltageSP",
+                    "unit": "MW",
+                    "signed": true,
+                    "uri": "/site/voltage",
+                    "linkback":"site_voltageSP"
+                    "linkuri":"/site/data"
 
-            }
+                }
             ]
 
 The master will get a set for /site/voltage/voltageSP valu 480
 The outstation will issue a set for /site/data/voltageSP  480
 This value will be sent to the hardware 
 
-the outstation wll receive feedback as a pub on site_voltageSP.
+The outstation wll receive feedback as a pub on site_voltageSP.
                     pub /site/voltage/site_voltageSP 440
 this will be returned to the master.
-When an applicatin reads the master value
+When an application reads the master value
    get /site/data/voltageSP 
       the linkback value of 440 wil be read , The original request of 480  will be overwritten by the linkback value returned from the outstation.
-      
+
+Note that the feedback variable will return the outstation value at all times and will overwrite the master output variable with that value.
+Ideally we would hold off on the overwrite until there was an update to the feedback variable from the outstation.
+We could use an event scan on that variable to detect the status change.
+Until then the sequence is 
+Master                         Outstation
+                                site_voltageSP = 1234
+write 456 to voltageSP 
+                                sets voltageSP output as 456
+scans outstation 
+       gets site_voltageSP as 1234
+       overwrites voltageSP with 1234
+                                sees pub on site_voltageSP as 412
+scana outstation
+       gets site_voltageSP as 412
+       overwrites voltageSP with 412 ( but does not send to outstation)
+
+So not ideal but at least its something.
+
+
+Data format
+===========
+
+The data from Master to Oustation is in one of 4 forms.
+16-bit integer
+32-bit integer
+32-bit float32
+8-bit ControlRelayOutputBlock
+
+a fifth has not yet been included in this design but is easy to add.
+64-bit float64
+
+The data designations in the config file currently reflect the DNP3 designations.
+
+const char* dreg_types[] = { "AnOPInt16", "AnOPInt32", "AnOPF32", "CROB", "analog", "binary", "analogOS","binaryOS", 0 };
+
+These are mapped to defines as follows.
+
+enum Type_of_Var{
+    AnIn16,
+    AnIn32,
+    AnF32,
+    Type_Crob,        // write master
+    Type_Analog,      // write outstation
+    Type_Binary,      // write outstation
+    Type_AnalogOS,    // auto write outstation **
+    Type_BinaryOS,    // write outstation      **
+    NumTypes
+};
+
+** These are not fully developed yet.
+
+The Control Relay Output Block will be discussd in its own section.
+DNP3 has no concept of a signed value so that code has been addded to the flexGen driver.
+NOTE Currently there are no out of range protections or warnings for data overflow with signed values.
+
+A key word is used in the data definition to trigger signed data handling.
+
+                    "signed": true,
+
+
+The data handling from Master to outstation is quite basic. 
+
+The data collected by the outstation is a whole different story.
+There are 9 different data types.
+    Binary
+    DoubleBitBinary
+    Analog
+    Counter 
+    FrozenCounter 
+    BinaryOutputStatus 
+    AnalogOutputStatus 
+    OctetString
+    TimeAndInterval
+
+Thses are defined in the outstation code as follows.OutstationStackConfig OSconfig(DatabaseSizes( 
+                                                sys->getTypSize(Type_Binary),
+                                                0,                               // no double binaries
+                                                sys->getTypSize(Type_Analog),
+                                                0,                               // no counters
+                                                0,                               // no frozen counters
+                                                sys->getTypSize(Type_BinaryOS),
+                                                sys->getTypSize(Type_AnalogyOS),
+                                                0,                               // no octetString
+                                                0                                // no timeandinterval
+                                                )); 
+
+However each data type is subject to "variants" , loads of them.
+Thse variants dictate how the data is handled and the data format. 
+The only a small  subset of these variants are currently handled.
+It seems that the variant information is dynamic and can change after setup if needed.
 
 
 

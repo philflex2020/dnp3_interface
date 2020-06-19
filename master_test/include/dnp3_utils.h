@@ -27,7 +27,7 @@ using namespace opendnp3;
 #define DNP3_MASTER 0
 #define DNP3_OUTSTATION 1
 
-#define DNP3_UTILS_VERSION "0.9.1"
+#define DNP3_UTILS_VERSION "0.9.2"
 
 const ControlCode StringToControlCode(const char* codeWord);
 void addCjTimestamp(cJSON* cj, const char* ts);
@@ -351,6 +351,15 @@ typedef struct sysCfg_t {
      
             return db;
         };
+        
+        int32_t getTypeSize(int type) 
+        {
+            // we have an extra array do handle auto indexing
+            if (type > NumTypes)
+                return 0;
+            return static_cast<int32_t>(dbVec[type].size());
+        }
+
         // allow this to auto configure for any if db->idx == -1
         void setDbIdxMap(DbVar* db, int inParse)
         {
