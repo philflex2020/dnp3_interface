@@ -73,7 +73,10 @@ struct char_dcmp {
 // only allow 1 type for now
 enum {
     GroupUndef,
+    Group30Var1,
     Group30Var2,
+    Group30Var3,
+    Group30Var4,
     Group30Var5,
     Group32Var7,
     NumVars
@@ -351,7 +354,7 @@ typedef struct sysCfg_t {
      
             return db;
         };
-        
+
         int32_t getTypeSize(int type) 
         {
             // we have an extra array do handle auto indexing
