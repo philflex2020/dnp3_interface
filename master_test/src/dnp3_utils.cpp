@@ -573,8 +573,24 @@ int variation_decode(const char* ivar)
             return Group30Var4;
         else if (strcmp(ivar, "Group30Var5") == 0)
             return Group30Var5;
+        else if (strcmp(ivar, "Group32Var0") == 0)
+            return Group32Var0;
+       else if (strcmp(ivar, "Group32Var1") == 0)
+            return Group32Var1;
+        else if (strcmp(ivar, "Group32Var2") == 0)
+            return Group32Var2;
+        else if (strcmp(ivar, "Group32Var3") == 0)
+            return Group32Var3;
+        else if (strcmp(ivar, "Group32Var4") == 0)
+            return Group32Var4;
+        else if (strcmp(ivar, "Group32Var5") == 0)
+            return Group32Var5;
+        else if (strcmp(ivar, "Group32Var6") == 0)
+            return Group32Var6;
         else if (strcmp(ivar, "Group32Var7") == 0)
             return Group32Var7;
+        else if (strcmp(ivar, "Group32Var8") == 0)
+            return Group32Var8;
     }
     return GroupUndef;
 }

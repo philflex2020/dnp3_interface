@@ -55,10 +55,39 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* sys)
             {
                 config.analog[i].svariation = StaticAnalogVariation::Group30Var2;
             }
-            if(db->evariation == Group32Var7)
+            if(db->evariation == Group32Var0)
+            {
+                config.analog[i].evariation = EventAnalogVariation::Group32Var0;
+            }
+            else if(db->evariation == Group32Var1)
+            {
+                config.analog[i].evariation = EventAnalogVariation::Group32Var1;
+            }
+            else if(db->evariation == Group32Var2)
+            {
+                config.analog[i].evariation = EventAnalogVariation::Group32Var2;
+            }
+            else if(db->evariation == Group32Var3)
+            {
+                config.analog[i].evariation = EventAnalogVariation::Group32Var3;
+            }
+            else if(db->evariation == Group32Var4)
+            {
+                config.analog[i].evariation = EventAnalogVariation::Group32Var4;
+            }
+            else if(db->evariation == Group32Var5)
+            {
+                config.analog[i].evariation = EventAnalogVariation::Group32Var5;
+            }
+            else if(db->evariation == Group32Var6)
+            {
+                config.analog[i].evariation = EventAnalogVariation::Group32Var6;
+            }
+            else if(db->evariation == Group32Var7)
             {
                 config.analog[i].evariation = EventAnalogVariation::Group32Var7;
             }
+
 
             if(db->clazz != 0)
             {

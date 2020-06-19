@@ -180,7 +180,283 @@ auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeD
 
 Events are recovered in an eventscan
 Not sure how to do that yet...
+Got an idea , they appear in class scans other than class 0
 
+
+char const* GroupVariationToString(GroupVariation arg)
+{
+  switch(arg)
+  {
+    case(GroupVariation::Group1Var0):
+      return "Binary Input - Any Variation";
+    case(GroupVariation::Group1Var1):
+      return "Binary Input - Packed Format";
+    case(GroupVariation::Group1Var2):
+      return "Binary Input - With Flags";
+    case(GroupVariation::Group2Var0):
+      return "Binary Input Event - Any Variation";
+    case(GroupVariation::Group2Var1):
+      return "Binary Input Event - Without Time";
+    case(GroupVariation::Group2Var2):
+      return "Binary Input Event - With Absolute Time";
+    case(GroupVariation::Group2Var3):
+      return "Binary Input Event - With Relative Time";
+    case(GroupVariation::Group3Var0):
+      return "Double-bit Binary Input - Any Variation";
+    case(GroupVariation::Group3Var1):
+      return "Double-bit Binary Input - Packed Format";
+    case(GroupVariation::Group3Var2):
+      return "Double-bit Binary Input - With Flags";
+    case(GroupVariation::Group4Var0):
+      return "Double-bit Binary Input Event - Any Variation";
+    case(GroupVariation::Group4Var1):
+      return "Double-bit Binary Input Event - Without Time";
+    case(GroupVariation::Group4Var2):
+      return "Double-bit Binary Input Event - With Absolute Time";
+    case(GroupVariation::Group4Var3):
+      return "Double-bit Binary Input Event - With Relative Time";
+    case(GroupVariation::Group10Var0):
+      return "Binary Output - Any Variation";
+    case(GroupVariation::Group10Var1):
+      return "Binary Output - Packed Format";
+    case(GroupVariation::Group10Var2):
+      return "Binary Output - Output Status With Flags";
+    case(GroupVariation::Group11Var0):
+      return "Binary Output Event - Any Variation";
+    case(GroupVariation::Group11Var1):
+      return "Binary Output Event - Output Status Without Time";
+    case(GroupVariation::Group11Var2):
+      return "Binary Output Event - Output Status With Time";
+    case(GroupVariation::Group12Var0):
+      return "Binary Command - Any Variation";
+    case(GroupVariation::Group12Var1):
+      return "Binary Command - CROB";
+    case(GroupVariation::Group13Var1):
+      return "Binary Command Event - Without Time";
+    case(GroupVariation::Group13Var2):
+      return "Binary Command Event - With Time";
+    case(GroupVariation::Group20Var0):
+      return "Counter - Any Variation";
+    case(GroupVariation::Group20Var1):
+      return "Counter - 32-bit With Flag";
+    case(GroupVariation::Group20Var2):
+      return "Counter - 16-bit With Flag";
+    case(GroupVariation::Group20Var5):
+      return "Counter - 32-bit Without Flag";
+    case(GroupVariation::Group20Var6):
+      return "Counter - 16-bit Without Flag";
+    case(GroupVariation::Group21Var0):
+      return "Frozen Counter - Any Variation";
+    case(GroupVariation::Group21Var1):
+      return "Frozen Counter - 32-bit With Flag";
+    case(GroupVariation::Group21Var2):
+      return "Frozen Counter - 16-bit With Flag";
+    case(GroupVariation::Group21Var5):
+      return "Frozen Counter - 32-bit With Flag and Time";
+    case(GroupVariation::Group21Var6):
+      return "Frozen Counter - 16-bit With Flag and Time";
+    case(GroupVariation::Group21Var9):
+      return "Frozen Counter - 32-bit Without Flag";
+    case(GroupVariation::Group21Var10):
+      return "Frozen Counter - 16-bit Without Flag";
+    case(GroupVariation::Group22Var0):
+      return "Counter Event - Any Variation";
+    case(GroupVariation::Group22Var1):
+      return "Counter Event - 32-bit With Flag";
+    case(GroupVariation::Group22Var2):
+      return "Counter Event - 16-bit With Flag";
+    case(GroupVariation::Group22Var5):
+      return "Counter Event - 32-bit With Flag and Time";
+    case(GroupVariation::Group22Var6):
+      return "Counter Event - 16-bit With Flag and Time";
+    case(GroupVariation::Group23Var0):
+      return "Frozen Counter Event - Any Variation";
+    case(GroupVariation::Group23Var1):
+      return "Frozen Counter Event - 32-bit With Flag";
+    case(GroupVariation::Group23Var2):
+      return "Frozen Counter Event - 16-bit With Flag";
+    case(GroupVariation::Group23Var5):
+      return "Frozen Counter Event - 32-bit With Flag and Time";
+    case(GroupVariation::Group23Var6):
+      return "Frozen Counter Event - 16-bit With Flag and Time";
+    case(GroupVariation::Group30Var0):
+      return "Analog Input - Any Variation";
+    case(GroupVariation::Group30Var1):
+      return "Analog Input - 32-bit With Flag";
+    case(GroupVariation::Group30Var2):
+      return "Analog Input - 16-bit With Flag";
+    case(GroupVariation::Group30Var3):
+      return "Analog Input - 32-bit Without Flag";
+    case(GroupVariation::Group30Var4):
+      return "Analog Input - 16-bit Without Flag";
+    case(GroupVariation::Group30Var5):
+      return "Analog Input - Single-precision With Flag";
+    case(GroupVariation::Group30Var6):
+      return "Analog Input - Double-precision With Flag";
+    case(GroupVariation::Group32Var0):
+      return "Analog Input Event - Any Variation";
+    case(GroupVariation::Group32Var1):
+      return "Analog Input Event - 32-bit With Flag";
+    case(GroupVariation::Group32Var2):
+      return "Analog Input Event - 16-bit With Flag";
+    case(GroupVariation::Group32Var3):
+      return "Analog Input Event - 32-bit With Flag and Time";
+    case(GroupVariation::Group32Var4):
+      return "Analog Input Event - 16-bit With Flag and Time";
+    case(GroupVariation::Group32Var5):
+      return "Analog Input Event - Single-precision With Flag";
+    case(GroupVariation::Group32Var6):
+      return "Analog Input Event - Double-precision With Flag";
+    case(GroupVariation::Group32Var7):
+      return "Analog Input Event - Single-precision With Flag and Time";
+    case(GroupVariation::Group32Var8):
+      return "Analog Input Event - Double-precision With Flag and Time";
+    case(GroupVariation::Group40Var0):
+      return "Analog Output Status - Any Variation";
+    case(GroupVariation::Group40Var1):
+      return "Analog Output Status - 32-bit With Flag";
+    case(GroupVariation::Group40Var2):
+      return "Analog Output Status - 16-bit With Flag";
+    case(GroupVariation::Group40Var3):
+      return "Analog Output Status - Single-precision With Flag";
+    case(GroupVariation::Group40Var4):
+      return "Analog Output Status - Double-precision With Flag";
+    case(GroupVariation::Group41Var0):
+      return "Analog Output - Any Variation";
+    case(GroupVariation::Group41Var1):
+      return "Analog Output - 32-bit With Flag";
+    case(GroupVariation::Group41Var2):
+      return "Analog Output - 16-bit With Flag";
+    case(GroupVariation::Group41Var3):
+      return "Analog Output - Single-precision";
+    case(GroupVariation::Group41Var4):
+      return "Analog Output - Double-precision";
+    case(GroupVariation::Group42Var0):
+      return "Analog Output Event - Any Variation";
+    case(GroupVariation::Group42Var1):
+      return "Analog Output Event - 32-bit With Flag";
+    case(GroupVariation::Group42Var2):
+      return "Analog Output Event - 16-bit With Flag";
+    case(GroupVariation::Group42Var3):
+      return "Analog Output Event - 32-bit With Flag and Time";
+    case(GroupVariation::Group42Var4):
+      return "Analog Output Event - 16-bit With Flag and Time";
+    case(GroupVariation::Group42Var5):
+      return "Analog Output Event - Single-precision With Flag";
+    case(GroupVariation::Group42Var6):
+      return "Analog Output Event - Double-precision With Flag";
+    case(GroupVariation::Group42Var7):
+      return "Analog Output Event - Single-precision With Flag and Time";
+    case(GroupVariation::Group42Var8):
+      return "Analog Output Event - Double-precision With Flag and Time";
+    case(GroupVariation::Group43Var1):
+      return "Analog Command Event - 32-bit";
+    case(GroupVariation::Group43Var2):
+      return "Analog Command Event - 16-bit";
+    case(GroupVariation::Group43Var3):
+      return "Analog Command Event - 32-bit With Time";
+    case(GroupVariation::Group43Var4):
+      return "Analog Command Event - 16-bit With Time";
+    case(GroupVariation::Group43Var5):
+      return "Analog Command Event - Single-precision";
+    case(GroupVariation::Group43Var6):
+      return "Analog Command Event - Double-precision";
+    case(GroupVariation::Group43Var7):
+      return "Analog Command Event - Single-precision With Time";
+    case(GroupVariation::Group43Var8):
+      return "Analog Command Event - Double-precision With Time";
+    case(GroupVariation::Group50Var1):
+      return "Time and Date - Absolute Time";
+    case(GroupVariation::Group50Var3):
+      return "Time and Date - Absolute Time at last recorded time";
+    case(GroupVariation::Group50Var4):
+      return "Time and Date - Indexed absolute time and long interval";
+    case(GroupVariation::Group51Var1):
+      return "Time and Date CTO - Absolute time, synchronized";
+    case(GroupVariation::Group51Var2):
+      return "Time and Date CTO - Absolute time, unsynchronized";
+    case(GroupVariation::Group52Var1):
+      return "Time Delay - Coarse";
+    case(GroupVariation::Group52Var2):
+      return "Time Delay - Fine";
+    case(GroupVariation::Group60Var1):
+      return "Class Data - Class 0";
+    case(GroupVariation::Group60Var2):
+      return "Class Data - Class 1";
+    case(GroupVariation::Group60Var3):
+      return "Class Data - Class 2";
+    case(GroupVariation::Group60Var4):
+      return "Class Data - Class 3";
+    case(GroupVariation::Group70Var1):
+      return "File-control - File identifier";
+    case(GroupVariation::Group70Var2):
+      return "File-control - Authentication";
+    case(GroupVariation::Group70Var3):
+      return "File-control - File command";
+    case(GroupVariation::Group70Var4):
+      return "File-control - File command status";
+    case(GroupVariation::Group70Var5):
+      return "File-control - File transport";
+    case(GroupVariation::Group70Var6):
+      return "File-control - File transport status";
+    case(GroupVariation::Group70Var7):
+      return "File-control - File descriptor";
+    case(GroupVariation::Group70Var8):
+      return "File-control - File specification string";
+    case(GroupVariation::Group80Var1):
+      return "Internal Indications - Packed Format";
+    case(GroupVariation::Group110Var0):
+      return "Octet String - Sized by variation";
+    case(GroupVariation::Group111Var0):
+      return "Octet String Event - Sized by variation";
+    case(GroupVariation::Group112Var0):
+      return "Virtual Terminal Output Block - Sized by variation";
+    case(GroupVariation::Group113Var0):
+      return "Virtual Terminal Event Data - Sized by variation";
+    case(GroupVariation::Group120Var1):
+      return "Authentication - Challenge";
+    case(GroupVariation::Group120Var2):
+      return "Authentication - Reply";
+    case(GroupVariation::Group120Var3):
+      return "Authentication - Aggressive Mode Request";
+    case(GroupVariation::Group120Var4):
+      return "Authentication - Session Key Status Request";
+    case(GroupVariation::Group120Var5):
+      return "Authentication - Session Key Status";
+    case(GroupVariation::Group120Var6):
+      return "Authentication - Session Key Change";
+    case(GroupVariation::Group120Var7):
+      return "Authentication - Error";
+    case(GroupVariation::Group120Var8):
+      return "Authentication - User Certificate";
+    case(GroupVariation::Group120Var9):
+      return "Authentication - HMAC";
+    case(GroupVariation::Group120Var10):
+      return "Authentication - User Status Change";
+    case(GroupVariation::Group120Var11):
+      return "Authentication - Update Key Change Request";
+    case(GroupVariation::Group120Var12):
+      return "Authentication - Update Key Change Reply";
+    case(GroupVariation::Group120Var13):
+      return "Authentication - Update Key Change";
+    case(GroupVariation::Group120Var14):
+      return "Authentication - Update Key Change Signature";
+    case(GroupVariation::Group120Var15):
+      return "Authentication - Update Key Change Confirmation";
+    case(GroupVariation::Group121Var0):
+      return "Security statistic - Any Variation";
+    case(GroupVariation::Group121Var1):
+      return "Security statistic - 32-bit With Flag";
+    case(GroupVariation::Group122Var0):
+      return "Security Statistic event - Any Variation";
+    case(GroupVariation::Group122Var1):
+      return "Security Statistic event - 32-bit With Flag";
+    case(GroupVariation::Group122Var2):
+      return "Security Statistic event - 32-bit With Flag and Time";
+    default:
+      return "UNKNOWN";
+  }
+}
 
 Types not yet used ( but our customers may be using them)
 

@@ -71,6 +71,8 @@ struct char_dcmp {
     }
 };
 // only allow 1 type for now
+// TODO use EventAnalogVariation::Group32Var0; defs
+
 enum {
     GroupUndef,
     Group30Var1,
@@ -78,12 +80,19 @@ enum {
     Group30Var3,
     Group30Var4,
     Group30Var5,
+    Group32Var1,
+    Group32Var2,
+    Group32Var3,
+    Group32Var4,
+    Group32Var5,
+    Group32Var6,
     Group32Var7,
+    Group32Var8,
     NumVars
 };
 
 // flag options for reporting
-#define PRINT_VALUE      1 << 0
+#define PRINT_VALUE      0 << 1
 #define PRINT_PARENT     1 << 1
 
 // local copy of all inputs and outputs
