@@ -193,10 +193,10 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
     {
         pFims->Send("post", "/events", NULL, body);
     }
-    else
-    {
-        pFims->Send("post", "/NON_events", NULL, body);
-    }
+    // else
+    // {
+    //     pFims->Send("post", "/NON_events", NULL, body);
+    // }
     
     free(body);
     cJSON_Delete(body_object);
