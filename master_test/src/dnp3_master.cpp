@@ -126,7 +126,9 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
 
     // do an integrity poll (Class 3/2/1/0) once per minute
     //auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Minutes(1));
-    auto integrityScan = master->AddClassScan(ClassField::AllClasses(), TimeDuration::Milliseconds(sys->frequency));
+    if (sys->frequency > 0)
+    //auto integrityScan = 
+        master->AddClassScan(ClassField::AllClasses(), TimeDuration::Milliseconds(sys->frequency));
     //void Scan(const HeaderBuilderT& builder, TaskConfig config = TaskConfig::Default());
 
     //void ScanClasses(const opendnp3::ClassField& field, const opendnp3::TaskConfig& config) override;

@@ -453,8 +453,20 @@ All these event variations do not take effect under default conditions.
 The data point has to be assigned to class 1, 2 or 3  using the "clazz" option.
 Then the data point value has to change. 
 The Master must then do a specific class scan and all the changes to the data point will be relayed to the master.
-We'll use "freq1" "freq2" and "freq3" options to schedule these scans in the master config.
- 
+The  "freq1" "freq2" and "freq3" options to schedule these scans in the master config.
+NOTE These features have not been fully developed, explored at this time , but the basis for a more responsive system is in place.
+
+Data Class
+==========
+
+It's spelled clazz because class means something else in c++
+
+The system used two types of data scan. 
+The Static scan (on Class 0) gets everything in the Outstation variable database.
+
+This is set up in the "frequency" system option.
+
+
 
   
 
