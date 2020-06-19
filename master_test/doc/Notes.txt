@@ -370,15 +370,18 @@ The data handling from Master to outstation is quite basic.
 
 The data collected by the outstation is a whole different story.
 There are 9 different data types.
-    Binary
+    Binary             **
     DoubleBitBinary
-    Analog
+    Analog             **
     Counter 
     FrozenCounter 
     BinaryOutputStatus 
     AnalogOutputStatus 
     OctetString
     TimeAndInterval
+
+Note ** only these data types are in the current design.
+
 
 Thses are defined in the outstation code as follows.OutstationStackConfig OSconfig(DatabaseSizes( 
                                                 sys->getTypSize(Type_Binary),
@@ -464,10 +467,28 @@ It's spelled clazz because class means something else in c++
 The system used two types of data scan. 
 The Static scan (on Class 0) gets everything in the Outstation variable database.
 
-This is set up in the "frequency" system option.
+This is set up in the "frequency" system option. This value is defaulted to once a second (1000 mS) but "can" be tured off by setting it to 0 in the master config.
+
+            "frequency":0,
+
+This gets all the data regardless of any changes.
+
+Individual data points may be added to  different class, the numbers have no inherent significance.
+    "clazz":1,
+
+When the system performs a scan on that class. the data point will be included in that scan. If the value has changed.
+TODO fully test this in more detail.
+Not only that, the event scan will include all chnges in value with a timestamp attached. So the same data point may be repeated in a single scan with different values.
+Not really used in FlexGen .. yet but we may get customer data in that format.
 
 
 
+
+
+
+
+Fims interface.
+================
   
 
 The Master will receive data from the outstation as one of two data types.
@@ -488,6 +509,30 @@ $ fims_send -m get -u /local/outstation/interfaces/hybridos/ess_average_soc  -r 
 When sent to the master DNP3 ONLY sends a point index and a value to the master.
 
 After a data update the master will issue a pub with the new data
+
+
+Unsolicited data
+================
+
+In addition to the scheduled data scans the DNP3 outstation can send unsolicited data back to the Master.
+Not that the Master ALWAYS sends its data to the outstation whenver a FIMS set with one or more data values is sent to the system.
+NOTE The Unsolicited feature is not yet fully working yet.
+
+
+Events
+======
+DNP3 sends out copious event data. Currently flxgen only really wants 
+The emit_events system will filter out the unwanted Events
+
+Master Connection Made to outstation 
+Master Connection Dropped from outstation 
+Outstation received connection from Master
+Outstation dropped connection from Master
+
+{"source":"DNP3","message":"DNP3  hybridos message [INFO   ] --[fps Logger ms(1592449037729) INFO    server - Listening on: 127.0.0.1:12502]\n","severity":1}
+{"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067320) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
+{"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067321) INFO    xxhybridos - Connected to: 127.0.0.1, port 12502]\n","severity":1}
+{"source":"DNP3","message":"DNP3  xxhybridos message [WARN   ] --[fps Logger ms(1592449007315) WARN    xxhybridos - Error Connecting: Connection refused]\n","severity":1}
 
 
 June 1, 2020

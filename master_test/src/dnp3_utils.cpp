@@ -169,17 +169,30 @@ bool extractInt16Val(double &dval, DbVar *db)
     return flag;
 }
 
+//{"source":"DNP3","message":"DNP3  hybridos message [INFO   ] --[fps Logger ms(1592449037729) INFO    server - Listening on: 127.0.0.1:12502]\n","severity":1}
+//{"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067320) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
+//{"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067321) INFO    xxhybridos - Connected to: 127.0.0.1, port 12502]\n","severity":1}
+//{"source":"DNP3","message":"DNP3  xxhybridos message [WARN   ] --[fps Logger ms(1592449007315) WARN    xxhybridos - Error Connecting: Connection refused]\n","severity":1}
+
 void emit_event(fims* pFims, const char* source, const char* message, int severity)
 {
-    cJSON* body_object;
-    body_object = cJSON_CreateObject();
-    cJSON_AddStringToObject(body_object, "source", source);
-    cJSON_AddStringToObject(body_object, "message", message);
-    cJSON_AddNumberToObject(body_object, "severity", severity);
-    char* body = cJSON_PrintUnformatted(body_object);
-    pFims->Send("post", "/events", NULL, body);
-    free(body);
-    cJSON_Delete(body_object);
+    bool doit = false;
+    if (strstr(message,"- Connect") != NULL) doit = true; 
+    if (strstr(message,"- Listen") != NULL) doit = true; 
+    if (strstr(message,"- Error Connect") != NULL) doit = true; 
+
+    if(doit)
+    {
+        cJSON* body_object;
+        body_object = cJSON_CreateObject();
+        cJSON_AddStringToObject(body_object, "source", source);
+        cJSON_AddStringToObject(body_object, "message", message);
+        cJSON_AddNumberToObject(body_object, "severity", severity);
+        char* body = cJSON_PrintUnformatted(body_object);
+        pFims->Send("post", "/events", NULL, body);
+        free(body);
+        cJSON_Delete(body_object);
+    }
 }
 
 DbVar* getDbVar(sysCfg* sys, const char* uri, const char* name)
