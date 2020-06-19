@@ -173,7 +173,7 @@ bool extractInt16Val(double &dval, DbVar *db)
 //{"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067320) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
 //{"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067321) INFO    xxhybridos - Connected to: 127.0.0.1, port 12502]\n","severity":1}
 //{"source":"DNP3","message":"DNP3  xxhybridos message [WARN   ] --[fps Logger ms(1592449007315) WARN    xxhybridos - Error Connecting: Connection refused]\n","severity":1}
-//  {"source":"DNP3","message":"DNP3  hybridos message [WARN   ] --[fps Logger ms(1592482027367) WARN    server - End of file]\n","severity":1}
+//{"source":"DNP3","message":"DNP3  hybridos message [WARN   ] --[fps Logger ms(1592482027367) WARN    server - End of file]\n","severity":1}
 
 void emit_event(fims* pFims, const char* source, const char* message, int severity)
 {
