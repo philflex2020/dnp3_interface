@@ -326,7 +326,7 @@ typedef struct sysCfg_t {
         freq2 = 0;
         freq3 = 0;
         frequency = 1000;
-        unsol = false;
+        munsol = false;
 
 
         // for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
@@ -1360,7 +1360,7 @@ typedef struct sysCfg_t {
         int freq1;
         int freq2;
         int freq3;
-        bool unsol;
+        bool munsol;
         
         int idx;
         char* uri;

@@ -108,7 +108,7 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     // you can override application layer settings for the master here
     // in this example, we've change the application layer timeout to 2 seconds
     stackConfig.master.responseTimeout = TimeDuration::Seconds(2);
-    if(sys->unsol)
+    if(sys->munsol)
         stackConfig.master.disableUnsolOnStartup = false;
     else
         stackConfig.master.disableUnsolOnStartup = true;

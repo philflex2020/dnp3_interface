@@ -715,9 +715,9 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
     if(ret) ret = getCJstr(cj,"name",            sys->name,           false);
     if(ret) ret = getCJint(cj,"debug",           sys->debug,          false);
     //TODO use this
-    if(ret) ret = getCJstr(cj,"base_uri",         tmp_uri,             false);
-    if(ret) ret = getCJstr(cj,"local_uri",        sys->local_uri,      false);
-    if(ret) ret = getCJbool(cj,"unsol",           sys->unsol,      false);
+    if(ret) ret = getCJstr(cj,"base_uri",         tmp_uri,            false);
+    if(ret) ret = getCJstr(cj,"local_uri",        sys->local_uri,     false);
+    if(ret) ret = getCJbool(cj,"unsol",           sys->munsol,        false);
 
     // fixup base_uri
     char tmp[1024];
