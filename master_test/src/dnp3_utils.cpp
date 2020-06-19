@@ -553,15 +553,26 @@ int iotypToId (const char* t)
     }
     return -1;
 }
-
+// Group30Var1  Analog Input 32 bit with flags
+// Group30Var2  Analog Input 16 bit with flags
+// Group30Var3  Analog Input 32 bit without flags
+// Group30Var4  Analog Input 16 bit without flags
+// Group30Var5  Analog Input single precision with flags (Float) << these allow floating point numbers
+// Group30Var6  Analog Input double precision with flags (Double)
 int variation_decode(const char* ivar)
 {
     if(ivar)
     {
-        if (strcmp(ivar, "Group30Var5") == 0)
-            return Group30Var5;
+        if (strcmp(ivar, "Group30Var1") == 0)
+            return Group30Var1;
         else if (strcmp(ivar, "Group30Var2") == 0)
             return Group30Var2;
+        else if (strcmp(ivar, "Group30Var3") == 0)
+            return Group30Var3;
+        else if (strcmp(ivar, "Group30Var4") == 0)
+            return Group30Var4;
+        else if (strcmp(ivar, "Group30Var5") == 0)
+            return Group30Var5;
         else if (strcmp(ivar, "Group32Var7") == 0)
             return Group32Var7;
     }
