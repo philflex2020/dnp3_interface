@@ -346,7 +346,7 @@ int main(int argc, char* argv[])
                                                 0,                               // no counters
                                                 0,                               // no frozen counters
                                                 sys->getTypeSize(Type_BinaryOS),
-                                                sys->getTypeSize(Type_AnalogyOS),
+                                                sys->getTypeSize(Type_AnalogOS),
                                                 0,                               // no timers
                                                 0                                // no octet streams
                                                 )); 
