@@ -53,7 +53,7 @@ void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Bi
 }
 
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<DoubleBitBinary>>& values) {
-    if(static_sysdb->debug)
+    if(sysdb->debug)
         FPS_DEBUG_PRINT("******************************DBin: \n");
     return PrintAll(info, values);
 }
