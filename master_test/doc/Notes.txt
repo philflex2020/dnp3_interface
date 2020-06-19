@@ -449,15 +449,18 @@ Group32Var6  Analog Input Event - double precision with flag (Double)
 Group32Var7  Analog Input Event - single precision with flag and time (Float)
 Group32Var8  Analog Input Event - double precision with flag and time (Double)
 
-The outstation function performs the update 
-void ConfigureDatabase(DatabaseConfig& config, sysCfg* sys)
+The outstation function performs the update in this function.
+
+    void ConfigureDatabase(DatabaseConfig& config, sysCfg* sys)
 
 All these event variations do not take effect under default conditions.
 The data point has to be assigned to class 1, 2 or 3  using the "clazz" option.
 Then the data point value has to change. 
 The Master must then do a specific class scan and all the changes to the data point will be relayed to the master.
-The  "freq1" "freq2" and "freq3" options to schedule these scans in the master config.
+The  "freq1" "freq2" and "freq3" options to schedule these scans in the master system config.
 NOTE These features have not been fully developed, explored at this time , but the basis for a more responsive system is in place.
+
+      "freq1": 2000,        // every 2 seconds do the freq scan
 
 Data Class
 ==========
@@ -471,6 +474,7 @@ This is set up in the "frequency" system option. This value is defaulted to once
 
             "frequency":0,
 
+
 This gets all the data regardless of any changes.
 
 Individual data points may be added to  different class, the numbers have no inherent significance.
@@ -480,9 +484,6 @@ When the system performs a scan on that class. the data point will be included i
 TODO fully test this in more detail.
 Not only that, the event scan will include all chnges in value with a timestamp attached. So the same data point may be repeated in a single scan with different values.
 Not really used in FlexGen .. yet but we may get customer data in that format.
-
-
-
 
 
 
@@ -516,7 +517,9 @@ Unsolicited data
 
 In addition to the scheduled data scans the DNP3 outstation can send unsolicited data back to the Master.
 Not that the Master ALWAYS sends its data to the outstation whenver a FIMS set with one or more data values is sent to the system.
-NOTE The Unsolicited feature is not yet fully working yet.
+The master must be enabled to get unsolicited data. A system configuration option "unsol" allows this.
+
+                "unsol": true,
 
 
 Events
@@ -533,6 +536,21 @@ Outstation dropped connection from Master
 {"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067320) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
 {"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067321) INFO    xxhybridos - Connected to: 127.0.0.1, port 12502]\n","severity":1}
 {"source":"DNP3","message":"DNP3  xxhybridos message [WARN   ] --[fps Logger ms(1592449007315) WARN    xxhybridos - Error Connecting: Connection refused]\n","severity":1}
+
+
+
+
+Interestingly enough, when you enable floating point format in a data item you also have to enable it in the event data.
+The "evariation" config option allows this.
+
+                {
+                    "id": "alarm_status_flag",
+                    "offset": 4,
+                    "clazz":1,
+                    "name": "Alarm Status",
+                    "variation":"Group30Var5",
+                    "evariation":"Group32Var7"
+                },
 
 
 June 1, 2020

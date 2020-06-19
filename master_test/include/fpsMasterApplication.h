@@ -45,7 +45,7 @@ public:
 
     virtual void OnReceiveIIN(const opendnp3::IINField& iin) override final 
     {
-        if(sysdb->debug == 1)
+        if(sysdb->debug)
             FPS_ERROR_PRINT ("Running [%s] IINField %u.%u \n", __FUNCTION__, iin.MSB, iin.LSB);
     }
     // start the pub object for the master.
@@ -54,14 +54,14 @@ public:
     // newSOEHandler populates the cJSON object
     virtual void OnTaskStart(opendnp3::MasterTaskType type, opendnp3::TaskId id) override final 
     {
-        if(sysdb->debug == 1)
-            std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id.GetId() << " Task Type :"<< MasterTaskTypeToString(type) <<"]\n";
+        if(sysdb->debug)
+            FPS_ERROR_PRINT("Running [%s] TaskID :[%d] Task Type : [%s]\n", __FUNCTION__, id.GetId(), MasterTaskTypeToString(type));
     }
     
     virtual void OnTaskComplete(const opendnp3::TaskInfo& info) override final {
         //std::cout << "Running ["<<__FUNCTION__<<" TaskID :"<< id << " Task Type :"<< type <<"]\n";
-        if(sysdb->debug == 1)
-            std::cout << "Running ["<<__FUNCTION__<<"]\n";    //Code for adding timestamp
+        if(sysdb->debug)
+            FPS_ERROR_PRINT("Running [%s]\n", __FUNCTION__);    //Code for adding timestamp
         sysdb->pubUris();
     }
 
@@ -84,7 +84,7 @@ public:
                     , sysdb->id 
                     , cstate.c_str()
                     );
-        emit_event(sysdb->p_fims, "DNP3", message, 1);
+        emit_event(sysdb->p_fims, __FUNCTION__, message, 1);
     }    
     
     sysCfg* sysdb;

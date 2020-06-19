@@ -50,7 +50,7 @@ public:
                     , cstate.c_str());
         //fprintf(stderr, "%s\n", message);
 
-        emit_event(sysdb->p_fims, "DNP3", message, 1);
+        emit_event(sysdb->p_fims, __FUNCTION__, message, 1);
     }
 
     static std::shared_ptr<IChannelListener> Create(sysCfg* fpsDB)

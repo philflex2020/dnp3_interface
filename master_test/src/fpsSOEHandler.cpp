@@ -19,43 +19,42 @@ namespace asiodnp3 {
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<Binary>>& values) {
     static sysCfg *static_sysdb = sysdb;
     static int items = 0;
-    if(static_sysdb->debug == 1)
+    if(static_sysdb->debug)
         FPS_DEBUG_PRINT(">> ******************************Bin:\n");
     auto print = [](const Indexed<Binary>& pair) {
         DbVar* db = static_sysdb->getDbVarId(Type_Binary, pair.index);
         if (db != NULL) 
         {
             const char* vname = db->name.c_str();// static_sysdb->getBinary(pair.index);
-            if(static_sysdb->debug == 1)
+            if(static_sysdb->debug)
                 FPS_DEBUG_PRINT("***************************** bin idx %d name [%s] value [%d]\n", pair.index, db->name.c_str(), pair.value.value);
 
             if(strcmp(vname,"Unknown")!= 0) 
             {
                 static_sysdb->addPubVar(db, pair.value.value);
-                //cJSON_AddBoolToObject(static_sysdb->cj, vname, pair.value.value);
                 static_sysdb->setDbVar(db->uri, vname, pair.value.value);
                 items++;
             }
         }
         else
         {
-            if(static_sysdb->debug == 1)
+            if(static_sysdb->debug)
                 FPS_ERROR_PRINT("***************************** bin idx %d No Var Found\n", pair.index);
         }        
     };
     values.ForeachItem(print);
     if(static_sysdb->cj)
     {
-        //cJSON_AddItemToObject(static_sysdb->cj, cfgGetSOEName(static_sysdb,"binaries"), cj);
         if(items > 0)
             static_sysdb->cjloaded++;
     }
-    if(static_sysdb->debug == 1)
+    if(static_sysdb->debug)
         FPS_DEBUG_PRINT("<< ******************************Bin:\n" );
 }
 
 void fpsSOEHandler::Process(const HeaderInfo& info, const ICollection<Indexed<DoubleBitBinary>>& values) {
-    FPS_DEBUG_PRINT("******************************DBin: \n");
+    if(static_sysdb->debug)
+        FPS_DEBUG_PRINT("******************************DBin: \n");
     return PrintAll(info, values);
 }
 
@@ -72,27 +71,25 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
     // magic static
     static sysCfg *static_sysdb = sysdb;
     static int items = 0;
-    if(static_sysdb->debug == 1)
+    if(static_sysdb->debug)
         FPS_DEBUG_PRINT(">> ******************************An:\n");
     auto print = [](const Indexed<Analog>& pair) {
         DbVar* db = static_sysdb->getDbVarId(Type_Analog, pair.index);
         if (db != NULL) 
         {
             const char* vname = db->name.c_str();// static_sysdb->getBinary(pair.index);
-            if(static_sysdb->debug == 1)
+            if(static_sysdb->debug)
                 FPS_ERROR_PRINT("***************************** analog idx %d name [%s] uri [%s] value [%f]\n", pair.index, db->name.c_str(), db->uri, pair.value.value);
-            if(strcmp(vname,"Unknown")!= 0) 
+            if(strcmp(vname,"Unknown") != 0) 
             {
-                // TODO find cj for db->uri then add to that object
                 static_sysdb->addPubVar(db, pair.value.value);
-                //cJSON_AddNumberToObject(static_sysdb->cj, vname, pair.value.value);
                 static_sysdb->setDbVar(db->uri, vname, pair.value.value);
                 items++;
             }
         }
         else
         {
-            if(static_sysdb->debug == 1)
+            if(static_sysdb->debug)
                 FPS_ERROR_PRINT("***************************** analog idx %d No Var Found\n", pair.index);
         }
     };
@@ -102,7 +99,7 @@ void fpsSOEHandler::Process(const HeaderInfo & /* info*/, const ICollection<Inde
         if(items > 0)
             static_sysdb->cjloaded++;
     }
-    if(static_sysdb->debug == 1)
+    if(static_sysdb->debug)
         FPS_DEBUG_PRINT("<< ******************************An:\n");
     return;
 }
