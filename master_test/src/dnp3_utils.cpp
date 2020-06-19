@@ -638,6 +638,9 @@ bool getCJcj (cJSON* cj, const char* name, cJSON* &val, bool required)
 // 		"ip_address2": "192.168.0.136",
 // 		"port2": 502,
 // 		"frequency": 500,
+// 		"freq1": 500,
+// 		"freq2": 500,
+// 		"freq3": 500,
 // 		"byte_swap": false
 
 bool parse_system(cJSON* cji, sysCfg* sys, int who)
@@ -666,6 +669,9 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
     char* tmp_uri = NULL;
     if(ret) ret = getCJint(cj,"version",         sys->version,        false );
     if(ret) ret = getCJint(cj,"frequency",       sys->frequency,      false);
+    if(ret) ret = getCJint(cj,"freq1",           sys->freq1,          false);
+    if(ret) ret = getCJint(cj,"freq2",           sys->freq2,          false);
+    if(ret) ret = getCJint(cj,"freq3",           sys->freq3,          false);
     if(ret) ret = getCJint(cj,"port",            sys->port,           true);
     if(ret) ret = getCJint(cj,"local_address",   sys->local_address,  false);
     if(ret) ret = getCJint(cj,"remote_address",  sys->remote_address, false);

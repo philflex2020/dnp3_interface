@@ -322,6 +322,11 @@ typedef struct sysCfg_t {
         base_uri = NULL;
         local_uri = NULL;
         defUri = NULL;
+        freq1 = 0;
+        freq2 = 0;
+        freq3 = 0;
+        frequency = 1000;
+
 
         // for (int i = 0; i < static_cast<int32_t>(Type_of_Var::NumTypes) ; i++)
         // {
@@ -1351,6 +1356,10 @@ typedef struct sysCfg_t {
         int local_address;
         int remote_address;
         int frequency;
+        int freq1;
+        int freq2;
+        int freq3;
+        
         int idx;
         char* uri;
 

@@ -130,8 +130,17 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     //void Scan(const HeaderBuilderT& builder, TaskConfig config = TaskConfig::Default());
 
     //void ScanClasses(const opendnp3::ClassField& field, const opendnp3::TaskConfig& config) override;
-    // do a Class 1 exception poll every 5 seconds
-    auto exceptionScan = master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Seconds(5));
+    // do a exception poll scans as requested
+    if (sys->freq1 > 0)
+    //auto exceptionScan = 
+        master->AddClassScan(ClassField(ClassField::CLASS_1), TimeDuration::Milliseconds(sys->freq1));
+    if (sys->freq2 > 0)
+    //auto exceptionScan = 
+        master->AddClassScan(ClassField(ClassField::CLASS_2), TimeDuration::Milliseconds(sys->freq2));
+    if (sys->freq3 > 0)
+    //auto exceptionScan = 
+        master->AddClassScan(ClassField(ClassField::CLASS_3), TimeDuration::Milliseconds(sys->freq3));
+
     //auto exceptionScan = master->Scan(ClassField(ClassField::CLASS_1);
     
     //auto binscan = master->AddAllObjectsScan(GroupVariationID(1,1),
