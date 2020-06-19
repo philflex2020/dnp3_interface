@@ -80,6 +80,7 @@ enum {
     Group30Var3,
     Group30Var4,
     Group30Var5,
+    Group32Var0,
     Group32Var1,
     Group32Var2,
     Group32Var3,
