@@ -181,18 +181,23 @@ void emit_event(fims* pFims, const char* source, const char* message, int severi
     if (strstr(message,"- Listen") != NULL) doit = true; 
     if (strstr(message,"- Error Connect") != NULL) doit = true; 
 
+    cJSON* body_object;
+    body_object = cJSON_CreateObject();
+    cJSON_AddStringToObject(body_object, "source", source);
+    cJSON_AddStringToObject(body_object, "message", message);
+    cJSON_AddNumberToObject(body_object, "severity", severity);
+    char* body = cJSON_PrintUnformatted(body_object);
     if(doit)
     {
-        cJSON* body_object;
-        body_object = cJSON_CreateObject();
-        cJSON_AddStringToObject(body_object, "source", source);
-        cJSON_AddStringToObject(body_object, "message", message);
-        cJSON_AddNumberToObject(body_object, "severity", severity);
-        char* body = cJSON_PrintUnformatted(body_object);
         pFims->Send("post", "/events", NULL, body);
-        free(body);
-        cJSON_Delete(body_object);
     }
+    else
+    {
+        pFims->Send("post", "/NON_events", NULL, body);
+    }
+    
+    free(body);
+    cJSON_Delete(body_object);
 }
 
 DbVar* getDbVar(sysCfg* sys, const char* uri, const char* name)
