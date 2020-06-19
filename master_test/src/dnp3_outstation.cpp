@@ -57,7 +57,7 @@ void ConfigureDatabase(DatabaseConfig& config, sysCfg* sys)
             }
             if(db->evariation == Group32Var0)
             {
-                config.analog[i].evariation = EventAnalogVariation::Group32Var0;
+                //TODO config.analog[i].evariation = EventAnalogVariation::Group32Var0;
             }
             else if(db->evariation == Group32Var1)
             {
