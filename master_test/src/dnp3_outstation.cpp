@@ -340,13 +340,13 @@ int main(int argc, char* argv[])
     sysCfg* sys = &sys_cfg;
     cout<<"Binaries: "<<sys->dbVec[Type_Binary].size()<<" Analogs: "<<sys->dbVec[Type_Analog].size()<<endl;
     OutstationStackConfig OSconfig(DatabaseSizes( 
-                                                sys->getTypSize(Type_Binary),
+                                                sys->getTypeSize(Type_Binary),
                                                 0,                               // no double binaries
-                                                sys->getTypSize(Type_Analog),
+                                                sys->getTypeSize(Type_Analog),
                                                 0,                               // no counters
                                                 0,                               // no frozen counters
-                                                sys->getTypSize(Type_BinaryOS),
-                                                sys->getTypSize(Type_AnalogyOS),
+                                                sys->getTypeSize(Type_BinaryOS),
+                                                sys->getTypeSize(Type_AnalogyOS),
                                                 0,                               // no timers
                                                 0                                // no octet streams
                                                 )); 
