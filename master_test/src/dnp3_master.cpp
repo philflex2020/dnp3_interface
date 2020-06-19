@@ -65,7 +65,6 @@ using namespace opendnp3;
 #define MAX_FIMS_CONNECT 5
 
 volatile bool running = true;
-int ttick = 0;  // timeout ticks for replies to initial gets
 
 void signal_handler (int sig)
 {
@@ -79,9 +78,9 @@ DNP3Manager* setupDNP3Manager(sysCfg* ourDB)
     auto manager = new DNP3Manager(1, fpsLogger::Create(ourDB));
     return manager;
 }
-
+//auto channel = setupDNP3channel(manager, sys_cfg.id, &sys_cfg, sys_cfg.ip_address, sys_cfg.port);
 // I think we can have several channels under one manager
-std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cname, sysCfg* ourDB, const char* addr, int port)
+std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, sysCfg* sys)
 {
 
      // Specify what log levels to use. NORMAL is warning and above
@@ -92,24 +91,27 @@ std::shared_ptr<IChannel> setupDNP3channel(DNP3Manager* manager, const char* cna
     // repeat for each outstation
 
     // TODO setup our own PrintingChannelListener
-    std::shared_ptr<IChannel> channel = manager->AddTCPClient(cname 
+    std::shared_ptr<IChannel> channel = manager->AddTCPClient(sys->id 
                                         , FILTERS 
                                         , ChannelRetry::Default() 
-                                        , {IPEndpoint(addr, port)}
+                                        , {IPEndpoint(sys->ip_address, sys->port)}
                                         ,"0.0.0.0" 
-                                        , fpsChannelListener::Create(ourDB));
+                                        , fpsChannelListener::Create(sys));
     // The master config object for a master. The default are
     // useable, but understanding the options are important.
     return channel;
 }
 
-std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* sys )
+std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, const char* mname, sysCfg* sys)
 {
     MasterStackConfig stackConfig;
     // you can override application layer settings for the master here
     // in this example, we've change the application layer timeout to 2 seconds
     stackConfig.master.responseTimeout = TimeDuration::Seconds(2);
-    stackConfig.master.disableUnsolOnStartup = true;
+    if(sys->unsol)
+        stackConfig.master.disableUnsolOnStartup = false;
+    else
+        stackConfig.master.disableUnsolOnStartup = true;
     // You can override the default link layer settings here
     // in this example we've changed the default link layer addressing
     stackConfig.link.LocalAddr = sys->local_address;//localAddr; // 1
@@ -167,8 +169,8 @@ std::shared_ptr<IMaster> setupDNP3master (std::shared_ptr<IChannel> channel, con
     return master;
 }
 
-
-
+// this runs whn we get a "set" on a defined value
+// the data is immediately send to the outstation.
 void addVarToCommands (CommandSet & commands, std::pair<DbVar*,int>dbp)
 {
     DbVar* db = dbp.first;
@@ -250,7 +252,6 @@ int main(int argc, char *argv[])
     //sys_cfg.showUris();
     sys_cfg.showNewUris();
     
-
     const char **subs = NULL;
     bool *bpubs = NULL;
 
@@ -305,7 +306,7 @@ int main(int argc, char *argv[])
     // now we use data from the config file
     //std::shared_ptr<IChannel> 
     //auto channel = setupDNP3channel(manager, "tcpclient1", "127.0.0.1", 20001);
-    auto channel = setupDNP3channel(manager, sys_cfg.id, &sys_cfg, sys_cfg.ip_address, sys_cfg.port);
+    auto channel = setupDNP3channel(manager, &sys_cfg); //, sys_cfg.ip_address, sys_cfg.port);
     if (!channel){
         FPS_ERROR_PRINT("Error in setupDNP3channel.\n");
         delete manager;
@@ -338,24 +339,8 @@ int main(int argc, char *argv[])
     {
         // once a second
         fims_message* msg = p_fims->Receive_Timeout(1000000);
-        if(msg == NULL)
-        { 
-            // TODO check for all the getURI resposes
-            ttick++;
-            // master does not need to be preset
-            bool ok = true;// sys_cfg.checkUris(DNP3_MASTER);
-            if(ok == false)
-            {
-                FPS_DEBUG_PRINT("Timeout tick2 %d\n", ttick);
-
-                if (ttick > MAX_SETUP_TICKS)
-                {
-                    // just quit here
-                    FPS_DEBUG_PRINT("QUITTING TIME Timeout tick %d\n", ttick);
-                }
-            }
-        }
-        else //if(msg != NULL)
+        
+        if(msg != NULL)
         {
             dbs_type dbs; // collect all the parsed vars here
             cJSON* cjb = parseBody(dbs, &sys_cfg, msg, DNP3_MASTER);
@@ -388,7 +373,9 @@ int main(int argc, char *argv[])
                     cj = NULL;
                     // TODO check that SET is the correct thing to do in MODBUS_CLIENT
                     // probably OK since this is a reply
-                    p_fims->Send("set", msg->replyto, NULL, reply);
+                    if(msg->replyto)
+                        p_fims->Send("set", msg->replyto, NULL, reply);
+
                     free((void* )reply);
                 }
                 if(numCmds > 0)

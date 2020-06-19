@@ -169,6 +169,7 @@ bool extractInt16Val(double &dval, DbVar *db)
     return flag;
 }
 
+// we only really want these events
 //{"source":"DNP3","message":"DNP3  hybridos message [INFO   ] --[fps Logger ms(1592449037729) INFO    server - Listening on: 127.0.0.1:12502]\n","severity":1}
 //{"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067320) INFO    xxhybridos - Connecting to: 127.0.0.1, port 12502]\n","severity":1}
 //{"source":"DNP3","message":"DNP3  xxhybridos message [INFO   ] --[fps Logger ms(1592449067321) INFO    xxhybridos - Connected to: 127.0.0.1, port 12502]\n","severity":1}
@@ -626,6 +627,17 @@ bool getCJint (cJSON* cj, const char* name, int& val, bool required)
     return ok;
 }
 
+bool getCJbool (cJSON* cj, const char* name, bool& val, bool required)
+{
+    bool ok = !required;
+    cJSON *cji = cJSON_GetObjectItem(cj, name);
+    if (cji) {
+        val = cJSON_IsTrue(cji);
+        ok = true;
+    }
+    return ok;
+}
+
 bool getCJstr (cJSON* cj, const char* name, char* &val, bool required)
 {
     bool ok = !required;
@@ -661,6 +673,7 @@ bool getCJcj (cJSON* cj, const char* name, cJSON* &val, bool required)
 // 		"freq1": 500,
 // 		"freq2": 500,
 // 		"freq3": 500,
+//      "unsol":true/false,
 // 		"byte_swap": false
 
 bool parse_system(cJSON* cji, sysCfg* sys, int who)
@@ -704,6 +717,7 @@ bool parse_system(cJSON* cji, sysCfg* sys, int who)
     //TODO use this
     if(ret) ret = getCJstr(cj,"base_uri",         tmp_uri,             false);
     if(ret) ret = getCJstr(cj,"local_uri",        sys->local_uri,      false);
+    if(ret) ret = getCJbool(cj,"unsol",           sys->unsol,      false);
 
     // fixup base_uri
     char tmp[1024];
